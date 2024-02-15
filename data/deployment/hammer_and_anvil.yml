@@ -1,0 +1,23 @@
+name: Hammer and Anvil
+home_edge: short
+
+attacker:
+  deployment_zone:
+    - [-22, -30]
+    - [-22, -12]
+    - [22, -12]
+    - [22, -30]
+
+defender:
+  deployment_zone:
+    - [-22, 12]
+    - [-22, 30]
+    - [22, 30]
+    - [22, 12]
+
+objectives:
+  - [0, 0]
+  - [16, 0]
+  - [-16, 0]
+  - [0, 20]
+  - [0, -20]

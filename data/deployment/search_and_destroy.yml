@@ -1,0 +1,25 @@
+name: Search and Destroy
+home_edge: long
+
+attacker:
+  mask_center: 9
+  deployment_zone:
+    - [-22, -30]
+    - [0, -30]
+    - [0, 0]
+    - [-222, 0]
+
+defender:
+  mask_center: 9
+  deployment_zone:
+    - [0, 0]
+    - [22, 0]
+    - [22, 30]
+    - [0, 30]
+
+objectives:
+  - [0, 0]
+  - [-12, -16]
+  - [12, -16]
+  - [-12, 16]
+  - [12, 16]

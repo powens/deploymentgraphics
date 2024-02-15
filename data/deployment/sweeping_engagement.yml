@@ -1,0 +1,21 @@
+name: Sweeping Engagement
+home_edge: long
+
+attacker:
+  deployment_zone:
+    - [-22, -30]
+    - [0, -30]
+    - [-22, 30]
+
+defender:
+  deployment_zone:
+    - [22, -30]
+    - [22, 30]
+    - [0, 30]
+
+objectives:
+  - [0, 0]
+  - [16, 12]
+  - [-9, 20]
+  - [-16, -12]
+  - [8, -20]

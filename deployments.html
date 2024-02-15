@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"
+      integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <!-- <script
+      type="text/javascript"
+      src="./node_modules/js-yaml/dist/js-yaml.js"
+    ></script> -->
+    <script type="text/javascript" src="src/make-mission-card.js"></script>
+  </head>
+  <body>
+    <section>
+      <label for="mission">Mission</label>
+      <select id="mission">
+        <option value="dawn_of_war">Dawn of War</option>
+        <option value="crucible_of_battle">Crucible of Battle</option>
+        <option value="hammer_and_anvil">Hammer and Anvil</option>
+        <option value="search_and_destroy">Search and Destroy</option>
+        <option value="sweeping_engagement">Sweeping Engagement</option>
+      </select>
+
+      <label for="terrain">Terrain</label>
+      <select id="terrain">
+        <option value="test">Test all buildings</option>
+        <option value="1">GW Layout 1</option>
+        <option value="2">GW Layout 2</option>
+        <option value="3">GW Layout 3</option>
+        <option value="4">GW Layout 4</option>
+      </select>
+    </section>
+
+    <div id="graphic"></div>
+
+    <script type="module">
+      async function getMissionConfig(missionName) {
+        const response = await fetch(`./data/deployment/${missionName}.yml`);
+        const body = await response.text();
+        return jsyaml.load(body);
+      }
+
+      async function getBaseConfig() {
+        const response = await fetch("./data/base.yml");
+        const body = await response.text();
+        return jsyaml.load(body);
+      }
+
+      async function getTerrain(terrainName) {
+        if (!terrainName) {
+          return null;
+        }
+        const response = await fetch("./data/terrain/gw.yml");
+        const body = await response.text();
+        const obj = jsyaml.load(body);
+        return { ...obj, layoutName: terrainName };
+      }
+
+      function clearCanvas() {
+        const container = document.getElementById("graphic");
+        container.innerHTML = "";
+      }
+
+      async function loadAndDrawMission(missionName, terrainName) {
+        const missionConfig = await getMissionConfig(missionName);
+        const terrainConfig = await getTerrain(terrainName);
+        const baseConfig = await getBaseConfig();
+
+        const config = {
+          mission: missionConfig,
+          base: baseConfig,
+          terrain: terrainConfig,
+        };
+        const root = document.getElementById("graphic");
+        makeMissionCard(root, config);
+      }
+
+      const missionSelector = document.getElementById("mission");
+      const terrainSelector = document.getElementById("terrain");
+
+      async function redraw() {
+        clearCanvas();
+        await loadAndDrawMission(missionSelector.value, terrainSelector.value);
+      }
+
+      async function onMissionChange(event) {
+        const missionName = event.target.value;
+        redraw();
+      }
+      missionSelector.onchange = onMissionChange;
+
+      async function onTerrainChange(event) {
+        redraw();
+      }
+      terrainSelector.onchange = onTerrainChange;
+
+      redraw();
+    </script>
+  </body>
+</html>

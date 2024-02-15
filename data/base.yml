@@ -1,0 +1,29 @@
+size:
+  width: 44
+  height: 60
+guide_line:
+  stroke: black
+  stroke_dasharray: 1 1
+  stroke_width: 0.2
+objective:
+  radius: 1.5
+  realistic_radius: 0.79
+  realistic_area: 3
+  fill: black
+  stroke: none
+attacker:
+  fill: cf4b33
+  stroke: none
+defender:
+  fill: 7d8b7f
+  stroke: none
+building:
+  template:
+    fill: AAAAAA
+    stroke: black
+    stroke_dasharray: 0.5 0.5
+    stroke_width: 0.1
+  structure:
+    fill: blue
+    stroke: blue
+    stroke_width: 0.4

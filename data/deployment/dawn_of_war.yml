@@ -1,0 +1,23 @@
+name: Dawn of War
+home_edge: long
+
+attacker:
+  deployment_zone:
+    - [-22, -30]
+    - [-12, -30]
+    - [-12, 30]
+    - [-22, 30]
+
+defender:
+  deployment_zone:
+    - [12, -30]
+    - [22, -30]
+    - [22, 30]
+    - [12, 30]
+
+objectives:
+  - [0, 0]
+  - [0, -20]
+  - [0, 20]
+  - [16, 0]
+  - [-16, 0]
