@@ -112,8 +112,8 @@ function makeDeploymentZone(config, attackerDefender) {
 
 function makeMissionCard(rootElement, config) {
   const svg = makeElement("svg");
-  svg.setAttribute("width", "440px");
-  svg.setAttribute("height", "600px");
+  svg.setAttribute("width", "600px");
+  svg.setAttribute("height", "440px");
   svg.setAttribute(
     "viewBox",
     `0 0 ${config.base.size.width} ${config.base.size.height}`

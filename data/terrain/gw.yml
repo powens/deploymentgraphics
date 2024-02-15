@@ -98,13 +98,13 @@ layout:
         coords: [30, 2]
 
       - type: 3
-        coords: [2, 22]
+        coords: [50, 2]
 
       - type: 4
-        coords: [30, 22]
+        coords: [2, 22]
 
       - type: 5
-        coords: [2, 42]
+        coords: [30, 22]
 
   1:
     buildings:

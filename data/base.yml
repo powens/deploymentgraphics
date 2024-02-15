@@ -1,6 +1,6 @@
 size:
-  width: 44
-  height: 60
+  width: 60
+  height: 44
 guide_line:
   stroke: black
   stroke_dasharray: 1 1
