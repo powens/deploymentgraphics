@@ -2,17 +2,33 @@ function makeElement(typeName) {
   return document.createElementNS("http://www.w3.org/2000/svg", typeName);
 }
 
+function applyAttributes(element, attrs) {
+  for (const [key, value] of Object.entries(attrs)) {
+    element.setAttribute(key.replaceAll("_", "-"), value);
+  }
+}
+
 function makeObjectiveMarker(config) {
   const objConfig = config.base.objective;
+  const objGroup = makeElement("g");
+  objGroup.setAttribute("id", "objMarker");
+
   const objMarker = makeElement("circle");
-  objMarker.setAttribute("id", "objMarker");
   objMarker.setAttribute("cx", "0");
   objMarker.setAttribute("cy", "0");
-  objMarker.setAttribute("r", objConfig.radius);
-  objMarker.setAttribute("fill", objConfig.fill);
-  objMarker.setAttribute("stroke", objConfig.stroke);
+  applyAttributes(objMarker, objConfig.real);
 
-  return objMarker;
+  const objRadius = makeElement("circle");
+  objRadius.setAttribute("cx", "0");
+  objRadius.setAttribute("cy", "0");
+  objRadius.setAttribute("r", objConfig.influence.radius + objConfig.real.r);
+  objRadius.setAttribute("fill", objConfig.influence.fill);
+  objRadius.setAttribute("stroke", objConfig.influence.stroke);
+
+  objGroup.appendChild(objRadius);
+  objGroup.appendChild(objMarker);
+
+  return objGroup;
 }
 
 function injectDefs(svg, config) {
@@ -71,6 +87,17 @@ function makeDeliniators(config) {
   return group;
 }
 
+function isCenterObjective(coordinates) {
+  return coordinates[0] === 0 && coordinates[1] === 0;
+}
+
+function getHiddenSuppliesCoords() {
+  // Angle is 36.254deg
+  //   a = 3.5482
+  // b = 4.83842
+  return [4.8, 3.5];
+}
+
 function makeObjectives(config) {
   const objectiveGroup = makeElement("g");
   const size = config.base.size;
@@ -80,12 +107,31 @@ function makeObjectives(config) {
   const objectives = config?.mission?.objectives ?? [];
 
   for (let coordinates of objectives) {
-    const o = makeElement("use");
-    o.setAttribute("x", coordinates[0] + halfWidth);
-    o.setAttribute("y", coordinates[1] + halfHeight);
-    o.setAttribute("href", "#objMarker");
+    if (isCenterObjective(coordinates) && config?.mission?.hidden_supplies) {
+      const hiddenSupplesCoords = getHiddenSuppliesCoords();
+      const o1 = makeElement("use");
+      o1.setAttribute("x", halfWidth - hiddenSupplesCoords[0]);
+      o1.setAttribute("y", halfHeight - hiddenSupplesCoords[1]);
+      o1.setAttribute("href", "#objMarker");
 
-    objectiveGroup.appendChild(o);
+      const o2 = makeElement("use");
+      o2.setAttribute("x", halfWidth + hiddenSupplesCoords[0]);
+      o2.setAttribute("y", halfHeight + hiddenSupplesCoords[1]);
+      o2.setAttribute("href", "#objMarker");
+      objectiveGroup.appendChild(o1);
+      objectiveGroup.appendChild(o2);
+    } else {
+      const o = makeElement("use");
+      o.setAttribute("x", coordinates[0] + halfWidth);
+      o.setAttribute("y", coordinates[1] + halfHeight);
+      o.setAttribute("href", "#objMarker");
+
+      if (config?.main?.objective?.guides?.draw) {
+        // TODO: Finish me
+      }
+
+      objectiveGroup.appendChild(o);
+    }
   }
 
   return objectiveGroup;
@@ -128,7 +174,7 @@ function makeMissionCard(rootElement, config) {
   svg.appendChild(makeDeliniators(config));
 
   if (config.terrain) {
-    svg.appendChild(makeBuildings(config));
+    // svg.appendChild(makeBuildings(config));
   }
 
   rootElement.appendChild(svg);
@@ -155,6 +201,42 @@ function makeBuildingTemplate(template, config) {
   return templateRect;
 }
 
+function makeBuilding(config, building, coords, rotation) {
+  const group = makeElement("g");
+  group.setAttribute("opacity", config.base.building.opacity);
+  group.setAttribute(
+    "transform",
+    `translate(${coords[0]} ${coords[1]}) rotate(${rotation ?? 0})`
+  );
+  group.appendChild(makeBuildingTemplate(building.template, config));
+
+  const structures = building.structures;
+  for (const structure of structures) {
+    switch (structure.type) {
+      case "line":
+        const obj = makeElement("line");
+        obj.setAttribute("x1", structure.start[0]);
+        obj.setAttribute("y1", structure.start[1]);
+        obj.setAttribute("x2", structure.end[0]);
+        obj.setAttribute("y2", structure.end[1]);
+        obj.setAttribute("stroke", config.base.building.structure.stroke);
+        obj.setAttribute(
+          "stroke-width",
+          config.base.building.structure.stroke_width
+        );
+        group.appendChild(obj);
+        break;
+      case "poly":
+        const poly = makeElement("polygon");
+        poly.setAttribute("points", structure.points.join(" "));
+        poly.setAttribute("fill", `${config.base.building.structure.fill}`);
+        group.appendChild(poly);
+        break;
+    }
+  }
+  return group;
+}
+
 function makeBuildings(config) {
   const layoutName = config.terrain.layoutName;
   const layout = config.terrain.layout[layoutName];
@@ -172,39 +254,27 @@ function makeBuildings(config) {
       continue;
     }
 
-    const group = makeElement("g");
-    group.setAttribute(
-      "transform",
-      `translate(${buildingInstance.coords[0]} ${buildingInstance.coords[1]})`
+    const group = makeBuilding(
+      config,
+      building,
+      buildingInstance.coords,
+      buildingInstance.rotation
     );
-    group.appendChild(makeBuildingTemplate(building.template, config));
-
-    const structures = building.structures;
-    for (const structure of structures) {
-      switch (structure.type) {
-        case "line":
-          const obj = makeElement("line");
-          obj.setAttribute("x1", structure.start[0]);
-          obj.setAttribute("y1", structure.start[1]);
-          obj.setAttribute("x2", structure.end[0]);
-          obj.setAttribute("y2", structure.end[1]);
-          obj.setAttribute("stroke", config.base.building.structure.stroke);
-          obj.setAttribute(
-            "stroke-width",
-            config.base.building.structure.stroke_width
-          );
-          group.appendChild(obj);
-          break;
-        case "poly":
-          const poly = makeElement("polygon");
-          poly.setAttribute("points", structure.points.join(" "));
-          poly.setAttribute("fill", `${config.base.building.structure.fill}`);
-          group.appendChild(poly);
-          break;
-      }
-    }
-
     superGroup.appendChild(group);
+    if (buildingInstance?.mirror ?? true) {
+      const mirriroredCoords = [
+        config.base.size.width - buildingInstance.coords[0],
+        config.base.size.height - buildingInstance.coords[1],
+      ];
+      const mirroredRotation = 180 + buildingInstance.rotation;
+      const mirroredBuilding = makeBuilding(
+        config,
+        building,
+        mirriroredCoords,
+        mirroredRotation
+      );
+      superGroup.appendChild(mirroredBuilding);
+    }
   }
   return superGroup;
 }

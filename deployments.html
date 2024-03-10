@@ -12,6 +12,23 @@
       src="./node_modules/js-yaml/dist/js-yaml.js"
     ></script> -->
     <script type="text/javascript" src="src/make-mission-card.js"></script>
+
+    <style>
+      .overlayImg {
+        position: fixed;
+        top: 10;
+        left: 10;
+        opacity: 0.2;
+        width: 600px;
+        height: 440px;
+      }
+
+      #graphic {
+        border: 1px solid black;
+        width: 600px;
+        height: 440px;
+      }
+    </style>
   </head>
   <body>
     <section>
@@ -32,7 +49,12 @@
         <option value="3">GW Layout 3</option>
         <option value="4">GW Layout 4</option>
       </select>
+
+      <label for="hidden-supplies">Hidden Supplies</label>
+      <input id="hidden-supplies" value="checked" type="checkbox" />
     </section>
+
+    <img class="overlayImg" src="samples/terrain/layout4.png" />
 
     <div id="graphic"></div>
 
@@ -64,10 +86,16 @@
         container.innerHTML = "";
       }
 
-      async function loadAndDrawMission(missionName, terrainName) {
+      async function loadAndDrawMission(
+        missionName,
+        terrainName,
+        isHiddenSupplies
+      ) {
         const missionConfig = await getMissionConfig(missionName);
         const terrainConfig = await getTerrain(terrainName);
         const baseConfig = await getBaseConfig();
+
+        missionConfig["hidden_supplies"] = isHiddenSupplies;
 
         const config = {
           mission: missionConfig,
@@ -80,10 +108,15 @@
 
       const missionSelector = document.getElementById("mission");
       const terrainSelector = document.getElementById("terrain");
+      const hiddenSupplies = document.getElementById("hidden-supplies");
 
       async function redraw() {
         clearCanvas();
-        await loadAndDrawMission(missionSelector.value, terrainSelector.value);
+        await loadAndDrawMission(
+          missionSelector.value,
+          terrainSelector.value,
+          hiddenSupplies.checked
+        );
       }
 
       async function onMissionChange(event) {
@@ -96,6 +129,11 @@
         redraw();
       }
       terrainSelector.onchange = onTerrainChange;
+
+      async function onHiddenSuppliesChange(event) {
+        redraw();
+      }
+      hiddenSupplies.onchange = onHiddenSuppliesChange;
 
       redraw();
     </script>

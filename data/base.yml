@@ -6,11 +6,23 @@ guide_line:
   stroke_dasharray: 1 1
   stroke_width: 0.2
 objective:
-  radius: 1.5
-  realistic_radius: 0.79
-  realistic_area: 3
-  fill: black
-  stroke: none
+  guides:
+    draw: true
+    stroke_width: 0.2
+    stroke: black
+  stylized:
+    radius: 1.5
+    fill: black
+    stroke: none
+  real:
+    r: 0.79
+    fill: red
+    stroke: none
+  influence:
+    radius: 3
+    fill: black
+    stroke: none
+
 attacker:
   fill: cf4b33
   stroke: none
@@ -18,6 +30,7 @@ defender:
   fill: 7d8b7f
   stroke: none
 building:
+  opacity: 0.9
   template:
     fill: AAAAAA
     stroke: black
