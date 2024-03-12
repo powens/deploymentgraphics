@@ -3,15 +3,15 @@ home_edge: short
 
 attacker:
   deployment_zone:
-    - [-30, -22]
-    - [-30, 22]
+    - [30, -22]
+    - [30, 22]
     - [0, -22]
 
 defender:
   deployment_zone:
     - [0, 22]
-    - [30, 22]
-    - [30, -22]
+    - [-30, 22]
+    - [-30, -22]
 
 objectives:
   - [0, 0]

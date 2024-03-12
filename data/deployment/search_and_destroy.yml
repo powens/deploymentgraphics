@@ -4,8 +4,8 @@ home_edge: long
 attacker:
   mask_center: 9
   deployment_zone:
-    - [-30, -22]
-    - [-30, 0]
+    - [30, -22]
+    - [30, 0]
     - [0, 0]
     - [0, -22]
 
@@ -14,8 +14,8 @@ defender:
   deployment_zone:
     - [0, 0]
     - [0, 22]
-    - [30, 22]
-    - [30, 0]
+    - [-30, 22]
+    - [-30, 0]
 
 objectives:
   - [0, 0]
