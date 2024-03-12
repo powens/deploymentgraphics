@@ -1,13 +1,60 @@
+/**
+ * @typedef {Object} ObjectiveConfig
+ *
+ * @typedef {Object} AttackerDefender
+ * @property {string} fill - Fill color
+ * @property {string} stroke - Stroke color
+ *
+ *
+ * @typedef {Object} BuildingConfig
+ * @property {string} opacity - Opacity of the building
+ * @property {Object} template - Configuration for the building template
+ * @property {string} template.fill - Fill color for the building template
+ * @property {string} template.stroke - Stroke color for the building template
+ * @property {string} template.stroke_dasharray - Stroke dasharray for the building template
+ * @property {string} template.stroke_width - Stroke width for the building template
+ * @property {Object} structure - Configuration for the building structure
+ * @property {string} structure.fill - Fill color for the building structure
+ * @property {string} structure.stroke - Stroke color for the building structure
+ * @property {string} structure.stroke_width - Stroke width for the building structure
+ *
+ *
+ * @typedef {Object} BaseConfig
+ * @property {Object} size - Size of the battlefield
+ * @property {number} size.width - Width of the battlefield
+ * @property {number} size.height - Height of the battlefield
+ * @property {Object} guide_line - SVG Attributes for configuration for the half-way lines
+ * @property {ObjectiveConfig} objective - Configuration for the objective markers
+ * @property {AttackerDefender} attacker - Configuration for the attacker
+ * @property {AttackerDefender} defender - Confiuration for the defender
+ * @property {BuildingConfig} building - Configuration for the buildings
+ */
+
+/**
+ * Helper function to generate a new SVG element
+ * @param {string} typeName
+ * @returns {SVGElement}
+ */
 function makeElement(typeName) {
   return document.createElementNS("http://www.w3.org/2000/svg", typeName);
 }
 
+/**
+ * Applies a set of attributes to an element
+ * @param {SVGElement} element
+ * @param {Object.<string, string>} attrs
+ */
 function applyAttributes(element, attrs) {
   for (const [key, value] of Object.entries(attrs)) {
     element.setAttribute(key.replaceAll("_", "-"), value);
   }
 }
 
+/**
+ * Creates an objective marker SVG element
+ * @param {Object} config
+ * @returns {SVGElement}
+ */
 function makeObjectiveMarker(config) {
   const objConfig = config.base.objective;
   const objGroup = makeElement("g");
@@ -31,14 +78,26 @@ function makeObjectiveMarker(config) {
   return objGroup;
 }
 
+/**
+ * Inject defs into an SVGElement
+ * @param {SVGElement} svg
+ * @param {Object} config
+ */
 function injectDefs(svg, config) {
   const defs = makeElement("defs");
   svg.appendChild(defs);
 
   const objMarker = makeObjectiveMarker(config);
   defs.appendChild(objMarker);
+
+  injectCenterMask(svg, config);
 }
 
+/**
+ * Injects the center mask into an SVGElement
+ * @param {SVGElement} svg
+ * @param {Object} config
+ */
 function injectCenterMask(svg, config) {
   const centerMask = makeElement("mask");
   centerMask.setAttribute("id", "centerMask");
@@ -60,6 +119,11 @@ function injectCenterMask(svg, config) {
   svg.appendChild(centerMask);
 }
 
+/**
+ * Makes the half-way lines for the mission
+ * @param {Object} config
+ * @returns {SVGElement} Group element
+ */
 function makeDeliniators(config) {
   const group = makeElement("g");
 
@@ -69,9 +133,7 @@ function makeDeliniators(config) {
   vertHalfLine.setAttribute("y1", "0");
   vertHalfLine.setAttribute("x2", config.base.size.width / 2);
   vertHalfLine.setAttribute("y1", config.base.size.height);
-  vertHalfLine.setAttribute("stroke", guideConfig.stroke);
-  vertHalfLine.setAttribute("stroke-dasharray", guideConfig.stroke_dasharray);
-  vertHalfLine.setAttribute("stroke-width", guideConfig.stroke_width);
+  applyAttributes(vertHalfLine, guideConfig);
   group.appendChild(vertHalfLine);
 
   const horizHalfLine = makeElement("line");
@@ -79,15 +141,25 @@ function makeDeliniators(config) {
   horizHalfLine.setAttribute("y1", config.base.size.height / 2);
   horizHalfLine.setAttribute("x2", config.base.size.width);
   horizHalfLine.setAttribute("y2", config.base.size.height / 2);
-  horizHalfLine.setAttribute("stroke", guideConfig.stroke);
-  horizHalfLine.setAttribute("stroke-dasharray", guideConfig.stroke_dasharray);
-  horizHalfLine.setAttribute("stroke-width", guideConfig.stroke_width);
+  applyAttributes(horizHalfLine, guideConfig);
   group.appendChild(horizHalfLine);
 
   return group;
 }
 
+/**
+ * Returns true if the passed in objective is the center one
+ * @param {Number[]} coordinates
+ * @returns {boolean}
+ */
 function isCenterObjective(coordinates) {
+  return coordinates[0] === 0 && coordinates[1] === 0;
+}
+
+function isTheRitualObjective(coordinates) {
+  if (coordinates.length === 3 && coordinates[2] === "ritual") {
+    return true;
+  }
   return coordinates[0] === 0 && coordinates[1] === 0;
 }
 
@@ -120,6 +192,11 @@ function makeObjectives(config) {
       o2.setAttribute("href", "#objMarker");
       objectiveGroup.appendChild(o1);
       objectiveGroup.appendChild(o2);
+    } else if (
+      !isTheRitualObjective(coordinates) &&
+      config.mission?.the_ritual
+    ) {
+      continue;
     } else {
       const o = makeElement("use");
       o.setAttribute("x", coordinates[0] + halfWidth);
@@ -166,7 +243,6 @@ function makeMissionCard(rootElement, config) {
   );
 
   injectDefs(svg, config);
-  injectCenterMask(svg, config);
 
   svg.appendChild(makeDeploymentZone(config, "attacker"));
   svg.appendChild(makeDeploymentZone(config, "defender"));
@@ -174,7 +250,7 @@ function makeMissionCard(rootElement, config) {
   svg.appendChild(makeDeliniators(config));
 
   if (config.terrain) {
-    // svg.appendChild(makeBuildings(config));
+    svg.appendChild(makeBuildings(config));
   }
 
   rootElement.appendChild(svg);
@@ -210,7 +286,7 @@ function makeBuilding(config, building, coords, rotation) {
   );
   group.appendChild(makeBuildingTemplate(building.template, config));
 
-  const structures = building.structures;
+  const structures = building?.structures ?? [];
   for (const structure of structures) {
     switch (structure.type) {
       case "line":

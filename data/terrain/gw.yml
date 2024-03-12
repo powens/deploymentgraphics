@@ -1,4 +1,18 @@
 buildings:
+  6x12:
+    template:
+      width: 6
+      height: 12
+
+  4x6:
+    template:
+      width: 4
+      height: 6
+
+  5x10:
+    template:
+      width: 5
+      height: 10
   1:
     template:
       width: 6
@@ -138,3 +152,29 @@ layout:
       - type: 2
         coords: [9, 28]
         rotation: 0
+
+  4:
+    buildings:
+      - type: 6x12
+        coords: [6, 5]
+        rotation: 0
+
+      - type: 6x12
+        coords: [16, 22]
+        rotation: 90
+
+      - type: 6x12
+        coords: [16, 28]
+        rotation: 0
+
+      - type: 4x6
+        coords: [28, 2]
+        rotation: 0
+
+      - type: 5x10
+        coords: [19.3, 13]
+        rotation: -45
+
+      - type: 4x6
+        coords: [23.5, 17.3]
+        rotation: 45
