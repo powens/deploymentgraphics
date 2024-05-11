@@ -233,7 +233,7 @@ function makeDeploymentZone(config, attackerDefender) {
   return dz;
 }
 
-function makeMissionCard(rootElement, config) {
+export function makeMissionCard(rootElement, config) {
   const svg = makeElement("svg");
   svg.setAttribute("width", "600px");
   svg.setAttribute("height", "440px");
