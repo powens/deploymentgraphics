@@ -33,7 +33,7 @@ jobs:
         run: make build
 
       - name: Archive production artifacts
-        uses: actions/upload-pages-artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
