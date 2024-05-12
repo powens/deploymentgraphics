@@ -7,7 +7,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script type="text/javascript" src="bundle.js"></script>
+    <script type="text/javascript" type="module" src="bundle.js"></script>
 
     <style>
       .overlayImg {
@@ -104,7 +104,7 @@
           terrain: terrainConfig,
         };
         const root = document.getElementById("graphic");
-        makeMissionCard(root, config);
+        missionCard.makeMissionCard(root, config);
       }
 
       const missionSelector = document.getElementById("mission");

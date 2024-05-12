@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rollup src/make-mission-card.js --file dist/bundle.js --name \"missionCard\"",
+    "build-gh": "rollup src/make-mission-card.js --file dist/bundle.js --name \"missionCard\" --format iife",
     "serve": "rollup --config rollup.config.mjs --watch"
   },
   "repository": {
