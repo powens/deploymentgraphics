@@ -5,7 +5,7 @@ export default {
   input: "src/make-mission-card.js",
   output: {
     file: "dist/bundle.js",
-    format: "cjs",
+    format: "umd",
   },
   treeshake: false,
 

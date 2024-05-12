@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup src/make-mission-card.js --file dist/bundle.js --format umd --name \"missionCard\"",
+    "build": "rollup src/make-mission-card.js --file dist/bundle.js --name \"missionCard\"",
     "serve": "rollup --config rollup.config.mjs --watch"
   },
   "repository": {
