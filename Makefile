@@ -11,3 +11,10 @@ build-gh-pages:
 .PHONY: clean
 clean:
 	rm -rf dist
+
+.PHONY: serve-local
+serve-local:
+	npm run serve
+
+.PHONY: serve
+serve: clean serve-local
