@@ -51,9 +51,12 @@
 
       <label for="the-ritual">The Ritual</label>
       <input id="the-ritual" type="checkbox" />
+
+      <label for=""render-buildings">Render buildings</label>
+      <input id="render-buildings" type="checkbox" /> 
     </section>
 
-    <!-- <img class="overlayImg" src="samples/terrain/layout4.png" /> -->
+    <!-- <img class="overlayImg" src="terrain/layout3.png" /> -->
 
     <div id="graphic"></div>
 
@@ -89,7 +92,8 @@
         missionName,
         terrainName,
         isHiddenSupplies,
-        isTheRitual
+        isTheRitual,
+        renderBuildings,
       ) {
         const missionConfig = await getMissionConfig(missionName);
         const terrainConfig = await getTerrain(terrainName);
@@ -97,6 +101,7 @@
 
         missionConfig["hidden_supplies"] = isHiddenSupplies;
         missionConfig["the_ritual"] = isTheRitual;
+        baseConfig["building"]["render"] = renderBuildings;
 
         const config = {
           mission: missionConfig,
@@ -112,36 +117,27 @@
       const hiddenSupplies = document.getElementById("hidden-supplies");
       const theRitual = document.getElementById("the-ritual");
 
+      const renderBuildings = document.getElementById("render-buildings");
+
       async function redraw() {
         clearCanvas();
         await loadAndDrawMission(
           missionSelector.value,
           terrainSelector.value,
           hiddenSupplies.checked,
-          theRitual.checked
+          theRitual.checked,
+          renderBuildings.checked
         );
       }
 
-      async function onMissionChange(event) {
-        const missionName = event.target.value;
+      async function onCheckboxChange(event) {
         redraw();
       }
-      missionSelector.onchange = onMissionChange;
-
-      async function onTerrainChange(event) {
-        redraw();
-      }
-      terrainSelector.onchange = onTerrainChange;
-
-      async function onHiddenSuppliesChange(event) {
-        redraw();
-      }
-      hiddenSupplies.onchange = onHiddenSuppliesChange;
-
-      async function onTheRitualChange(event) {
-        redraw();
-      }
-      theRitual.onchange = onTheRitualChange;
+      missionSelector.onchange = onCheckboxChange;
+      terrainSelector.onchange = onCheckboxChange;
+      hiddenSupplies.onchange = onCheckboxChange;
+      theRitual.onchange = onCheckboxChange;
+      renderBuildings.onchange = onCheckboxChange;
 
       redraw();
     </script>

@@ -102,6 +102,13 @@ buildings:
       - type: line
         start: [3.2, 5]
         end: [2, 5]
+
+  6:
+    template:
+      width: 5
+      height: 10
+    structures: []
+
 layout:
   test:
     buildings:
@@ -152,6 +159,32 @@ layout:
       - type: 2
         coords: [9, 28]
         rotation: 0
+
+  3:
+    buildings:
+      - type: 6x12
+        coords: [4, 4]
+        rotation: 0
+
+      - type: 6x12
+        coords: [8, 28]
+        rotation: 0
+
+      - type: 4x6
+        coords: [2, 28]
+        rotation: -90
+
+      - type: 5x10
+        coords: [30, 4]
+        rotation: 90
+
+      - type: 4x6
+        coords: [36, 9]
+        rotation: 90
+
+      - type: 6x12
+        coords: [13.6, 20]
+        rotation: -45
 
   4:
     buildings:

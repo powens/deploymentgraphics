@@ -286,28 +286,30 @@ function makeBuilding(config, building, coords, rotation) {
   );
   group.appendChild(makeBuildingTemplate(building.template, config));
 
-  const structures = building?.structures ?? [];
-  for (const structure of structures) {
-    switch (structure.type) {
-      case "line":
-        const obj = makeElement("line");
-        obj.setAttribute("x1", structure.start[0]);
-        obj.setAttribute("y1", structure.start[1]);
-        obj.setAttribute("x2", structure.end[0]);
-        obj.setAttribute("y2", structure.end[1]);
-        obj.setAttribute("stroke", config.base.building.structure.stroke);
-        obj.setAttribute(
-          "stroke-width",
-          config.base.building.structure.stroke_width
-        );
-        group.appendChild(obj);
-        break;
-      case "poly":
-        const poly = makeElement("polygon");
-        poly.setAttribute("points", structure.points.join(" "));
-        poly.setAttribute("fill", `${config.base.building.structure.fill}`);
-        group.appendChild(poly);
-        break;
+  if (config.base.building.render) {
+    const structures = building?.structures ?? [];
+    for (const structure of structures) {
+      switch (structure.type) {
+        case "line":
+          const obj = makeElement("line");
+          obj.setAttribute("x1", structure.start[0]);
+          obj.setAttribute("y1", structure.start[1]);
+          obj.setAttribute("x2", structure.end[0]);
+          obj.setAttribute("y2", structure.end[1]);
+          obj.setAttribute("stroke", config.base.building.structure.stroke);
+          obj.setAttribute(
+            "stroke-width",
+            config.base.building.structure.stroke_width
+          );
+          group.appendChild(obj);
+          break;
+        case "poly":
+          const poly = makeElement("polygon");
+          poly.setAttribute("points", structure.points.join(" "));
+          poly.setAttribute("fill", `${config.base.building.structure.fill}`);
+          group.appendChild(poly);
+          break;
+      }
     }
   }
   return group;

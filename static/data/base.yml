@@ -30,6 +30,7 @@ defender:
   fill: 7d8b7f
   stroke: none
 building:
+  render: false
   opacity: 0.9
   template:
     fill: AAAAAA
