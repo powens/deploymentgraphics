@@ -1,0 +1,28 @@
+name: Tipping Point
+home_edge: short
+
+attacker:
+  deployment_zone:
+    - [-30, 22]
+    - [-30, -22]
+    - [-18, -22]
+    - [-18, 0]
+    - [-10, 0]
+    - [-10, 10]
+    - [-10, 22]
+
+defender:
+  deployment_zone:
+    - [30, -22]
+    - [30, 22]
+    - [18, 22]
+    - [18, 0]
+    - [10, 0]
+    - [10, -22]
+
+objectives:
+  - [0, 0]
+  - [-8, -14]
+  - [-16, 12, "ritual"]
+  - [8, 14]
+  - [16, -12, "ritual"]
