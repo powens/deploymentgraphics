@@ -31,11 +31,16 @@ import { makeElement, applyAttributes } from "./dom-helpers";
  * @property {AttackerDefender} attacker - Configuration for the attacker
  * @property {AttackerDefender} defender - Confiuration for the defender
  * @property {BuildingConfig} building - Configuration for the buildings
+ *
+ * @typedef {Object} FullConfig
+ * @property {BaseConfig} base - Base configuration
+ * @property {Object} mission - Mission configuration
+ * @property {Object} terrain - Terrain configuration
  */
 
 /**
  * Creates an objective marker SVG element
- * @param {Object} config
+ * @param {FullConfig} config
  * @returns {SVGElement}
  */
 function makeObjectiveMarker(config) {
@@ -216,7 +221,12 @@ function makeDeploymentZone(config, attackerDefender) {
   return dz;
 }
 
-export function makeMissionCard(rootElement, config) {
+export function injectMissionCard(rootElement, config) {
+  const missionCard = makeMissionCard(config);
+  rootElement.appendChild(missionCard);
+}
+
+export function makeMissionCard(config) {
   const svg = makeElement("svg");
   svg.setAttribute("width", "600px");
   svg.setAttribute("height", "440px");
@@ -236,5 +246,5 @@ export function makeMissionCard(rootElement, config) {
     svg.appendChild(makeBuildings(config));
   }
 
-  rootElement.appendChild(svg);
+  return svg;
 }

@@ -35,6 +35,7 @@
         <option value="hammer_and_anvil">Hammer and Anvil</option>
         <option value="search_and_destroy">Search and Destroy</option>
         <option value="sweeping_engagement">Sweeping Engagement</option>
+        <option value="tipping_point">Tipping Point</option>
       </select>
 
       <label for="terrain">Terrain</label>
@@ -109,7 +110,7 @@
           terrain: terrainConfig,
         };
         const root = document.getElementById("graphic");
-        missionCard.makeMissionCard(root, config);
+        missionCard.injectMissionCard(root, config);
       }
 
       const missionSelector = document.getElementById("mission");
