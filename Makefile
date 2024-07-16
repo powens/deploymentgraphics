@@ -1,11 +1,11 @@
 
 .PHONY: build
 build:
-	npm run build
+	pnpm run build
 
 .PHONY:
 build-gh-pages:
-	npm run build-gh
+	pnpm run build-gh
 	cp -r static/* dist/
 
 .PHONY: clean
@@ -14,7 +14,7 @@ clean:
 
 .PHONY: serve-local
 serve-local:
-	npm run serve
+	pnpm run serve
 
 .PHONY: serve
 serve: clean serve-local
