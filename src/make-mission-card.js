@@ -1,7 +1,13 @@
 import { makeBuildings } from "./buildings";
 import { makeElement, applyAttributes } from "./dom-helpers";
+import { getCoordinates } from "./coordinates";
 
 /**
+ * @typedef {[number, number]} Coordinate
+ * @typedef {[number, number, string]} AnchoredCoordinate
+ * @typedef {"short" | "long"} BattlefieldEdge
+ *
+ *
  * @typedef {Object} ObjectiveConfig
  *
  * @typedef {Object} AttackerDefender
@@ -32,9 +38,40 @@ import { makeElement, applyAttributes } from "./dom-helpers";
  * @property {AttackerDefender} defender - Confiuration for the defender
  * @property {BuildingConfig} building - Configuration for the buildings
  *
+ *
+ * @typedef {Object} AttackerDefender
+ * @property {Coordinate[]} deployment_zone - Deployment zone coordinates
+ *
+ * @typedef {Object} MissionConfig
+ * @property {string} name - Name of mthe mission
+ * @property {BattlefieldEdge} home_edge - Which edge is the home edge
+ * @property {AttackerDefender} attacker - Attacker Config
+ * @property {AttackerDefender} defender - Defender Config
+ * @property {Coordinate[]} objectives - Objective coordinates
+ *
+ * @typedef {Object} TerrainBuildings
+ * @property {Object} template - Configuration for the building template
+ * @property {number} template.width - Width of the building template
+ * @property {number} template.height - Height of the building template
+ *
+ * @typedef {Object} TerrainCoordinate
+ * @typedef {number[]} anchor - Anchor point for the building
+ * @typedef {Coordinate} map_coords - Coordinates on the map for the building
+ *
+ * @typedef {Object} TerrainCoordinates
+ * @typedef {TerrainCoordinate[]} coords - Array of two coordinates to anchor the building and compute rotation angle
+ *
+ * @typedef {Object} TerrainLayout
+ * @property {string} type - Type of building. Reference to key in terrain.buildings
+ * @property {TerrainCoordinates} coords - Coordinates for the building
+ *
+ * @typedef {Object} TerrainConfig
+ * @property {TerrainBuildings} buildings - Configuration for the buildings
+ * @property {Object} layout - Different layouts
+ *
  * @typedef {Object} FullConfig
  * @property {BaseConfig} base - Base configuration
- * @property {Object} mission - Mission configuration
+ * @property {MissionConfig} mission - Mission configuration
  * @property {Object} terrain - Terrain configuration
  */
 
@@ -67,24 +104,9 @@ function makeObjectiveMarker(config) {
 }
 
 /**
- * Inject defs into an SVGElement
- * @param {SVGElement} svg
- * @param {Object} config
- */
-function injectDefs(svg, config) {
-  const defs = makeElement("defs");
-  svg.appendChild(defs);
-
-  const objMarker = makeObjectiveMarker(config);
-  defs.appendChild(objMarker);
-
-  injectCenterMask(svg, config);
-}
-
-/**
  * Injects the center mask into an SVGElement
  * @param {SVGElement} svg
- * @param {Object} config
+ * @param {FullConfig} config
  */
 function injectCenterMask(svg, config) {
   const centerMask = makeElement("mask");
@@ -108,8 +130,23 @@ function injectCenterMask(svg, config) {
 }
 
 /**
+ * Inject defs into an SVGElement
+ * @param {SVGElement} svg
+ * @param {FullConfig} config
+ */
+function injectDefs(svg, config) {
+  const defs = makeElement("defs");
+  svg.appendChild(defs);
+
+  const objMarker = makeObjectiveMarker(config);
+  defs.appendChild(objMarker);
+
+  injectCenterMask(svg, config);
+}
+
+/**
  * Makes the half-way lines for the mission
- * @param {Object} config
+ * @param {FullConfig} config
  * @returns {SVGElement} Group element
  */
 function makeDeliniators(config) {
@@ -137,7 +174,7 @@ function makeDeliniators(config) {
 
 /**
  * Returns true if the passed in objective is the center one
- * @param {Number[]} coordinates
+ * @param {Coordinate} coordinates
  * @returns {boolean}
  */
 function isCenterObjective(coordinates) {
@@ -153,7 +190,7 @@ function isTheRitualObjective(coordinates) {
 
 function getHiddenSuppliesCoords() {
   // Angle is 36.254deg
-  //   a = 3.5482
+  // a = 3.5482
   // b = 4.83842
   return [4.8, 3.5];
 }
@@ -187,8 +224,9 @@ function makeObjectives(config) {
       continue;
     } else {
       const o = makeElement("use");
-      o.setAttribute("x", coordinates[0] + halfWidth);
-      o.setAttribute("y", coordinates[1] + halfHeight);
+      const translated = getCoordinates(config, coordinates);
+      o.setAttribute("x", translated[0]);
+      o.setAttribute("y", translated[1]);
       o.setAttribute("href", "#objMarker");
 
       if (config?.main?.objective?.guides?.draw) {
@@ -204,12 +242,10 @@ function makeObjectives(config) {
 
 function makeDeploymentZone(config, attackerDefender) {
   const playerConfig = config.mission[attackerDefender];
-  const halfWidth = config.base.size.width / 2;
-  const halfHeight = config.base.size.height / 2;
   const colorConfig = config.base[attackerDefender];
   const dz = makeElement("polygon");
   const coordinateStr = playerConfig.deployment_zone
-    .map(([x, y]) => [x + halfWidth, y + halfHeight])
+    .map((coords) => getCoordinates(config, coords))
     .join(" ");
   dz.setAttribute("points", coordinateStr);
   dz.setAttribute("fill", "#" + colorConfig.fill);
@@ -234,6 +270,9 @@ export function makeMissionCard(config) {
     "viewBox",
     `0 0 ${config.base.size.width} ${config.base.size.height}`
   );
+  if (config.base.fill) {
+    svg.setAttribute("fill", config.base.fill);
+  }
 
   injectDefs(svg, config);
 

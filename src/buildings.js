@@ -38,6 +38,11 @@ function makeBuilding(config, building, coords, rotation) {
   return group;
 }
 
+/**
+ *
+ * @param {import("./make-mission-card").FullConfig} config
+ * @returns
+ */
 export function makeBuildings(config) {
   const layoutName = config.terrain.layoutName;
   const layout = config.terrain.layout[layoutName];
