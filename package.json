@@ -28,7 +28,7 @@
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
-    "rollup": "^4.37.0",
+    "rollup": "^4.38.0",
     "rollup-plugin-auto-reload": "^1.0.4",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-serve": "^3.0.0"
