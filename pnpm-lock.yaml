@@ -16,8 +16,8 @@ importers:
         specifier: ^4.41.0
         version: 4.41.0
       rollup-plugin-auto-reload:
-        specifier: ^1.0.4
-        version: 1.0.4(rollup@4.41.0)
+        specifier: ^1.1.0
+        version: 1.1.0(rollup@4.41.0)
       rollup-plugin-copy:
         specifier: ^3.5.0
         version: 3.5.0
@@ -301,9 +301,9 @@ packages:
     resolution: {integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rollup-plugin-auto-reload@1.0.4:
-    resolution: {integrity: sha512-eiqGizwzZD7wUDNsmHRV6kGsZqqnoXvLKCqYZyj0H4fRTjj42McYmxkrhiXlx+aZZ/SMgkQnze60SFOfRk0zxA==}
-    engines: {node: '>= 16'}
+  rollup-plugin-auto-reload@1.1.0:
+    resolution: {integrity: sha512-jBY0jmHDULP40ZrfjLTMmu/trO4x3fH2C4t7CtnCuXIrNUF09q8FvxLOFQlYLDgBBCHBwz2FoAk708Sh5U7MVA==}
+    engines: {node: '>= 18'}
     peerDependencies:
       rollup: ^3.18.0 || ^4.0.0
 
@@ -340,8 +340,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.18.0:
-    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
+  ws@8.18.2:
+    resolution: {integrity: sha512-DMricUmwGZUVr++AEAe2uiVM7UoO9MAVZMDu05UQOaUII0lp+zOzLLU4Xqh/JvTqklB1T4uELaaPBKyjE1r4fQ==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -581,11 +581,11 @@ snapshots:
 
   reusify@1.0.4: {}
 
-  rollup-plugin-auto-reload@1.0.4(rollup@4.41.0):
+  rollup-plugin-auto-reload@1.1.0(rollup@4.41.0):
     dependencies:
       magic-string: 0.30.17
       rollup: 4.41.0
-      ws: 8.18.0
+      ws: 8.18.2
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -645,4 +645,4 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.18.0: {}
+  ws@8.18.2: {}
