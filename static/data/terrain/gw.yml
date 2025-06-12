@@ -41,12 +41,39 @@ buildings:
 layout:
   1:
     buildings:
+      # New two-corner system: [[x1, y1], [x2, y2]]
+      # The building will be positioned at the first corner and rotated to align with the line between corners
       - type: 6x12
-        coords:
-          - anchor: [0, 0]
-            map_coords: [6, 5, TOP_LEFT]
-          - anchor: [6, 0]
-            map_coords: [12, 5, TOP_LEFT]
+        coords: [[5, 6], [11, 6]] # Horizontal building from (6,5) to (18,5)
+      # - type: 4x6
+      # coords: [[-10, 10], [-6, 10]] # Another horizontal building
+
+      # Example of rotated building using two corners
+      # - type: 6x12
+      #   coords: [[10, 10], [15, 20]]  # Building rotated at an angle
+
+      # Legacy system with anchors (still supported for backward compatibility)
+      # - type: 6x12
+      #   coords:
+      #     - anchor: [0, 0]
+      #       map_coords: [6, 5, TOP_LEFT]
+      #     - anchor: [6, 0]
+      #       map_coords: [12, 5, TOP_LEFT]
+  2:
+    buildings:
+      # Examples of the new two-corner system
+      - type: 6x12
+        coords: [[4, 4], [16, 4]] # Horizontal building
+      - type: 6x12
+        coords: [[8, 28], [20, 28]] # Another horizontal building
+      - type: 4x6
+        coords: [[2, 28], [2, 22]] # Vertical building (rotated 90 degrees)
+      - type: 5x10
+        coords: [[30, 4], [30, 14]] # Vertical building
+      - type: 4x6
+        coords: [[36, 9], [36, 15]] # Another vertical building
+      - type: 6x12
+        coords: [[13.6, 20], [19, 26]] # Diagonal building (45-degree angle)
   # 3:
   #   buildings:
   #     - type: 6x12

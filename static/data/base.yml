@@ -7,7 +7,7 @@ guide_line:
   stroke_width: 0.2
 objective:
   guides:
-    draw: true
+    draw: false
     stroke_width: 0.2
     stroke: black
   stylized:
@@ -21,6 +21,7 @@ objective:
   influence:
     radius: 3
     fill: black
+    fill_opacity: 0.3
     stroke: none
 
 attacker:
@@ -41,3 +42,9 @@ building:
     fill: blue
     stroke: blue
     stroke_width: 0.4
+grid:
+  draw: true
+  opacity: 0.1
+  stroke: black
+  stroke_width: 0.15
+  stroke_dasharray: 0.1 0.1

@@ -1,4 +1,5 @@
 import { makeElement } from "./dom-helpers";
+import { processBuildingCoords } from "./coordinates";
 
 function makeBuilding(config, building, coords, rotation) {
   const group = makeElement("g");
@@ -60,23 +61,27 @@ export function makeBuildings(config) {
       continue;
     }
 
-    const group = makeBuilding(
+    // Process coordinates using the new system
+    const processedCoords = processBuildingCoords(
       config,
-      building,
-      buildingInstance.coords,
-      buildingInstance.rotation
+      buildingInstance.coords
     );
+    const position = processedCoords.position;
+    const rotation = buildingInstance.rotation ?? processedCoords.rotation;
+
+    const group = makeBuilding(config, building, position, rotation);
     superGroup.appendChild(group);
+
     if (buildingInstance?.mirror ?? true) {
-      const mirriroredCoords = [
-        config.base.size.width - buildingInstance.coords[0],
-        config.base.size.height - buildingInstance.coords[1],
+      const mirroredCoords = [
+        config.base.size.width - position[0],
+        config.base.size.height - position[1],
       ];
-      const mirroredRotation = 180 + buildingInstance.rotation;
+      const mirroredRotation = 180 + rotation;
       const mirroredBuilding = makeBuilding(
         config,
         building,
-        mirriroredCoords,
+        mirroredCoords,
         mirroredRotation
       );
       superGroup.appendChild(mirroredBuilding);

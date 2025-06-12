@@ -27,6 +27,13 @@ import { getCoordinates } from "./coordinates";
  * @property {string} structure.stroke - Stroke color for the building structure
  * @property {string} structure.stroke_width - Stroke width for the building structure
  *
+ * @typedef {Object} GridConfig
+ * @property {boolean} draw - Whether to draw the grid
+ * @property {string} opacity - Opacity of the grid
+ * @property {string} stroke - Stroke color for the grid lines
+ * @property {string} stroke_width - Stroke width for the grid lines
+ * @property {string} stroke_dasharray - Stroke dasharray for the grid lines
+ *
  *
  * @typedef {Object} BaseConfig
  * @property {Object} size - Size of the battlefield
@@ -37,6 +44,7 @@ import { getCoordinates } from "./coordinates";
  * @property {AttackerDefender} attacker - Configuration for the attacker
  * @property {AttackerDefender} defender - Confiuration for the defender
  * @property {BuildingConfig} building - Configuration for the buildings
+ * @property {GridConfig} grid - Configuration for the grid
  *
  *
  * @typedef {Object} AttackerDefender
@@ -94,8 +102,7 @@ function makeObjectiveMarker(config) {
   objRadius.setAttribute("cx", "0");
   objRadius.setAttribute("cy", "0");
   objRadius.setAttribute("r", objConfig.influence.radius + objConfig.real.r);
-  objRadius.setAttribute("fill", objConfig.influence.fill);
-  objRadius.setAttribute("stroke", objConfig.influence.stroke);
+  applyAttributes(objRadius, objConfig.influence);
 
   objGroup.appendChild(objRadius);
   objGroup.appendChild(objMarker);
@@ -140,6 +147,10 @@ function injectDefs(svg, config) {
 
   const objMarker = makeObjectiveMarker(config);
   defs.appendChild(objMarker);
+
+  // Add arrow marker for measurement guides
+  const arrowMarker = makeArrowMarker(config);
+  defs.appendChild(arrowMarker);
 
   injectCenterMask(svg, config);
 }
@@ -195,6 +206,158 @@ function getHiddenSuppliesCoords() {
   return [4.8, 3.5];
 }
 
+/**
+ * Creates an arrow marker definition for measurement arrows
+ * @param {FullConfig} config
+ * @returns {SVGElement}
+ */
+function makeArrowMarker(config) {
+  const marker = makeElement("marker");
+  marker.setAttribute("id", "arrowhead");
+  marker.setAttribute("markerWidth", "10");
+  marker.setAttribute("markerHeight", "7");
+  marker.setAttribute("refX", "9");
+  marker.setAttribute("refY", "3.5");
+  marker.setAttribute("orient", "auto");
+
+  const polygon = makeElement("polygon");
+  polygon.setAttribute("points", "0 0, 10 3.5, 0 7");
+  polygon.setAttribute("fill", config.base.objective.guides.stroke);
+
+  marker.appendChild(polygon);
+  return marker;
+}
+
+/**
+ * Calculates the distance to the nearest board edge and direction
+ * @param {Coordinate} objCoord - Object coordinate relative to center
+ * @param {FullConfig} config
+ * @returns {{distance: number, direction: string, edge: string}}
+ */
+function calculateDistanceToNearestEdge(objCoord, config) {
+  const size = config.base.size;
+  const centerX = size.width / 2;
+  const centerY = size.height / 2;
+
+  // Convert from relative coordinates to absolute
+  const absX = objCoord[0] + centerX;
+  const absY = objCoord[1] + centerY;
+
+  // Calculate distances to each edge
+  const leftDist = absX;
+  const rightDist = size.width - absX;
+  const topDist = absY;
+  const bottomDist = size.height - absY;
+
+  // Find minimum distances for horizontal and vertical
+  const horizontalData =
+    leftDist < rightDist
+      ? { distance: leftDist, direction: "left", edge: "left" }
+      : { distance: rightDist, direction: "right", edge: "right" };
+
+  const verticalData =
+    topDist < bottomDist
+      ? { distance: topDist, direction: "up", edge: "top" }
+      : { distance: bottomDist, direction: "down", edge: "bottom" };
+
+  return { horizontal: horizontalData, vertical: verticalData };
+}
+
+/**
+ * Creates a measurement arrow from objective to nearest edge
+ * @param {Coordinate} objCoord - Objective coordinate
+ * @param {FullConfig} config
+ * @param {"horizontal" | "vertical"} type
+ * @returns {SVGElement}
+ */
+function makeMeasurementArrow(objCoord, config, type) {
+  if (config?.base?.objective?.guides?.draw !== true) {
+    return null;
+  }
+  const size = config.base.size;
+  const centerX = size.width / 2;
+  const centerY = size.height / 2;
+  const guideConfig = config.base.objective.guides;
+
+  // Get absolute position of objective
+  const objAbsX = objCoord[0] + centerX;
+  const objAbsY = objCoord[1] + centerY;
+
+  const distances = calculateDistanceToNearestEdge(objCoord, config);
+
+  const group = makeElement("g");
+
+  let startX, startY, endX, endY, distance, textX, textY, textAnchor;
+
+  if (type === "horizontal") {
+    const data = distances.horizontal;
+    distance = data.distance;
+
+    if (data.direction === "left") {
+      startX = objAbsX;
+      startY = objAbsY;
+      endX = 0;
+      endY = objAbsY;
+      textX = startX / 2;
+      textY = objAbsY - 1;
+    } else {
+      startX = objAbsX;
+      startY = objAbsY;
+      endX = size.width;
+      endY = objAbsY;
+      textX = (startX + endX) / 2;
+      textY = objAbsY - 1;
+    }
+    textAnchor = "middle";
+  } else {
+    const data = distances.vertical;
+    distance = data.distance;
+
+    if (data.direction === "up") {
+      startX = objAbsX;
+      startY = objAbsY;
+      endX = objAbsX;
+      endY = 0;
+      textX = objAbsX + 1;
+      textY = startY / 2;
+    } else {
+      startX = objAbsX;
+      startY = objAbsY;
+      endX = objAbsX;
+      endY = size.height;
+      textX = objAbsX + 1;
+      textY = (startY + endY) / 2;
+    }
+    textAnchor = "start";
+  }
+
+  // Create the line
+  const line = makeElement("line");
+  line.setAttribute("x1", startX);
+  line.setAttribute("y1", startY);
+  line.setAttribute("x2", endX);
+  line.setAttribute("y2", endY);
+  line.setAttribute("stroke", guideConfig.stroke);
+  line.setAttribute("stroke-width", guideConfig.stroke_width);
+  line.setAttribute("stroke-dasharray", "2 2");
+  line.setAttribute("marker-end", "url(#arrowhead)");
+
+  // Create the distance text
+  const text = makeElement("text");
+  text.setAttribute("x", textX);
+  text.setAttribute("y", textY);
+  text.setAttribute("font-size", "2");
+  text.setAttribute("fill", guideConfig.stroke);
+  text.setAttribute("text-anchor", textAnchor);
+  text.setAttribute("dominant-baseline", "middle");
+  text.textContent = distance.toFixed(1) + '"';
+
+  group.appendChild(line);
+  group.appendChild(text);
+
+  return group;
+}
+
 function makeObjectives(config) {
   const objectiveGroup = makeElement("g");
   const size = config.base.size;
@@ -217,6 +380,25 @@ function makeObjectives(config) {
       o2.setAttribute("href", "#objMarker");
       objectiveGroup.appendChild(o1);
       objectiveGroup.appendChild(o2);
+
+      // Add measurement arrows for hidden supplies objectives
+      if (config?.base?.objective?.guides?.draw) {
+        const coord1 = [-hiddenSupplesCoords[0], -hiddenSupplesCoords[1]];
+        const coord2 = [hiddenSupplesCoords[0], hiddenSupplesCoords[1]];
+
+        objectiveGroup.appendChild(
+          makeMeasurementArrow(coord1, config, "horizontal")
+        );
+        objectiveGroup.appendChild(
+          makeMeasurementArrow(coord1, config, "vertical")
+        );
+        objectiveGroup.appendChild(
+          makeMeasurementArrow(coord2, config, "horizontal")
+        );
+        objectiveGroup.appendChild(
+          makeMeasurementArrow(coord2, config, "vertical")
+        );
+      }
     } else if (
       !isTheRitualObjective(coordinates) &&
       config.mission?.the_ritual
@@ -229,8 +411,14 @@ function makeObjectives(config) {
       o.setAttribute("y", translated[1]);
       o.setAttribute("href", "#objMarker");
 
-      if (config?.main?.objective?.guides?.draw) {
-        // TODO: Finish me
+      // Add measurement arrows for regular objectives
+      if (config?.base?.objective?.guides?.draw) {
+        objectiveGroup.appendChild(
+          makeMeasurementArrow(coordinates, config, "horizontal")
+        );
+        objectiveGroup.appendChild(
+          makeMeasurementArrow(coordinates, config, "vertical")
+        );
       }
 
       objectiveGroup.appendChild(o);
@@ -257,6 +445,51 @@ function makeDeploymentZone(config, attackerDefender) {
   return dz;
 }
 
+/**
+ * Creates a 1x1 grid overlay for the battlefield
+ * @param {FullConfig} config
+ * @returns {SVGElement}
+ */
+function makeGrid(config) {
+  if (config?.base?.grid?.draw !== true) {
+    return null;
+  }
+
+  const group = makeElement("g");
+  group.setAttribute("opacity", config.base.grid.opacity);
+
+  const size = config.base.size;
+  const gridConfig = config.base.grid;
+
+  // Create vertical lines
+  for (let x = 1; x < size.width; x++) {
+    const line = makeElement("line");
+    line.setAttribute("x1", x);
+    line.setAttribute("y1", 0);
+    line.setAttribute("x2", x);
+    line.setAttribute("y2", size.height);
+    line.setAttribute("stroke", gridConfig.stroke);
+    line.setAttribute("stroke-width", gridConfig.stroke_width);
+    line.setAttribute("stroke-dasharray", gridConfig.stroke_dasharray);
+    group.appendChild(line);
+  }
+
+  // Create horizontal lines
+  for (let y = 1; y < size.height; y++) {
+    const line = makeElement("line");
+    line.setAttribute("x1", 0);
+    line.setAttribute("y1", y);
+    line.setAttribute("x2", size.width);
+    line.setAttribute("y2", y);
+    line.setAttribute("stroke", gridConfig.stroke);
+    line.setAttribute("stroke-width", gridConfig.stroke_width);
+    line.setAttribute("stroke-dasharray", gridConfig.stroke_dasharray);
+    group.appendChild(line);
+  }
+
+  return group;
+}
+
 export function injectMissionCard(rootElement, config) {
   const missionCard = makeMissionCard(config);
   rootElement.appendChild(missionCard);
@@ -278,6 +511,13 @@ export function makeMissionCard(config) {
 
   svg.appendChild(makeDeploymentZone(config, "attacker"));
   svg.appendChild(makeDeploymentZone(config, "defender"));
+
+  // Add grid first so it appears behind other elements
+  const grid = makeGrid(config);
+  if (grid) {
+    svg.appendChild(grid);
+  }
+
   svg.appendChild(makeObjectives(config));
   svg.appendChild(makeDeliniators(config));
 

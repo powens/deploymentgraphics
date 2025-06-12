@@ -56,8 +56,11 @@
       <label for="the-ritual">The Ritual</label>
       <input id="the-ritual" type="checkbox" />
 
-      <label for=""render-buildings">Render buildings</label>
-      <input id="render-buildings" type="checkbox" /> 
+      <label for="render-buildings">Render buildings</label>
+      <input id="render-buildings" type="checkbox" />
+
+      <label for="show-grid">Show 1x1 Grid</label>
+      <input id="show-grid" type="checkbox" />
     </section>
 
     <!-- <img class="overlayImg" src="terrain/layout3.png" /> -->
@@ -98,6 +101,7 @@
         isHiddenSupplies,
         isTheRitual,
         renderBuildings,
+        showGrid
       ) {
         const missionConfig = await getMissionConfig(missionName);
         const terrainConfig = await getTerrain(terrainName);
@@ -106,6 +110,7 @@
         missionConfig["hidden_supplies"] = isHiddenSupplies;
         missionConfig["the_ritual"] = isTheRitual;
         baseConfig["building"]["render"] = renderBuildings;
+        baseConfig["grid"]["draw"] = showGrid;
 
         const config = {
           mission: missionConfig,
@@ -120,8 +125,8 @@
       const terrainSelector = document.getElementById("terrain");
       const hiddenSupplies = document.getElementById("hidden-supplies");
       const theRitual = document.getElementById("the-ritual");
-
       const renderBuildings = document.getElementById("render-buildings");
+      const showGrid = document.getElementById("show-grid");
 
       async function redraw() {
         clearCanvas();
@@ -130,7 +135,8 @@
           terrainSelector.value,
           hiddenSupplies.checked,
           theRitual.checked,
-          renderBuildings.checked
+          renderBuildings.checked,
+          showGrid.checked
         );
       }
 
@@ -142,6 +148,7 @@
       hiddenSupplies.onchange = onCheckboxChange;
       theRitual.onchange = onCheckboxChange;
       renderBuildings.onchange = onCheckboxChange;
+      showGrid.onchange = onCheckboxChange;
 
       redraw();
     </script>
