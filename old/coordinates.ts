@@ -22,13 +22,12 @@
  *    - Kept for backward compatibility only
  */
 
+import { BaseConfig, Coordinate, FullConfig } from "./types";
+
 /**
  * Returns the anchor origin point based on the anchor value
- * @param {BaseConfig} config
- * @param {string} anchor
- * @returns {[number, number]}
  */
-function getAnchor(config, anchor) {
+function getAnchor(config: FullConfig, anchor: string): Coordinate {
   switch (anchor) {
     case "TOP_LEFT":
       return [0, 0];
@@ -57,23 +56,20 @@ function getAnchor(config, anchor) {
 
 /**
  * Returns the coordinates of an element based on the anchor point
- * @param {import("./make-mission-card").FullConfig} config
- * @param {[number, number]} coordinate
- * @param {string} anchor
- * @returns {[number, number]}
  */
-export function getCoordinates(config, coordinate, anchor = "CENTER") {
+export function getCoordinates(
+  config: FullConfig,
+  coordinate: Coordinate,
+  anchor = "CENTER"
+): Coordinate {
   const origin = getAnchor(config, anchor);
   return [coordinate[0] + origin[0], coordinate[1] + origin[1]];
 }
 
 /**
  * Calculates the angle between two points in degrees
- * @param {[number, number]} point1 - First point [x, y]
- * @param {[number, number]} point2 - Second point [x, y]
- * @returns {number} Angle in degrees
  */
-export function calculateAngle(point1, point2) {
+export function calculateAngle(point1: Coordinate, point2: Coordinate): number {
   const dx = point2[0] - point1[0];
   const dy = point2[1] - point1[1];
   return Math.atan2(dy, dx) * (180 / Math.PI);
@@ -81,11 +77,11 @@ export function calculateAngle(point1, point2) {
 
 /**
  * Processes building coordinates from the two-corner system
- * @param {import("./make-mission-card").FullConfig} config
- * @param {Object} coordsData - The coords object from terrain config
- * @returns {{position: [number, number], rotation: number}}
  */
-export function processBuildingCoords(config, coordsData) {
+export function processBuildingCoords(
+  config: FullConfig,
+  coordsData: Coordinate[]
+): { position: Coordinate; rotation: number } {
   if (Array.isArray(coordsData)) {
     // Check if this is the new two-corner system: [[x1, y1], [x2, y2]]
     if (
@@ -153,36 +149,4 @@ export function processBuildingCoords(config, coordsData) {
     position: [0, 0],
     rotation: 0,
   };
-}
-
-/**
- * Creates two-corner coordinates for a building
- * @param {[number, number]} corner1 - First corner [x, y]
- * @param {[number, number]} corner2 - Second corner [x, y]
- * @returns {[[number, number], [number, number]]}
- */
-export function createTwoCornerCoords(corner1, corner2) {
-  return [corner1, corner2];
-}
-
-/**
- * Calculates the center point between two corners
- * @param {[number, number]} corner1 - First corner [x, y]
- * @param {[number, number]} corner2 - Second corner [x, y]
- * @returns {[number, number]} Center point [x, y]
- */
-export function getBuildingCenter(corner1, corner2) {
-  return [(corner1[0] + corner2[0]) / 2, (corner1[1] + corner2[1]) / 2];
-}
-
-/**
- * Calculates the distance between two corners
- * @param {[number, number]} corner1 - First corner [x, y]
- * @param {[number, number]} corner2 - Second corner [x, y]
- * @returns {number} Distance between corners
- */
-export function getBuildingLength(corner1, corner2) {
-  const dx = corner2[0] - corner1[0];
-  const dy = corner2[1] - corner1[1];
-  return Math.sqrt(dx * dx + dy * dy);
 }

@@ -1,6 +1,7 @@
 import { makeBuildings } from "./buildings";
 import { makeElement, applyAttributes } from "./dom-helpers";
 import { getCoordinates } from "./coordinates";
+import { Coordinate, FullConfig } from "./types";
 
 /**
  * @typedef {[number, number]} Coordinate
@@ -62,20 +63,6 @@ import { getCoordinates } from "./coordinates";
  * @property {number} template.width - Width of the building template
  * @property {number} template.height - Height of the building template
  *
- * @typedef {Object} TerrainCoordinate
- * @typedef {number[]} anchor - Anchor point for the building
- * @typedef {Coordinate} map_coords - Coordinates on the map for the building
- *
- * @typedef {Object} TerrainCoordinates
- * @typedef {TerrainCoordinate[]} coords - Array of two coordinates to anchor the building and compute rotation angle
- *
- * @typedef {Object} TerrainLayout
- * @property {string} type - Type of building. Reference to key in terrain.buildings
- * @property {TerrainCoordinates} coords - Coordinates for the building
- *
- * @typedef {Object} TerrainConfig
- * @property {TerrainBuildings} buildings - Configuration for the buildings
- * @property {Object} layout - Different layouts
  *
  * @typedef {Object} FullConfig
  * @property {BaseConfig} base - Base configuration
@@ -88,7 +75,7 @@ import { getCoordinates } from "./coordinates";
  * @param {FullConfig} config
  * @returns {SVGElement}
  */
-function makeObjectiveMarker(config) {
+function makeObjectiveMarker(config: FullConfig) {
   const objConfig = config.base.objective;
   const objGroup = makeElement("g");
   objGroup.setAttribute("id", "objMarker");
@@ -112,24 +99,22 @@ function makeObjectiveMarker(config) {
 
 /**
  * Injects the center mask into an SVGElement
- * @param {SVGElement} svg
- * @param {FullConfig} config
  */
-function injectCenterMask(svg, config) {
+function injectCenterMask(svg: SVGElement, config: FullConfig) {
   const centerMask = makeElement("mask");
   centerMask.setAttribute("id", "centerMask");
 
   const fullRect = makeElement("rect");
   fullRect.setAttribute("x", "0");
   fullRect.setAttribute("y", "0");
-  fullRect.setAttribute("width", config.base.size.width);
-  fullRect.setAttribute("height", config.base.size.height);
+  fullRect.setAttribute("width", `${config.base.size.width}`);
+  fullRect.setAttribute("height", `${config.base.size.height}`);
   fullRect.setAttribute("fill", "white");
   centerMask.appendChild(fullRect);
 
   const centerCircle = makeElement("circle");
-  centerCircle.setAttribute("cx", config.base.size.width / 2);
-  centerCircle.setAttribute("cy", config.base.size.height / 2);
+  centerCircle.setAttribute("cx", `${config.base.size.width / 2}`);
+  centerCircle.setAttribute("cy", `${config.base.size.height / 2}`);
   centerCircle.setAttribute("r", "9");
   centerCircle.setAttribute("fill", "black");
   centerMask.appendChild(centerCircle);
@@ -138,10 +123,8 @@ function injectCenterMask(svg, config) {
 
 /**
  * Inject defs into an SVGElement
- * @param {SVGElement} svg
- * @param {FullConfig} config
  */
-function injectDefs(svg, config) {
+function injectDefs(svg: SVGElement, config: FullConfig) {
   const defs = makeElement("defs");
   svg.appendChild(defs);
 
@@ -157,26 +140,24 @@ function injectDefs(svg, config) {
 
 /**
  * Makes the half-way lines for the mission
- * @param {FullConfig} config
- * @returns {SVGElement} Group element
  */
-function makeDeliniators(config) {
+function makeDeliniators(config: FullConfig): SVGElement {
   const group = makeElement("g");
 
   const guideConfig = config.base.guide_line;
   const vertHalfLine = makeElement("line");
-  vertHalfLine.setAttribute("x1", config.base.size.width / 2);
+  vertHalfLine.setAttribute("x1", `${config.base.size.width / 2}`);
   vertHalfLine.setAttribute("y1", "0");
-  vertHalfLine.setAttribute("x2", config.base.size.width / 2);
-  vertHalfLine.setAttribute("y1", config.base.size.height);
+  vertHalfLine.setAttribute("x2", `${config.base.size.width / 2}`);
+  vertHalfLine.setAttribute("y2", `${config.base.size.height}`);
   applyAttributes(vertHalfLine, guideConfig);
   group.appendChild(vertHalfLine);
 
   const horizHalfLine = makeElement("line");
   horizHalfLine.setAttribute("x1", "0");
-  horizHalfLine.setAttribute("y1", config.base.size.height / 2);
-  horizHalfLine.setAttribute("x2", config.base.size.width);
-  horizHalfLine.setAttribute("y2", config.base.size.height / 2);
+  horizHalfLine.setAttribute("y1", `${config.base.size.height / 2}`);
+  horizHalfLine.setAttribute("x2", `${config.base.size.width}`);
+  horizHalfLine.setAttribute("y2", `${config.base.size.height / 2}`);
   applyAttributes(horizHalfLine, guideConfig);
   group.appendChild(horizHalfLine);
 
@@ -185,14 +166,12 @@ function makeDeliniators(config) {
 
 /**
  * Returns true if the passed in objective is the center one
- * @param {Coordinate} coordinates
- * @returns {boolean}
  */
-function isCenterObjective(coordinates) {
+function isCenterObjective(coordinates: Coordinate) {
   return coordinates[0] === 0 && coordinates[1] === 0;
 }
 
-function isTheRitualObjective(coordinates) {
+function isTheRitualObjective(coordinates: Coordinate) {
   if (coordinates.length === 3 && coordinates[2] === "ritual") {
     return true;
   }
@@ -211,7 +190,7 @@ function getHiddenSuppliesCoords() {
  * @param {FullConfig} config
  * @returns {SVGElement}
  */
-function makeArrowMarker(config) {
+function makeArrowMarker(config: FullConfig) {
   const marker = makeElement("marker");
   marker.setAttribute("id", "arrowhead");
   marker.setAttribute("markerWidth", "10");
@@ -234,7 +213,10 @@ function makeArrowMarker(config) {
  * @param {FullConfig} config
  * @returns {{distance: number, direction: string, edge: string}}
  */
-function calculateDistanceToNearestEdge(objCoord, config) {
+function calculateDistanceToNearestEdge(
+  objCoord: Coordinate,
+  config: FullConfig
+) {
   const size = config.base.size;
   const centerX = size.width / 2;
   const centerY = size.height / 2;
@@ -265,12 +247,12 @@ function calculateDistanceToNearestEdge(objCoord, config) {
 
 /**
  * Creates a measurement arrow from objective to nearest edge
- * @param {Coordinate} objCoord - Objective coordinate
- * @param {FullConfig} config
- * @param {"horizontal" | "vertical"} type
- * @returns {SVGElement}
  */
-function makeMeasurementArrow(objCoord, config, type) {
+function makeMeasurementArrow(
+  objCoord: Coordinate,
+  config: FullConfig,
+  type: "horizontal" | "vertical"
+): SVGElement | null {
   if (config?.base?.objective?.guides?.draw !== true) {
     return null;
   }
@@ -333,10 +315,10 @@ function makeMeasurementArrow(objCoord, config, type) {
 
   // Create the line
   const line = makeElement("line");
-  line.setAttribute("x1", startX);
-  line.setAttribute("y1", startY);
-  line.setAttribute("x2", endX);
-  line.setAttribute("y2", endY);
+  line.setAttribute("x1", `${startX}`);
+  line.setAttribute("y1", `${startY}`);
+  line.setAttribute("x2", `${endX}`);
+  line.setAttribute("y2", `${endY}`);
   line.setAttribute("stroke", guideConfig.stroke);
   line.setAttribute("stroke-width", guideConfig.stroke_width);
   line.setAttribute("stroke-dasharray", "2 2");
@@ -344,8 +326,8 @@ function makeMeasurementArrow(objCoord, config, type) {
 
   // Create the distance text
   const text = makeElement("text");
-  text.setAttribute("x", textX);
-  text.setAttribute("y", textY);
+  text.setAttribute("x", `${textX}`);
+  text.setAttribute("y", `${textY}`);
   text.setAttribute("font-size", "2");
   text.setAttribute("fill", guideConfig.stroke);
   text.setAttribute("text-anchor", textAnchor);
@@ -358,7 +340,7 @@ function makeMeasurementArrow(objCoord, config, type) {
   return group;
 }
 
-function makeObjectives(config) {
+function makeObjectives(config: FullConfig) {
   const objectiveGroup = makeElement("g");
   const size = config.base.size;
   const halfWidth = size.width / 2;
@@ -428,7 +410,10 @@ function makeObjectives(config) {
   return objectiveGroup;
 }
 
-function makeDeploymentZone(config, attackerDefender) {
+function makeDeploymentZone(
+  config: FullConfig,
+  attackerDefender: "attacker" | "defender"
+): SVGElement {
   const playerConfig = config.mission[attackerDefender];
   const colorConfig = config.base[attackerDefender];
   const dz = makeElement("polygon");
@@ -447,16 +432,16 @@ function makeDeploymentZone(config, attackerDefender) {
 
 /**
  * Creates a 1x1 grid overlay for the battlefield
- * @param {FullConfig} config
- * @returns {SVGElement}
  */
-function makeGrid(config) {
+function makeGrid(config: FullConfig): SVGElement | null {
   if (config?.base?.grid?.draw !== true) {
     return null;
   }
 
   const group = makeElement("g");
-  group.setAttribute("opacity", config.base.grid.opacity);
+  if (config.base.grid.opacity) {
+    group.setAttribute("opacity", `${config.base.grid.opacity}`);
+  }
 
   const size = config.base.size;
   const gridConfig = config.base.grid;
@@ -464,13 +449,17 @@ function makeGrid(config) {
   // Create vertical lines
   for (let x = 1; x < size.width; x++) {
     const line = makeElement("line");
-    line.setAttribute("x1", x);
-    line.setAttribute("y1", 0);
-    line.setAttribute("x2", x);
-    line.setAttribute("y2", size.height);
+    line.setAttribute("x1", `${x}`);
+    line.setAttribute("y1", "0");
+    line.setAttribute("x2", `${x}`);
+    line.setAttribute("y2", `${size.height}`);
     line.setAttribute("stroke", gridConfig.stroke);
-    line.setAttribute("stroke-width", gridConfig.stroke_width);
-    line.setAttribute("stroke-dasharray", gridConfig.stroke_dasharray);
+    if (gridConfig.stroke_width) {
+      line.setAttribute("stroke-width", gridConfig.stroke_width);
+    }
+    if (gridConfig.stroke_dasharray) {
+      line.setAttribute("stroke-dasharray", gridConfig.stroke_dasharray);
+    }
     group.appendChild(line);
   }
 
@@ -478,24 +467,28 @@ function makeGrid(config) {
   for (let y = 1; y < size.height; y++) {
     const line = makeElement("line");
     line.setAttribute("x1", 0);
-    line.setAttribute("y1", y);
-    line.setAttribute("x2", size.width);
-    line.setAttribute("y2", y);
+    line.setAttribute("y1", `${y}`);
+    line.setAttribute("x2", `${size.width}`);
+    line.setAttribute("y2", `${y}`);
     line.setAttribute("stroke", gridConfig.stroke);
-    line.setAttribute("stroke-width", gridConfig.stroke_width);
-    line.setAttribute("stroke-dasharray", gridConfig.stroke_dasharray);
+    if (gridConfig.stroke_width) {
+      line.setAttribute("stroke-width", gridConfig.stroke_width);
+    }
+    if (gridConfig.stroke_dasharray) {
+      line.setAttribute("stroke-dasharray", gridConfig.stroke_dasharray);
+    }
     group.appendChild(line);
   }
 
   return group;
 }
 
-export function injectMissionCard(rootElement, config) {
+export function injectMissionCard(rootElement: SVGElement, config: FullConfig) {
   const missionCard = makeMissionCard(config);
   rootElement.appendChild(missionCard);
 }
 
-export function makeMissionCard(config) {
+export function makeMissionCard(config: FullConfig) {
   const svg = makeElement("svg");
   svg.setAttribute("width", "600px");
   svg.setAttribute("height", "440px");

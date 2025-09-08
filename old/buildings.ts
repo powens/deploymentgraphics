@@ -1,9 +1,15 @@
 import { makeElement } from "./dom-helpers";
 import { processBuildingCoords } from "./coordinates";
+import { FullConfig, Coordinate, BuildingConfig } from "./types";
 
-function makeBuilding(config, building, coords, rotation) {
+function makeBuilding(
+  config: FullConfig,
+  building: BuildingConfig,
+  coords: Coordinate,
+  rotation: number
+) {
   const group = makeElement("g");
-  group.setAttribute("opacity", config.base.building.opacity);
+  group.setAttribute("opacity", `${config.base.building.opacity}`);
   group.setAttribute(
     "transform",
     `translate(${coords[0]} ${coords[1]}) rotate(${rotation ?? 0})`
@@ -23,7 +29,7 @@ function makeBuilding(config, building, coords, rotation) {
           obj.setAttribute("stroke", config.base.building.structure.stroke);
           obj.setAttribute(
             "stroke-width",
-            config.base.building.structure.stroke_width
+            `${config.base.building.structure.stroke_width}`
           );
           group.appendChild(obj);
           break;
@@ -40,20 +46,18 @@ function makeBuilding(config, building, coords, rotation) {
 }
 
 /**
- *
- * @param {import("./make-mission-card").FullConfig} config
- * @returns
+ * Makes the buildings for the mission
  */
-export function makeBuildings(config) {
+export function makeBuildings(config: FullConfig): SVGElement {
   const layoutName = config.terrain.layoutName;
   const layout = config.terrain.layout[layoutName];
+  const superGroup = makeElement("g");
   if (!layout) {
     console.warn(`Could not find layout name ${layoutName}`);
-    return;
+    return superGroup;
   }
 
   const baseBuildings = config.terrain.buildings;
-  const superGroup = makeElement("g");
   for (const buildingInstance of layout.buildings) {
     const building = baseBuildings[buildingInstance.type];
     if (!building) {
@@ -90,21 +94,23 @@ export function makeBuildings(config) {
   return superGroup;
 }
 
-function makeBuildingTemplate(template, config) {
+function makeBuildingTemplate(template: BuildingConfig, config: FullConfig) {
   const templateRect = makeElement("rect");
   templateRect.setAttribute("x", "0");
   templateRect.setAttribute("y", "0");
+  // @ts-expect-error I'll fix this later
   templateRect.setAttribute("width", template.width);
+  // @ts-expect-error I'll fix this later
   templateRect.setAttribute("height", template.height);
   templateRect.setAttribute("fill", `#${config.base.building.template.fill}`);
   templateRect.setAttribute("stroke", config.base.building.template.stroke);
   templateRect.setAttribute(
     "stroke-dasharray",
-    config.base.building.template.stroke_dasharray
+    `${config.base.building.template.stroke_dasharray}`
   );
   templateRect.setAttribute(
     "stroke-width",
-    config.base.building.template.stroke_width
+    `${config.base.building.template.stroke_width}`
   );
 
   return templateRect;

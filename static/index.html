@@ -15,14 +15,10 @@
         top: 10;
         left: 10;
         opacity: 0.2;
-        width: 600px;
-        height: 440px;
       }
 
       #graphic {
         border: 1px solid black;
-        width: 600px;
-        height: 440px;
       }
     </style>
   </head>
@@ -52,9 +48,6 @@
 
       <label for="hidden-supplies">Hidden Supplies</label>
       <input id="hidden-supplies" type="checkbox" />
-
-      <label for="the-ritual">The Ritual</label>
-      <input id="the-ritual" type="checkbox" />
 
       <label for="render-buildings">Render buildings</label>
       <input id="render-buildings" type="checkbox" />
@@ -87,7 +80,7 @@
         const response = await fetch("./data/terrain/gw.yml");
         const body = await response.text();
         const obj = jsyaml.load(body);
-        return { ...obj, layoutName: terrainName };
+        return { ...obj, layout_name: terrainName };
       }
 
       function clearCanvas() {
@@ -99,7 +92,6 @@
         missionName,
         terrainName,
         isHiddenSupplies,
-        isTheRitual,
         renderBuildings,
         showGrid
       ) {
@@ -108,15 +100,16 @@
         const baseConfig = await getBaseConfig();
 
         missionConfig["hidden_supplies"] = isHiddenSupplies;
-        missionConfig["the_ritual"] = isTheRitual;
         baseConfig["building"]["render"] = renderBuildings;
         baseConfig["grid"]["draw"] = showGrid;
 
         const config = {
-          mission: missionConfig,
+          deployment: missionConfig,
           base: baseConfig,
           terrain: terrainConfig,
         };
+
+        console.log(config);
         const root = document.getElementById("graphic");
         missionCard.injectMissionCard(root, config);
       }
@@ -124,7 +117,6 @@
       const missionSelector = document.getElementById("mission");
       const terrainSelector = document.getElementById("terrain");
       const hiddenSupplies = document.getElementById("hidden-supplies");
-      const theRitual = document.getElementById("the-ritual");
       const renderBuildings = document.getElementById("render-buildings");
       const showGrid = document.getElementById("show-grid");
 
@@ -134,7 +126,6 @@
           missionSelector.value,
           terrainSelector.value,
           hiddenSupplies.checked,
-          theRitual.checked,
           renderBuildings.checked,
           showGrid.checked
         );
@@ -146,7 +137,6 @@
       missionSelector.onchange = onCheckboxChange;
       terrainSelector.onchange = onCheckboxChange;
       hiddenSupplies.onchange = onCheckboxChange;
-      theRitual.onchange = onCheckboxChange;
       renderBuildings.onchange = onCheckboxChange;
       showGrid.onchange = onCheckboxChange;
 

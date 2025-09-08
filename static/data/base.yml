@@ -1,50 +1,87 @@
 size:
   width: 60
   height: 44
-guide_line:
-  stroke: black
-  stroke_dasharray: 1 1
-  stroke_width: 0.2
-objective:
-  guides:
-    draw: false
-    stroke_width: 0.2
-    stroke: black
-  stylized:
-    radius: 1.5
-    fill: black
-    stroke: none
-  real:
-    r: 0.79
-    fill: red
-    stroke: none
-  influence:
-    radius: 3
-    fill: black
-    fill_opacity: 0.3
-    stroke: none
 
-attacker:
-  fill: cf4b33
-  stroke: none
-defender:
-  fill: 7d8b7f
-  stroke: none
-building:
-  render: false
-  opacity: 0.9
-  template:
-    fill: AAAAAA
+background:
+  fill: black
+
+half_way_lines:
+  draw: true
+  svg_properties:
     stroke: black
     stroke_dasharray: 0.5 0.5
-    stroke_width: 0.1
+    stroke_width: 0.2
+    opacity: 0.5
+
+objective:
+  guides:
+    line:
+      draw: true
+      svg_properties:
+        stroke: black
+        stroke_dasharray: 2 2
+        stroke_width: 0.2
+
+  text:
+    draw: true
+    svg_properties:
+      font_size: 2
+      text_anchor: middle
+      dominant_baseline: middle
+      fill: stroke
+  line:
+    draw: true
+    svg_properties:
+      stroke_width: 0.2
+      stroke: black
+  stylized:
+    draw: true
+    svg_properties:
+      radius: 1.5
+      fill: black
+      stroke: none
+  real:
+    draw: true
+    svg_properties:
+      r: 0.79
+      fill: red
+      stroke: none
+  influence:
+    draw: true
+    svg_properties:
+      r: 3
+      fill: black
+      fill_opacity: 0.3
+      stroke: none
+
+deployment:
+  attacker:
+    svg_properties:
+      fill: cf4b33
+      stroke: none
+  defender:
+    svg_properties:
+      fill: 7d8b7f
+      stroke: none
+
+building:
+  draw: false
+  svg_properties:
+    opacity: 1
+  template:
+    vector-effect: non-scaling-stroke
+    stroke: black
+    stroke_width: 1.2
+    fill: "#808080"
+    opacity: 1
   structure:
     fill: blue
     stroke: blue
     stroke_width: 0.4
 grid:
   draw: true
-  opacity: 0.1
-  stroke: black
-  stroke_width: 0.15
-  stroke_dasharray: 0.1 0.1
+  svg_properties:
+    opacity: 0.3
+    stroke: black
+    stroke_width: 0.15
+    stroke_dasharray: 0.1 0.1
