@@ -16,8 +16,8 @@ importers:
         specifier: ^4.60.3
         version: 4.60.3
       rollup-plugin-auto-reload:
-        specifier: ^1.2.1
-        version: 1.2.1(rollup@4.60.3)
+        specifier: ^2.0.0
+        version: 2.0.0(rollup@4.60.3)
       rollup-plugin-copy:
         specifier: ^3.5.0
         version: 3.5.0
@@ -326,8 +326,8 @@ packages:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rollup-plugin-auto-reload@1.2.1:
-    resolution: {integrity: sha512-kA2UxPhVUUV9fwyoA+HLCD6QPZIILR5AJ7TImMTB6W32mtjpld7hYnWmTKXnIP46bU9iHCCej0kBj4Mikkq31Q==}
+  rollup-plugin-auto-reload@2.0.0:
+    resolution: {integrity: sha512-MWKAirZffT2EdOJihAdkO+H7r6Hwb3+oYEEO0sO1r3dkXVvmN1sotVssq8lbKGoRWRQqIR6nTX40Fpd4nBJT0g==}
     engines: {node: '>= 18'}
     peerDependencies:
       rollup: ^3.18.0 || ^4.0.0
@@ -621,7 +621,7 @@ snapshots:
 
   reusify@1.1.0: {}
 
-  rollup-plugin-auto-reload@1.2.1(rollup@4.60.3):
+  rollup-plugin-auto-reload@2.0.0(rollup@4.60.3):
     dependencies:
       magic-string: 0.30.21
       rollup: 4.60.3
