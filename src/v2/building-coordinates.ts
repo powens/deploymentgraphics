@@ -65,8 +65,10 @@ function rotate(p: Point, rad: number): Point {
 }
 
 /**
- * Resolves a building placement to one ResolvedBuilding. Mirroring and
- * validation are added in later tasks.
+ * Resolves a building placement to one or two ResolvedBuildings (the
+ * primary placement, plus a 180-degree point-reflected copy unless
+ * `mirror: false`). Throws on an unknown template, a corner count other
+ * than 2, or a corner distance that disagrees with the template edge.
  */
 export function resolveBuilding(
   placement: BuildingPlacement,
@@ -74,7 +76,17 @@ export function resolveBuilding(
   canvas: CanvasSize,
 ): ResolvedBuilding[] {
   const template = templates[placement.type];
+  if (!template) {
+    throw new Error(
+      `building references unknown template: ${placement.type}`,
+    );
+  }
   const entries = Object.entries(placement.corners) as [Anchor, CornerSpec][];
+  if (entries.length !== 2) {
+    throw new Error(
+      `building ${placement.type}: expected exactly 2 corners, got ${entries.length}`,
+    );
+  }
   const defaultFrom: Anchor = placement.from ?? "TL";
 
   const [[cornerA, specA], [cornerB, specB]] = entries;
@@ -82,6 +94,16 @@ export function resolveBuilding(
   const pB = resolveCorner(specB, defaultFrom, canvas);
   const lA = localCorner(cornerA, template);
   const lB = localCorner(cornerB, template);
+
+  const targetLength = Math.hypot(pB[0] - pA[0], pB[1] - pA[1]);
+  const templateLength = Math.hypot(lB[0] - lA[0], lB[1] - lA[1]);
+  if (Math.abs(targetLength - templateLength) > 0.1) {
+    throw new Error(
+      `building ${placement.type}: corners ${cornerA}->${cornerB} measure ` +
+        `${targetLength.toFixed(1)}" apart but template edge is ` +
+        `${templateLength.toFixed(1)}"`,
+    );
+  }
 
   const theta =
     Math.atan2(pB[1] - pA[1], pB[0] - pA[0]) -

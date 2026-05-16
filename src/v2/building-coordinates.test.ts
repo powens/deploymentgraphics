@@ -129,3 +129,46 @@ describe("resolveBuilding mirroring", () => {
     expect(result).toHaveLength(2);
   });
 });
+
+describe("resolveBuilding validation", () => {
+  it("throws on an unknown template", () => {
+    expect(() =>
+      resolveBuilding(
+        { type: "9x9", corners: { TL: [10, 5], TR: [14, 5] } },
+        templates,
+        canvas,
+      ),
+    ).toThrow(/unknown template/i);
+  });
+
+  it("throws when there are not exactly 2 corners", () => {
+    expect(() =>
+      resolveBuilding(
+        { type: "4x6", corners: { TL: [10, 5] } },
+        templates,
+        canvas,
+      ),
+    ).toThrow(/exactly 2 corners/i);
+  });
+
+  it("throws when the corner distance disagrees with the template edge", () => {
+    // TL->TR span is 5 but the 4x6 template's TL->TR edge is 4
+    expect(() =>
+      resolveBuilding(
+        { type: "4x6", corners: { TL: [10, 5], TR: [15, 5] } },
+        templates,
+        canvas,
+      ),
+    ).toThrow(/template edge/i);
+  });
+
+  it("accepts a corner distance within the 0.1\" tolerance", () => {
+    expect(() =>
+      resolveBuilding(
+        { type: "4x6", mirror: false, corners: { TL: [10, 5], TR: [14.05, 5] } },
+        templates,
+        canvas,
+      ),
+    ).not.toThrow();
+  });
+});
