@@ -90,5 +90,18 @@ export function resolveBuilding(
   const translate: Point = [pA[0] - rotatedLA[0], pA[1] - rotatedLA[1]];
   const rotation = (((theta * 180) / Math.PI) % 360 + 360) % 360;
 
-  return [{ templateName: placement.type, translate, rotation }];
+  const primary: ResolvedBuilding = {
+    templateName: placement.type,
+    translate,
+    rotation,
+  };
+  if (placement.mirror === false) {
+    return [primary];
+  }
+  const mirrored: ResolvedBuilding = {
+    templateName: placement.type,
+    translate: [canvas.width - translate[0], canvas.height - translate[1]],
+    rotation: (rotation + 180) % 360,
+  };
+  return [primary, mirrored];
 }

@@ -92,3 +92,40 @@ describe("resolveBuilding (single, non-mirrored)", () => {
     expect(result[0].rotation).toBeCloseTo(90);
   });
 });
+
+describe("resolveBuilding mirroring", () => {
+  it("emits a 180-degree point-reflected copy by default", () => {
+    const result = resolveBuilding(
+      { type: "4x6", corners: { TL: [10, 5], TR: [14, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result).toHaveLength(2);
+    const [primary, mirrored] = result;
+    expect(primary.translate[0]).toBeCloseTo(10);
+    expect(primary.translate[1]).toBeCloseTo(5);
+    expect(primary.rotation).toBeCloseTo(0);
+    // 180-degree point reflection through the canvas centre (30, 22)
+    expect(mirrored.translate[0]).toBeCloseTo(50);
+    expect(mirrored.translate[1]).toBeCloseTo(39);
+    expect(mirrored.rotation).toBeCloseTo(180);
+  });
+
+  it("emits only the primary when mirror is false", () => {
+    const result = resolveBuilding(
+      { type: "4x6", mirror: false, corners: { TL: [10, 5], TR: [14, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result).toHaveLength(1);
+  });
+
+  it("mirrors when mirror is explicitly true", () => {
+    const result = resolveBuilding(
+      { type: "4x6", mirror: true, corners: { TL: [10, 5], TR: [14, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result).toHaveLength(2);
+  });
+});
