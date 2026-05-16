@@ -59,3 +59,38 @@ describe("makeBuildings", () => {
     expect(uses[1].getAttribute("id")).toBe("building-1");
   });
 });
+
+describe("svg property styling", () => {
+  it("injectTemplateDefs applies svg properties to template rects", () => {
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    injectTemplateDefs({ "4x6": { width: 4, height: 6 } }, defs, {
+      fill: "#808080",
+      stroke_width: 1.2,
+    });
+    const rect = defs.querySelector("#template-4x6")!;
+    expect(rect.getAttribute("fill")).toBe("#808080");
+    expect(rect.getAttribute("stroke-width")).toBe("1.2");
+  });
+
+  it("makeBuildings applies svg properties to building uses", () => {
+    const group = makeBuildings(
+      [{ type: "4x6", corners: { TL: [0, 0], TR: [4, 0] }, mirror: false }],
+      { "4x6": { width: 4, height: 6 } },
+      { width: 60, height: 44 },
+      { opacity: 1 },
+    );
+    expect(group.querySelector("use")!.getAttribute("opacity")).toBe("1");
+  });
+
+  it("injectTemplateDefs does not set fill when svgProperties is omitted", () => {
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    injectTemplateDefs({ "4x6": { width: 4, height: 6 } }, defs);
+    expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBeNull();
+  });
+});

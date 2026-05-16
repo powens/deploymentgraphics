@@ -1,15 +1,17 @@
-import { makeElement } from "./dom-helpers";
+import { applyAttributes, makeElement } from "./dom-helpers";
 import {
   resolveBuilding,
   type BuildingPlacement,
   type CanvasSize,
   type RectTemplate,
 } from "./building-coordinates";
+import type { SVGProperties } from "./types";
 
 /** Appends one <rect> template definition per template into `defs`. */
 export function injectTemplateDefs(
   templates: Record<string, RectTemplate>,
   defs: SVGElement,
+  svgProperties?: SVGProperties,
 ): void {
   for (const [name, template] of Object.entries(templates)) {
     const rect = makeElement("rect");
@@ -18,6 +20,9 @@ export function injectTemplateDefs(
     rect.setAttribute("y", "0");
     rect.setAttribute("width", `${template.width}`);
     rect.setAttribute("height", `${template.height}`);
+    if (svgProperties) {
+      applyAttributes(rect, svgProperties);
+    }
     defs.appendChild(rect);
   }
 }
@@ -27,6 +32,7 @@ export function makeBuildings(
   placements: BuildingPlacement[],
   templates: Record<string, RectTemplate>,
   canvas: CanvasSize,
+  svgProperties?: SVGProperties,
 ): SVGElement {
   const group = makeElement("g");
   group.setAttribute("id", "buildings");
@@ -42,6 +48,9 @@ export function makeBuildings(
           `rotate(${resolved.rotation})`,
       );
       use.setAttribute("id", `building-${counter}`);
+      if (svgProperties) {
+        applyAttributes(use, svgProperties);
+      }
       group.appendChild(use);
       counter++;
     }
