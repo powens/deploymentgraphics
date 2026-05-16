@@ -27,3 +27,68 @@ export function resolveCorner(
       return [canvas.width - x, canvas.height - y];
   }
 }
+
+export type RectTemplate = { width: number; height: number };
+
+export type BuildingPlacement = {
+  type: string;
+  corners: Partial<Record<Anchor, CornerSpec>>; // exactly 2 entries
+  from?: Anchor; // default anchor for 2-element corner specs; default "TL"
+  mirror?: boolean; // default true
+};
+
+export type ResolvedBuilding = {
+  templateName: string;
+  translate: Point;
+  rotation: number; // degrees, [0, 360)
+};
+
+/** Template-local position of a named rectangle corner. */
+function localCorner(corner: Anchor, t: RectTemplate): Point {
+  switch (corner) {
+    case "TL":
+      return [0, 0];
+    case "TR":
+      return [t.width, 0];
+    case "BR":
+      return [t.width, t.height];
+    case "BL":
+      return [0, t.height];
+  }
+}
+
+/** Rotates a point about the origin by `rad` radians. */
+function rotate(p: Point, rad: number): Point {
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  return [p[0] * cos - p[1] * sin, p[0] * sin + p[1] * cos];
+}
+
+/**
+ * Resolves a building placement to one ResolvedBuilding. Mirroring and
+ * validation are added in later tasks.
+ */
+export function resolveBuilding(
+  placement: BuildingPlacement,
+  templates: Record<string, RectTemplate>,
+  canvas: CanvasSize,
+): ResolvedBuilding[] {
+  const template = templates[placement.type];
+  const entries = Object.entries(placement.corners) as [Anchor, CornerSpec][];
+  const defaultFrom: Anchor = placement.from ?? "TL";
+
+  const [[cornerA, specA], [cornerB, specB]] = entries;
+  const pA = resolveCorner(specA, defaultFrom, canvas);
+  const pB = resolveCorner(specB, defaultFrom, canvas);
+  const lA = localCorner(cornerA, template);
+  const lB = localCorner(cornerB, template);
+
+  const theta =
+    Math.atan2(pB[1] - pA[1], pB[0] - pA[0]) -
+    Math.atan2(lB[1] - lA[1], lB[0] - lA[0]);
+  const rotatedLA = rotate(lA, theta);
+  const translate: Point = [pA[0] - rotatedLA[0], pA[1] - rotatedLA[1]];
+  const rotation = (((theta * 180) / Math.PI) % 360 + 360) % 360;
+
+  return [{ templateName: placement.type, translate, rotation }];
+}
