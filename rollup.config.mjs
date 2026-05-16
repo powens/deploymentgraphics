@@ -4,7 +4,7 @@ import copy from "rollup-plugin-copy";
 import typescript from "@rollup/plugin-typescript";
 
 export default {
-  input: "src/mission-card.ts", // Changed to .ts
+  input: "src/v2/main.ts", // v2 fork entry point
   output: {
     file: "dist/bundle.js",
     format: "iife",
