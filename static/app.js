@@ -33,6 +33,19 @@ function writeStateToUrl(state) {
   window.history.replaceState(null, "", `?${params.toString()}`);
 }
 
+function filenameStem(state) {
+  return `${state.m.replace(/_/g, "-")}-layout-${state.t}`;
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 async function fetchYaml(url) {
   const response = await fetch(url);
   if (!response.ok) {
@@ -61,6 +74,10 @@ const terrainSelector = document.getElementById("terrain");
 const hiddenSupplies = document.getElementById("hidden-supplies");
 const showGrid = document.getElementById("show-grid");
 const stage = document.getElementById("stage");
+const exportMenu = document.getElementById("export-menu");
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const exportPngButton = document.getElementById("export-png");
+const exportSvgButton = document.getElementById("export-svg");
 
 function setStageMessage(text, isError = false) {
   const p = document.createElement("p");
@@ -98,6 +115,17 @@ async function redraw() {
   }
 }
 
+function exportSvg() {
+  const svg = stage.querySelector("svg");
+  if (!svg) {
+    return;
+  }
+  const markup = new XMLSerializer().serializeToString(svg);
+  const blob = new Blob([markup], { type: "image/svg+xml" });
+  downloadBlob(blob, `${filenameStem(controlState())}.svg`);
+  exportMenu.removeAttribute("open");
+}
+
 function onControlChange() {
   writeStateToUrl(controlState());
   redraw();
@@ -106,6 +134,8 @@ function onControlChange() {
 for (const el of [missionSelector, terrainSelector, hiddenSupplies, showGrid]) {
   el.addEventListener("change", onControlChange);
 }
+
+exportSvgButton.addEventListener("click", exportSvg);
 
 const initialState = readStateFromUrl();
 missionSelector.value = initialState.m;
