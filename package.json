@@ -6,8 +6,8 @@
   "packageManager": "pnpm@9.12.3",
   "scripts": {
     "test": "vitest run",
-    "build": "rollup src/make-mission-card.js --file dist/bundle.js --name \"missionCard\"",
-    "build-gh": "rollup src/make-mission-card.js --file dist/bundle.js --name \"missionCard\" --format iife",
+    "build": "rollup src/main.ts --file dist/bundle.js --format es --no-treeshake -p @rollup/plugin-typescript",
+    "build-gh": "pnpm run build",
     "serve": "rollup --config rollup.config.mjs --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
