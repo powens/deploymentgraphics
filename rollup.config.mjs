@@ -4,7 +4,7 @@ import copy from "rollup-plugin-copy";
 import typescript from "@rollup/plugin-typescript";
 
 export default {
-  input: "src/v2/main.ts", // v2 fork entry point
+  input: "src/main.ts",
   output: {
     file: "dist/bundle.js",
     format: "es",

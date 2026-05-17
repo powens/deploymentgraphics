@@ -1,4 +1,4 @@
-import { SVGProperties } from "./types";
+import type { SVGProperties } from "./types";
 
 /**
  * Returns a svg element of type typename
@@ -12,7 +12,7 @@ export function makeElement(typeName: string): SVGElement {
  */
 export function applyAttributes(
   element: SVGElement,
-  attrs: SVGProperties
+  attrs: SVGProperties,
 ): void {
   for (const [key, value] of Object.entries(attrs)) {
     element.setAttribute(key.replaceAll("_", "-"), `${value}`);

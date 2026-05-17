@@ -1,46 +1,18 @@
-export type Coordinate = [number, number];
-export type BuildingCoordinate = [Coordinate, Coordinate];
-export type SVGProperties = Record<string, string | number>;
+import type { TerrainConfig } from "./terrain-config";
 
-export type Size = {
-  width: number;
-  height: number;
-};
+export type Coordinate = [number, number];
+export type SVGProperties = Record<string, string | number>;
+export type AnchorLocation =
+  | "TOP_LEFT"
+  | "TOP_RIGHT"
+  | "BOTTOM_LEFT"
+  | "BOTTOM_RIGHT";
+
+export type Size = { width: number; height: number };
 
 export type DrawAndProperties = {
   draw?: boolean;
   radius?: number;
-  svg_properties: SVGProperties;
-};
-
-/**
- * Base configs
- */
-
-export type Objective = {
-  guides: GuideLine;
-  stylized: DrawAndProperties;
-  real: DrawAndProperties;
-  influence: DrawAndProperties;
-};
-
-export type Attacker = {
-  svg_properties: SVGProperties;
-};
-
-export type Defender = {
-  svg_properties: SVGProperties;
-};
-
-export type Building = {
-  draw: boolean;
-  svg_properties: SVGProperties;
-  template: SVGProperties;
-  structure: SVGProperties;
-};
-
-export type Grid = {
-  draw: boolean;
   svg_properties: SVGProperties;
 };
 
@@ -49,10 +21,25 @@ export type GuideLine = {
   text: DrawAndProperties;
 };
 
-export type BaseDeployment = {
-  attacker: Attacker;
-  defender: Defender;
+export type Objective = {
+  guides: GuideLine;
+  stylized: DrawAndProperties;
+  real: DrawAndProperties;
+  influence: DrawAndProperties;
 };
+
+export type Attacker = { svg_properties: SVGProperties };
+export type Defender = { svg_properties: SVGProperties };
+export type BaseDeployment = { attacker: Attacker; defender: Defender };
+
+export type Building = {
+  draw: boolean;
+  svg_properties: SVGProperties;
+  template: SVGProperties;
+  structure: SVGProperties;
+};
+
+export type Grid = { draw: boolean; svg_properties: SVGProperties };
 
 export type BaseConfig = {
   half_way_lines: DrawAndProperties;
@@ -64,35 +51,8 @@ export type BaseConfig = {
   background: SVGProperties;
 };
 
-/**
- * Terrain configs
- */
-
-export type TerrainTemplate = {
-  template: Size;
-};
-
-export type TerrainLayoutItem = {
-  type: string;
-  coords: BuildingCoordinate;
-};
-
-export type TerrainLayout = {
-  buildings: TerrainLayoutItem[];
-};
-
-export type TerrainConfig = {
-  layout_name: string;
-  templates: Record<string, TerrainTemplate>;
-  layout: Record<string, TerrainLayout>;
-};
-
-/**
- * Deployment configs
- */
-
 export type AttackerDefender = {
-  mask_center: number;
+  mask_center?: number;
   deployment_zone: Coordinate[];
 };
 
@@ -106,11 +66,14 @@ export type DeploymentConfig = {
 };
 
 /**
- * FullConfig
+ * Terrain config as loaded from gw.yml, plus the `layout_name` the page
+ * injects at fetch time (see static/index.html `getTerrain`).
  */
+export type RuntimeTerrainConfig = TerrainConfig & { layout_name: string };
 
+/** The whole config object built by static/index.html. */
 export type FullConfig = {
   base: BaseConfig;
-  terrain: TerrainConfig;
+  terrain: RuntimeTerrainConfig;
   deployment: DeploymentConfig;
 };

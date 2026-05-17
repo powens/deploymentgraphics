@@ -47,7 +47,7 @@ describe("makeObjectives", () => {
   it("emits two <use> elements for a hidden-supplies centre objective", () => {
     const hiddenConfig = {
       ...config,
-      deployment: { objectives: [[0, 0]], hidden_supplies: true },
+      deployment: { objectives: [[30, 22]], hidden_supplies: true },
     } as unknown as FullConfig;
     const group = makeObjectives(hiddenConfig);
     expect(group.querySelectorAll("use").length).toBe(2);

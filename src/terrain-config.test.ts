@@ -31,7 +31,7 @@ describe("getLayoutBuildings", () => {
 // Canvas size taken from static/data/base.yml (`size:`).
 const CANVAS = { width: 60, height: 44 };
 const GW_YML = fileURLToPath(
-  new URL("../../static/data/terrain/gw.yml", import.meta.url),
+  new URL("../static/data/terrain/gw.yml", import.meta.url),
 );
 
 describe("placeholder gw.yml", () => {

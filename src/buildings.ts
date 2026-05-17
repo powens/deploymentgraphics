@@ -1,79 +1,59 @@
-import { FullConfig, TerrainLayoutItem, TerrainTemplate } from "./types";
 import { applyAttributes, makeElement } from "./dom-helpers";
-import { processBuildingCoordinates } from "./coordinates";
+import {
+  resolveBuilding,
+  type BuildingPlacement,
+  type CanvasSize,
+  type RectTemplate,
+} from "./building-coordinates";
+import type { SVGProperties } from "./types";
 
-function makeBuilding(config: FullConfig, building: TerrainLayoutItem) {}
-
-export function makeBuildings(config: FullConfig): SVGElement {
-  const buildingGroup = makeElement("g");
-  buildingGroup.setAttribute("id", "buildings");
-  const layoutName = config.terrain.layout_name;
-  const layout = config.terrain.layout[layoutName];
-
-  if (!layout) {
-    console.warn(`No layout found for layout name: ${layoutName}`);
-    return buildingGroup;
+/** Appends one <rect> template definition per template into `defs`. */
+export function injectTemplateDefs(
+  templates: Record<string, RectTemplate>,
+  defs: SVGElement,
+  svgProperties?: SVGProperties,
+): void {
+  for (const [name, template] of Object.entries(templates)) {
+    const rect = makeElement("rect");
+    rect.setAttribute("id", `template-${name}`);
+    rect.setAttribute("x", "0");
+    rect.setAttribute("y", "0");
+    rect.setAttribute("width", `${template.width}`);
+    rect.setAttribute("height", `${template.height}`);
+    if (svgProperties) {
+      applyAttributes(rect, svgProperties);
+    }
+    defs.appendChild(rect);
   }
+}
+
+/** Builds a <g> of <use> elements, one per resolved (and mirrored) building. */
+export function makeBuildings(
+  placements: BuildingPlacement[],
+  templates: Record<string, RectTemplate>,
+  canvas: CanvasSize,
+  svgProperties?: SVGProperties,
+): SVGElement {
+  const group = makeElement("g");
+  group.setAttribute("id", "buildings");
 
   let counter = 0;
-  for (const building of layout.buildings) {
-    const processedCoords = processBuildingCoordinates(building.coords);
-
-    // Orignal position
-    const buildingElement = makeElement("use");
-    buildingElement.setAttribute("href", `#template-${building.type}`);
-    buildingElement.setAttribute(
-      "transform",
-      `translate(${processedCoords.position[0]} ${processedCoords.position[1]}) rotate(${processedCoords.rotation})`
-    );
-    buildingElement.setAttribute("id", `building-${counter}`);
-    applyAttributes(buildingElement, config.base.building.svg_properties);
-    buildingGroup.appendChild(buildingElement);
-
-    //Mirrored position
-    const mirroredCoords = [
-      config.base.size.width - processedCoords.position[0],
-      config.base.size.height - processedCoords.position[1],
-    ];
-    const mirroredRotation = (processedCoords.rotation + 180) % 360;
-
-    const mirroredBuildingElement = makeElement("use");
-    mirroredBuildingElement.setAttribute("href", `#template-${building.type}`);
-    mirroredBuildingElement.setAttribute(
-      "transform",
-      `translate(${mirroredCoords[0]} ${mirroredCoords[1]}) rotate(${mirroredRotation})`
-    );
-    mirroredBuildingElement.setAttribute("id", `building-${counter}-mirrored`);
-    applyAttributes(
-      mirroredBuildingElement,
-      config.base.building.svg_properties
-    );
-    buildingGroup.appendChild(mirroredBuildingElement);
-    counter++;
+  for (const placement of placements) {
+    for (const resolved of resolveBuilding(placement, templates, canvas)) {
+      const use = makeElement("use");
+      use.setAttribute("href", `#template-${resolved.templateName}`);
+      use.setAttribute(
+        "transform",
+        `translate(${resolved.translate[0]} ${resolved.translate[1]}) ` +
+          `rotate(${resolved.rotation})`,
+      );
+      use.setAttribute("id", `building-${counter}`);
+      if (svgProperties) {
+        applyAttributes(use, svgProperties);
+      }
+      group.appendChild(use);
+      counter++;
+    }
   }
-
-  return buildingGroup;
-}
-
-export function injectTemplateDefs(config: FullConfig, defs: SVGElement) {
-  const templates = config.terrain.templates;
-  console.debug("Injecting templates", templates);
-
-  for (const templateName in templates) {
-    const template = templates[templateName];
-    const def = makeBuildingTemplate(config, template);
-    def.setAttribute("id", `template-${templateName}`);
-    applyAttributes(def, config.base.building.template);
-    defs.appendChild(def);
-  }
-}
-
-function makeBuildingTemplate(config: FullConfig, template: TerrainTemplate) {
-  const templateRect = makeElement("rect");
-  templateRect.setAttribute("x", "0");
-  templateRect.setAttribute("y", "0");
-  templateRect.setAttribute("width", template.template.width.toString());
-  templateRect.setAttribute("height", template.template.height.toString());
-  applyAttributes(templateRect, config.base.building.svg_properties);
-  return templateRect;
+  return group;
 }

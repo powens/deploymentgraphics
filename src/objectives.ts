@@ -50,7 +50,10 @@ export function makeObjectives(config: FullConfig) {
   const objectives = config?.deployment?.objectives ?? [];
 
   for (const coordinates of objectives) {
-    if (isCenterObjective(coordinates) && config.deployment?.hidden_supplies) {
+    if (
+      isCenterObjective(config, coordinates) &&
+      config.deployment?.hidden_supplies
+    ) {
       const hiddenSupplesCoords = getHiddenSuppliesCoords();
       const o1 = makeElement("use");
       o1.setAttribute("x", `${halfWidth - hiddenSupplesCoords[0]}`);

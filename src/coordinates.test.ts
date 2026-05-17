@@ -30,10 +30,11 @@ describe("getCoordinates", () => {
 });
 
 describe("isCenterObjective", () => {
-  it("is true only at the origin", () => {
-    expect(isCenterObjective([0, 0])).toBe(true);
-    expect(isCenterObjective([0, 1])).toBe(false);
-    expect(isCenterObjective([1, 0])).toBe(false);
+  it("is true only at the canvas centre", () => {
+    expect(isCenterObjective(config, [30, 22])).toBe(true);
+    expect(isCenterObjective(config, [30, 21])).toBe(false);
+    expect(isCenterObjective(config, [29, 22])).toBe(false);
+    expect(isCenterObjective(config, [0, 0])).toBe(false);
   });
 });
 
