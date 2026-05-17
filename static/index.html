@@ -1,52 +1,309 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deployment Graphics — 40k Mission Generator</title>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"
       integrity="sha512-CSBhVREyzHAjAFfBlIBakjoRUKp5h7VSweP0InR/pAJyptH7peuhCsqAI/snV+TwZmXZqoUklpXp6R6wMnYf5Q=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-
     <style>
-      .overlayImg {
-        position: fixed;
-        top: 10;
-        left: 10;
-        opacity: 0.2;
+      :root {
+        --bg: #0c0d10;
+        --panel: #131418;
+        --field: #1d2028;
+        --border: #23262e;
+        --border-bright: #2f333d;
+        --text: #c9ccd4;
+        --text-muted: #6b7080;
+        --accent: #b9842f;
       }
 
-      #graphic {
-        border: 1px solid black;
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+
+      .app-header {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        padding: 0.75rem 1.25rem;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .wordmark {
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        font-size: 1rem;
+        color: #e7e9ee;
+      }
+
+      .wordmark span {
+        color: var(--accent);
+      }
+
+      .control {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .control-label {
+        font-size: 0.6rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+      }
+
+      select.field {
+        appearance: none;
+        background-color: var(--field);
+        color: var(--text);
+        border: 1px solid var(--border-bright);
+        border-radius: 5px;
+        padding: 0.45rem 1.8rem 0.45rem 0.65rem;
+        font: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6"><path d="M0 0l5 6 5-6z" fill="%23b9842f"/></svg>');
+        background-repeat: no-repeat;
+        background-position: right 0.6rem center;
+      }
+
+      .toggles {
+        display: flex;
+        gap: 1rem;
+        padding-top: 0.15rem;
+      }
+
+      .toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .toggle input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle .track {
+        width: 34px;
+        height: 18px;
+        border-radius: 9px;
+        background: var(--field);
+        border: 1px solid var(--border-bright);
+        position: relative;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+
+      .toggle .track::after {
+        content: "";
+        position: absolute;
+        left: 2px;
+        top: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--text-muted);
+        transition:
+          transform 0.15s,
+          background 0.15s;
+      }
+
+      .toggle input:checked + .track {
+        background: rgba(185, 132, 47, 0.25);
+        border-color: var(--accent);
+      }
+
+      .toggle input:checked + .track::after {
+        transform: translateX(16px);
+        background: var(--accent);
+      }
+
+      .toggle input:focus-visible + .track {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .actions {
+        margin-left: auto;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .btn {
+        font: inherit;
+        font-size: 0.82rem;
+        font-weight: 600;
+        border-radius: 5px;
+        padding: 0.5rem 0.9rem;
+        cursor: pointer;
+        border: 1px solid transparent;
+      }
+
+      .btn.primary {
+        background: var(--accent);
+        color: #15110a;
+        font-weight: 700;
+      }
+
+      .btn.ghost {
+        background: var(--field);
+        color: var(--text);
+        border-color: var(--border-bright);
+      }
+
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+
+      .export-menu {
+        position: relative;
+      }
+
+      .export-menu summary {
+        list-style: none;
+      }
+
+      .export-menu summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .export-menu .menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 4px);
+        background: var(--panel);
+        border: 1px solid var(--border-bright);
+        border-radius: 6px;
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        min-width: 130px;
+        z-index: 10;
+      }
+
+      .export-menu .menu button {
+        background: none;
+        border: none;
+        color: var(--text);
+        text-align: left;
+        padding: 0.5rem 0.6rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.82rem;
+      }
+
+      .export-menu .menu button:hover {
+        background: var(--field);
+      }
+
+      .stage {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2.5rem 1.5rem;
+        background: radial-gradient(circle at 50% 38%, #16181e, var(--bg));
+      }
+
+      .stage svg {
+        width: min(960px, 100%);
+        height: auto;
+        max-height: 72vh;
+      }
+
+      .stage-msg {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      .stage-msg.error {
+        color: #d97056;
       }
     </style>
   </head>
   <body>
-    <section>
-      <label for="mission">Mission</label>
-      <select id="mission">
-        <option value="dawn_of_war">Dawn of War</option>
-        <option value="crucible_of_battle">Crucible of Battle</option>
-        <option value="hammer_and_anvil">Hammer and Anvil</option>
-        <option value="search_and_destroy">Search and Destroy</option>
-        <option value="sweeping_engagement">Sweeping Engagement</option>
-        <option value="tipping_point">Tipping Point</option>
-      </select>
+    <header class="app-header">
+      <div class="wordmark">DEPLOYMENT<span>//</span>GRAPHICS</div>
 
-      <label for="terrain">Terrain</label>
-      <select id="terrain">
-        <option value="1">GW Layout 1</option>
-        <option value="2">GW Layout 2</option>
-      </select>
+      <div class="control">
+        <label class="control-label" for="mission">Mission</label>
+        <select id="mission" class="field">
+          <option value="dawn_of_war">Dawn of War</option>
+          <option value="crucible_of_battle">Crucible of Battle</option>
+          <option value="hammer_and_anvil">Hammer and Anvil</option>
+          <option value="search_and_destroy">Search and Destroy</option>
+          <option value="sweeping_engagement">Sweeping Engagement</option>
+          <option value="tipping_point">Tipping Point</option>
+        </select>
+      </div>
 
-      <label for="hidden-supplies">Hidden Supplies</label>
-      <input id="hidden-supplies" type="checkbox" />
+      <div class="control">
+        <label class="control-label" for="terrain">Terrain</label>
+        <select id="terrain" class="field">
+          <option value="1">GW Layout 1</option>
+          <option value="2">GW Layout 2</option>
+        </select>
+      </div>
 
-      <label for="show-grid">Show 1x1 Grid</label>
-      <input id="show-grid" type="checkbox" />
-    </section>
+      <div class="control">
+        <span class="control-label">Options</span>
+        <div class="toggles">
+          <label class="toggle">
+            <input id="hidden-supplies" type="checkbox" />
+            <span class="track"></span>
+            Hidden Supplies
+          </label>
+          <label class="toggle">
+            <input id="show-grid" type="checkbox" />
+            <span class="track"></span>
+            1×1 Grid
+          </label>
+        </div>
+      </div>
 
-    <div id="graphic"></div>
+      <div class="actions">
+        <button id="copy-link" class="btn ghost" type="button">Copy link</button>
+        <details class="export-menu" id="export-menu">
+          <summary class="btn primary">Export ▾</summary>
+          <div class="menu">
+            <button id="export-png" type="button">PNG</button>
+            <button id="export-svg" type="button">SVG</button>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <main class="stage" id="stage"></main>
 
     <script type="module" src="./app.js"></script>
   </body>

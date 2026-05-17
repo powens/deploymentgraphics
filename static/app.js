@@ -21,7 +21,7 @@ const missionSelector = document.getElementById("mission");
 const terrainSelector = document.getElementById("terrain");
 const hiddenSupplies = document.getElementById("hidden-supplies");
 const showGrid = document.getElementById("show-grid");
-const graphic = document.getElementById("graphic");
+const stage = document.getElementById("stage");
 
 async function redraw() {
   const missionConfig = await getMissionConfig(missionSelector.value);
@@ -37,8 +37,8 @@ async function redraw() {
     terrain: terrainConfig,
   };
 
-  graphic.replaceChildren();
-  injectMissionCard(graphic, config);
+  stage.replaceChildren();
+  injectMissionCard(stage, config);
 }
 
 for (const el of [missionSelector, terrainSelector, hiddenSupplies, showGrid]) {
