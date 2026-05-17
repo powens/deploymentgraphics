@@ -4,7 +4,20 @@ import { injectObjectiveDefs, makeObjectives } from "./objectives";
 import { getLayoutBuildings } from "./terrain-config";
 import type { FullConfig } from "./types";
 
-function injectCenterMask(defs: SVGElement, config: FullConfig) {
+/**
+ * Radius of the centre hole punched out of masked deployment zones, taken
+ * from whichever player's `mask_center` is set. 0 means no player masks
+ * the centre, so no mask is needed.
+ */
+function centerMaskRadius(config: FullConfig): number {
+  return (
+    config.deployment.attacker.mask_center ??
+    config.deployment.defender.mask_center ??
+    0
+  );
+}
+
+function injectCenterMask(defs: SVGElement, config: FullConfig, radius: number) {
   const centerMask = makeElement("mask");
   centerMask.setAttribute("id", "centerMask");
 
@@ -19,7 +32,7 @@ function injectCenterMask(defs: SVGElement, config: FullConfig) {
   const centerCircle = makeElement("circle");
   centerCircle.setAttribute("cx", `${config.base.size.width / 2}`);
   centerCircle.setAttribute("cy", `${config.base.size.height / 2}`);
-  centerCircle.setAttribute("r", "9");
+  centerCircle.setAttribute("r", `${radius}`);
   centerCircle.setAttribute("fill", "black");
   centerMask.appendChild(centerCircle);
   defs.appendChild(centerMask);
@@ -49,7 +62,10 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
     injectTemplateDefs(config.terrain.templates, defs, templateProps);
   }
 
-  injectCenterMask(defs, config);
+  const maskRadius = centerMaskRadius(config);
+  if (maskRadius > 0) {
+    injectCenterMask(defs, config, maskRadius);
+  }
 }
 
 function makeHalfwayLines(config: FullConfig): SVGElement {
@@ -129,6 +145,13 @@ export function makeMissionCard(config: FullConfig): SVGElement {
     "viewBox",
     `0 0 ${config.base.size.width} ${config.base.size.height}`,
   );
+
+  // Give assistive tech an accessible name for the rendered card.
+  svg.setAttribute("role", "img");
+  const title = makeElement("title");
+  title.textContent = `Deployment map: ${config.deployment.name}`;
+  svg.appendChild(title);
+
   if (config.base.background.fill) {
     const background = makeElement("rect");
     background.setAttribute("x", "0");

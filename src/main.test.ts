@@ -98,17 +98,32 @@ describe("makeDeploymentZone styling", () => {
   });
 });
 
-describe("injectCenterMask placement", () => {
-  it("appends the center mask inside <defs>", () => {
-    const svg = makeMissionCard(config);
-    expect(svg.querySelector("defs #centerMask")).not.toBeNull();
+describe("injectCenterMask", () => {
+  const masked = {
+    ...config,
+    deployment: {
+      ...config.deployment,
+      attacker: { ...config.deployment.attacker, mask_center: 6 },
+    },
+  } as FullConfig;
+
+  it("sizes the mask circle from the mask_center value", () => {
+    const svg = makeMissionCard(masked);
+    const circle = svg.querySelector("defs #centerMask circle");
+    expect(circle?.getAttribute("r")).toBe("6");
   });
 
-  it("does not append the mask as a direct child of <svg>", () => {
-    const svg = makeMissionCard(config);
+  it("appends the center mask inside <defs>, not as a direct <svg> child", () => {
+    const svg = makeMissionCard(masked);
+    expect(svg.querySelector("defs #centerMask")).not.toBeNull();
     const directMask = Array.from(svg.children).find(
       (c) => c.tagName.toLowerCase() === "mask",
     );
     expect(directMask).toBeUndefined();
+  });
+
+  it("omits the center mask when no player masks the centre", () => {
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#centerMask")).toBeNull();
   });
 });

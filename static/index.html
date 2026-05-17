@@ -226,6 +226,15 @@
         background: var(--field);
       }
 
+      .export-menu .menu button:disabled {
+        color: var(--text-muted);
+        cursor: not-allowed;
+      }
+
+      .export-menu .menu button:disabled:hover {
+        background: none;
+      }
+
       .stage {
         flex: 1;
         display: flex;
@@ -335,7 +344,7 @@
       </div>
     </header>
 
-    <main class="stage" id="stage"></main>
+    <main class="stage" id="stage" aria-live="polite"></main>
 
     <script type="module" src="./app.js"></script>
   </body>

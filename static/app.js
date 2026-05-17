@@ -46,12 +46,25 @@ function downloadBlob(blob, filename) {
   URL.revokeObjectURL(url);
 }
 
-async function fetchYaml(url) {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to load ${url} (${response.status})`);
+// YAML files never change within a session, so cache by URL. The promise
+// (not the result) is cached, which also dedupes concurrent fetches.
+const yamlCache = new Map();
+
+function fetchYaml(url) {
+  let pending = yamlCache.get(url);
+  if (!pending) {
+    pending = (async () => {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Failed to load ${url} (${response.status})`);
+      }
+      return jsyaml.load(await response.text());
+    })();
+    // Drop failed fetches from the cache so a later redraw can retry.
+    pending.catch(() => yamlCache.delete(url));
+    yamlCache.set(url, pending);
   }
-  return jsyaml.load(await response.text());
+  return pending;
 }
 
 async function buildConfig(state) {
@@ -60,11 +73,10 @@ async function buildConfig(state) {
     fetchYaml("./data/base.yml"),
     fetchYaml("./data/terrain/gw.yml"),
   ]);
-  missionConfig.hidden_supplies = state.hs;
-  baseConfig.grid.draw = state.grid;
+  // Spread rather than mutate: the cached objects are shared across redraws.
   return {
-    deployment: missionConfig,
-    base: baseConfig,
+    deployment: { ...missionConfig, hidden_supplies: state.hs },
+    base: { ...baseConfig, grid: { ...baseConfig.grid, draw: state.grid } },
     terrain: { ...terrainObj, layout_name: state.t },
   };
 }
@@ -97,8 +109,15 @@ function controlState() {
 
 let renderGeneration = 0;
 
+function setExportEnabled(enabled) {
+  exportPngButton.disabled = !enabled;
+  exportSvgButton.disabled = !enabled;
+}
+
 async function redraw() {
   const generation = ++renderGeneration;
+  // No card to export until this render finishes successfully.
+  setExportEnabled(false);
   setStageMessage("Rendering…");
   try {
     const config = await buildConfig(controlState());
@@ -107,6 +126,7 @@ async function redraw() {
     }
     stage.replaceChildren();
     injectMissionCard(stage, config);
+    setExportEnabled(true);
   } catch (error) {
     if (generation !== renderGeneration) {
       return;
@@ -148,14 +168,25 @@ function exportPng() {
   const image = new Image();
   image.onerror = () => {
     URL.revokeObjectURL(svgUrl);
+    alert("PNG export failed: the card could not be rendered.");
   };
   image.onload = () => {
     const canvas = document.createElement("canvas");
     canvas.width = width;
     canvas.height = height;
-    canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+    const context = canvas.getContext("2d");
+    if (!context) {
+      URL.revokeObjectURL(svgUrl);
+      alert("PNG export failed: no 2D canvas context is available.");
+      return;
+    }
+    context.drawImage(image, 0, 0, width, height);
     URL.revokeObjectURL(svgUrl);
     canvas.toBlob((blob) => {
+      if (!blob) {
+        alert("PNG export failed: the image could not be encoded.");
+        return;
+      }
       downloadBlob(blob, `${filenameStem(controlState())}.png`);
     }, "image/png");
   };
@@ -163,13 +194,27 @@ function exportPng() {
   exportMenu.removeAttribute("open");
 }
 
-async function copyLink() {
-  await navigator.clipboard.writeText(window.location.href);
-  const original = copyLinkButton.textContent;
-  copyLinkButton.textContent = "Copied";
-  setTimeout(() => {
-    copyLinkButton.textContent = original;
+const COPY_LINK_LABEL = "Copy link";
+let copyLinkResetTimer;
+
+// Show transient feedback on the button, restoring to the fixed label.
+// Using a literal (not the live textContent) avoids a rapid second click
+// capturing "Copied" as the label to restore.
+function flashCopyLink(message) {
+  copyLinkButton.textContent = message;
+  clearTimeout(copyLinkResetTimer);
+  copyLinkResetTimer = setTimeout(() => {
+    copyLinkButton.textContent = COPY_LINK_LABEL;
   }, 1500);
+}
+
+async function copyLink() {
+  try {
+    await navigator.clipboard.writeText(window.location.href);
+    flashCopyLink("Copied");
+  } catch {
+    flashCopyLink("Copy failed");
+  }
 }
 
 function onControlChange() {
@@ -184,6 +229,19 @@ for (const el of [missionSelector, terrainSelector, hiddenSupplies, showGrid]) {
 exportSvgButton.addEventListener("click", exportSvg);
 exportPngButton.addEventListener("click", exportPng);
 copyLinkButton.addEventListener("click", copyLink);
+
+// The native <details> menu only closes on a second summary click; also
+// dismiss it on an outside click or Escape, as menus are expected to.
+document.addEventListener("click", (event) => {
+  if (exportMenu.open && !exportMenu.contains(event.target)) {
+    exportMenu.removeAttribute("open");
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && exportMenu.open) {
+    exportMenu.removeAttribute("open");
+  }
+});
 
 const initialState = readStateFromUrl();
 missionSelector.value = initialState.m;
