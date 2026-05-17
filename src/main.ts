@@ -40,10 +40,7 @@ function injectCenterMask(defs: SVGElement, config: FullConfig, radius: number) 
 
 /** True when a usable layout is selected in the terrain config. */
 function hasSelectedLayout(config: FullConfig): boolean {
-  return (
-    !!config.terrain &&
-    !!config.terrain.layout[config.terrain.layout_name]
-  );
+  return !!config.terrain.layout[config.terrain.layout_name];
 }
 
 function injectDefs(svg: SVGElement, config: FullConfig) {
@@ -52,15 +49,13 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
 
   injectObjectiveDefs(defs, config);
 
-  if (config.terrain) {
-    // Template rects carry both the generic building props and the
-    // template-specific stroke/fill overrides.
-    const templateProps = {
-      ...config.base.building.svg_properties,
-      ...config.base.building.template,
-    };
-    injectTemplateDefs(config.terrain.templates, defs, templateProps);
-  }
+  // Template rects carry both the generic building props and the
+  // template-specific stroke/fill overrides.
+  const templateProps = {
+    ...config.base.building.svg_properties,
+    ...config.base.building.template,
+  };
+  injectTemplateDefs(config.terrain.templates, defs, templateProps);
 
   const maskRadius = centerMaskRadius(config);
   if (maskRadius > 0) {
