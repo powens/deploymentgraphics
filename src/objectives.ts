@@ -27,13 +27,13 @@ function makeObjectiveMarker(config: FullConfig) {
 
   if (objConfig.real.draw !== false) {
     if (!objConfig.real.radius) {
-      console.error(`objective real radius is falsy`);
+      throw new Error("objective real radius must be a positive number");
     }
 
     const objMarker = makeElement("circle");
     objMarker.setAttribute("cx", "0");
     objMarker.setAttribute("cy", "0");
-    objMarker.setAttribute("r", `${objConfig.real.radius ?? 0}`);
+    objMarker.setAttribute("r", `${objConfig.real.radius}`);
     applyAttributes(objMarker, objConfig.real.svg_properties);
     objGroup.appendChild(objMarker);
   }

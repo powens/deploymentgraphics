@@ -57,6 +57,24 @@ describe("injectObjectiveDefs", () => {
     expect(circles[0].getAttribute("r")).toBe("3.79"); // influence ring only
   });
 
+  it("throws when objective.real.radius is falsy", () => {
+    const noRadius = {
+      ...config,
+      base: {
+        ...config.base,
+        objective: {
+          ...config.base.objective,
+          real: { ...config.base.objective.real, radius: 0 },
+        },
+      },
+    } as unknown as FullConfig;
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    expect(() => injectObjectiveDefs(defs, noRadius)).toThrow(/real radius/i);
+  });
+
   it("omits the influence ring when objective.influence.draw is false", () => {
     const noInfluence = {
       ...config,
