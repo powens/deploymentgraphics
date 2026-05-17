@@ -3,7 +3,7 @@ size:
   height: 44
 
 background:
-  fill: black
+  fill: "#f4f1e8"
 
 half_way_lines:
   draw: true

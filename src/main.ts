@@ -130,7 +130,13 @@ export function makeMissionCard(config: FullConfig): SVGElement {
     `0 0 ${config.base.size.width} ${config.base.size.height}`,
   );
   if (config.base.background.fill) {
-    svg.setAttribute("fill", `${config.base.background.fill}`);
+    const background = makeElement("rect");
+    background.setAttribute("x", "0");
+    background.setAttribute("y", "0");
+    background.setAttribute("width", `${config.base.size.width}`);
+    background.setAttribute("height", `${config.base.size.height}`);
+    background.setAttribute("fill", `${config.base.background.fill}`);
+    svg.appendChild(background);
   }
 
   injectDefs(svg, config);
