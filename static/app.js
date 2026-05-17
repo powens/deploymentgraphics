@@ -1,15 +1,23 @@
 /* global jsyaml */
 import { injectMissionCard } from "./bundle.js";
 
-const MISSION_IDS = [
-  "dawn_of_war",
-  "crucible_of_battle",
-  "hammer_and_anvil",
-  "search_and_destroy",
-  "sweeping_engagement",
-  "tipping_point",
+// Single source of truth for the dropdowns: both the <select> options and
+// the URL-state allowlists below are derived from these lists, so the two
+// can never drift apart. Each id is also the YAML filename / layout key.
+const MISSIONS = [
+  { id: "dawn_of_war", label: "Dawn of War" },
+  { id: "crucible_of_battle", label: "Crucible of Battle" },
+  { id: "hammer_and_anvil", label: "Hammer and Anvil" },
+  { id: "search_and_destroy", label: "Search and Destroy" },
+  { id: "sweeping_engagement", label: "Sweeping Engagement" },
+  { id: "tipping_point", label: "Tipping Point" },
 ];
-const TERRAIN_IDS = ["1", "2"];
+const TERRAINS = [
+  { id: "1", label: "GW Layout 1" },
+  { id: "2", label: "GW Layout 2" },
+];
+const MISSION_IDS = MISSIONS.map((m) => m.id);
+const TERRAIN_IDS = TERRAINS.map((t) => t.id);
 const DEFAULT_STATE = { m: "dawn_of_war", t: "1", hs: false, grid: false };
 
 function readStateFromUrl() {
@@ -90,6 +98,18 @@ const exportMenu = document.getElementById("export-menu");
 const exportPngButton = document.getElementById("export-png");
 const exportSvgButton = document.getElementById("export-svg");
 const copyLinkButton = document.getElementById("copy-link");
+
+function populateSelect(select, items) {
+  for (const { id, label } of items) {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = label;
+    select.appendChild(option);
+  }
+}
+
+populateSelect(missionSelector, MISSIONS);
+populateSelect(terrainSelector, TERRAINS);
 
 function setStageMessage(text, isError = false) {
   const p = document.createElement("p");
