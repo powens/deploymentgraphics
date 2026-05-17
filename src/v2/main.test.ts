@@ -14,8 +14,8 @@ const config = {
       influence: { radius: 3, svg_properties: { fill: "black" } },
     },
     deployment: {
-      attacker: { svg_properties: { fill: "cf4b33", stroke: "none" } },
-      defender: { svg_properties: { fill: "7d8b7f", stroke: "none" } },
+      attacker: { svg_properties: { fill: "#cf4b33", stroke: "none" } },
+      defender: { svg_properties: { fill: "#7d8b7f", stroke: "none" } },
     },
     building: {
       draw: true,
@@ -76,5 +76,36 @@ describe("injectMissionCard", () => {
     );
     injectMissionCard(root, config);
     expect(root.querySelector("svg")).not.toBeNull();
+  });
+});
+
+describe("makeDeploymentZone styling", () => {
+  it("uses deployment colors verbatim with no '#' doubling", () => {
+    const svg = makeMissionCard(config);
+    const zones = svg.querySelectorAll("polygon");
+    expect(zones[0].getAttribute("fill")).toBe("#cf4b33");
+    expect(zones[1].getAttribute("fill")).toBe("#7d8b7f");
+  });
+
+  it("passes a 'none' stroke through unchanged (not '#none')", () => {
+    const svg = makeMissionCard(config);
+    for (const zone of svg.querySelectorAll("polygon")) {
+      expect(zone.getAttribute("stroke")).toBe("none");
+    }
+  });
+});
+
+describe("injectCenterMask placement", () => {
+  it("appends the center mask inside <defs>", () => {
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("defs #centerMask")).not.toBeNull();
+  });
+
+  it("does not append the mask as a direct child of <svg>", () => {
+    const svg = makeMissionCard(config);
+    const directMask = Array.from(svg.children).find(
+      (c) => c.tagName.toLowerCase() === "mask",
+    );
+    expect(directMask).toBeUndefined();
   });
 });

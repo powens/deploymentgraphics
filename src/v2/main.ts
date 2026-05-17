@@ -5,7 +5,7 @@ import { injectObjectiveDefs, makeObjectives } from "./objectives";
 import { getLayoutBuildings } from "./terrain-config";
 import type { FullConfig } from "./types";
 
-function injectCenterMask(svg: SVGElement, config: FullConfig) {
+function injectCenterMask(defs: SVGElement, config: FullConfig) {
   const centerMask = makeElement("mask");
   centerMask.setAttribute("id", "centerMask");
 
@@ -23,7 +23,7 @@ function injectCenterMask(svg: SVGElement, config: FullConfig) {
   centerCircle.setAttribute("r", "9");
   centerCircle.setAttribute("fill", "black");
   centerMask.appendChild(centerCircle);
-  svg.appendChild(centerMask);
+  defs.appendChild(centerMask);
 }
 
 /** True when a usable layout is selected in the terrain config. */
@@ -50,7 +50,7 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
     injectTemplateDefs(config.terrain.templates, defs, templateProps);
   }
 
-  injectCenterMask(svg, config);
+  injectCenterMask(defs, config);
 }
 
 function makeHalfwayLines(config: FullConfig): SVGElement {
@@ -87,8 +87,8 @@ function makeDeploymentZone(
     .map((coords) => getCoordinates(config, coords))
     .join(" ");
   dz.setAttribute("points", coordinateStr);
-  dz.setAttribute("fill", "#" + colorConfig.svg_properties.fill);
-  dz.setAttribute("stroke", "#" + colorConfig.svg_properties.stroke);
+  dz.setAttribute("fill", `${colorConfig.svg_properties.fill}`);
+  dz.setAttribute("stroke", `${colorConfig.svg_properties.stroke}`);
   dz.setAttribute("stroke-width", "0.4");
   if (playerConfig.mask_center) {
     dz.setAttribute("mask", "url(#centerMask)");

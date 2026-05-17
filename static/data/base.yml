@@ -42,14 +42,14 @@ objective:
       stroke: none
   real:
     draw: true
+    radius: 0.79 # 0.79 inches ~= 20mm
     svg_properties:
-      r: 0.79
       fill: red
       stroke: none
   influence:
     draw: true
+    radius: 3.0
     svg_properties:
-      r: 3
       fill: black
       fill_opacity: 0.3
       stroke: none
@@ -57,11 +57,11 @@ objective:
 deployment:
   attacker:
     svg_properties:
-      fill: cf4b33
+      fill: "#cf4b33"
       stroke: none
   defender:
     svg_properties:
-      fill: 7d8b7f
+      fill: "#7d8b7f"
       stroke: none
 
 building:
