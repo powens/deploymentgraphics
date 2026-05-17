@@ -51,7 +51,9 @@ function downloadBlob(blob, filename) {
   link.href = url;
   link.download = filename;
   link.click();
-  URL.revokeObjectURL(url);
+  // Defer the revoke: revoking synchronously can cancel a download that
+  // the browser has not yet started fetching from the blob URL.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 // YAML files never change within a session, so cache by URL. The promise
