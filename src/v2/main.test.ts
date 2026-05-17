@@ -82,9 +82,12 @@ describe("injectMissionCard", () => {
 describe("makeDeploymentZone styling", () => {
   it("uses deployment colors verbatim with no '#' doubling", () => {
     const svg = makeMissionCard(config);
-    const zones = svg.querySelectorAll("polygon");
-    expect(zones[0].getAttribute("fill")).toBe("#cf4b33");
-    expect(zones[1].getAttribute("fill")).toBe("#7d8b7f");
+    expect(svg.querySelector("#attacker")?.getAttribute("fill")).toBe(
+      "#cf4b33",
+    );
+    expect(svg.querySelector("#defender")?.getAttribute("fill")).toBe(
+      "#7d8b7f",
+    );
   });
 
   it("passes a 'none' stroke through unchanged (not '#none')", () => {

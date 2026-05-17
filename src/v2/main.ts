@@ -83,6 +83,7 @@ function makeDeploymentZone(
   const playerConfig = config.deployment[attackerDefender];
   const colorConfig = config.base.deployment[attackerDefender];
   const dz = makeElement("polygon");
+  dz.setAttribute("id", attackerDefender);
   const coordinateStr = playerConfig.deployment_zone
     .map((coords) => getCoordinates(config, coords))
     .join(" ");
