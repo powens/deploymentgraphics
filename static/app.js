@@ -75,7 +75,6 @@ const hiddenSupplies = document.getElementById("hidden-supplies");
 const showGrid = document.getElementById("show-grid");
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const exportPngButton = document.getElementById("export-png");
 const exportSvgButton = document.getElementById("export-svg");
 
@@ -126,6 +125,40 @@ function exportSvg() {
   exportMenu.removeAttribute("open");
 }
 
+const PNG_EXPORT_WIDTH = 2000;
+
+function exportPng() {
+  const svg = stage.querySelector("svg");
+  if (!svg) {
+    return;
+  }
+  const viewBox = svg.viewBox.baseVal;
+  const width = PNG_EXPORT_WIDTH;
+  const height = Math.round((width * viewBox.height) / viewBox.width);
+
+  const clone = svg.cloneNode(true);
+  clone.setAttribute("width", `${width}`);
+  clone.setAttribute("height", `${height}`);
+  const markup = new XMLSerializer().serializeToString(clone);
+  const svgUrl = URL.createObjectURL(
+    new Blob([markup], { type: "image/svg+xml" }),
+  );
+
+  const image = new Image();
+  image.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    canvas.getContext("2d").drawImage(image, 0, 0, width, height);
+    URL.revokeObjectURL(svgUrl);
+    canvas.toBlob((blob) => {
+      downloadBlob(blob, `${filenameStem(controlState())}.png`);
+    }, "image/png");
+  };
+  image.src = svgUrl;
+  exportMenu.removeAttribute("open");
+}
+
 function onControlChange() {
   writeStateToUrl(controlState());
   redraw();
@@ -136,6 +169,7 @@ for (const el of [missionSelector, terrainSelector, hiddenSupplies, showGrid]) {
 }
 
 exportSvgButton.addEventListener("click", exportSvg);
+exportPngButton.addEventListener("click", exportPng);
 
 const initialState = readStateFromUrl();
 missionSelector.value = initialState.m;
