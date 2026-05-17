@@ -259,6 +259,114 @@
         color: #d97056;
       }
 
+      .tabs {
+        display: flex;
+        gap: 0.25rem;
+        padding: 0 1.25rem;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .tab {
+        font: inherit;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 0.6rem 0.9rem;
+        cursor: pointer;
+      }
+
+      .tab[aria-selected="true"] {
+        color: var(--text);
+        border-bottom-color: var(--accent);
+      }
+
+      .tab:hover {
+        color: var(--text);
+      }
+
+      .panel {
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        padding: 0.85rem 1.25rem;
+      }
+
+      .panel[hidden] {
+        display: none;
+      }
+
+      .panel-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 1.25rem;
+      }
+
+      .reset-banner {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .field:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .toggle input:disabled + .track {
+        opacity: 0.45;
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn:disabled:hover {
+        filter: none;
+      }
+
+      .panel-yaml {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .yaml-editor {
+        width: 100%;
+        min-height: 240px;
+        resize: vertical;
+        background: var(--field);
+        color: var(--text);
+        border: 1px solid var(--border-bright);
+        border-radius: 5px;
+        padding: 0.65rem 0.75rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.8rem;
+        line-height: 1.5;
+        tab-size: 2;
+      }
+
+      .yaml-editor:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .yaml-error {
+        margin: 0;
+        font-size: 0.8rem;
+        color: #d97056;
+        white-space: pre-wrap;
+      }
+
       @media (max-width: 720px) {
         .app-header {
           gap: 0.85rem;
@@ -296,6 +404,54 @@
     <header class="app-header">
       <div class="wordmark">DEPLOYMENT<span>//</span>GRAPHICS</div>
 
+      <div class="actions">
+        <button id="copy-link" class="btn ghost" type="button">Copy link</button>
+        <details class="export-menu" id="export-menu">
+          <summary class="btn primary">Export ▾</summary>
+          <div class="menu">
+            <button id="export-png" type="button" disabled>PNG</button>
+            <button id="export-svg" type="button" disabled>SVG</button>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <nav class="tabs" role="tablist" aria-label="Editor mode">
+      <button
+        id="tab-controls"
+        class="tab"
+        type="button"
+        role="tab"
+        aria-selected="true"
+        aria-controls="panel-controls"
+      >
+        Controls
+      </button>
+      <button
+        id="tab-yaml"
+        class="tab"
+        type="button"
+        role="tab"
+        aria-selected="false"
+        aria-controls="panel-yaml"
+      >
+        YAML
+      </button>
+    </nav>
+
+    <section
+      id="panel-controls"
+      class="panel panel-controls"
+      role="tabpanel"
+      aria-labelledby="tab-controls"
+    >
+      <div id="reset-banner" class="reset-banner" hidden>
+        <span>Editing raw YAML — controls are disabled.</span>
+        <button id="reset-controls" class="btn ghost" type="button">
+          Reset to controls
+        </button>
+      </div>
+
       <div class="control">
         <label class="control-label" for="mission">Mission</label>
         <!-- Options are populated by app.js (see MISSIONS). -->
@@ -323,18 +479,25 @@
           </label>
         </div>
       </div>
+    </section>
 
-      <div class="actions">
-        <button id="copy-link" class="btn ghost" type="button">Copy link</button>
-        <details class="export-menu" id="export-menu">
-          <summary class="btn primary">Export ▾</summary>
-          <div class="menu">
-            <button id="export-png" type="button">PNG</button>
-            <button id="export-svg" type="button">SVG</button>
-          </div>
-        </details>
-      </div>
-    </header>
+    <section
+      id="panel-yaml"
+      class="panel panel-yaml"
+      role="tabpanel"
+      aria-labelledby="tab-yaml"
+      hidden
+    >
+      <p id="yaml-error" class="yaml-error" role="alert" hidden></p>
+      <textarea
+        id="yaml-editor"
+        class="yaml-editor"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        aria-label="Raw config YAML"
+      ></textarea>
+    </section>
 
     <main class="stage" id="stage" aria-live="polite"></main>
 
