@@ -35,6 +35,48 @@ describe("injectObjectiveDefs", () => {
     expect(circles[0].getAttribute("r")).toBe("3.79"); // influence ring (influence + real)
     expect(circles[1].getAttribute("r")).toBe("0.79"); // real marker
   });
+
+  it("omits the real circle when objective.real.draw is false", () => {
+    const noReal = {
+      ...config,
+      base: {
+        ...config.base,
+        objective: {
+          ...config.base.objective,
+          real: { ...config.base.objective.real, draw: false },
+        },
+      },
+    } as unknown as FullConfig;
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    injectObjectiveDefs(defs, noReal);
+    const circles = defs.querySelector("#objMarker")!.querySelectorAll("circle");
+    expect(circles.length).toBe(1);
+    expect(circles[0].getAttribute("r")).toBe("3.79"); // influence ring only
+  });
+
+  it("omits the influence ring when objective.influence.draw is false", () => {
+    const noInfluence = {
+      ...config,
+      base: {
+        ...config.base,
+        objective: {
+          ...config.base.objective,
+          influence: { ...config.base.objective.influence, draw: false },
+        },
+      },
+    } as unknown as FullConfig;
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    injectObjectiveDefs(defs, noInfluence);
+    const circles = defs.querySelector("#objMarker")!.querySelectorAll("circle");
+    expect(circles.length).toBe(1);
+    expect(circles[0].getAttribute("r")).toBe("0.79"); // real marker only
+  });
 });
 
 describe("makeObjectives", () => {

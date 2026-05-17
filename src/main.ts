@@ -63,7 +63,11 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
   }
 }
 
-function makeHalfwayLines(config: FullConfig): SVGElement {
+function makeHalfwayLines(config: FullConfig): SVGElement | null {
+  // Absent `draw` defaults to on; only an explicit `false` suppresses.
+  if (config.base.half_way_lines.draw === false) {
+    return null;
+  }
   const group = makeElement("g");
   const guideConfig = config.base.half_way_lines.svg_properties;
 
@@ -169,7 +173,11 @@ export function makeMissionCard(config: FullConfig): SVGElement {
   }
 
   svg.appendChild(makeObjectives(config));
-  svg.appendChild(makeHalfwayLines(config));
+
+  const halfwayLines = makeHalfwayLines(config);
+  if (halfwayLines) {
+    svg.appendChild(halfwayLines);
+  }
 
   if (hasSelectedLayout(config)) {
     const placements = getLayoutBuildings(

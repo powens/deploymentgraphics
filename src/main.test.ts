@@ -67,6 +67,25 @@ describe("makeMissionCard", () => {
   });
 });
 
+describe("makeHalfwayLines draw flag", () => {
+  it("draws the two halfway lines by default", () => {
+    const svg = makeMissionCard(config);
+    expect(svg.querySelectorAll("line").length).toBe(2);
+  });
+
+  it("omits the halfway lines when half_way_lines.draw is false", () => {
+    const noLines = {
+      ...config,
+      base: {
+        ...config.base,
+        half_way_lines: { ...config.base.half_way_lines, draw: false },
+      },
+    } as FullConfig;
+    const svg = makeMissionCard(noLines);
+    expect(svg.querySelectorAll("line").length).toBe(0);
+  });
+});
+
 describe("injectMissionCard", () => {
   it("appends the mission card to the root element", () => {
     const root = document.createElementNS(

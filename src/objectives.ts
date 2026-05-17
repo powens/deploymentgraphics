@@ -12,27 +12,31 @@ function makeObjectiveMarker(config: FullConfig) {
   const objGroup = makeElement("g");
   objGroup.setAttribute("id", "objMarker");
 
-  const objMarker = makeElement("circle");
-  objMarker.setAttribute("cx", "0");
-  objMarker.setAttribute("cy", "0");
-  applyAttributes(objMarker, objConfig.real.svg_properties);
+  // Absent `draw` defaults to on; only an explicit `false` suppresses.
+  if (objConfig.influence.draw !== false) {
+    const influenceRadius =
+      (objConfig.influence.radius ?? 0) + (objConfig.real.radius ?? 0);
 
-  if (!objConfig.real.radius) {
-    console.error(`objective real radius is falsy`);
+    const objRadius = makeElement("circle");
+    objRadius.setAttribute("cx", "0");
+    objRadius.setAttribute("cy", "0");
+    objRadius.setAttribute("r", `${influenceRadius}`);
+    applyAttributes(objRadius, objConfig.influence.svg_properties);
+    objGroup.appendChild(objRadius);
   }
-  objMarker.setAttribute("r", `${objConfig.real.radius ?? 0}`);
 
-  const influenceRadius =
-    (objConfig.influence.radius ?? 0) + (objConfig.real.radius ?? 0);
+  if (objConfig.real.draw !== false) {
+    if (!objConfig.real.radius) {
+      console.error(`objective real radius is falsy`);
+    }
 
-  const objRadius = makeElement("circle");
-  objRadius.setAttribute("cx", "0");
-  objRadius.setAttribute("cy", "0");
-  objRadius.setAttribute("r", `${influenceRadius}`);
-  applyAttributes(objRadius, objConfig.influence.svg_properties);
-
-  objGroup.appendChild(objRadius);
-  objGroup.appendChild(objMarker);
+    const objMarker = makeElement("circle");
+    objMarker.setAttribute("cx", "0");
+    objMarker.setAttribute("cy", "0");
+    objMarker.setAttribute("r", `${objConfig.real.radius ?? 0}`);
+    applyAttributes(objMarker, objConfig.real.svg_properties);
+    objGroup.appendChild(objMarker);
+  }
 
   return objGroup;
 }
