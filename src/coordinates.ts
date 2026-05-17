@@ -11,8 +11,13 @@ export function isCenterObjective(
   );
 }
 
+/**
+ * Fixed offset of the two hidden-supplies markers from the centre.
+ * Derived at angle 36.254deg: a = 3.5482 (y), b = 4.83842 (x).
+ */
+const HIDDEN_SUPPLIES_OFFSET: Coordinate = [4.83842, 3.5482];
+
 /** Fixed offset of the two hidden-supplies markers from the centre. */
 export function getHiddenSuppliesCoords(): Coordinate {
-  // Angle 36.254deg; a = 3.5482, b = 4.83842.
-  return [4.8, 3.5];
+  return HIDDEN_SUPPLIES_OFFSET;
 }

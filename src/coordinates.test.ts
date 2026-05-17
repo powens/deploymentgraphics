@@ -15,7 +15,7 @@ describe("isCenterObjective", () => {
 });
 
 describe("getHiddenSuppliesCoords", () => {
-  it("returns the fixed hidden-supplies offset", () => {
-    expect(getHiddenSuppliesCoords()).toEqual([4.8, 3.5]);
+  it("returns the precise hidden-supplies offset", () => {
+    expect(getHiddenSuppliesCoords()).toEqual([4.83842, 3.5482]);
   });
 });
