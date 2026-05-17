@@ -11,14 +11,7 @@ export type DrawAndProperties = {
   svg_properties: SVGProperties;
 };
 
-export type GuideLine = {
-  line: DrawAndProperties;
-  text: DrawAndProperties;
-};
-
 export type Objective = {
-  guides: GuideLine;
-  stylized: DrawAndProperties;
   real: DrawAndProperties;
   influence: DrawAndProperties;
 };

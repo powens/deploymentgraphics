@@ -14,32 +14,6 @@ half_way_lines:
     opacity: 0.5
 
 objective:
-  guides:
-    line:
-      draw: true
-      svg_properties:
-        stroke: black
-        stroke_dasharray: 2 2
-        stroke_width: 0.2
-
-  text:
-    draw: true
-    svg_properties:
-      font_size: 2
-      text_anchor: middle
-      dominant_baseline: middle
-      fill: stroke
-  line:
-    draw: true
-    svg_properties:
-      stroke_width: 0.2
-      stroke: black
-  stylized:
-    draw: true
-    svg_properties:
-      radius: 1.5
-      fill: black
-      stroke: none
   real:
     draw: true
     radius: 0.79 # 0.79 inches ~= 20mm

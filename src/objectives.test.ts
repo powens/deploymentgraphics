@@ -7,7 +7,6 @@ const config = {
   base: {
     size: { width: 60, height: 44 },
     objective: {
-      guides: { line: { draw: false, svg_properties: {} } },
       real: { radius: 0.79, svg_properties: { fill: "red" } },
       influence: { radius: 3, svg_properties: { fill: "black" } },
     },

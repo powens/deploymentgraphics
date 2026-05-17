@@ -9,7 +9,6 @@ const config = {
     background: { fill: "black" },
     half_way_lines: { draw: true, svg_properties: { stroke: "black" } },
     objective: {
-      guides: { line: { draw: false, svg_properties: {} } },
       real: { radius: 0.79, svg_properties: { fill: "red" } },
       influence: { radius: 3, svg_properties: { fill: "black" } },
     },
