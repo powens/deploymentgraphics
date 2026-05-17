@@ -33,10 +33,12 @@ deployment:
     svg_properties:
       fill: "#cf4b33"
       stroke: none
+      stroke_width: 0.4
   defender:
     svg_properties:
       fill: "#7d8b7f"
       stroke: none
+      stroke_width: 0.4
 
 building:
   draw: false

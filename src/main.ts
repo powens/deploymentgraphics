@@ -100,9 +100,7 @@ function makeDeploymentZone(
   dz.setAttribute("id", attackerDefender);
   const coordinateStr = playerConfig.deployment_zone.join(" ");
   dz.setAttribute("points", coordinateStr);
-  dz.setAttribute("fill", `${colorConfig.svg_properties.fill}`);
-  dz.setAttribute("stroke", `${colorConfig.svg_properties.stroke}`);
-  dz.setAttribute("stroke-width", "0.4");
+  applyAttributes(dz, colorConfig.svg_properties);
   if (playerConfig.mask_center) {
     dz.setAttribute("mask", "url(#centerMask)");
   }

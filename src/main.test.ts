@@ -114,6 +114,30 @@ describe("makeDeploymentZone styling", () => {
       expect(zone.getAttribute("stroke")).toBe("none");
     }
   });
+
+  it("takes the deployment-zone stroke-width from config", () => {
+    const widened = {
+      ...config,
+      base: {
+        ...config.base,
+        deployment: {
+          attacker: {
+            svg_properties: { fill: "#cf4b33", stroke: "none", stroke_width: 0.6 },
+          },
+          defender: {
+            svg_properties: { fill: "#7d8b7f", stroke: "none", stroke_width: 0.6 },
+          },
+        },
+      },
+    } as FullConfig;
+    const svg = makeMissionCard(widened);
+    expect(svg.querySelector("#attacker")?.getAttribute("stroke-width")).toBe(
+      "0.6",
+    );
+    expect(svg.querySelector("#defender")?.getAttribute("stroke-width")).toBe(
+      "0.6",
+    );
+  });
 });
 
 describe("injectCenterMask", () => {
