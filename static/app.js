@@ -145,6 +145,9 @@ function exportPng() {
   );
 
   const image = new Image();
+  image.onerror = () => {
+    URL.revokeObjectURL(svgUrl);
+  };
   image.onload = () => {
     const canvas = document.createElement("canvas");
     canvas.width = width;
