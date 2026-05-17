@@ -77,6 +77,7 @@ const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
 const exportPngButton = document.getElementById("export-png");
 const exportSvgButton = document.getElementById("export-svg");
+const copyLinkButton = document.getElementById("copy-link");
 
 function setStageMessage(text, isError = false) {
   const p = document.createElement("p");
@@ -162,6 +163,15 @@ function exportPng() {
   exportMenu.removeAttribute("open");
 }
 
+async function copyLink() {
+  await navigator.clipboard.writeText(window.location.href);
+  const original = copyLinkButton.textContent;
+  copyLinkButton.textContent = "Copied";
+  setTimeout(() => {
+    copyLinkButton.textContent = original;
+  }, 1500);
+}
+
 function onControlChange() {
   writeStateToUrl(controlState());
   redraw();
@@ -173,6 +183,7 @@ for (const el of [missionSelector, terrainSelector, hiddenSupplies, showGrid]) {
 
 exportSvgButton.addEventListener("click", exportSvg);
 exportPngButton.addEventListener("click", exportPng);
+copyLinkButton.addEventListener("click", copyLink);
 
 const initialState = readStateFromUrl();
 missionSelector.value = initialState.m;
