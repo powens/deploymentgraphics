@@ -33,12 +33,25 @@ function readStateFromUrl() {
 }
 
 function writeStateToUrl(state) {
+  // Only carry params that differ from the defaults, so a default-state
+  // link stays clean. readStateFromUrl restores any absent param to its
+  // default, making this round-trip safe.
   const params = new URLSearchParams();
-  params.set("m", state.m);
-  params.set("t", state.t);
-  params.set("hs", state.hs ? "1" : "0");
-  params.set("grid", state.grid ? "1" : "0");
-  window.history.replaceState(null, "", `?${params.toString()}`);
+  if (state.m !== DEFAULT_STATE.m) {
+    params.set("m", state.m);
+  }
+  if (state.t !== DEFAULT_STATE.t) {
+    params.set("t", state.t);
+  }
+  if (state.hs) {
+    params.set("hs", "1");
+  }
+  if (state.grid) {
+    params.set("grid", "1");
+  }
+  const query = params.toString();
+  const url = query ? `?${query}` : window.location.pathname;
+  window.history.replaceState(null, "", url);
 }
 
 function filenameStem(state) {
