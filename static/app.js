@@ -33,20 +33,27 @@ function writeStateToUrl(state) {
   window.history.replaceState(null, "", `?${params.toString()}`);
 }
 
-async function getMissionConfig(missionName) {
-  const response = await fetch(`./data/deployment/${missionName}.yml`);
+async function fetchYaml(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to load ${url} (${response.status})`);
+  }
   return jsyaml.load(await response.text());
 }
 
-async function getBaseConfig() {
-  const response = await fetch("./data/base.yml");
-  return jsyaml.load(await response.text());
-}
-
-async function getTerrain(terrainName) {
-  const response = await fetch("./data/terrain/gw.yml");
-  const obj = jsyaml.load(await response.text());
-  return { ...obj, layout_name: terrainName };
+async function buildConfig(state) {
+  const [missionConfig, baseConfig, terrainObj] = await Promise.all([
+    fetchYaml(`./data/deployment/${state.m}.yml`),
+    fetchYaml("./data/base.yml"),
+    fetchYaml("./data/terrain/gw.yml"),
+  ]);
+  missionConfig.hidden_supplies = state.hs;
+  baseConfig.grid.draw = state.grid;
+  return {
+    deployment: missionConfig,
+    base: baseConfig,
+    terrain: { ...terrainObj, layout_name: state.t },
+  };
 }
 
 const missionSelector = document.getElementById("mission");
@@ -54,6 +61,13 @@ const terrainSelector = document.getElementById("terrain");
 const hiddenSupplies = document.getElementById("hidden-supplies");
 const showGrid = document.getElementById("show-grid");
 const stage = document.getElementById("stage");
+
+function setStageMessage(text, isError = false) {
+  const p = document.createElement("p");
+  p.className = isError ? "stage-msg error" : "stage-msg";
+  p.textContent = text;
+  stage.replaceChildren(p);
+}
 
 function controlState() {
   return {
@@ -65,21 +79,14 @@ function controlState() {
 }
 
 async function redraw() {
-  const missionConfig = await getMissionConfig(missionSelector.value);
-  const baseConfig = await getBaseConfig();
-  const terrainConfig = await getTerrain(terrainSelector.value);
-
-  missionConfig.hidden_supplies = hiddenSupplies.checked;
-  baseConfig.grid.draw = showGrid.checked;
-
-  const config = {
-    deployment: missionConfig,
-    base: baseConfig,
-    terrain: terrainConfig,
-  };
-
-  stage.replaceChildren();
-  injectMissionCard(stage, config);
+  setStageMessage("Rendering…");
+  try {
+    const config = await buildConfig(controlState());
+    stage.replaceChildren();
+    injectMissionCard(stage, config);
+  } catch (error) {
+    setStageMessage(error.message, true);
+  }
 }
 
 function onControlChange() {
