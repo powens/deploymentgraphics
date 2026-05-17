@@ -78,13 +78,22 @@ function controlState() {
   };
 }
 
+let renderGeneration = 0;
+
 async function redraw() {
+  const generation = ++renderGeneration;
   setStageMessage("Rendering…");
   try {
     const config = await buildConfig(controlState());
+    if (generation !== renderGeneration) {
+      return;
+    }
     stage.replaceChildren();
     injectMissionCard(stage, config);
   } catch (error) {
+    if (generation !== renderGeneration) {
+      return;
+    }
     setStageMessage(error.message, true);
   }
 }
