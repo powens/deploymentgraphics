@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
     <script
@@ -7,7 +7,6 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script type="text/javascript" type="module" src="bundle.js"></script>
 
     <style>
       .overlayImg {
@@ -36,31 +35,22 @@
 
       <label for="terrain">Terrain</label>
       <select id="terrain">
-        <option value="1">GW Pariah Layout 1</option>
-        <option value="2">GW Pariah Layout 2</option>
-        <option value="3">GW Pariah Layout 3</option>
-        <option value="4">GW Pariah Layout 4</option>
-        <option value="4">GW Pariah Layout 5</option>
-        <option value="4">GW Pariah Layout 6</option>
-        <option value="4">GW Pariah Layout 7</option>
-        <option value="4">GW Pariah Layout 8</option>
+        <option value="1">GW Layout 1</option>
+        <option value="2">GW Layout 2</option>
       </select>
 
       <label for="hidden-supplies">Hidden Supplies</label>
       <input id="hidden-supplies" type="checkbox" />
 
-      <label for="render-buildings">Render buildings</label>
-      <input id="render-buildings" type="checkbox" />
-
       <label for="show-grid">Show 1x1 Grid</label>
       <input id="show-grid" type="checkbox" />
     </section>
 
-    <!-- <img class="overlayImg" src="terrain/layout3.png" /> -->
-
     <div id="graphic"></div>
 
     <script type="module">
+      import { injectMissionCard } from "./bundle.js";
+
       async function getMissionConfig(missionName) {
         const response = await fetch(`./data/deployment/${missionName}.yml`);
         const body = await response.text();
@@ -85,22 +75,20 @@
 
       function clearCanvas() {
         const container = document.getElementById("graphic");
-        container.innerHTML = "";
+        container.replaceChildren();
       }
 
       async function loadAndDrawMission(
         missionName,
         terrainName,
         isHiddenSupplies,
-        renderBuildings,
-        showGrid
+        showGrid,
       ) {
         const missionConfig = await getMissionConfig(missionName);
         const terrainConfig = await getTerrain(terrainName);
         const baseConfig = await getBaseConfig();
 
         missionConfig["hidden_supplies"] = isHiddenSupplies;
-        baseConfig["building"]["render"] = renderBuildings;
         baseConfig["grid"]["draw"] = showGrid;
 
         const config = {
@@ -111,13 +99,12 @@
 
         console.log(config);
         const root = document.getElementById("graphic");
-        missionCard.injectMissionCard(root, config);
+        injectMissionCard(root, config);
       }
 
       const missionSelector = document.getElementById("mission");
       const terrainSelector = document.getElementById("terrain");
       const hiddenSupplies = document.getElementById("hidden-supplies");
-      const renderBuildings = document.getElementById("render-buildings");
       const showGrid = document.getElementById("show-grid");
 
       async function redraw() {
@@ -126,8 +113,7 @@
           missionSelector.value,
           terrainSelector.value,
           hiddenSupplies.checked,
-          renderBuildings.checked,
-          showGrid.checked
+          showGrid.checked,
         );
       }
 
@@ -137,7 +123,6 @@
       missionSelector.onchange = onCheckboxChange;
       terrainSelector.onchange = onCheckboxChange;
       hiddenSupplies.onchange = onCheckboxChange;
-      renderBuildings.onchange = onCheckboxChange;
       showGrid.onchange = onCheckboxChange;
 
       redraw();

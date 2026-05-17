@@ -7,8 +7,7 @@ export default {
   input: "src/v2/main.ts", // v2 fork entry point
   output: {
     file: "dist/bundle.js",
-    format: "iife",
-    name: "missionCard",
+    format: "es",
   },
   treeshake: false,
 
