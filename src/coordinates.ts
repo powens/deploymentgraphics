@@ -1,33 +1,4 @@
-import type { AnchorLocation, Coordinate, FullConfig } from "./types";
-
-/** Absolute position of a named canvas corner. */
-export function getAnchor(
-  config: FullConfig,
-  anchor: AnchorLocation,
-): Coordinate {
-  switch (anchor) {
-    case "TOP_LEFT":
-      return [0, 0];
-    case "TOP_RIGHT":
-      return [config.base.size.width, 0];
-    case "BOTTOM_LEFT":
-      return [0, config.base.size.height];
-    case "BOTTOM_RIGHT":
-      return [config.base.size.width, config.base.size.height];
-    default:
-      return [0, 0];
-  }
-}
-
-/** Translates a coordinate by the origin of the named anchor (default TL). */
-export function getCoordinates(
-  config: FullConfig,
-  coordinate: Coordinate,
-  anchor: AnchorLocation = "TOP_LEFT",
-): Coordinate {
-  const origin = getAnchor(config, anchor);
-  return [coordinate[0] + origin[0], coordinate[1] + origin[1]];
-}
+import type { Coordinate, FullConfig } from "./types";
 
 /** True when an objective sits at the battlefield centre. */
 export function isCenterObjective(

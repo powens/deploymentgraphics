@@ -1,8 +1,4 @@
-import {
-  getCoordinates,
-  getHiddenSuppliesCoords,
-  isCenterObjective,
-} from "./coordinates";
+import { getHiddenSuppliesCoords, isCenterObjective } from "./coordinates";
 import { applyAttributes, makeElement } from "./dom-helpers";
 import type { FullConfig } from "./types";
 
@@ -68,9 +64,8 @@ export function makeObjectives(config: FullConfig) {
       objectiveGroup.appendChild(o2);
     } else {
       const o = makeElement("use");
-      const translated = getCoordinates(config, coordinates);
-      o.setAttribute("x", `${translated[0]}`);
-      o.setAttribute("y", `${translated[1]}`);
+      o.setAttribute("x", `${coordinates[0]}`);
+      o.setAttribute("y", `${coordinates[1]}`);
       o.setAttribute("href", "#objMarker");
       objectiveGroup.appendChild(o);
     }

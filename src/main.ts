@@ -1,5 +1,4 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings";
-import { getCoordinates } from "./coordinates";
 import { applyAttributes, makeElement } from "./dom-helpers";
 import { injectObjectiveDefs, makeObjectives } from "./objectives";
 import { getLayoutBuildings } from "./terrain-config";
@@ -84,9 +83,7 @@ function makeDeploymentZone(
   const colorConfig = config.base.deployment[attackerDefender];
   const dz = makeElement("polygon");
   dz.setAttribute("id", attackerDefender);
-  const coordinateStr = playerConfig.deployment_zone
-    .map((coords) => getCoordinates(config, coords))
-    .join(" ");
+  const coordinateStr = playerConfig.deployment_zone.join(" ");
   dz.setAttribute("points", coordinateStr);
   dz.setAttribute("fill", `${colorConfig.svg_properties.fill}`);
   dz.setAttribute("stroke", `${colorConfig.svg_properties.stroke}`);

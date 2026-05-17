@@ -2,11 +2,6 @@ import type { TerrainConfig } from "./terrain-config";
 
 export type Coordinate = [number, number];
 export type SVGProperties = Record<string, string | number>;
-export type AnchorLocation =
-  | "TOP_LEFT"
-  | "TOP_RIGHT"
-  | "BOTTOM_LEFT"
-  | "BOTTOM_RIGHT";
 
 export type Size = { width: number; height: number };
 
