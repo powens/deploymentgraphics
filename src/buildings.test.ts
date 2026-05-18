@@ -210,6 +210,20 @@ describe("path templates", () => {
     );
   });
 
+  it("injectTemplateDefs applies svg properties to a path template", () => {
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    const templates: Record<string, PathTemplate> = {
+      bastion: { width: 4, height: 4, start, segments },
+    };
+    injectTemplateDefs(templates, defs, { fill: "#808080" });
+    expect(defs.querySelector("#template-bastion")!.getAttribute("fill")).toBe(
+      "#808080",
+    );
+  });
+
   it("makeBuildings emits a <use> referencing a path template", () => {
     const templates: Record<string, PathTemplate> = {
       bastion: {
