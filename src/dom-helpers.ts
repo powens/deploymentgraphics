@@ -1,4 +1,4 @@
-import type { SVGProperties } from "./types";
+import type { SVGProperties } from "./types.js";
 
 /**
  * Returns a svg element of type typename

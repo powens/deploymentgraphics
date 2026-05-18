@@ -1,0 +1,63 @@
+import type { BaseConfig } from "../types.js";
+
+/**
+ * Default board styling: a 60x44 inch board with parchment background,
+ * GW-style deployment colours, dashed halfway lines, and a faint grid.
+ *
+ * Transcribed from `static/data/base.yml`; `src/presets/presets.test.ts`
+ * asserts the two stay in sync.
+ */
+export const baseConfig: BaseConfig = {
+  size: { width: 60, height: 44 },
+  background: { fill: "#f4f1e8" },
+  half_way_lines: {
+    draw: true,
+    svg_properties: {
+      stroke: "black",
+      stroke_dasharray: "0.5 0.5",
+      stroke_width: 0.2,
+      opacity: 0.5,
+    },
+  },
+  objective: {
+    real: {
+      draw: true,
+      radius: 0.79, // 0.79 inches ~= 20mm
+      svg_properties: { fill: "red", stroke: "none" },
+    },
+    influence: {
+      draw: true,
+      radius: 3.0,
+      svg_properties: { fill: "black", fill_opacity: 0.3, stroke: "none" },
+    },
+  },
+  deployment: {
+    attacker: {
+      svg_properties: { fill: "#cf4b33", stroke: "none", stroke_width: 0.4 },
+    },
+    defender: {
+      svg_properties: { fill: "#7d8b7f", stroke: "none", stroke_width: 0.4 },
+    },
+  },
+  building: {
+    draw: false,
+    svg_properties: { opacity: 1 },
+    template: {
+      "vector-effect": "non-scaling-stroke",
+      stroke: "black",
+      stroke_width: 1.2,
+      fill: "#808080",
+      opacity: 1,
+    },
+    structure: { fill: "blue", stroke: "blue", stroke_width: 0.4 },
+  },
+  grid: {
+    draw: true,
+    svg_properties: {
+      opacity: 0.3,
+      stroke: "black",
+      stroke_width: 0.15,
+      stroke_dasharray: "0.1 0.1",
+    },
+  },
+};

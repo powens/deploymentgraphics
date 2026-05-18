@@ -1,6 +1,6 @@
-import { getHiddenSuppliesCoords, isCenterObjective } from "./coordinates";
-import { applyAttributes, makeElement } from "./dom-helpers";
-import type { FullConfig } from "./types";
+import { getHiddenSuppliesCoords, isCenterObjective } from "./coordinates.js";
+import { applyAttributes, makeElement } from "./dom-helpers.js";
+import type { FullConfig } from "./types.js";
 
 export function injectObjectiveDefs(defs: SVGElement, config: FullConfig) {
   const objMarker = makeObjectiveMarker(config);

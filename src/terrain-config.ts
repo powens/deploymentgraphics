@@ -1,4 +1,4 @@
-import type { BuildingPlacement, Template } from "./building-coordinates";
+import type { BuildingPlacement, Template } from "./building-coordinates.js";
 
 /** One numbered layout: an ordered list of building placements. */
 export type TerrainLayout = {
