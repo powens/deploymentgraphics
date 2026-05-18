@@ -4,7 +4,11 @@ import {
   resolveBuilding,
   templateBounds,
 } from "./building-coordinates";
-import type { PolygonTemplate } from "./building-coordinates";
+import type {
+  PolygonTemplate,
+  PathTemplate,
+  Template,
+} from "./building-coordinates";
 
 const canvas = { width: 60, height: 44 };
 
@@ -268,5 +272,80 @@ describe("resolveBuilding with a polygon template", () => {
         canvas,
       ),
     ).toThrow(/template edge/i);
+  });
+});
+
+describe("templateBounds with a path template", () => {
+  const pathTemplate: PathTemplate = {
+    width: 8,
+    height: 8,
+    start: [4, 0],
+    segments: [
+      { cubic: [8, 4], controls: [[6, 0], [8, 2]] },
+      { line: [4, 8] },
+      { quad: [0, 4], control: [0, 8] },
+      { line: [4, 0] },
+    ],
+  };
+
+  it("returns the declared size for a path template", () => {
+    expect(templateBounds(pathTemplate, "path")).toEqual({
+      width: 8,
+      height: 8,
+    });
+  });
+
+  it("throws on a non-positive width or height", () => {
+    expect(() => templateBounds({ ...pathTemplate, width: 0 }, "path")).toThrow(
+      /positive width and height/i,
+    );
+  });
+
+  it("throws when start is missing", () => {
+    const noStart = {
+      width: 8,
+      height: 8,
+      segments: pathTemplate.segments,
+    } as unknown as Template;
+    expect(() => templateBounds(noStart, "path")).toThrow(/start point/i);
+  });
+
+  it("throws on fewer than 2 segments", () => {
+    expect(() =>
+      templateBounds(
+        { ...pathTemplate, segments: [{ line: [4, 0] }] },
+        "path",
+      ),
+    ).toThrow(/at least 2 segments/i);
+  });
+});
+
+describe("resolveBuilding with a path template", () => {
+  const pathTemplates: Record<string, PathTemplate> = {
+    bastion: {
+      width: 8,
+      height: 8,
+      start: [4, 0],
+      segments: [
+        { cubic: [8, 4], controls: [[6, 0], [8, 2]] },
+        { cubic: [4, 8], controls: [[8, 6], [6, 8]] },
+        { cubic: [0, 4], controls: [[2, 8], [0, 6]] },
+        { cubic: [4, 0], controls: [[0, 2], [2, 0]] },
+      ],
+    },
+  };
+
+  it("places a path template by pinning its declared bounding-box corners", () => {
+    // The declared bbox is 8x8, so TL->TR must span 8.
+    const result = resolveBuilding(
+      { type: "bastion", mirror: false, corners: { TL: [10, 5], TR: [18, 5] } },
+      pathTemplates,
+      canvas,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].templateName).toBe("bastion");
+    expect(result[0].translate[0]).toBeCloseTo(10);
+    expect(result[0].translate[1]).toBeCloseTo(5);
+    expect(result[0].rotation).toBeCloseTo(0);
   });
 });
