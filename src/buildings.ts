@@ -3,14 +3,46 @@ import {
   resolveBuilding,
   type BuildingPlacement,
   type CanvasSize,
+  type PathSegment,
+  type Point,
   type Template,
 } from "./building-coordinates";
 import type { SVGProperties } from "./types";
 
 /**
- * Appends one shape definition per template into `defs`: a `<polygon>` for
- * a polygon template, a `<rect>` for a rectangle. Each carries the id
- * `template-<name>` so a building `<use>` can reference it.
+ * Builds the SVG path `d` data for a closed footprint: a move to `start`,
+ * one command per segment (line / quadratic / cubic Bézier), then `Z`.
+ */
+export function segmentsToPathData(
+  start: Point,
+  segments: PathSegment[],
+): string {
+  let d = `M ${start[0]} ${start[1]}`;
+  for (const segment of segments) {
+    if ("line" in segment) {
+      d += ` L ${segment.line[0]} ${segment.line[1]}`;
+    } else if ("quad" in segment) {
+      const { quad, control } = segment;
+      d += ` Q ${control[0]} ${control[1]} ${quad[0]} ${quad[1]}`;
+    } else if ("cubic" in segment) {
+      const { cubic, controls } = segment;
+      d +=
+        ` C ${controls[0][0]} ${controls[0][1]} ` +
+        `${controls[1][0]} ${controls[1][1]} ${cubic[0]} ${cubic[1]}`;
+    } else {
+      throw new Error(
+        `unrecognized path segment: ${JSON.stringify(segment)}`,
+      );
+    }
+  }
+  return `${d} Z`;
+}
+
+/**
+ * Appends one shape definition per template into `defs`: a `<path>` for a
+ * curved path template, a `<polygon>` for a polygon, a `<rect>` for a
+ * rectangle. Each carries the id `template-<name>` so a building `<use>`
+ * can reference it.
  */
 export function injectTemplateDefs(
   templates: Record<string, Template>,
@@ -19,7 +51,13 @@ export function injectTemplateDefs(
 ): void {
   for (const [name, template] of Object.entries(templates)) {
     let shape: SVGElement;
-    if ("points" in template) {
+    if ("segments" in template) {
+      shape = makeElement("path");
+      shape.setAttribute(
+        "d",
+        segmentsToPathData(template.start, template.segments),
+      );
+    } else if ("points" in template) {
       shape = makeElement("polygon");
       shape.setAttribute(
         "points",

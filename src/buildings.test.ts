@@ -1,6 +1,15 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
-import { makeBuildings, injectTemplateDefs } from "./buildings";
+import {
+  makeBuildings,
+  injectTemplateDefs,
+  segmentsToPathData,
+} from "./buildings";
+import type {
+  Point,
+  PathSegment,
+  PathTemplate,
+} from "./building-coordinates";
 
 const canvas = { width: 60, height: 44 };
 const templates = {
@@ -160,6 +169,63 @@ describe("polygon templates", () => {
     );
     expect(group.querySelector("use")!.getAttribute("href")).toBe(
       "#template-ruins",
+    );
+  });
+});
+
+describe("path templates", () => {
+  const start: Point = [0, 0];
+  const segments: PathSegment[] = [
+    { line: [4, 0] },
+    { quad: [4, 4], control: [6, 2] },
+    { cubic: [0, 4], controls: [[3, 6], [1, 5]] },
+  ];
+
+  it("segmentsToPathData builds an M/L/Q/C/Z path string", () => {
+    expect(segmentsToPathData(start, segments)).toBe(
+      "M 0 0 L 4 0 Q 6 2 4 4 C 3 6 1 5 0 4 Z",
+    );
+  });
+
+  it("segmentsToPathData throws on an unrecognized segment", () => {
+    expect(() =>
+      segmentsToPathData(start, [{ bogus: [1, 1] }] as unknown as PathSegment[]),
+    ).toThrow(/unrecognized/i);
+  });
+
+  it("injectTemplateDefs emits a <path> for a path template", () => {
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    const templates: Record<string, PathTemplate> = {
+      bastion: { width: 4, height: 4, start, segments },
+    };
+    injectTemplateDefs(templates, defs);
+    const path = defs.querySelector("#template-bastion");
+    expect(path).not.toBeNull();
+    expect(path!.tagName).toBe("path");
+    expect(path!.getAttribute("d")).toBe(
+      "M 0 0 L 4 0 Q 6 2 4 4 C 3 6 1 5 0 4 Z",
+    );
+  });
+
+  it("makeBuildings emits a <use> referencing a path template", () => {
+    const templates: Record<string, PathTemplate> = {
+      bastion: {
+        width: 8,
+        height: 8,
+        start: [0, 0],
+        segments: [{ line: [8, 0] }, { line: [8, 8] }, { line: [0, 8] }],
+      },
+    };
+    const group = makeBuildings(
+      [{ type: "bastion", mirror: false, corners: { TL: [10, 5], TR: [18, 5] } }],
+      templates,
+      canvas,
+    );
+    expect(group.querySelector("use")!.getAttribute("href")).toBe(
+      "#template-bastion",
     );
   });
 });
