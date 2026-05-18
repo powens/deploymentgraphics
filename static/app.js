@@ -178,6 +178,9 @@ async function renderFromControls() {
 function renderFromYaml() {
   // Cancel any in-flight controls render so its result cannot land late.
   ++renderGeneration;
+  // Disable export until this render succeeds: an invalid edit must not
+  // leave the buttons pointing at a card that no longer matches the YAML.
+  setExportEnabled(false);
   let config;
   try {
     config = jsyaml.load(yamlEditor.value);
@@ -221,6 +224,11 @@ async function openYamlTab() {
   // In controls mode, refill the editor with the current merged config.
   try {
     const config = await buildConfig(controlState());
+    // The user may have started editing during the fetch, promoting the
+    // mode to yaml — in that case keep their edits, do not overwrite them.
+    if (mode === "yaml") {
+      return;
+    }
     yamlEditor.value = jsyaml.dump(config);
     setYamlError(null);
   } catch (error) {
