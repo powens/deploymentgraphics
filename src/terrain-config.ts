@@ -6,9 +6,10 @@ export type TerrainLayout = {
 };
 
 /**
- * A terrain file as parsed from YAML: a set of named rectangle templates
- * and a set of numbered layouts. Layout keys are strings because YAML
- * integer keys become string object properties once loaded.
+ * A terrain file as parsed from YAML: a set of named building templates
+ * (rectangles or polygon footprints) and a set of numbered layouts.
+ * Layout keys are strings because YAML integer keys become string object
+ * properties once loaded.
  */
 export type TerrainConfig = {
   templates: Record<string, Template>;
