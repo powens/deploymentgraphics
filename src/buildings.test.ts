@@ -94,3 +94,72 @@ describe("svg property styling", () => {
     expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBeNull();
   });
 });
+
+describe("polygon templates", () => {
+  it("injectTemplateDefs emits a <polygon> for a polygon template", () => {
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    injectTemplateDefs(
+      {
+        ruins: {
+          points: [
+            [0, 0],
+            [7, 0],
+            [7, 11],
+            [0, 11],
+          ],
+        },
+      },
+      defs,
+    );
+    const poly = defs.querySelector("#template-ruins");
+    expect(poly).not.toBeNull();
+    expect(poly!.tagName).toBe("polygon");
+    expect(poly!.getAttribute("points")).toBe("0,0 7,0 7,11 0,11");
+  });
+
+  it("injectTemplateDefs applies svg properties to a polygon", () => {
+    const defs = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "defs",
+    );
+    injectTemplateDefs(
+      {
+        ruins: {
+          points: [
+            [0, 0],
+            [7, 0],
+            [0, 11],
+          ],
+        },
+      },
+      defs,
+      { fill: "#808080" },
+    );
+    expect(defs.querySelector("#template-ruins")!.getAttribute("fill")).toBe(
+      "#808080",
+    );
+  });
+
+  it("makeBuildings emits a <use> referencing a polygon template", () => {
+    const group = makeBuildings(
+      [{ type: "ruins", mirror: false, corners: { TL: [10, 5], TR: [17, 5] } }],
+      {
+        ruins: {
+          points: [
+            [0, 0],
+            [7, 0],
+            [7, 11],
+            [0, 11],
+          ],
+        },
+      },
+      canvas,
+    );
+    expect(group.querySelector("use")!.getAttribute("href")).toBe(
+      "#template-ruins",
+    );
+  });
+});

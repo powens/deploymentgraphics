@@ -3,34 +3,47 @@ import {
   resolveBuilding,
   type BuildingPlacement,
   type CanvasSize,
-  type RectTemplate,
+  type Template,
 } from "./building-coordinates";
 import type { SVGProperties } from "./types";
 
-/** Appends one <rect> template definition per template into `defs`. */
+/**
+ * Appends one shape definition per template into `defs`: a `<polygon>` for
+ * a polygon template, a `<rect>` for a rectangle. Each carries the id
+ * `template-<name>` so a building `<use>` can reference it.
+ */
 export function injectTemplateDefs(
-  templates: Record<string, RectTemplate>,
+  templates: Record<string, Template>,
   defs: SVGElement,
   svgProperties?: SVGProperties,
 ): void {
   for (const [name, template] of Object.entries(templates)) {
-    const rect = makeElement("rect");
-    rect.setAttribute("id", `template-${name}`);
-    rect.setAttribute("x", "0");
-    rect.setAttribute("y", "0");
-    rect.setAttribute("width", `${template.width}`);
-    rect.setAttribute("height", `${template.height}`);
-    if (svgProperties) {
-      applyAttributes(rect, svgProperties);
+    let shape: SVGElement;
+    if ("points" in template) {
+      shape = makeElement("polygon");
+      shape.setAttribute(
+        "points",
+        template.points.map((p) => `${p[0]},${p[1]}`).join(" "),
+      );
+    } else {
+      shape = makeElement("rect");
+      shape.setAttribute("x", "0");
+      shape.setAttribute("y", "0");
+      shape.setAttribute("width", `${template.width}`);
+      shape.setAttribute("height", `${template.height}`);
     }
-    defs.appendChild(rect);
+    shape.setAttribute("id", `template-${name}`);
+    if (svgProperties) {
+      applyAttributes(shape, svgProperties);
+    }
+    defs.appendChild(shape);
   }
 }
 
 /** Builds a <g> of <use> elements, one per resolved (and mirrored) building. */
 export function makeBuildings(
   placements: BuildingPlacement[],
-  templates: Record<string, RectTemplate>,
+  templates: Record<string, Template>,
   canvas: CanvasSize,
   svgProperties?: SVGProperties,
 ): SVGElement {
