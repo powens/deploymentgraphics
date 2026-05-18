@@ -30,6 +30,55 @@ export function resolveCorner(
 
 export type RectTemplate = { width: number; height: number };
 
+/** A polygon footprint: a closed ring of template-local points. */
+export type PolygonTemplate = { points: Point[] };
+
+/** A building template — either a rectangle or a polygon footprint. */
+export type Template = RectTemplate | PolygonTemplate;
+
+/**
+ * The bounding-box size of a template. A rectangle returns its stored
+ * size; a polygon's size is derived from its points (the bbox origin is
+ * required to be 0,0, so width/height are the maximum x/y). Throws when a
+ * template is neither a valid rectangle nor a valid polygon.
+ */
+export function templateBounds(
+  template: Template,
+  name: string,
+): { width: number; height: number } {
+  if (
+    "points" in template &&
+    ("width" in template || "height" in template)
+  ) {
+    throw new Error(
+      `template ${name}: defines both polygon points and width/height`,
+    );
+  }
+  if ("points" in template) {
+    const { points } = template;
+    if (!Array.isArray(points) || points.length < 3) {
+      throw new Error(`template ${name}: polygon needs at least 3 points`);
+    }
+    const xs = points.map((p) => p[0]);
+    const ys = points.map((p) => p[1]);
+    const minX = Math.min(...xs);
+    const minY = Math.min(...ys);
+    if (minX !== 0 || minY !== 0) {
+      throw new Error(
+        `template ${name}: polygon bounding box must start at 0,0 ` +
+          `(got ${minX},${minY})`,
+      );
+    }
+    return { width: Math.max(...xs), height: Math.max(...ys) };
+  }
+  if ("width" in template && "height" in template) {
+    return { width: template.width, height: template.height };
+  }
+  throw new Error(
+    `template ${name}: must define width/height or polygon points`,
+  );
+}
+
 export type BuildingPlacement = {
   type: string;
   corners: Partial<Record<Anchor, CornerSpec>>; // exactly 2 entries

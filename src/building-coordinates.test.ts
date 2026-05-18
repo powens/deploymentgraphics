@@ -1,5 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { resolveCorner, resolveBuilding } from "./building-coordinates";
+import {
+  resolveCorner,
+  resolveBuilding,
+  templateBounds,
+} from "./building-coordinates";
+import type { PolygonTemplate } from "./building-coordinates";
 
 const canvas = { width: 60, height: 44 };
 
@@ -170,5 +175,60 @@ describe("resolveBuilding validation", () => {
         canvas,
       ),
     ).not.toThrow();
+  });
+});
+
+describe("templateBounds", () => {
+  it("returns the stored size for a rectangle template", () => {
+    expect(templateBounds({ width: 4, height: 6 }, "rect")).toEqual({
+      width: 4,
+      height: 6,
+    });
+  });
+
+  it("derives the bounding box from polygon points", () => {
+    const poly: PolygonTemplate = {
+      points: [
+        [0, 0],
+        [7, 0],
+        [7, 11],
+        [0, 11],
+      ],
+    };
+    expect(templateBounds(poly, "poly")).toEqual({ width: 7, height: 11 });
+  });
+
+  it("derives the bounding box from an irregular polygon", () => {
+    const poly: PolygonTemplate = {
+      points: [
+        [1, 0],
+        [7, 2],
+        [5, 11],
+        [0, 6],
+      ],
+    };
+    expect(templateBounds(poly, "poly")).toEqual({ width: 7, height: 11 });
+  });
+
+  it("throws on a polygon with fewer than 3 points", () => {
+    const poly: PolygonTemplate = {
+      points: [
+        [0, 0],
+        [4, 0],
+      ],
+    };
+    expect(() => templateBounds(poly, "poly")).toThrow(/at least 3 points/i);
+  });
+
+  it("throws when the polygon bounding box does not start at 0,0", () => {
+    const poly: PolygonTemplate = {
+      points: [
+        [2, 1],
+        [9, 1],
+        [9, 12],
+        [2, 12],
+      ],
+    };
+    expect(() => templateBounds(poly, "poly")).toThrow(/0,0/);
   });
 });
