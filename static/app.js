@@ -178,9 +178,8 @@ async function renderFromControls() {
 function renderFromYaml() {
   // Cancel any in-flight controls render so its result cannot land late.
   ++renderGeneration;
-  // Disable export until this render succeeds: an invalid edit must not
-  // leave the buttons pointing at a card that no longer matches the YAML.
-  setExportEnabled(false);
+  // Export is not touched on the error paths below: a bad edit keeps the
+  // last good render on the stage, and that card stays exportable.
   let config;
   try {
     config = jsyaml.load(yamlEditor.value);
@@ -217,6 +216,9 @@ function updateModeUi() {
 }
 
 async function openYamlTab() {
+  // Clear any error left over from a previous yaml session up front, so it
+  // does not linger above the editor while the config below is fetched.
+  setYamlError(null);
   // In yaml mode the editor already holds the user's edits — keep them.
   if (mode === "yaml") {
     return;
@@ -424,7 +426,8 @@ document.addEventListener("keydown", (event) => {
 function start() {
   setExportEnabled(false);
 
-  if (urlHasControls()) {
+  const fromUrl = urlHasControls();
+  if (fromUrl) {
     // An explicit URL (e.g. a shared link) wins over any saved state.
     applyControls(readControlsFromUrl(MISSION_IDS, TERRAIN_IDS));
   } else {
@@ -442,7 +445,12 @@ function start() {
 
   updateModeUi();
   syncUrl();
-  persist();
+  // A URL-driven load is read-only for persistence: it must not overwrite
+  // the visitor's saved session (which may hold a YAML override). Their
+  // own later edits still persist normally.
+  if (!fromUrl) {
+    persist();
+  }
 
   if (mode === "yaml") {
     activateTab("yaml");
