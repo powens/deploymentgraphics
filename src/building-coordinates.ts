@@ -84,8 +84,10 @@ export function templateBounds(
         `template ${name}: path needs a positive width and height`,
       );
     }
-    if (!start) {
-      throw new Error(`template ${name}: path needs a start point`);
+    if (!Array.isArray(start) || start.length !== 2) {
+      throw new Error(
+        `template ${name}: path needs a [number, number] start point`,
+      );
     }
     if (!Array.isArray(segments) || segments.length < 2) {
       throw new Error(`template ${name}: path needs at least 2 segments`);

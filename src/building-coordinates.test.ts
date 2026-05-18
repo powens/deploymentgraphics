@@ -310,6 +310,11 @@ describe("templateBounds with a path template", () => {
     expect(() => templateBounds(noStart, "path")).toThrow(/start point/i);
   });
 
+  it("throws when start is not a 2-number point", () => {
+    const badStart = { ...pathTemplate, start: [] } as unknown as Template;
+    expect(() => templateBounds(badStart, "path")).toThrow(/start point/i);
+  });
+
   it("throws on fewer than 2 segments", () => {
     expect(() =>
       templateBounds(
