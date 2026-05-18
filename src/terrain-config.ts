@@ -1,4 +1,4 @@
-import type { BuildingPlacement, RectTemplate } from "./building-coordinates";
+import type { BuildingPlacement, Template } from "./building-coordinates";
 
 /** One numbered layout: an ordered list of building placements. */
 export type TerrainLayout = {
@@ -6,12 +6,13 @@ export type TerrainLayout = {
 };
 
 /**
- * A terrain file as parsed from YAML: a set of named rectangle templates
- * and a set of numbered layouts. Layout keys are strings because YAML
- * integer keys become string object properties once loaded.
+ * A terrain file as parsed from YAML: a set of named building templates
+ * (rectangles, polygon footprints, or curved path footprints) and a set
+ * of numbered layouts. Layout keys are strings because YAML integer keys
+ * become string object properties once loaded.
  */
 export type TerrainConfig = {
-  templates: Record<string, RectTemplate>;
+  templates: Record<string, Template>;
   layout: Record<string, TerrainLayout>;
 };
 

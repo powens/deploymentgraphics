@@ -1,17 +1,39 @@
 # Placeholder terrain layouts for the v2 building-coordinate schema.
-# These rectangles are illustrative, not official GW layouts — replace
-# them when transcribing real terrain.
+# These shapes are illustrative, not official GW layouts — replace them
+# when transcribing real terrain.
+#
+# A template is a rectangle (`width`/`height`), a polygon footprint
+# (`points`: a closed ring of template-local [x, y] inches, bounding box
+# starting at 0,0; width/height derived), or a curved path footprint
+# (`start` plus `segments` of line/quad/cubic Béziers, with a declared
+# `width`/`height` bounding box).
 #
 # Each building pins two of its corners (keyed by the building corner:
-# TL/TR/BL/BR) to inward distances from a canvas corner — by default the
-# canvas top-left. A building-level `from:` or a 3rd value inside a
-# corner selects a different canvas corner. Buildings are mirrored 180
-# degrees through the canvas centre unless `mirror: false`.
+# TL/TR/BL/BR — the template's bounding-box corners) to inward distances
+# from a canvas corner — by default the canvas top-left. A building-level
+# `from:` or a 3rd value inside a corner selects a different canvas
+# corner. Buildings are mirrored 180 degrees through the canvas centre
+# unless `mirror: false`.
 
 templates:
   4x6: { width: 4, height: 6 }
   6x12: { width: 6, height: 12 }
   5x10: { width: 5, height: 10 }
+  ruins-a:
+    points: [[1.5, 0], [4.5, 0.6], [5.5, 2.2], [7, 4.5], [5.8, 6.5], [6, 8.5], [4, 11], [2.5, 9.5], [2, 6.5], [0, 4], [1, 1.8]]
+  curved-bastion:
+    width: 8
+    height: 8
+    start: [4, 0]
+    segments:
+      - cubic: [8, 4]
+        controls: [[6.21, 0], [8, 1.79]]
+      - cubic: [4, 8]
+        controls: [[8, 6.21], [6.21, 8]]
+      - cubic: [0, 4]
+        controls: [[1.79, 8], [0, 6.21]]
+      - cubic: [4, 0]
+        controls: [[0, 1.79], [1.79, 0]]
 
 layout:
   1:
@@ -22,9 +44,13 @@ layout:
         corners: { TL: [24, 4], TR: [28, 4] }
       - type: 5x10
         corners: { TL: [40, 8], TR: [45, 8] }
+      - type: ruins-a
+        corners: { TL: [22, 14], TR: [29, 14] }
   2:
     buildings:
       - type: 6x12
         corners: { TL: [6, 10], TR: [12, 10] }
       - type: 4x6
         corners: { TL: [30, 8], TR: [34, 8] }
+      - type: curved-bastion
+        corners: { TL: [20, 24], TR: [28, 24] }
