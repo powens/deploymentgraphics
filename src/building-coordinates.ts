@@ -92,17 +92,20 @@ export type ResolvedBuilding = {
   rotation: number; // degrees, [0, 360)
 };
 
-/** Template-local position of a named rectangle corner. */
-function localCorner(corner: Anchor, t: RectTemplate): Point {
+/** Template-local position of a named bounding-box corner. */
+function localCorner(
+  corner: Anchor,
+  size: { width: number; height: number },
+): Point {
   switch (corner) {
     case "TL":
       return [0, 0];
     case "TR":
-      return [t.width, 0];
+      return [size.width, 0];
     case "BR":
-      return [t.width, t.height];
+      return [size.width, size.height];
     case "BL":
-      return [0, t.height];
+      return [0, size.height];
   }
 }
 
@@ -121,7 +124,7 @@ function rotate(p: Point, rad: number): Point {
  */
 export function resolveBuilding(
   placement: BuildingPlacement,
-  templates: Record<string, RectTemplate>,
+  templates: Record<string, Template>,
   canvas: CanvasSize,
 ): ResolvedBuilding[] {
   const template = templates[placement.type];
@@ -141,8 +144,9 @@ export function resolveBuilding(
   const [[cornerA, specA], [cornerB, specB]] = entries;
   const pA = resolveCorner(specA, defaultFrom, canvas);
   const pB = resolveCorner(specB, defaultFrom, canvas);
-  const lA = localCorner(cornerA, template);
-  const lB = localCorner(cornerB, template);
+  const size = templateBounds(template, placement.type);
+  const lA = localCorner(cornerA, size);
+  const lB = localCorner(cornerB, size);
 
   const targetLength = Math.hypot(pB[0] - pA[0], pB[1] - pA[1]);
   const templateLength = Math.hypot(lB[0] - lA[0], lB[1] - lA[1]);

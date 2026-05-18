@@ -232,3 +232,41 @@ describe("templateBounds", () => {
     expect(() => templateBounds(poly, "poly")).toThrow(/0,0/);
   });
 });
+
+describe("resolveBuilding with a polygon template", () => {
+  const polyTemplates: Record<string, PolygonTemplate> = {
+    ruins: {
+      points: [
+        [1, 0],
+        [7, 2],
+        [5, 11],
+        [0, 6],
+      ],
+    },
+  };
+
+  it("places a polygon by pinning its bounding-box corners", () => {
+    // The polygon's bbox is 7x11, so TL->TR must span 7.
+    const result = resolveBuilding(
+      { type: "ruins", mirror: false, corners: { TL: [10, 5], TR: [17, 5] } },
+      polyTemplates,
+      canvas,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].templateName).toBe("ruins");
+    expect(result[0].translate[0]).toBeCloseTo(10);
+    expect(result[0].translate[1]).toBeCloseTo(5);
+    expect(result[0].rotation).toBeCloseTo(0);
+  });
+
+  it("throws when a corner span disagrees with the polygon bbox edge", () => {
+    // TL->TR span is 6 but the polygon bbox's TL->TR edge is 7.
+    expect(() =>
+      resolveBuilding(
+        { type: "ruins", corners: { TL: [10, 5], TR: [16, 5] } },
+        polyTemplates,
+        canvas,
+      ),
+    ).toThrow(/template edge/i);
+  });
+});
