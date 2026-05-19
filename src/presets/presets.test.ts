@@ -6,8 +6,10 @@ import { baseConfig } from "./base.js";
 import { missions } from "./missions.js";
 import { gwTerrain } from "./terrain.js";
 
-// The presets are hand-transcribed from the YAML the browser app loads.
-// These tests fail if the two ever drift apart.
+// The presets are generated from the YAML the browser app loads (see
+// scripts/gen-presets.mjs). These tests confirm the generated modules
+// still deep-equal their YAML source — a correctness check on the
+// generator, complementing CI's `gen:presets:check` staleness check.
 const dataDir = fileURLToPath(new URL("../../static/data/", import.meta.url));
 const loadYaml = (relPath: string): unknown =>
   yaml.load(readFileSync(dataDir + relPath, "utf8"));

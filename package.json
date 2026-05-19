@@ -33,11 +33,13 @@
     "build": "rollup src/main.ts --file dist/bundle.js --format es --no-treeshake -p @rollup/plugin-typescript",
     "build-gh": "pnpm run build",
     "build:lib": "rimraf lib && tsc -p tsconfig.build.json",
+    "gen:presets": "node scripts/gen-presets.mjs",
+    "gen:presets:check": "node scripts/gen-presets.mjs --check",
     "serve": "rollup --config rollup.config.mjs --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prepublishOnly": "pnpm run lint && pnpm run type-check && pnpm run test && pnpm run build:lib"
+    "prepublishOnly": "pnpm run gen:presets:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run build:lib"
   },
   "repository": {
     "type": "git",
