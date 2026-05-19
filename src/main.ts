@@ -1,8 +1,8 @@
-import { injectTemplateDefs, makeBuildings } from "./buildings";
-import { applyAttributes, makeElement } from "./dom-helpers";
-import { injectObjectiveDefs, makeObjectives } from "./objectives";
-import { getLayoutBuildings } from "./terrain-config";
-import type { FullConfig } from "./types";
+import { injectTemplateDefs, makeBuildings } from "./buildings.js";
+import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { injectObjectiveDefs, makeObjectives } from "./objectives.js";
+import { getLayoutBuildings } from "./terrain-config.js";
+import type { FullConfig } from "./types.js";
 
 /**
  * Radius of the centre hole punched out of masked deployment zones, taken

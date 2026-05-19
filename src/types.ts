@@ -1,4 +1,4 @@
-import type { TerrainConfig } from "./terrain-config";
+import type { TerrainConfig } from "./terrain-config.js";
 
 export type Coordinate = [number, number];
 export type SVGProperties = Record<string, string | number>;

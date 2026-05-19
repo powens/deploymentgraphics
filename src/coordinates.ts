@@ -1,4 +1,4 @@
-import type { Coordinate, FullConfig } from "./types";
+import type { Coordinate, FullConfig } from "./types.js";
 
 /** True when an objective sits at the battlefield centre. */
 export function isCenterObjective(

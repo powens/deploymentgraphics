@@ -162,3 +162,9 @@ cython_debug/
 
 node_modules/
 .superpowers/
+.corepack/
+
+# Local Claude Code guidance (not shared)
+CLAUDE.local.md
+
+docs/

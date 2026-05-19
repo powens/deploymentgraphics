@@ -1,4 +1,4 @@
-import { applyAttributes, makeElement } from "./dom-helpers";
+import { applyAttributes, makeElement } from "./dom-helpers.js";
 import {
   resolveBuilding,
   type BuildingPlacement,
@@ -6,8 +6,8 @@ import {
   type PathSegment,
   type Point,
   type Template,
-} from "./building-coordinates";
-import type { SVGProperties } from "./types";
+} from "./building-coordinates.js";
+import type { SVGProperties } from "./types.js";
 
 /**
  * Builds the SVG path `d` data for a closed footprint: a move to `start`,
