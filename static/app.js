@@ -58,7 +58,7 @@ async function buildConfig(controls) {
   ]);
   // Spread rather than mutate: the cached objects are shared across redraws.
   return {
-    deployment: { ...missionConfig, hidden_supplies: controls.hs },
+    deployment: missionConfig,
     base: { ...baseConfig, grid: { ...baseConfig.grid, draw: controls.grid } },
     terrain: { ...terrainObj, layout_name: controls.t },
   };
@@ -79,9 +79,8 @@ function downloadBlob(blob, filename) {
 
 const missionSelector = document.getElementById("mission");
 const terrainSelector = document.getElementById("terrain");
-const hiddenSupplies = document.getElementById("hidden-supplies");
 const showGrid = document.getElementById("show-grid");
-const controlEls = [missionSelector, terrainSelector, hiddenSupplies, showGrid];
+const controlEls = [missionSelector, terrainSelector, showGrid];
 
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
@@ -116,7 +115,6 @@ function controlState() {
   return {
     m: missionSelector.value,
     t: terrainSelector.value,
-    hs: hiddenSupplies.checked,
     grid: showGrid.checked,
   };
 }
@@ -124,7 +122,6 @@ function controlState() {
 function applyControls(controls) {
   missionSelector.value = controls.m;
   terrainSelector.value = controls.t;
-  hiddenSupplies.checked = controls.hs;
   showGrid.checked = controls.grid;
 }
 

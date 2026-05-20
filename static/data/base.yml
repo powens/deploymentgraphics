@@ -13,21 +13,6 @@ half_way_lines:
     stroke_width: 0.2
     opacity: 0.5
 
-objective:
-  real:
-    draw: true
-    radius: 0.79 # 0.79 inches ~= 20mm
-    svg_properties:
-      fill: red
-      stroke: none
-  influence:
-    draw: true
-    radius: 3.0
-    svg_properties:
-      fill: black
-      fill_opacity: 0.3
-      stroke: none
-
 deployment:
   attacker:
     svg_properties:
@@ -50,10 +35,6 @@ building:
     stroke_width: 1.2
     fill: "#808080"
     opacity: 1
-  structure:
-    fill: blue
-    stroke: blue
-    stroke_width: 0.4
 grid:
   draw: true
   svg_properties:

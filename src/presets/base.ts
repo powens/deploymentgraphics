@@ -16,18 +16,6 @@ export const baseConfig: BaseConfig = {
       opacity: 0.5,
     },
   },
-  objective: {
-    real: {
-      draw: true,
-      radius: 0.79,
-      svg_properties: { fill: "red", stroke: "none" },
-    },
-    influence: {
-      draw: true,
-      radius: 3,
-      svg_properties: { fill: "black", fill_opacity: 0.3, stroke: "none" },
-    },
-  },
   deployment: {
     attacker: {
       svg_properties: { fill: "#cf4b33", stroke: "none", stroke_width: 0.4 },
@@ -46,7 +34,6 @@ export const baseConfig: BaseConfig = {
       fill: "#808080",
       opacity: 1,
     },
-    structure: { fill: "blue", stroke: "blue", stroke_width: 0.4 },
   },
   grid: {
     draw: true,

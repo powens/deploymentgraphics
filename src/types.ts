@@ -11,11 +11,6 @@ export type DrawAndProperties = {
   svg_properties: SVGProperties;
 };
 
-export type Objective = {
-  real: DrawAndProperties;
-  influence: DrawAndProperties;
-};
-
 export type Attacker = { svg_properties: SVGProperties };
 export type Defender = { svg_properties: SVGProperties };
 export type BaseDeployment = { attacker: Attacker; defender: Defender };
@@ -24,7 +19,6 @@ export type Building = {
   draw: boolean;
   svg_properties: SVGProperties;
   template: SVGProperties;
-  structure: SVGProperties;
 };
 
 export type Grid = { draw: boolean; svg_properties: SVGProperties };
@@ -32,7 +26,6 @@ export type Grid = { draw: boolean; svg_properties: SVGProperties };
 export type BaseConfig = {
   half_way_lines: DrawAndProperties;
   size: Size;
-  objective: Objective;
   deployment: BaseDeployment;
   building: Building;
   grid: Grid;
@@ -47,10 +40,8 @@ export type AttackerDefender = {
 export type DeploymentConfig = {
   name: string;
   home_edge: "short" | "long";
-  hidden_supplies?: boolean;
   attacker: AttackerDefender;
   defender: AttackerDefender;
-  objectives: Coordinate[];
 };
 
 /**

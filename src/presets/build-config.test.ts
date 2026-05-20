@@ -12,23 +12,15 @@ describe("buildConfig", () => {
     }
   });
 
-  it("applies layout, grid, and hidden-supplies overrides", () => {
+  it("applies layout and grid overrides", () => {
     const config = buildConfig({
       mission: missions.dawn_of_war,
       layout: "1",
       grid: false,
-      hiddenSupplies: true,
     });
 
     expect(config.terrain.layout_name).toBe("1");
     expect(config.base.grid.draw).toBe(false);
-    expect(config.deployment.hidden_supplies).toBe(true);
     expect(() => makeMissionCard(config)).not.toThrow();
-  });
-
-  it("does not mutate the shared preset objects", () => {
-    buildConfig({ mission: missions.dawn_of_war, grid: false });
-
-    expect(missions.dawn_of_war.hidden_supplies).toBeUndefined();
   });
 });

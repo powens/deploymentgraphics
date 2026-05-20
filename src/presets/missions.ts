@@ -9,7 +9,6 @@ export const crucibleOfBattle: DeploymentConfig = {
   home_edge: "short",
   attacker: { deployment_zone: [[60, 0], [60, 44], [30, 0]] },
   defender: { deployment_zone: [[30, 44], [0, 44], [0, 0]] },
-  objectives: [[30, 22], [40, 8], [46, 34], [20, 36], [14, 10]],
 };
 
 /** Dawn of War, from `static/data/deployment/dawn_of_war.yml`. */
@@ -18,7 +17,6 @@ export const dawnOfWar: DeploymentConfig = {
   home_edge: "long",
   attacker: { deployment_zone: [[0, 0], [0, 12], [60, 12], [60, 0]] },
   defender: { deployment_zone: [[0, 32], [0, 44], [60, 44], [60, 32]] },
-  objectives: [[30, 22], [10, 22], [50, 22], [30, 38], [30, 6]],
 };
 
 /** Hammer and Anvil, from `static/data/deployment/hammer_and_anvil.yml`. */
@@ -27,7 +25,6 @@ export const hammerAndAnvil: DeploymentConfig = {
   home_edge: "short",
   attacker: { deployment_zone: [[60, 0], [42, 0], [42, 44], [60, 44]] },
   defender: { deployment_zone: [[18, 0], [0, 0], [0, 44], [18, 44]] },
-  objectives: [[30, 22], [30, 38], [30, 6], [50, 22], [10, 22]],
 };
 
 /** Search and Destroy, from `static/data/deployment/search_and_destroy.yml`. */
@@ -42,7 +39,6 @@ export const searchAndDestroy: DeploymentConfig = {
     mask_center: 9,
     deployment_zone: [[30, 22], [30, 44], [0, 44], [0, 22]],
   },
-  objectives: [[30, 22], [14, 10], [14, 34], [46, 10], [46, 34]],
 };
 
 /** Sweeping Engagement, from `static/data/deployment/sweeping_engagement.yml`. */
@@ -55,7 +51,6 @@ export const sweepingEngagement: DeploymentConfig = {
   defender: {
     deployment_zone: [[0, 0], [60, 0], [60, 14], [30, 14], [30, 8], [0, 8]],
   },
-  objectives: [[30, 22], [10, 18], [18, 38], [42, 6], [50, 26]],
 };
 
 /** Tipping Point, from `static/data/deployment/tipping_point.yml`. */
@@ -76,7 +71,6 @@ export const tippingPoint: DeploymentConfig = {
   defender: {
     deployment_zone: [[60, 0], [60, 44], [48, 44], [48, 22], [40, 22], [40, 0]],
   },
-  objectives: [[30, 22], [22, 8], [14, 34], [38, 36], [46, 10]],
 };
 
 /** All built-in missions keyed by id (the deployment YAML filename stem). */

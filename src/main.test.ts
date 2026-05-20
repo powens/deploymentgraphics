@@ -8,10 +8,6 @@ const config = {
     size: { width: 60, height: 44 },
     background: { fill: "black" },
     half_way_lines: { draw: true, svg_properties: { stroke: "black" } },
-    objective: {
-      real: { radius: 0.79, svg_properties: { fill: "red" } },
-      influence: { radius: 3, svg_properties: { fill: "black" } },
-    },
     deployment: {
       attacker: { svg_properties: { fill: "#cf4b33", stroke: "none" } },
       defender: { svg_properties: { fill: "#7d8b7f", stroke: "none" } },
@@ -20,7 +16,6 @@ const config = {
       draw: true,
       svg_properties: { opacity: 1 },
       template: { fill: "#808080", stroke: "black" },
-      structure: {},
     },
     grid: { draw: false, svg_properties: {} },
   },
@@ -38,7 +33,6 @@ const config = {
     home_edge: "long",
     attacker: { deployment_zone: [[0, 0], [60, 0], [60, 10]] },
     defender: { deployment_zone: [[0, 44], [60, 44], [60, 34]] },
-    objectives: [[0, 0], [20, 0]],
   },
 } as unknown as FullConfig;
 
@@ -48,7 +42,6 @@ describe("makeMissionCard", () => {
     expect(svg.tagName.toLowerCase()).toBe("svg");
     expect(svg.querySelectorAll("polygon").length).toBe(2); // deployment zones
     expect(svg.querySelector("#buildings")).not.toBeNull();
-    expect(svg.querySelector("defs #objMarker")).not.toBeNull();
     expect(svg.querySelector("defs #template-4x6")).not.toBeNull();
   });
 

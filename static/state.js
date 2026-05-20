@@ -2,7 +2,7 @@
 //
 // Persisted shape:
 //   { version, mode: "controls" | "yaml",
-//     controls: { m, t, hs, grid }, yaml: string | null }
+//     controls: { m, t, grid }, yaml: string | null }
 
 const STORAGE_KEY = "deploymentgraphics:state";
 const STORAGE_VERSION = 1;
@@ -10,7 +10,6 @@ const STORAGE_VERSION = 1;
 export const DEFAULT_CONTROLS = {
   m: "dawn_of_war",
   t: "1",
-  hs: false,
   grid: false,
 };
 
@@ -21,7 +20,6 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
   return {
     m: missionIds.includes(c.m) ? c.m : DEFAULT_CONTROLS.m,
     t: terrainIds.includes(c.t) ? c.t : DEFAULT_CONTROLS.t,
-    hs: c.hs === true,
     grid: c.grid === true,
   };
 }
@@ -30,7 +28,7 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
 // (a shared link) takes precedence over saved localStorage state.
 export function urlHasControls() {
   const params = new URLSearchParams(window.location.search);
-  return ["m", "t", "hs", "grid"].some((key) => params.has(key));
+  return ["m", "t", "grid"].some((key) => params.has(key));
 }
 
 export function readControlsFromUrl(missionIds, terrainIds) {
@@ -39,7 +37,6 @@ export function readControlsFromUrl(missionIds, terrainIds) {
     {
       m: params.get("m"),
       t: params.get("t"),
-      hs: params.get("hs") === "1",
       grid: params.get("grid") === "1",
     },
     missionIds,
@@ -56,9 +53,6 @@ export function writeControlsToUrl(controls) {
   }
   if (controls.t !== DEFAULT_CONTROLS.t) {
     params.set("t", controls.t);
-  }
-  if (controls.hs) {
-    params.set("hs", "1");
   }
   if (controls.grid) {
     params.set("grid", "1");

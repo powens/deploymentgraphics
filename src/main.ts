@@ -1,6 +1,5 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
-import { injectObjectiveDefs, makeObjectives } from "./objectives.js";
 import { getLayoutBuildings } from "./terrain-config.js";
 import type { FullConfig } from "./types.js";
 
@@ -46,8 +45,6 @@ function hasSelectedLayout(config: FullConfig): boolean {
 function injectDefs(svg: SVGElement, config: FullConfig) {
   const defs = makeElement("defs");
   svg.appendChild(defs);
-
-  injectObjectiveDefs(defs, config);
 
   // Template rects carry both the generic building props and the
   // template-specific stroke/fill overrides.
@@ -169,8 +166,6 @@ export function makeMissionCard(config: FullConfig): SVGElement {
   if (grid) {
     svg.appendChild(grid);
   }
-
-  svg.appendChild(makeObjectives(config));
 
   const halfwayLines = makeHalfwayLines(config);
   if (halfwayLines) {

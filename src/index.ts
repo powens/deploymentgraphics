@@ -15,7 +15,5 @@ export * from "./types.js";
 export * from "./building-coordinates.js";
 export * from "./buildings.js";
 export * from "./terrain-config.js";
-export * from "./coordinates.js";
 export * from "./dom-helpers.js";
-export * from "./objectives.js";
 export * from "./presets/index.js";

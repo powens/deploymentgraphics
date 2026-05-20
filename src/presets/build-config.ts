@@ -18,8 +18,6 @@ export interface BuildConfigOptions {
   base?: BaseConfig;
   /** Override the grid's `draw` flag without mutating `base`. */
   grid?: boolean;
-  /** Override the mission's `hidden_supplies` flag. */
-  hiddenSupplies?: boolean;
 }
 
 /**
@@ -35,13 +33,9 @@ export function buildConfig({
   layout = "",
   base = baseConfig,
   grid,
-  hiddenSupplies,
 }: BuildConfigOptions): FullConfig {
   return {
-    deployment:
-      hiddenSupplies === undefined
-        ? mission
-        : { ...mission, hidden_supplies: hiddenSupplies },
+    deployment: mission,
     base:
       grid === undefined
         ? base
