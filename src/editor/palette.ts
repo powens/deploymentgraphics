@@ -1,5 +1,5 @@
 import type { Template } from "../building-coordinates.js";
-import type { Scene, SceneObject } from "./scene.js";
+import type { Scene, SceneObject, ObjectiveObject } from "./scene.js";
 
 export type PaletteItem =
   | { category: "building"; templateKey: string; label: string }
@@ -102,7 +102,9 @@ export function createObjectFromPalette(
   }
   if (item.category === "objective") {
     const used = new Set(
-      scene.objects.filter((o) => o.type === "objective").map((o) => (o as { number: number }).number),
+      scene.objects
+        .filter((o): o is ObjectiveObject => o.type === "objective")
+        .map((o) => o.number),
     );
     let n = 1;
     while (used.has(n)) n++;
@@ -116,10 +118,14 @@ export function createObjectFromPalette(
       : [[0, h - 12], [w, h - 12], [w, h], [0, h]];
     return { id, type: "deployment-zone", player: item.player, vertices: verts, x: 0, y: 0, rotation: 0 };
   }
-  return {
-    id, type: "annotation", kind: item.kind, x, y, rotation: 0,
-    text: item.kind === "text" ? "Label" : undefined,
-    endX: item.kind === "arrow" ? x + 5 : undefined,
-    endY: item.kind === "arrow" ? y + 5 : undefined,
-  };
+  if (item.category === "annotation") {
+    return {
+      id, type: "annotation", kind: item.kind, x, y, rotation: 0,
+      text: item.kind === "text" ? "Label" : undefined,
+      endX: item.kind === "arrow" ? x + 5 : undefined,
+      endY: item.kind === "arrow" ? y + 5 : undefined,
+    };
+  }
+  const _exhaustive: never = item;
+  throw new Error(`Unhandled PaletteItem category: ${(_exhaustive as { category: string }).category}`);
 }
