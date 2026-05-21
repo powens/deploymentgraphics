@@ -63,6 +63,7 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
   if (hasArrow) {
     const marker = makeElement("marker");
     marker.setAttribute("id", "arrowhead");
+    marker.setAttribute("markerUnits", "userSpaceOnUse");
     marker.setAttribute("markerWidth", "4");
     marker.setAttribute("markerHeight", "3");
     marker.setAttribute("refX", "4");

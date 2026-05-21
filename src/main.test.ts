@@ -227,6 +227,8 @@ describe("makeAnnotations", () => {
     expect(lines.length).toBe(1);
     expect(lines[0].getAttribute("x1")).toBe("10");
     expect(lines[0].getAttribute("y2")).toBe("20");
+    expect(lines[0].getAttribute("marker-end")).toBe("url(#arrowhead)");
+    expect(svg.querySelector("defs #arrowhead")).not.toBeNull();
   });
 
   it("skips annotations group when config has no annotations", () => {
