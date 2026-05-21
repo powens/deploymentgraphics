@@ -58,6 +58,22 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
   if (maskRadius > 0) {
     injectCenterMask(defs, config, maskRadius);
   }
+
+  const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
+  if (hasArrow) {
+    const marker = makeElement("marker");
+    marker.setAttribute("id", "arrowhead");
+    marker.setAttribute("markerWidth", "4");
+    marker.setAttribute("markerHeight", "3");
+    marker.setAttribute("refX", "4");
+    marker.setAttribute("refY", "1.5");
+    marker.setAttribute("orient", "auto");
+    const path = makeElement("path");
+    path.setAttribute("d", "M 0 0 L 4 1.5 L 0 3 Z");
+    path.setAttribute("fill", "black");
+    marker.appendChild(path);
+    defs.appendChild(marker);
+  }
 }
 
 function makeHalfwayLines(config: FullConfig): SVGElement | null {
@@ -178,6 +194,38 @@ function makeAreaTerrain(config: FullConfig): SVGElement | null {
   return group;
 }
 
+function makeAnnotations(config: FullConfig): SVGElement | null {
+  const items = config.annotations;
+  if (!items || items.length === 0) return null;
+  const group = makeElement("g");
+  group.setAttribute("id", "annotations");
+  group.setAttribute("font-size", "1.5");
+  group.setAttribute("fill", "black");
+  for (const item of items) {
+    if (item.kind === "text") {
+      const el = makeElement("text");
+      el.setAttribute("x", `${item.x}`);
+      el.setAttribute("y", `${item.y}`);
+      el.setAttribute("stroke", "white");
+      el.setAttribute("stroke-width", "0.3");
+      el.setAttribute("paint-order", "stroke");
+      el.textContent = item.text ?? "";
+      group.appendChild(el);
+    } else {
+      const line = makeElement("line");
+      line.setAttribute("x1", `${item.x}`);
+      line.setAttribute("y1", `${item.y}`);
+      line.setAttribute("x2", `${item.endX ?? item.x}`);
+      line.setAttribute("y2", `${item.endY ?? item.y}`);
+      line.setAttribute("stroke", "black");
+      line.setAttribute("stroke-width", "0.4");
+      line.setAttribute("marker-end", "url(#arrowhead)");
+      group.appendChild(line);
+    }
+  }
+  return group;
+}
+
 export function makeMissionCard(config: FullConfig): SVGElement {
   const svg = makeElement("svg");
   svg.setAttribute(
@@ -245,6 +293,11 @@ export function makeMissionCard(config: FullConfig): SVGElement {
     const empty = makeElement("g");
     empty.setAttribute("id", "buildings");
     svg.appendChild(empty);
+  }
+
+  const annotations = makeAnnotations(config);
+  if (annotations) {
+    svg.appendChild(annotations);
   }
 
   return svg;

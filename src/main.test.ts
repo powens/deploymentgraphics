@@ -205,3 +205,33 @@ describe("makeAreaTerrain", () => {
     expect(group).toBeNull();
   });
 });
+
+describe("makeAnnotations", () => {
+  it("renders text annotation when config has annotations", () => {
+    const config = buildMinimalConfig();
+    config.annotations = [{ kind: "text", x: 20, y: 22, text: "Alpha" }];
+    const svg = makeMissionCard(config);
+    const texts = svg.querySelectorAll("#annotations text");
+    expect(texts.length).toBe(1);
+    expect(texts[0].textContent).toBe("Alpha");
+    expect(texts[0].getAttribute("x")).toBe("20");
+  });
+
+  it("renders arrow annotation as line with marker", () => {
+    const config = buildMinimalConfig();
+    config.annotations = [
+      { kind: "arrow", x: 10, y: 10, endX: 20, endY: 20 },
+    ];
+    const svg = makeMissionCard(config);
+    const lines = svg.querySelectorAll("#annotations line");
+    expect(lines.length).toBe(1);
+    expect(lines[0].getAttribute("x1")).toBe("10");
+    expect(lines[0].getAttribute("y2")).toBe("20");
+  });
+
+  it("skips annotations group when config has no annotations", () => {
+    const config = buildMinimalConfig();
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#annotations")).toBeNull();
+  });
+});

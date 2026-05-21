@@ -50,9 +50,19 @@ export type DeploymentConfig = {
  */
 export type RuntimeTerrainConfig = TerrainConfig & { layout_name: string };
 
+export type Annotation = {
+  kind: "text" | "arrow";
+  x: number;
+  y: number;
+  text?: string;
+  endX?: number;
+  endY?: number;
+};
+
 /** The whole config object built by static/index.html. */
 export type FullConfig = {
   base: BaseConfig;
   terrain: RuntimeTerrainConfig;
   deployment: DeploymentConfig;
+  annotations?: Annotation[];
 };
