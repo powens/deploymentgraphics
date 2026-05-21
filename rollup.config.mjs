@@ -3,25 +3,24 @@ import { autoReload } from "rollup-plugin-auto-reload";
 import copy from "rollup-plugin-copy";
 import typescript from "@rollup/plugin-typescript";
 
-export default {
-  input: "src/main.ts",
-  output: {
-    file: "dist/bundle.js",
-    format: "es",
-  },
-  treeshake: false,
+const tsPlugin = () => typescript({ tsconfig: "./tsconfig.json" });
 
-  plugins: [
-    typescript({
-      tsconfig: "./tsconfig.json",
-    }),
-    copy({
-      targets: [
-        // { src: "static/index.html", dest: "dist/index.html" },
-        // { src: "static/data", dest: "dist/data" },
-      ],
-    }),
-    serve({ contentBase: ["dist", "static", "samples"], open: true }),
-    autoReload(),
-  ],
-};
+export default [
+  {
+    input: "src/main.ts",
+    output: { file: "dist/bundle.js", format: "es" },
+    treeshake: false,
+    plugins: [
+      tsPlugin(),
+      copy({ targets: [] }),
+      serve({ contentBase: ["dist", "static", "samples"], open: true }),
+      autoReload(),
+    ],
+  },
+  {
+    input: "src/editor.ts",
+    output: { file: "dist/editor.bundle.js", format: "es" },
+    treeshake: false,
+    plugins: [tsPlugin()],
+  },
+];

@@ -30,7 +30,7 @@
   "packageManager": "pnpm@9.12.3",
   "scripts": {
     "test": "vitest run",
-    "build": "rollup src/main.ts --file dist/bundle.js --format es --no-treeshake -p @rollup/plugin-typescript",
+    "build": "rollup --config rollup.config.mjs",
     "build-gh": "pnpm run build",
     "build:lib": "rimraf lib && tsc -p tsconfig.build.json",
     "gen:presets": "node scripts/gen-presets.mjs",
