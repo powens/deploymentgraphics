@@ -9,6 +9,7 @@ import {
   type SelectionState,
 } from "./editor/overlay.js";
 import { renderInspector } from "./editor/inspector.js";
+import { MISSIONS, TERRAIN_LAYOUTS, loadPreset } from "./editor/presets.js";
 
 declare const jsyaml: { load(s: string): unknown; dump(v: unknown): string };
 
@@ -27,6 +28,11 @@ const inspEmptyEl = document.getElementById("insp-empty") as HTMLElement;
 const inspBodyEl = document.getElementById("insp-body") as HTMLElement;
 const inspChipEl = document.getElementById("insp-type-chip") as HTMLElement;
 const statusSelEl = document.getElementById("status-selection") as HTMLElement;
+const statusPreset = document.getElementById("status-preset") as HTMLElement;
+
+const modalLoad = document.getElementById("modal-load") as HTMLElement;
+const modalMission = document.getElementById("modal-mission") as HTMLSelectElement;
+const modalTerrain = document.getElementById("modal-terrain") as HTMLSelectElement;
 
 export function scheduleRender(): void {
   if (rafId !== null) return;
@@ -357,6 +363,48 @@ async function start(): Promise<void> {
         scheduleRender();
         updateInspector();
       }
+    }
+  });
+
+  MISSIONS.forEach(({ id, label }) => {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = label;
+    modalMission.appendChild(opt);
+  });
+  TERRAIN_LAYOUTS.forEach(({ id, label }) => {
+    const opt = document.createElement("option");
+    opt.value = id;
+    opt.textContent = label;
+    modalTerrain.appendChild(opt);
+  });
+
+  document.getElementById("btn-load")!.addEventListener("click", () => {
+    modalLoad.hidden = false;
+  });
+  document.getElementById("modal-cancel")!.addEventListener("click", () => {
+    modalLoad.hidden = true;
+  });
+  document.getElementById("modal-confirm")!.addEventListener("click", async () => {
+    modalLoad.hidden = true;
+    try {
+      const { scene: partial, templates } = await loadPreset(
+        modalMission.value,
+        modalTerrain.value,
+        fetchYaml,
+      );
+      loadedTemplates = templates;
+      scene = { boardWidth: 60, boardHeight: 44, ...partial, objects: partial.objects ?? [] } as Scene;
+      sel.selectedId = null;
+      sel.vertexEditId = null;
+      overlaySvg = null;
+      while (canvasWrap.firstChild) canvasWrap.removeChild(canvasWrap.firstChild);
+      statusPreset.textContent = `${modalMission.options[modalMission.selectedIndex].text} · Layout ${modalTerrain.value}`;
+      initPalette();
+      scheduleRender();
+      updateInspector();
+    } catch (err) {
+      console.error("Failed to load preset:", err);
     }
   });
 
