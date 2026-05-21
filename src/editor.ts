@@ -7,6 +7,7 @@ import {
   createOverlaySvg,
   type SelectionState,
 } from "./editor/overlay.js";
+import { renderInspector } from "./editor/inspector.js";
 
 declare const jsyaml: { load(s: string): unknown; dump(v: unknown): string };
 
@@ -20,6 +21,11 @@ const canvasWrap = document.getElementById("canvas-wrap")!;
 const statusBoard = document.getElementById("status-board")!;
 const paletteEl = document.getElementById("palette")!;
 const canvasArea = document.getElementById("canvas-area")!;
+
+const inspEmptyEl = document.getElementById("insp-empty") as HTMLElement;
+const inspBodyEl = document.getElementById("insp-body") as HTMLElement;
+const inspChipEl = document.getElementById("insp-type-chip") as HTMLElement;
+const statusSelEl = document.getElementById("status-selection") as HTMLElement;
 
 export function scheduleRender(): void {
   if (rafId !== null) return;
@@ -69,7 +75,30 @@ function renderCanvas(): void {
   statusBoard.textContent = `${scene.boardWidth}×${scene.boardHeight} board`;
 }
 
-export function updateInspector(): void { /* Task 9 */ }
+export function updateInspector(): void {
+  renderInspector(
+    inspEmptyEl,
+    inspBodyEl,
+    inspChipEl,
+    scene,
+    sel.selectedId,
+    loadedTemplates,
+    (id) => {
+      scene.objects = scene.objects.filter((o) => o.id !== id);
+      sel.selectedId = null;
+      scheduleRender();
+      updateInspector();
+    },
+    (id, patch) => {
+      const idx = scene.objects.findIndex((o) => o.id === id);
+      if (idx >= 0) {
+        scene.objects[idx] = { ...scene.objects[idx], ...patch } as typeof scene.objects[number];
+        scheduleRender();
+      }
+    },
+  );
+  statusSelEl.textContent = sel.selectedId ? "1 object selected" : "";
+}
 
 function attachOverlayEvents(svg: SVGSVGElement): void {
   svg.addEventListener("pointermove", (e) => {
@@ -123,7 +152,44 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
   });
 }
 
-function startDrag(e: PointerEvent, id: string): void { void e; void id; /* Task 9 */ }
+function startDrag(e: PointerEvent, id: string): void {
+  const obj = scene.objects.find((o) => o.id === id);
+  if (!obj) return;
+  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
+  if (!mapSvg) return;
+
+  const toSvgCoords = (ev: PointerEvent) => {
+    const rect = mapSvg.getBoundingClientRect();
+    return {
+      x: ((ev.clientX - rect.left) / rect.width) * scene.boardWidth,
+      y: ((ev.clientY - rect.top) / rect.height) * scene.boardHeight,
+    };
+  };
+  const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
+  const start = toSvgCoords(e);
+  const origX = obj.x;
+  const origY = obj.y;
+
+  function onMove(ev: PointerEvent) {
+    const pos = toSvgCoords(ev);
+    const idx = scene.objects.findIndex((o) => o.id === id);
+    if (idx >= 0) {
+      scene.objects[idx] = {
+        ...scene.objects[idx],
+        x: snap(origX + pos.x - start.x),
+        y: snap(origY + pos.y - start.y),
+      } as typeof scene.objects[number];
+      scheduleRender();
+    }
+  }
+  function onUp() {
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    updateInspector();
+  }
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+}
 function startVertexDrag(e: PointerEvent, id: string, vi: number): void { void e; void id; void vi; /* Task 11 */ }
 function startRotateDrag(e: PointerEvent, id: string): void { void e; void id; /* Task 10 */ }
 
