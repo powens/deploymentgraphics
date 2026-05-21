@@ -203,13 +203,12 @@ function startRotateDrag(e: PointerEvent, id: string): void {
   const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
   if (!mapSvg) return;
   const center = objectCenter(obj, loadedTemplates);
-  const nonNullMapSvg = mapSvg;
 
   const hitEl = e.target as SVGElement;
   if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
 
   function getAngle(ev: PointerEvent): number {
-    const rect = nonNullMapSvg.getBoundingClientRect();
+    const rect = mapSvg.getBoundingClientRect();
     const px = ((ev.clientX - rect.left) / rect.width) * scene.boardWidth;
     const py = ((ev.clientY - rect.top) / rect.height) * scene.boardHeight;
     const raw = Math.atan2(py - center.y, px - center.x) * (180 / Math.PI) + 90;
