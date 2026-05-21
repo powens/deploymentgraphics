@@ -2,6 +2,7 @@
 import { makeMissionCard } from "./main.js";
 import { emptyScene, sceneToConfig, type Scene } from "./editor/scene.js";
 import type { Template } from "./building-coordinates.js";
+import { buildPaletteItems, renderPalette, createObjectFromPalette, type PaletteItem } from "./editor/palette.js";
 
 declare const jsyaml: { load(s: string): unknown; dump(v: unknown): string };
 
@@ -14,6 +15,8 @@ let gridEnabled = false;
 const canvasWrap = document.getElementById("canvas-wrap")!;
 const statusBoard = document.getElementById("status-board")!;
 const statusPreset = document.getElementById("status-preset")!;
+const paletteEl = document.getElementById("palette")!;
+const canvasArea = document.getElementById("canvas-area")!;
 
 export function scheduleRender(): void {
   if (rafId !== null) return;
@@ -71,6 +74,28 @@ async function fetchYaml(url: string): Promise<unknown> {
 
 let overlaySvg: SVGSVGElement | null = null;
 
+function initPalette(): void {
+  const items = buildPaletteItems(loadedTemplates);
+  renderPalette(paletteEl, items, (item, e) => {
+    e.dataTransfer!.setData("text/plain", JSON.stringify(item));
+  });
+
+  canvasArea.addEventListener("dragover", (e) => e.preventDefault());
+  canvasArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    const raw = e.dataTransfer?.getData("text/plain");
+    if (!raw) return;
+    const item = JSON.parse(raw) as PaletteItem;
+    const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
+    if (!mapSvg) return;
+    const rect = mapSvg.getBoundingClientRect();
+    const svgX = ((e.clientX - rect.left) / rect.width) * scene.boardWidth;
+    const svgY = ((e.clientY - rect.top) / rect.height) * scene.boardHeight;
+    scene.objects.push(createObjectFromPalette(item, svgX, svgY, scene));
+    scheduleRender();
+  });
+}
+
 // Exported for read-access by other editor modules.
 // Mutate via: scene.objects.push/splice/etc. (in-place mutation on the scene object itself).
 // Do NOT try to reassign the exported binding from another module — use scheduleRender() after any mutation.
@@ -98,6 +123,7 @@ async function start(): Promise<void> {
   });
 
   scheduleRender();
+  initPalette();
   window.addEventListener("resize", scheduleRender);
 }
 
