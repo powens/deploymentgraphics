@@ -1,6 +1,6 @@
 import { templateBounds, type BuildingPlacement } from "../building-coordinates.js";
 import type { AreaTerrain } from "../terrain-config.js";
-import type { Annotation, DeploymentConfig, FullConfig } from "../types.js";
+import type { Annotation, BaseConfig, DeploymentConfig, FullConfig } from "../types.js";
 import type { Template } from "../building-coordinates.js";
 
 export type SceneObjectBase = {
@@ -94,7 +94,7 @@ export function buildingToPlacement(
   };
 }
 
-const BASE_DEFAULTS = {
+const BASE_DEFAULTS: Omit<BaseConfig, "size"> = {
   background: { fill: "#f4f1e8" },
   half_way_lines: {
     svg_properties: {
@@ -163,6 +163,10 @@ export function sceneToConfig(
       endY: o.endY,
     }));
 
+  // Objectives are not mapped to FullConfig — the renderer has no objectives
+  // field since the 11th-edition objective marker system was removed.
+  // ObjectiveObject exists in the scene model for future editor use.
+
   const deployment: DeploymentConfig = {
     name: scene.missionName,
     home_edge: scene.homeEdge,
@@ -174,7 +178,7 @@ export function sceneToConfig(
     base: {
       ...BASE_DEFAULTS,
       size: { width: scene.boardWidth, height: scene.boardHeight },
-    } as FullConfig["base"],
+    },
     deployment,
     terrain: {
       templates,
