@@ -61,6 +61,7 @@ function renderCanvas(): void {
     canvasWrap.appendChild(overlaySvg);
     attachOverlayEvents(overlaySvg);
   }
+  overlaySvg.setAttribute("viewBox", `0 0 ${scene.boardWidth} ${scene.boardHeight}`);
   overlaySvg.setAttribute("width", card.getAttribute("width")!);
   overlaySvg.setAttribute("height", card.getAttribute("height")!);
   renderOverlay(overlaySvg, scene, sel, loadedTemplates);
@@ -104,7 +105,8 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
     }
 
     if (dataType === "vertex" && objectId) {
-      const vi = parseInt(target.dataset.vertexIndex ?? "0", 10);
+      const vi = parseInt(target.dataset.vertexIndex ?? "", 10);
+      if (isNaN(vi)) return;
       startVertexDrag(e, objectId, vi);
       return;
     }

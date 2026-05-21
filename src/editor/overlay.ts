@@ -24,6 +24,7 @@ export function objectBounds(
     return { x: obj.x - 1.5, y: obj.y - 1.5, w: 3, h: 3 };
   }
   if (obj.type === "deployment-zone") {
+    if (obj.vertices.length === 0) return { x: 0, y: 0, w: 0, h: 0 };
     const xs = obj.vertices.map(([vx]) => vx);
     const ys = obj.vertices.map(([, vy]) => vy);
     const x = Math.min(...xs), y = Math.min(...ys);
@@ -108,6 +109,7 @@ export function renderOverlay(
       box.setAttribute("stroke", "#b9842f");
       box.setAttribute("stroke-width", "0.25");
       box.setAttribute("stroke-dasharray", "0.8 0.4");
+      box.style.pointerEvents = "none";
       overlaySvg.appendChild(box);
 
       const cx = b.x + b.w / 2;
