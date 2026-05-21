@@ -408,6 +408,36 @@ async function start(): Promise<void> {
     }
   });
 
+  const copyYamlBtn = document.getElementById("btn-copy-yaml")!;
+  let copyTimer: ReturnType<typeof setTimeout> | null = null;
+  copyYamlBtn.addEventListener("click", async () => {
+    const config = sceneToConfig(scene, loadedTemplates);
+    const yaml = jsyaml.dump(config);
+    try {
+      await navigator.clipboard.writeText(yaml);
+      copyYamlBtn.textContent = "Copied!";
+    } catch {
+      copyYamlBtn.textContent = "Copy failed";
+    }
+    if (copyTimer) clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => {
+      copyYamlBtn.textContent = "Copy YAML";
+      copyTimer = null;
+    }, 1500);
+  });
+
+  document.getElementById("btn-new")!.addEventListener("click", () => {
+    if (!confirm("Start a new blank canvas? Unsaved work will be lost.")) return;
+    scene = emptyScene();
+    sel.selectedId = null;
+    sel.vertexEditId = null;
+    overlaySvg = null;
+    while (canvasWrap.firstChild) canvasWrap.removeChild(canvasWrap.firstChild);
+    statusPreset.textContent = "No preset loaded";
+    scheduleRender();
+    updateInspector();
+  });
+
   scheduleRender();
   initPalette();
   window.addEventListener("resize", scheduleRender);
