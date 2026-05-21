@@ -3,38 +3,42 @@ import { describe, it, expect } from "vitest";
 import { injectMissionCard, makeMissionCard } from "./main";
 import type { FullConfig } from "./types";
 
-const config = {
-  base: {
-    size: { width: 60, height: 44 },
-    background: { fill: "black" },
-    half_way_lines: { draw: true, svg_properties: { stroke: "black" } },
-    deployment: {
-      attacker: { svg_properties: { fill: "#cf4b33", stroke: "none" } },
-      defender: { svg_properties: { fill: "#7d8b7f", stroke: "none" } },
+function buildMinimalConfig(): FullConfig {
+  return {
+    base: {
+      size: { width: 60, height: 44 },
+      background: { fill: "black" },
+      half_way_lines: { draw: true, svg_properties: { stroke: "black" } },
+      deployment: {
+        attacker: { svg_properties: { fill: "#cf4b33", stroke: "none" } },
+        defender: { svg_properties: { fill: "#7d8b7f", stroke: "none" } },
+      },
+      building: {
+        draw: true,
+        svg_properties: { opacity: 1 },
+        template: { fill: "#808080", stroke: "black" },
+      },
+      grid: { draw: false, svg_properties: {} },
     },
-    building: {
-      draw: true,
-      svg_properties: { opacity: 1 },
-      template: { fill: "#808080", stroke: "black" },
-    },
-    grid: { draw: false, svg_properties: {} },
-  },
-  terrain: {
-    layout_name: "1",
-    templates: { "4x6": { width: 4, height: 6 } },
-    layout: {
-      "1": {
-        buildings: [{ type: "4x6", corners: { TL: [10, 0], TR: [14, 0] } }],
+    terrain: {
+      layout_name: "1",
+      templates: { "4x6": { width: 4, height: 6 } },
+      layout: {
+        "1": {
+          buildings: [{ type: "4x6", corners: { TL: [10, 0], TR: [14, 0] } }],
+        },
       },
     },
-  },
-  deployment: {
-    name: "Test",
-    home_edge: "long",
-    attacker: { deployment_zone: [[0, 0], [60, 0], [60, 10]] },
-    defender: { deployment_zone: [[0, 44], [60, 44], [60, 34]] },
-  },
-} as unknown as FullConfig;
+    deployment: {
+      name: "Test",
+      home_edge: "long",
+      attacker: { deployment_zone: [[0, 0], [60, 0], [60, 10]] },
+      defender: { deployment_zone: [[0, 44], [60, 44], [60, 34]] },
+    },
+  } as unknown as FullConfig;
+}
+
+const config = buildMinimalConfig();
 
 describe("makeMissionCard", () => {
   it("returns an <svg> with the expected layers", () => {
@@ -160,5 +164,43 @@ describe("injectCenterMask", () => {
   it("omits the center mask when no player masks the centre", () => {
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#centerMask")).toBeNull();
+  });
+});
+
+describe("makeAreaTerrain", () => {
+  it("renders area terrain circle when config has area_terrain", () => {
+    const cfg = buildMinimalConfig();
+    cfg.terrain.area_terrain = [
+      { shape: "circle", x: 10, y: 10, width: 6, label: "Forest" },
+    ];
+    const svg = makeMissionCard(cfg);
+    const circles = svg.querySelectorAll("#area-terrain circle");
+    expect(circles.length).toBe(1);
+    expect(circles[0].getAttribute("cx")).toBe("13"); // x + r = 10 + 3
+    expect(circles[0].getAttribute("cy")).toBe("13");
+    expect(circles[0].getAttribute("r")).toBe("3");
+  });
+
+  it("renders area terrain polygon when config has area_terrain polygon", () => {
+    const cfg = buildMinimalConfig();
+    cfg.terrain.area_terrain = [
+      {
+        shape: "polygon",
+        x: 5,
+        y: 5,
+        points: [[0, 0], [4, 0], [4, 3], [0, 3]],
+        label: "Rubble",
+      },
+    ];
+    const svg = makeMissionCard(cfg);
+    const polygons = svg.querySelectorAll("#area-terrain polygon");
+    expect(polygons.length).toBe(1);
+  });
+
+  it("skips area terrain group when terrain has no area_terrain", () => {
+    const cfg = buildMinimalConfig();
+    const svg = makeMissionCard(cfg);
+    const group = svg.querySelector("#area-terrain");
+    expect(group).toBeNull();
   });
 });

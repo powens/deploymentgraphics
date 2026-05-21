@@ -1,5 +1,16 @@
 import type { BuildingPlacement, Template } from "./building-coordinates.js";
 
+export type AreaTerrain = {
+  shape: "circle" | "polygon";
+  x: number;
+  y: number;
+  width?: number;   // diameter for circles; bounding-box width for polygons
+  height?: number;
+  points?: [number, number][];  // polygon-only: template-local closed ring
+  label?: string;
+  rotation?: number;
+};
+
 /** One numbered layout: an ordered list of building placements. */
 export type TerrainLayout = {
   buildings: BuildingPlacement[];
@@ -14,6 +25,7 @@ export type TerrainLayout = {
 export type TerrainConfig = {
   templates: Record<string, Template>;
   layout: Record<string, TerrainLayout>;
+  area_terrain?: AreaTerrain[];
 };
 
 /**

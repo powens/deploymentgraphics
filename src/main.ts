@@ -2,6 +2,7 @@ import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { getLayoutBuildings } from "./terrain-config.js";
 import type { FullConfig } from "./types.js";
+import type { AreaTerrain } from "./terrain-config.js";
 
 /**
  * Radius of the centre hole punched out of masked deployment zones, taken
@@ -133,6 +134,51 @@ function makeGrid(config: FullConfig): SVGElement | null {
   return group;
 }
 
+const AREA_TERRAIN_STYLES: Record<string, { fill: string; stroke: string }> = {
+  Forest: { fill: "rgba(60,120,60,0.3)", stroke: "#3a6b3a" },
+  Crater: { fill: "rgba(100,80,60,0.3)", stroke: "#6b5030" },
+  Rubble: { fill: "rgba(140,130,120,0.3)", stroke: "#807060" },
+};
+const DEFAULT_AREA_TERRAIN_STYLE = {
+  fill: "rgba(140,130,120,0.2)",
+  stroke: "#808080",
+};
+
+function makeAreaTerrain(config: FullConfig): SVGElement | null {
+  const items = config.terrain.area_terrain;
+  if (!items || items.length === 0) return null;
+  const group = makeElement("g");
+  group.setAttribute("id", "area-terrain");
+  for (const item of items) {
+    const style =
+      AREA_TERRAIN_STYLES[item.label ?? ""] ?? DEFAULT_AREA_TERRAIN_STYLE;
+    let shape: SVGElement;
+    if (item.shape === "circle") {
+      const r = (item.width ?? 4) / 2;
+      shape = makeElement("circle");
+      shape.setAttribute("cx", `${item.x + r}`);
+      shape.setAttribute("cy", `${item.y + r}`);
+      shape.setAttribute("r", `${r}`);
+    } else {
+      const pts = (item.points ?? [])
+        .map(([px, py]: [number, number]) => `${item.x + px},${item.y + py}`)
+        .join(" ");
+      shape = makeElement("polygon");
+      shape.setAttribute("points", pts);
+    }
+    shape.setAttribute("fill", style.fill);
+    shape.setAttribute("stroke", style.stroke);
+    shape.setAttribute("stroke-width", "0.3");
+    if (item.rotation) {
+      const cx = item.x + (item.width ?? 4) / 2;
+      const cy = item.y + (item.height ?? item.width ?? 4) / 2;
+      shape.setAttribute("transform", `rotate(${item.rotation} ${cx} ${cy})`);
+    }
+    group.appendChild(shape);
+  }
+  return group;
+}
+
 export function makeMissionCard(config: FullConfig): SVGElement {
   const svg = makeElement("svg");
   svg.setAttribute(
@@ -170,6 +216,11 @@ export function makeMissionCard(config: FullConfig): SVGElement {
   const halfwayLines = makeHalfwayLines(config);
   if (halfwayLines) {
     svg.appendChild(halfwayLines);
+  }
+
+  const areaTerrain = makeAreaTerrain(config);
+  if (areaTerrain) {
+    svg.appendChild(areaTerrain);
   }
 
   if (hasSelectedLayout(config)) {
