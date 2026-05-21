@@ -158,6 +158,9 @@ function startDrag(e: PointerEvent, id: string): void {
   const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
   if (!mapSvg) return;
 
+  const hitEl = e.target as SVGElement;
+  if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
+
   const toSvgCoords = (ev: PointerEvent) => {
     const rect = mapSvg.getBoundingClientRect();
     return {
@@ -185,10 +188,12 @@ function startDrag(e: PointerEvent, id: string): void {
   function onUp() {
     window.removeEventListener("pointermove", onMove);
     window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onUp);
     updateInspector();
   }
   window.addEventListener("pointermove", onMove);
   window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointercancel", onUp);
 }
 function startVertexDrag(e: PointerEvent, id: string, vi: number): void { void e; void id; void vi; /* Task 11 */ }
 function startRotateDrag(e: PointerEvent, id: string): void { void e; void id; /* Task 10 */ }
