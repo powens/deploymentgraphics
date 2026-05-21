@@ -1,4 +1,3 @@
-/* global jsyaml */
 import { makeMissionCard } from "./main.js";
 import { emptyScene, sceneToConfig, type Scene } from "./editor/scene.js";
 import type { Template } from "./building-coordinates.js";
@@ -14,7 +13,6 @@ let gridEnabled = false;
 
 const canvasWrap = document.getElementById("canvas-wrap")!;
 const statusBoard = document.getElementById("status-board")!;
-const statusPreset = document.getElementById("status-preset")!;
 const paletteEl = document.getElementById("palette")!;
 const canvasArea = document.getElementById("canvas-area")!;
 
