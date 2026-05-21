@@ -195,6 +195,7 @@ describe("makeAreaTerrain", () => {
     const svg = makeMissionCard(cfg);
     const polygons = svg.querySelectorAll("#area-terrain polygon");
     expect(polygons.length).toBe(1);
+    expect(polygons[0].getAttribute("points")).toBe("5,5 9,5 9,8 5,8");
   });
 
   it("skips area terrain group when terrain has no area_terrain", () => {
