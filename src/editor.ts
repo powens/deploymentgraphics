@@ -71,6 +71,9 @@ async function fetchYaml(url: string): Promise<unknown> {
 
 let overlaySvg: SVGSVGElement | null = null;
 
+// Exported for read-access by other editor modules.
+// Mutate via: scene.objects.push/splice/etc. (in-place mutation on the scene object itself).
+// Do NOT try to reassign the exported binding from another module — use scheduleRender() after any mutation.
 export { scene, loadedTemplates, snapEnabled, overlaySvg, fetchYaml };
 
 async function start(): Promise<void> {
