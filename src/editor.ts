@@ -196,7 +196,37 @@ function startDrag(e: PointerEvent, id: string): void {
   window.addEventListener("pointerup", onUp);
   window.addEventListener("pointercancel", onUp);
 }
-function startVertexDrag(e: PointerEvent, id: string, vi: number): void { void e; void id; void vi; /* Task 11 */ }
+function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
+  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
+  if (!mapSvg) return;
+  const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
+
+  const hitEl = e.target as SVGElement;
+  if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
+
+  const onMove = (ev: PointerEvent) => {
+    const rect = mapSvg.getBoundingClientRect();
+    const px = snap(((ev.clientX - rect.left) / rect.width) * scene.boardWidth);
+    const py = snap(((ev.clientY - rect.top) / rect.height) * scene.boardHeight);
+    const idx = scene.objects.findIndex((o) => o.id === id);
+    if (idx < 0) return;
+    const obj = scene.objects[idx];
+    if (obj.type !== "deployment-zone") return;
+    scene.objects[idx] = {
+      ...obj,
+      vertices: obj.vertices.map((v, i) => (i === vi ? [px, py] as [number, number] : v)),
+    };
+    scheduleRender();
+  };
+  const onUp = () => {
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onUp);
+  };
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointercancel", onUp);
+}
 function startRotateDrag(e: PointerEvent, id: string): void {
   const obj = scene.objects.find((o) => o.id === id);
   if (!obj) return;
@@ -207,7 +237,7 @@ function startRotateDrag(e: PointerEvent, id: string): void {
   const hitEl = e.target as SVGElement;
   if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
 
-  function getAngle(ev: PointerEvent): number {
+  const getAngle = (ev: PointerEvent): number => {
     const rect = mapSvg.getBoundingClientRect();
     const px = ((ev.clientX - rect.left) / rect.width) * scene.boardWidth;
     const py = ((ev.clientY - rect.top) / rect.height) * scene.boardHeight;
