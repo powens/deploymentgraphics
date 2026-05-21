@@ -2,6 +2,11 @@ import { makeMissionCard } from "./main.js";
 import { emptyScene, sceneToConfig, type Scene } from "./editor/scene.js";
 import type { Template } from "./building-coordinates.js";
 import { buildPaletteItems, renderPalette, createObjectFromPalette, type PaletteItem } from "./editor/palette.js";
+import {
+  renderOverlay,
+  createOverlaySvg,
+  type SelectionState,
+} from "./editor/overlay.js";
 
 declare const jsyaml: { load(s: string): unknown; dump(v: unknown): string };
 
@@ -51,18 +56,74 @@ function renderCanvas(): void {
     canvasWrap.insertBefore(card, canvasWrap.firstChild);
   }
 
-  statusBoard.textContent = `${scene.boardWidth}×${scene.boardHeight} board`;
-
-  if (overlaySvg) {
-    overlaySvg.setAttribute("width", `${w}`);
-    overlaySvg.setAttribute("height", `${h}`);
-    renderOverlayNow();
+  if (!overlaySvg) {
+    overlaySvg = createOverlaySvg(scene.boardWidth, scene.boardHeight);
+    canvasWrap.appendChild(overlaySvg);
+    attachOverlayEvents(overlaySvg);
   }
+  overlaySvg.setAttribute("width", card.getAttribute("width")!);
+  overlaySvg.setAttribute("height", card.getAttribute("height")!);
+  renderOverlay(overlaySvg, scene, sel, loadedTemplates);
+
+  statusBoard.textContent = `${scene.boardWidth}×${scene.boardHeight} board`;
 }
 
-// Stubs replaced in later tasks
-function renderOverlayNow(): void { /* Task 8 */ }
 export function updateInspector(): void { /* Task 9 */ }
+
+function attachOverlayEvents(svg: SVGSVGElement): void {
+  svg.addEventListener("pointermove", (e) => {
+    const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
+    if (!mapSvg) return;
+    const rect = mapSvg.getBoundingClientRect();
+    const x = (((e.clientX - rect.left) / rect.width) * scene.boardWidth).toFixed(1);
+    const y = (((e.clientY - rect.top) / rect.height) * scene.boardHeight).toFixed(1);
+    document.getElementById("status-cursor")!.textContent = `cursor: ${x}″, ${y}″`;
+  });
+
+  svg.addEventListener("pointerdown", (e) => {
+    const target = e.target as SVGElement & { dataset: DOMStringMap };
+    const dataType = target.dataset?.type;
+    const objectId = target.dataset?.objectId;
+
+    if (dataType === "object" && objectId) {
+      e.stopPropagation();
+      if (
+        sel.selectedId === objectId &&
+        scene.objects.find((o) => o.id === objectId)?.type === "deployment-zone"
+      ) {
+        sel.vertexEditId = objectId;
+        renderOverlay(svg, scene, sel, loadedTemplates);
+        return;
+      }
+      sel.selectedId = objectId;
+      sel.vertexEditId = null;
+      renderOverlay(svg, scene, sel, loadedTemplates);
+      updateInspector();
+      startDrag(e, objectId);
+      return;
+    }
+
+    if (dataType === "vertex" && objectId) {
+      const vi = parseInt(target.dataset.vertexIndex ?? "0", 10);
+      startVertexDrag(e, objectId, vi);
+      return;
+    }
+
+    if (dataType === "rotate" && objectId) {
+      startRotateDrag(e, objectId);
+      return;
+    }
+
+    sel.selectedId = null;
+    sel.vertexEditId = null;
+    renderOverlay(svg, scene, sel, loadedTemplates);
+    updateInspector();
+  });
+}
+
+function startDrag(e: PointerEvent, id: string): void { void e; void id; /* Task 9 */ }
+function startVertexDrag(e: PointerEvent, id: string, vi: number): void { void e; void id; void vi; /* Task 11 */ }
+function startRotateDrag(e: PointerEvent, id: string): void { void e; void id; /* Task 10 */ }
 
 async function fetchYaml(url: string): Promise<unknown> {
   const res = await fetch(url);
@@ -71,6 +132,7 @@ async function fetchYaml(url: string): Promise<unknown> {
 }
 
 let overlaySvg: SVGSVGElement | null = null;
+const sel: SelectionState = { selectedId: null, vertexEditId: null, dragVertexIndex: null };
 
 function initPalette(): void {
   const items = buildPaletteItems(loadedTemplates);
