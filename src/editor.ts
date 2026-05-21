@@ -5,6 +5,7 @@ import { buildPaletteItems, renderPalette, createObjectFromPalette, type Palette
 import {
   renderOverlay,
   createOverlaySvg,
+  objectCenter,
   type SelectionState,
 } from "./editor/overlay.js";
 import { renderInspector } from "./editor/inspector.js";
@@ -196,7 +197,42 @@ function startDrag(e: PointerEvent, id: string): void {
   window.addEventListener("pointercancel", onUp);
 }
 function startVertexDrag(e: PointerEvent, id: string, vi: number): void { void e; void id; void vi; /* Task 11 */ }
-function startRotateDrag(e: PointerEvent, id: string): void { void e; void id; /* Task 10 */ }
+function startRotateDrag(e: PointerEvent, id: string): void {
+  const obj = scene.objects.find((o) => o.id === id);
+  if (!obj) return;
+  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
+  if (!mapSvg) return;
+  const center = objectCenter(obj, loadedTemplates);
+  const nonNullMapSvg = mapSvg;
+
+  const hitEl = e.target as SVGElement;
+  if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
+
+  function getAngle(ev: PointerEvent): number {
+    const rect = nonNullMapSvg.getBoundingClientRect();
+    const px = ((ev.clientX - rect.left) / rect.width) * scene.boardWidth;
+    const py = ((ev.clientY - rect.top) / rect.height) * scene.boardHeight;
+    const raw = Math.atan2(py - center.y, px - center.x) * (180 / Math.PI) + 90;
+    return ((raw % 360) + 360) % 360;
+  }
+
+  function onMove(ev: PointerEvent) {
+    const idx = scene.objects.findIndex((o) => o.id === id);
+    if (idx >= 0) {
+      scene.objects[idx] = { ...scene.objects[idx], rotation: getAngle(ev) } as typeof scene.objects[number];
+      scheduleRender();
+    }
+  }
+  function onUp() {
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onUp);
+    updateInspector();
+  }
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointercancel", onUp);
+}
 
 async function fetchYaml(url: string): Promise<unknown> {
   const res = await fetch(url);
@@ -253,6 +289,46 @@ async function start(): Promise<void> {
     gridEnabled = !gridEnabled;
     (e.currentTarget as HTMLElement).classList.toggle("active", gridEnabled);
     scheduleRender();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    const active = document.activeElement?.tagName;
+    const inInput = active === "INPUT" || active === "TEXTAREA" || active === "SELECT";
+
+    if (e.key === "Escape") {
+      if (sel.vertexEditId) {
+        sel.vertexEditId = null;
+        if (overlaySvg) renderOverlay(overlaySvg, scene, sel, loadedTemplates);
+      } else {
+        sel.selectedId = null;
+        sel.vertexEditId = null;
+        if (overlaySvg) renderOverlay(overlaySvg, scene, sel, loadedTemplates);
+        updateInspector();
+      }
+      return;
+    }
+
+    if ((e.key === "Delete" || e.key === "Backspace") && sel.selectedId && !inInput) {
+      scene.objects = scene.objects.filter((o) => o.id !== sel.selectedId);
+      sel.selectedId = null;
+      sel.vertexEditId = null;
+      scheduleRender();
+      updateInspector();
+      return;
+    }
+
+    if ((e.key === "r" || e.key === "R") && sel.selectedId && !inInput) {
+      const idx = scene.objects.findIndex((o) => o.id === sel.selectedId);
+      if (idx >= 0) {
+        const cur = scene.objects[idx].rotation;
+        scene.objects[idx] = {
+          ...scene.objects[idx],
+          rotation: (Math.round(cur / 90) * 90 + 90) % 360,
+        } as typeof scene.objects[number];
+        scheduleRender();
+        updateInspector();
+      }
+    }
   });
 
   scheduleRender();
