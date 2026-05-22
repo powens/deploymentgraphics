@@ -3,40 +3,6 @@ import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { getLayoutBuildings } from "./terrain-config.js";
 import type { FullConfig } from "./types.js";
 
-/**
- * Radius of the centre hole punched out of masked deployment zones, taken
- * from whichever player's `mask_center` is set. 0 means no player masks
- * the centre, so no mask is needed.
- */
-function centerMaskRadius(config: FullConfig): number {
-  return (
-    config.deployment.attacker.mask_center ??
-    config.deployment.defender.mask_center ??
-    0
-  );
-}
-
-function injectCenterMask(defs: SVGElement, config: FullConfig, radius: number) {
-  const centerMask = makeElement("mask");
-  centerMask.setAttribute("id", "centerMask");
-
-  const fullRect = makeElement("rect");
-  fullRect.setAttribute("x", "0");
-  fullRect.setAttribute("y", "0");
-  fullRect.setAttribute("width", `${config.base.size.width}`);
-  fullRect.setAttribute("height", `${config.base.size.height}`);
-  fullRect.setAttribute("fill", "white");
-  centerMask.appendChild(fullRect);
-
-  const centerCircle = makeElement("circle");
-  centerCircle.setAttribute("cx", `${config.base.size.width / 2}`);
-  centerCircle.setAttribute("cy", `${config.base.size.height / 2}`);
-  centerCircle.setAttribute("r", `${radius}`);
-  centerCircle.setAttribute("fill", "black");
-  centerMask.appendChild(centerCircle);
-  defs.appendChild(centerMask);
-}
-
 /** True when a usable layout is selected in the terrain config. */
 function hasSelectedLayout(config: FullConfig): boolean {
   return !!config.terrain.layout[config.terrain.layout_name];
@@ -53,11 +19,6 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
     ...config.base.building.template,
   };
   injectTemplateDefs(config.terrain.templates, defs, templateProps);
-
-  const maskRadius = centerMaskRadius(config);
-  if (maskRadius > 0) {
-    injectCenterMask(defs, config, maskRadius);
-  }
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
   if (hasArrow) {
@@ -110,14 +71,30 @@ function makeDeploymentZone(
 ): SVGElement {
   const playerConfig = config.deployment[attackerDefender];
   const colorConfig = config.base.deployment[attackerDefender];
+  const maskRadius = playerConfig.mask_center ?? 0;
+
+  if (maskRadius > 0) {
+    const cx = config.base.size.width / 2;
+    const cy = config.base.size.height / 2;
+    const r = maskRadius;
+    const polyPath = playerConfig.deployment_zone
+      .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`)
+      .join(" ") + " Z";
+    const circlePath =
+      `M${cx + r},${cy} A${r},${r} 0 1 0 ${cx - r},${cy}` +
+      ` A${r},${r} 0 1 0 ${cx + r},${cy} Z`;
+    const dz = makeElement("path");
+    dz.setAttribute("id", attackerDefender);
+    dz.setAttribute("fill-rule", "evenodd");
+    dz.setAttribute("d", `${polyPath} ${circlePath}`);
+    applyAttributes(dz, colorConfig.svg_properties);
+    return dz;
+  }
+
   const dz = makeElement("polygon");
   dz.setAttribute("id", attackerDefender);
-  const coordinateStr = playerConfig.deployment_zone.join(" ");
-  dz.setAttribute("points", coordinateStr);
+  dz.setAttribute("points", playerConfig.deployment_zone.join(" "));
   applyAttributes(dz, colorConfig.svg_properties);
-  if (playerConfig.mask_center) {
-    dz.setAttribute("mask", "url(#centerMask)");
-  }
   return dz;
 }
 

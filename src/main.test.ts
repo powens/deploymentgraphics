@@ -137,35 +137,6 @@ describe("makeDeploymentZone styling", () => {
   });
 });
 
-describe("injectCenterMask", () => {
-  const masked = {
-    ...config,
-    deployment: {
-      ...config.deployment,
-      attacker: { ...config.deployment.attacker, mask_center: 6 },
-    },
-  } as FullConfig;
-
-  it("sizes the mask circle from the mask_center value", () => {
-    const svg = makeMissionCard(masked);
-    const circle = svg.querySelector("defs #centerMask circle");
-    expect(circle?.getAttribute("r")).toBe("6");
-  });
-
-  it("appends the center mask inside <defs>, not as a direct <svg> child", () => {
-    const svg = makeMissionCard(masked);
-    expect(svg.querySelector("defs #centerMask")).not.toBeNull();
-    const directMask = Array.from(svg.children).find(
-      (c) => c.tagName.toLowerCase() === "mask",
-    );
-    expect(directMask).toBeUndefined();
-  });
-
-  it("omits the center mask when no player masks the centre", () => {
-    const svg = makeMissionCard(config);
-    expect(svg.querySelector("#centerMask")).toBeNull();
-  });
-});
 
 describe("makeAreaTerrain", () => {
   it("renders area terrain circle when config has area_terrain", () => {
@@ -235,5 +206,46 @@ describe("makeAnnotations", () => {
     const config = buildMinimalConfig();
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#annotations")).toBeNull();
+  });
+});
+
+describe("makeDeploymentZone rendering", () => {
+  it("renders a polygon when mask_center is absent", () => {
+    const config = buildMinimalConfig();
+    config.deployment = {
+      name: "Test",
+      home_edge: "long",
+      attacker: { deployment_zone: [[60,0],[60,22],[30,22],[30,0]] },
+      defender: { deployment_zone: [[30,22],[30,44],[0,44],[0,22]] },
+    };
+    const svg = makeMissionCard(config);
+    const attacker = svg.querySelector("#attacker");
+    expect(attacker?.tagName).toBe("polygon");
+  });
+
+  it("renders an evenodd path when mask_center is set", () => {
+    const config = buildMinimalConfig();
+    config.deployment = {
+      name: "Test",
+      home_edge: "long",
+      attacker: { deployment_zone: [[60,0],[60,22],[30,22],[30,0]], mask_center: 9 },
+      defender: { deployment_zone: [[30,22],[30,44],[0,44],[0,22]], mask_center: 9 },
+    };
+    const svg = makeMissionCard(config);
+    const attacker = svg.querySelector("#attacker");
+    expect(attacker?.tagName).toBe("path");
+    expect(attacker?.getAttribute("fill-rule")).toBe("evenodd");
+  });
+
+  it("does not create a centerMask element when mask_center is set", () => {
+    const config = buildMinimalConfig();
+    config.deployment = {
+      name: "Test",
+      home_edge: "long",
+      attacker: { deployment_zone: [[60,0],[60,22],[30,22],[30,0]], mask_center: 9 },
+      defender: { deployment_zone: [[30,22],[30,44],[0,44],[0,22]], mask_center: 9 },
+    };
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#centerMask")).toBeNull();
   });
 });
