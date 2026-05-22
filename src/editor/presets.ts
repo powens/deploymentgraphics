@@ -19,8 +19,8 @@ export const TERRAIN_LAYOUTS = [
 type MissionYaml = {
   name: string;
   home_edge: "short" | "long";
-  attacker: { deployment_zone: [number, number][] };
-  defender: { deployment_zone: [number, number][] };
+  attacker: { deployment_zone: [number, number][]; mask_center?: number };
+  defender: { deployment_zone: [number, number][]; mask_center?: number };
 };
 
 type TerrainYaml = {
@@ -82,6 +82,8 @@ export async function loadPreset(
       missionName: missionData.name ?? missionId,
       homeEdge: missionData.home_edge ?? "long",
       objects,
+      centerHoleRadius:
+        missionData.attacker.mask_center ?? missionData.defender.mask_center,
     },
     templates,
   };
