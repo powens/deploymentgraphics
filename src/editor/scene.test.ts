@@ -116,3 +116,18 @@ describe("sceneToConfig", () => {
     expect(config.annotations![0].text).toBe("hello");
   });
 });
+
+describe("sceneToConfig with centerHoleRadius", () => {
+  it("emits mask_center on both players when centerHoleRadius is set", () => {
+    const scene: Scene = { ...emptyScene(), centerHoleRadius: 9 };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.deployment.attacker.mask_center).toBe(9);
+    expect(config.deployment.defender.mask_center).toBe(9);
+  });
+
+  it("omits mask_center when centerHoleRadius is undefined", () => {
+    const config = sceneToConfig(emptyScene(), RECT_TEMPLATES);
+    expect(config.deployment.attacker.mask_center).toBeUndefined();
+    expect(config.deployment.defender.mask_center).toBeUndefined();
+  });
+});

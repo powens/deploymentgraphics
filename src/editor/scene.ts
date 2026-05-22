@@ -57,6 +57,7 @@ export type Scene = {
   missionName: string;
   homeEdge: "short" | "long";
   objects: SceneObject[];
+  centerHoleRadius?: number;
 };
 
 export function emptyScene(): Scene {
@@ -170,8 +171,14 @@ export function sceneToConfig(
   const deployment: DeploymentConfig = {
     name: scene.missionName,
     home_edge: scene.homeEdge,
-    attacker: { deployment_zone: attackerZone?.vertices ?? [] },
-    defender: { deployment_zone: defenderZone?.vertices ?? [] },
+    attacker: {
+      deployment_zone: attackerZone?.vertices ?? [],
+      ...(scene.centerHoleRadius ? { mask_center: scene.centerHoleRadius } : {}),
+    },
+    defender: {
+      deployment_zone: defenderZone?.vertices ?? [],
+      ...(scene.centerHoleRadius ? { mask_center: scene.centerHoleRadius } : {}),
+    },
   };
 
   return {
