@@ -104,6 +104,11 @@ export function updateInspector(): void {
         scheduleRender();
       }
     },
+    (patch) => {
+      Object.assign(scene, patch);
+      scheduleRender();
+      updateInspector();
+    },
   );
   updateStatus();
 }

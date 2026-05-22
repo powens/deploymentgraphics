@@ -42,20 +42,53 @@ export function renderInspector(
   templates: Record<string, Template>,
   onDelete: (id: string) => void,
   onChange: (id: string, patch: Partial<SceneObject>) => void,
+  onSceneChange: (patch: Partial<Scene>) => void,
 ): void {
-  if (!selectedId) {
-    emptyEl.hidden = false;
-    bodyEl.hidden = true;
-    chipEl.hidden = true;
+  if (!selectedId || !scene.objects.find((o) => o.id === selectedId)) {
+    emptyEl.hidden = true;
+    bodyEl.hidden = false;
+    chipEl.hidden = false;
+    chipEl.textContent = "CANVAS";
+    while (bodyEl.firstChild) bodyEl.removeChild(bodyEl.firstChild);
+
+    const { wrap: cField } = makeField("Center exclusion");
+
+    const centerRow = document.createElement("div");
+    centerRow.style.cssText = "display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text)";
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    chk.checked = !!scene.centerHoleRadius;
+    chk.style.accentColor = "var(--accent)";
+
+    const radiusWrap = document.createElement("span");
+    radiusWrap.style.cssText = `display:${scene.centerHoleRadius ? "inline-flex" : "none"};align-items:center;gap:4px;margin-left:8px`;
+    const radiusInp = numInput(scene.centerHoleRadius ?? 9, (v) => {
+      onSceneChange({ centerHoleRadius: v });
+    });
+    radiusInp.style.width = "60px";
+    radiusWrap.appendChild(document.createTextNode("r ="));
+    radiusWrap.appendChild(radiusInp);
+    radiusWrap.appendChild(document.createTextNode("″"));
+
+    chk.addEventListener("change", () => {
+      if (chk.checked) {
+        radiusWrap.style.display = "inline-flex";
+        onSceneChange({ centerHoleRadius: 9 });
+      } else {
+        radiusWrap.style.display = "none";
+        onSceneChange({ centerHoleRadius: undefined });
+      }
+    });
+
+    centerRow.appendChild(chk);
+    centerRow.appendChild(document.createTextNode("Center hole"));
+    cField.appendChild(centerRow);
+    cField.appendChild(radiusWrap);
+    bodyEl.appendChild(cField);
     return;
   }
-  const obj = scene.objects.find((o) => o.id === selectedId);
-  if (!obj) {
-    emptyEl.hidden = false;
-    bodyEl.hidden = true;
-    chipEl.hidden = true;
-    return;
-  }
+
+  const obj = scene.objects.find((o) => o.id === selectedId)!;
 
   emptyEl.hidden = true;
   bodyEl.hidden = false;
