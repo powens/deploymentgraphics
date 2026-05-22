@@ -10,6 +10,7 @@ import {
 } from "./editor/overlay.js";
 import { renderInspector } from "./editor/inspector.js";
 import { MISSIONS, TERRAIN_LAYOUTS, loadPreset } from "./editor/presets.js";
+import { insertVertexAtEdge, deleteVertex } from "./editor/vertex-ops.js";
 
 declare const jsyaml: { load(s: string): unknown; dump(v: unknown): string };
 
@@ -104,7 +105,27 @@ export function updateInspector(): void {
       }
     },
   );
-  statusSelEl.textContent = sel.selectedId ? "1 object selected" : "";
+  updateStatus();
+}
+
+function updateStatus(): void {
+  if (sel.vertexEditId) {
+    statusSelEl.textContent = "Vertex edit · click + to add · right-click to delete";
+  } else if (sel.selectedId) {
+    statusSelEl.textContent = "1 object selected";
+  } else {
+    statusSelEl.textContent = "";
+  }
+}
+
+function liveMapCoords(ev: PointerEvent): { x: number; y: number } {
+  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
+  if (!mapSvg) return { x: 0, y: 0 };
+  const rect = mapSvg.getBoundingClientRect();
+  return {
+    x: ((ev.clientX - rect.left) / rect.width) * scene.boardWidth,
+    y: ((ev.clientY - rect.top) / rect.height) * scene.boardHeight,
+  };
 }
 
 function attachOverlayEvents(svg: SVGSVGElement): void {
@@ -130,6 +151,7 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
       ) {
         sel.vertexEditId = objectId;
         renderOverlay(svg, scene, sel, loadedTemplates);
+        updateStatus();
         return;
       }
       sel.selectedId = objectId;
@@ -147,6 +169,19 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
       return;
     }
 
+    if (dataType === "edge-midpoint" && objectId) {
+      const edgeIdx = parseInt(target.dataset.edgeIndex ?? "", 10);
+      if (isNaN(edgeIdx)) return;
+      const idx = scene.objects.findIndex((o) => o.id === objectId);
+      if (idx < 0) return;
+      const obj = scene.objects[idx];
+      if (obj.type !== "deployment-zone") return;
+      scene.objects[idx] = { ...obj, vertices: insertVertexAtEdge(obj.vertices, edgeIdx) };
+      scheduleRender();
+      startVertexDrag(e, objectId, edgeIdx + 1);
+      return;
+    }
+
     if (dataType === "rotate" && objectId) {
       startRotateDrag(e, objectId);
       return;
@@ -157,31 +192,39 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
     renderOverlay(svg, scene, sel, loadedTemplates);
     updateInspector();
   });
+
+  svg.addEventListener("contextmenu", (e) => {
+    const target = e.target as SVGElement & { dataset: DOMStringMap };
+    if (target.dataset?.type !== "vertex") return;
+    e.preventDefault();
+    const vi = parseInt(target.dataset.vertexIndex ?? "", 10);
+    const objectId = target.dataset.objectId;
+    if (isNaN(vi) || !objectId) return;
+    const idx = scene.objects.findIndex((o) => o.id === objectId);
+    if (idx < 0) return;
+    const obj = scene.objects[idx];
+    if (obj.type !== "deployment-zone") return;
+    const newVerts = deleteVertex(obj.vertices, vi);
+    if (newVerts === obj.vertices) return;
+    scene.objects[idx] = { ...obj, vertices: newVerts };
+    scheduleRender();
+  });
 }
 
 function startDrag(e: PointerEvent, id: string): void {
   const obj = scene.objects.find((o) => o.id === id);
   if (!obj) return;
-  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
-  if (!mapSvg) return;
+  if (!canvasWrap.querySelector<SVGSVGElement>("svg.map-svg")) return;
 
-  const hitEl = e.target as SVGElement;
-  if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
+  canvasWrap.setPointerCapture(e.pointerId);
 
-  const toSvgCoords = (ev: PointerEvent) => {
-    const rect = mapSvg.getBoundingClientRect();
-    return {
-      x: ((ev.clientX - rect.left) / rect.width) * scene.boardWidth,
-      y: ((ev.clientY - rect.top) / rect.height) * scene.boardHeight,
-    };
-  };
   const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
-  const start = toSvgCoords(e);
+  const start = liveMapCoords(e);
   const origX = obj.x;
   const origY = obj.y;
 
   function onMove(ev: PointerEvent) {
-    const pos = toSvgCoords(ev);
+    const pos = liveMapCoords(ev);
     const idx = scene.objects.findIndex((o) => o.id === id);
     if (idx >= 0) {
       scene.objects[idx] = {
@@ -203,24 +246,22 @@ function startDrag(e: PointerEvent, id: string): void {
   window.addEventListener("pointercancel", onUp);
 }
 function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
-  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
-  if (!mapSvg) return;
+  if (!canvasWrap.querySelector<SVGSVGElement>("svg.map-svg")) return;
   const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
 
-  const hitEl = e.target as SVGElement;
-  if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
+  canvasWrap.setPointerCapture(e.pointerId);
 
   const onMove = (ev: PointerEvent) => {
-    const rect = mapSvg.getBoundingClientRect();
-    const px = snap(((ev.clientX - rect.left) / rect.width) * scene.boardWidth);
-    const py = snap(((ev.clientY - rect.top) / rect.height) * scene.boardHeight);
+    const { x: px, y: py } = liveMapCoords(ev);
+    const snappedX = snap(px);
+    const snappedY = snap(py);
     const idx = scene.objects.findIndex((o) => o.id === id);
     if (idx < 0) return;
     const obj = scene.objects[idx];
     if (obj.type !== "deployment-zone") return;
     scene.objects[idx] = {
       ...obj,
-      vertices: obj.vertices.map((v, i) => (i === vi ? [px, py] as [number, number] : v)),
+      vertices: obj.vertices.map((v, i) => (i === vi ? [snappedX, snappedY] as [number, number] : v)),
     };
     scheduleRender();
   };
@@ -236,17 +277,13 @@ function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
 function startRotateDrag(e: PointerEvent, id: string): void {
   const obj = scene.objects.find((o) => o.id === id);
   if (!obj) return;
-  const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
-  if (!mapSvg) return;
+  if (!canvasWrap.querySelector<SVGSVGElement>("svg.map-svg")) return;
   const center = objectCenter(obj, loadedTemplates);
 
-  const hitEl = e.target as SVGElement;
-  if (hitEl.setPointerCapture) hitEl.setPointerCapture(e.pointerId);
+  canvasWrap.setPointerCapture(e.pointerId);
 
   const getAngle = (ev: PointerEvent): number => {
-    const rect = mapSvg.getBoundingClientRect();
-    const px = ((ev.clientX - rect.left) / rect.width) * scene.boardWidth;
-    const py = ((ev.clientY - rect.top) / rect.height) * scene.boardHeight;
+    const { x: px, y: py } = liveMapCoords(ev);
     const raw = Math.atan2(py - center.y, px - center.x) * (180 / Math.PI) + 90;
     return ((raw % 360) + 360) % 360;
   }
@@ -334,6 +371,7 @@ async function start(): Promise<void> {
       if (sel.vertexEditId) {
         sel.vertexEditId = null;
         if (overlaySvg) renderOverlay(overlaySvg, scene, sel, loadedTemplates);
+        updateStatus();
       } else {
         sel.selectedId = null;
         sel.vertexEditId = null;
