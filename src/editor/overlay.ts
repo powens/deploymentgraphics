@@ -56,7 +56,28 @@ export function renderOverlay(
 
   for (const obj of scene.objects) {
     if (obj.type === "deployment-zone" && sel.vertexEditId === obj.id) {
-      for (let i = 0; i < obj.vertices.length; i++) {
+      const n = obj.vertices.length;
+      // Midpoint handles rendered first (lower z-order)
+      for (let i = 0; i < n; i++) {
+        const [vx, vy] = obj.vertices[i];
+        const [nx, ny] = obj.vertices[(i + 1) % n];
+        const mid = svgEl("circle") as SVGCircleElement;
+        mid.setAttribute("cx", `${(vx + nx) / 2}`);
+        mid.setAttribute("cy", `${(vy + ny) / 2}`);
+        mid.setAttribute("r", "0.65");
+        mid.setAttribute("fill", "#b9842f");
+        mid.setAttribute("stroke", "white");
+        mid.setAttribute("stroke-width", "0.15");
+        mid.setAttribute("stroke-dasharray", "0.3 0.2");
+        mid.style.pointerEvents = "all";
+        mid.style.cursor = "crosshair";
+        mid.dataset.type = "edge-midpoint";
+        mid.dataset.objectId = obj.id;
+        mid.dataset.edgeIndex = `${i}`;
+        overlaySvg.appendChild(mid);
+      }
+      // Vertex handles rendered second (higher z-order)
+      for (let i = 0; i < n; i++) {
         const [vx, vy] = obj.vertices[i];
         const handle = svgEl("circle") as SVGCircleElement;
         handle.setAttribute("cx", `${vx}`);
@@ -76,6 +97,13 @@ export function renderOverlay(
     }
 
     const b = objectBounds(obj, templates);
+
+    const wrapper = svgEl("g");
+    if (obj.type !== "deployment-zone" && obj.rotation !== 0) {
+      wrapper.setAttribute("transform", `rotate(${obj.rotation}, ${obj.x}, ${obj.y})`);
+    }
+    overlaySvg.appendChild(wrapper);
+
     let hitEl: SVGElement;
 
     if (obj.type === "deployment-zone") {
@@ -97,7 +125,7 @@ export function renderOverlay(
     hitEl.style.cursor = "move";
     hitEl.dataset.type = "object";
     hitEl.dataset.objectId = obj.id;
-    overlaySvg.appendChild(hitEl);
+    wrapper.appendChild(hitEl);
 
     if (sel.selectedId === obj.id) {
       const box = svgEl("rect");
@@ -110,7 +138,7 @@ export function renderOverlay(
       box.setAttribute("stroke-width", "0.25");
       box.setAttribute("stroke-dasharray", "0.8 0.4");
       box.style.pointerEvents = "none";
-      overlaySvg.appendChild(box);
+      wrapper.appendChild(box);
 
       const cx = b.x + b.w / 2;
       const stem = svgEl("line");
@@ -120,7 +148,7 @@ export function renderOverlay(
       stem.setAttribute("y2", `${b.y - 2.5}`);
       stem.setAttribute("stroke", "#b9842f");
       stem.setAttribute("stroke-width", "0.2");
-      overlaySvg.appendChild(stem);
+      wrapper.appendChild(stem);
 
       const rotHandle = svgEl("circle") as SVGCircleElement;
       rotHandle.setAttribute("cx", `${cx}`);
@@ -131,7 +159,7 @@ export function renderOverlay(
       rotHandle.style.cursor = "grab";
       rotHandle.dataset.type = "rotate";
       rotHandle.dataset.objectId = obj.id;
-      overlaySvg.appendChild(rotHandle);
+      wrapper.appendChild(rotHandle);
     }
   }
 }
