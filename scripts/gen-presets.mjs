@@ -155,7 +155,7 @@ for (const [name, content] of targets) {
   try {
     current = readFileSync(path, "utf8");
   } catch {
-    current = "";
+    // file doesn't exist or can't be read; treat as empty
   }
   if (current !== content) stale.push(name);
 }
