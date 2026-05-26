@@ -4,6 +4,7 @@ import copy from "rollup-plugin-copy";
 import typescript from "@rollup/plugin-typescript";
 
 const tsPlugin = () => typescript({ tsconfig: "./tsconfig.json" });
+const isWatch = process.env.ROLLUP_WATCH === "true";
 
 export default [
   {
@@ -13,8 +14,9 @@ export default [
     plugins: [
       tsPlugin(),
       copy({ targets: [] }),
-      serve({ contentBase: ["dist", "static", "samples"], open: true }),
-      autoReload(),
+      ...(isWatch
+        ? [serve({ contentBase: ["dist", "static", "samples"], open: true }), autoReload()]
+        : []),
     ],
   },
   {
