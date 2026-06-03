@@ -7,13 +7,11 @@ export type Size = { width: number; height: number };
 
 export type DrawAndProperties = {
   draw?: boolean;
-  radius?: number;
   svg_properties: SVGProperties;
 };
 
-export type Attacker = { svg_properties: SVGProperties };
-export type Defender = { svg_properties: SVGProperties };
-export type BaseDeployment = { attacker: Attacker; defender: Defender };
+export type DeploymentSide = { svg_properties: SVGProperties };
+export type BaseDeployment = { attacker: DeploymentSide; defender: DeploymentSide };
 
 export type Building = {
   draw: boolean;

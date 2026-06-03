@@ -5,7 +5,6 @@ import type { Scene, SceneObject, DeploymentZoneObject } from "./scene.js";
 export type SelectionState = {
   selectedId: string | null;
   vertexEditId: string | null;
-  dragVertexIndex: number | null;
 };
 
 export function objectBounds(

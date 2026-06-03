@@ -318,7 +318,7 @@ async function fetchYaml(url: string): Promise<unknown> {
 }
 
 let overlaySvg: SVGSVGElement | null = null;
-const sel: SelectionState = { selectedId: null, vertexEditId: null, dragVertexIndex: null };
+const sel: SelectionState = { selectedId: null, vertexEditId: null };
 
 function initPalette(): void {
   const items = buildPaletteItems(loadedTemplates);
@@ -341,11 +341,6 @@ function initPalette(): void {
     scheduleRender();
   });
 }
-
-// Exported for read-access by other editor modules.
-// Mutate via: scene.objects.push/splice/etc. (in-place mutation on the scene object itself).
-// Do NOT try to reassign the exported binding from another module — use scheduleRender() after any mutation.
-export { scene, loadedTemplates, snapEnabled, overlaySvg, fetchYaml };
 
 async function start(): Promise<void> {
   try {
