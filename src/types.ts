@@ -7,13 +7,11 @@ export type Size = { width: number; height: number };
 
 export type DrawAndProperties = {
   draw?: boolean;
-  radius?: number;
   svg_properties: SVGProperties;
 };
 
-export type Attacker = { svg_properties: SVGProperties };
-export type Defender = { svg_properties: SVGProperties };
-export type BaseDeployment = { attacker: Attacker; defender: Defender };
+export type DeploymentSide = { svg_properties: SVGProperties };
+export type BaseDeployment = { attacker: DeploymentSide; defender: DeploymentSide };
 
 export type Building = {
   draw: boolean;
@@ -59,10 +57,18 @@ export type Annotation = {
   endY?: number;
 };
 
+/** A numbered objective marker, positioned by its center in inches. */
+export type Objective = {
+  x: number;
+  y: number;
+  number: number;
+};
+
 /** The whole config object built by static/index.html. */
 export type FullConfig = {
   base: BaseConfig;
   terrain: RuntimeTerrainConfig;
   deployment: DeploymentConfig;
+  objectives?: Objective[];
   annotations?: Annotation[];
 };

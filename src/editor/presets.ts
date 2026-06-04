@@ -1,20 +1,20 @@
 import { resolveBuilding } from "../building-coordinates.js";
 import type { Template, BuildingPlacement } from "../building-coordinates.js";
+import { missions } from "../presets/missions.js";
+import { gwTerrain } from "../presets/terrain.js";
 import type { Scene, SceneObject } from "./scene.js";
 
-export const MISSIONS = [
-  { id: "dawn_of_war", label: "Dawn of War" },
-  { id: "crucible_of_battle", label: "Crucible of Battle" },
-  { id: "hammer_and_anvil", label: "Hammer and Anvil" },
-  { id: "search_and_destroy", label: "Search and Destroy" },
-  { id: "sweeping_engagement", label: "Sweeping Engagement" },
-  { id: "tipping_point", label: "Tipping Point" },
-];
+// Derived from the generated presets so the mission/layout lists can never
+// drift from the YAML they come from (see scripts/gen-presets.mjs).
+export const MISSIONS = Object.entries(missions).map(([id, m]) => ({
+  id,
+  label: m.name,
+}));
 
-export const TERRAIN_LAYOUTS = [
-  { id: "1", label: "GW Layout 1" },
-  { id: "2", label: "GW Layout 2" },
-];
+export const TERRAIN_LAYOUTS = Object.keys(gwTerrain.layout).map((id) => ({
+  id,
+  label: `GW Layout ${id}`,
+}));
 
 type MissionYaml = {
   name: string;

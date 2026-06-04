@@ -1,5 +1,5 @@
 /* global jsyaml */
-import { makeMissionCard } from "./bundle.js";
+import { makeMissionCard, missions, gwTerrain } from "./bundle.js";
 import {
   DEFAULT_CONTROLS,
   clearUrl,
@@ -11,21 +11,19 @@ import {
   writeControlsToUrl,
 } from "./state.js";
 
-// Single source of truth for the dropdowns: both the <select> options and
-// the persistence allowlists are derived from these lists, so the two can
-// never drift apart. Each id is also the YAML filename / layout key.
-const MISSIONS = [
-  { id: "dawn_of_war", label: "Dawn of War" },
-  { id: "crucible_of_battle", label: "Crucible of Battle" },
-  { id: "hammer_and_anvil", label: "Hammer and Anvil" },
-  { id: "search_and_destroy", label: "Search and Destroy" },
-  { id: "sweeping_engagement", label: "Sweeping Engagement" },
-  { id: "tipping_point", label: "Tipping Point" },
-];
-const TERRAINS = [
-  { id: "1", label: "GW Layout 1" },
-  { id: "2", label: "GW Layout 2" },
-];
+// Dropdown options derive from the generated presets in the bundle, which are
+// generated from the YAML (see scripts/gen-presets.mjs). The persistence
+// allowlists derive from these in turn, so options, allowlists, and the
+// underlying YAML can never drift apart. Each id is also the YAML filename /
+// layout key. Mission labels are the deployment `name`.
+const MISSIONS = Object.entries(missions).map(([id, m]) => ({
+  id,
+  label: m.name,
+}));
+const TERRAINS = Object.keys(gwTerrain.layout).map((id) => ({
+  id,
+  label: `GW Layout ${id}`,
+}));
 const MISSION_IDS = MISSIONS.map((m) => m.id);
 const TERRAIN_IDS = TERRAINS.map((t) => t.id);
 
