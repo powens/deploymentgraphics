@@ -1,4 +1,5 @@
 import type { Template } from "../building-coordinates.js";
+import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
 import type { Scene, SceneObject, ObjectiveObject } from "./scene.js";
 
 export type PaletteItem =
@@ -98,7 +99,11 @@ export function createObjectFromPalette(
     return { id, type: "building", templateKey: item.templateKey, x, y, rotation: 0, mirror: true };
   }
   if (item.category === "area-terrain") {
-    return { id, type: "area-terrain", shape: item.shape, x, y, rotation: 0, width: 6, height: 6, label: item.label };
+    return {
+      id, type: "area-terrain", shape: item.shape, x, y, rotation: 0,
+      width: DEFAULT_AREA_TERRAIN_SIZE, height: DEFAULT_AREA_TERRAIN_SIZE,
+      label: item.label,
+    };
   }
   if (item.category === "objective") {
     const used = new Set(

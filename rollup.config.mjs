@@ -8,7 +8,11 @@ const isWatch = process.env.ROLLUP_WATCH === "true";
 
 export default [
   {
-    input: "src/main.ts",
+    // index.ts is the package's public entry: it re-exports the renderer plus
+    // the generated presets (missions, gwTerrain), which static/app.js needs
+    // for its dropdowns. Keeping the web bundle on index.ts is what lets the
+    // mission/layout lists live in one place (the YAML-generated presets).
+    input: "src/index.ts",
     output: { file: "dist/bundle.js", format: "es" },
     treeshake: false,
     plugins: [

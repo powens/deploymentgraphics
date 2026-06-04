@@ -209,6 +209,30 @@ describe("makeAnnotations", () => {
   });
 });
 
+describe("makeObjectives", () => {
+  it("renders a numbered marker per objective", () => {
+    const cfg = buildMinimalConfig();
+    cfg.objectives = [
+      { x: 30, y: 22, number: 1 },
+      { x: 15, y: 10, number: 2 },
+    ];
+    const svg = makeMissionCard(cfg);
+    const markers = svg.querySelectorAll("#objectives circle");
+    expect(markers.length).toBe(2);
+    expect(markers[0].getAttribute("cx")).toBe("30");
+    expect(markers[0].getAttribute("cy")).toBe("22");
+    const labels = svg.querySelectorAll("#objectives text");
+    expect(labels.length).toBe(2);
+    expect([...labels].map((t) => t.textContent)).toEqual(["1", "2"]);
+  });
+
+  it("skips the objectives group when config has no objectives", () => {
+    const cfg = buildMinimalConfig();
+    const svg = makeMissionCard(cfg);
+    expect(svg.querySelector("#objectives")).toBeNull();
+  });
+});
+
 describe("makeDeploymentZone rendering", () => {
   it("renders a polygon when mask_center is absent", () => {
     const config = buildMinimalConfig();

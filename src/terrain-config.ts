@@ -1,5 +1,13 @@
 import type { BuildingPlacement, Template } from "./building-coordinates.js";
 
+/**
+ * Default width/height (inches) for area terrain placed without an explicit
+ * size. Shared by the renderer (`main.ts`) and the editor (overlay/palette)
+ * so a piece dropped at the default size renders at the size its handle box
+ * showed.
+ */
+export const DEFAULT_AREA_TERRAIN_SIZE = 6;
+
 export type AreaTerrain = {
   shape: "circle" | "polygon";
   x: number;

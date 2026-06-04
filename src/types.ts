@@ -57,10 +57,18 @@ export type Annotation = {
   endY?: number;
 };
 
+/** A numbered objective marker, positioned by its center in inches. */
+export type Objective = {
+  x: number;
+  y: number;
+  number: number;
+};
+
 /** The whole config object built by static/index.html. */
 export type FullConfig = {
   base: BaseConfig;
   terrain: RuntimeTerrainConfig;
   deployment: DeploymentConfig;
+  objectives?: Objective[];
   annotations?: Annotation[];
 };

@@ -123,24 +123,27 @@ function updateStatus(): void {
   }
 }
 
-function liveMapCoords(ev: PointerEvent): { x: number; y: number } {
+/**
+ * Converts client (screen) coordinates to board inches via the live map SVG.
+ * Accepts anything with clientX/clientY, so both PointerEvent and DragEvent
+ * (palette drop) share one conversion. Returns (0,0) when no map is rendered.
+ */
+function mapCoords(clientX: number, clientY: number): { x: number; y: number } {
   const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
   if (!mapSvg) return { x: 0, y: 0 };
   const rect = mapSvg.getBoundingClientRect();
   return {
-    x: ((ev.clientX - rect.left) / rect.width) * scene.boardWidth,
-    y: ((ev.clientY - rect.top) / rect.height) * scene.boardHeight,
+    x: ((clientX - rect.left) / rect.width) * scene.boardWidth,
+    y: ((clientY - rect.top) / rect.height) * scene.boardHeight,
   };
 }
 
 function attachOverlayEvents(svg: SVGSVGElement): void {
   svg.addEventListener("pointermove", (e) => {
-    const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
-    if (!mapSvg) return;
-    const rect = mapSvg.getBoundingClientRect();
-    const x = (((e.clientX - rect.left) / rect.width) * scene.boardWidth).toFixed(1);
-    const y = (((e.clientY - rect.top) / rect.height) * scene.boardHeight).toFixed(1);
-    document.getElementById("status-cursor")!.textContent = `cursor: ${x}″, ${y}″`;
+    if (!canvasWrap.querySelector("svg.map-svg")) return;
+    const { x, y } = mapCoords(e.clientX, e.clientY);
+    document.getElementById("status-cursor")!.textContent =
+      `cursor: ${x.toFixed(1)}″, ${y.toFixed(1)}″`;
   });
 
   svg.addEventListener("pointerdown", (e) => {
@@ -216,48 +219,59 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
   });
 }
 
+/**
+ * Captures the pointer and runs a drag loop: `onMove` fires for every
+ * pointermove until pointerup/pointercancel, then `onEnd` runs once and the
+ * listeners are torn down. No-ops when no map is rendered. Returns whether
+ * the drag actually started, so callers can skip per-drag setup.
+ */
+function startDragLoop(
+  e: PointerEvent,
+  onMove: (ev: PointerEvent) => void,
+  onEnd?: () => void,
+): void {
+  if (!canvasWrap.querySelector("svg.map-svg")) return;
+  canvasWrap.setPointerCapture(e.pointerId);
+  const up = () => {
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", up);
+    window.removeEventListener("pointercancel", up);
+    onEnd?.();
+  };
+  window.addEventListener("pointermove", onMove);
+  window.addEventListener("pointerup", up);
+  window.addEventListener("pointercancel", up);
+}
+
+const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
+
 function startDrag(e: PointerEvent, id: string): void {
   const obj = scene.objects.find((o) => o.id === id);
   if (!obj) return;
-  if (!canvasWrap.querySelector<SVGSVGElement>("svg.map-svg")) return;
-
-  canvasWrap.setPointerCapture(e.pointerId);
-
-  const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
-  const start = liveMapCoords(e);
+  const start = mapCoords(e.clientX, e.clientY);
   const origX = obj.x;
   const origY = obj.y;
 
-  function onMove(ev: PointerEvent) {
-    const pos = liveMapCoords(ev);
-    const idx = scene.objects.findIndex((o) => o.id === id);
-    if (idx >= 0) {
-      scene.objects[idx] = {
-        ...scene.objects[idx],
-        x: snap(origX + pos.x - start.x),
-        y: snap(origY + pos.y - start.y),
-      } as typeof scene.objects[number];
-      scheduleRender();
-    }
-  }
-  function onUp() {
-    window.removeEventListener("pointermove", onMove);
-    window.removeEventListener("pointerup", onUp);
-    window.removeEventListener("pointercancel", onUp);
-    updateInspector();
-  }
-  window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onUp);
-  window.addEventListener("pointercancel", onUp);
+  startDragLoop(
+    e,
+    (ev) => {
+      const pos = mapCoords(ev.clientX, ev.clientY);
+      const idx = scene.objects.findIndex((o) => o.id === id);
+      if (idx >= 0) {
+        scene.objects[idx] = {
+          ...scene.objects[idx],
+          x: snap(origX + pos.x - start.x),
+          y: snap(origY + pos.y - start.y),
+        } as typeof scene.objects[number];
+        scheduleRender();
+      }
+    },
+    updateInspector,
+  );
 }
 function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
-  if (!canvasWrap.querySelector<SVGSVGElement>("svg.map-svg")) return;
-  const snap = (v: number) => (snapEnabled ? Math.round(v) : v);
-
-  canvasWrap.setPointerCapture(e.pointerId);
-
-  const onMove = (ev: PointerEvent) => {
-    const { x: px, y: py } = liveMapCoords(ev);
+  startDragLoop(e, (ev) => {
+    const { x: px, y: py } = mapCoords(ev.clientX, ev.clientY);
     const snappedX = snap(px);
     const snappedY = snap(py);
     const idx = scene.objects.findIndex((o) => o.id === id);
@@ -269,46 +283,30 @@ function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
       vertices: obj.vertices.map((v, i) => (i === vi ? [snappedX, snappedY] as [number, number] : v)),
     };
     scheduleRender();
-  };
-  const onUp = () => {
-    window.removeEventListener("pointermove", onMove);
-    window.removeEventListener("pointerup", onUp);
-    window.removeEventListener("pointercancel", onUp);
-  };
-  window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onUp);
-  window.addEventListener("pointercancel", onUp);
+  });
 }
 function startRotateDrag(e: PointerEvent, id: string): void {
   const obj = scene.objects.find((o) => o.id === id);
   if (!obj) return;
-  if (!canvasWrap.querySelector<SVGSVGElement>("svg.map-svg")) return;
   const center = objectCenter(obj, loadedTemplates);
 
-  canvasWrap.setPointerCapture(e.pointerId);
-
   const getAngle = (ev: PointerEvent): number => {
-    const { x: px, y: py } = liveMapCoords(ev);
+    const { x: px, y: py } = mapCoords(ev.clientX, ev.clientY);
     const raw = Math.atan2(py - center.y, px - center.x) * (180 / Math.PI) + 90;
     return ((raw % 360) + 360) % 360;
-  }
+  };
 
-  function onMove(ev: PointerEvent) {
-    const idx = scene.objects.findIndex((o) => o.id === id);
-    if (idx >= 0) {
-      scene.objects[idx] = { ...scene.objects[idx], rotation: getAngle(ev) } as typeof scene.objects[number];
-      scheduleRender();
-    }
-  }
-  function onUp() {
-    window.removeEventListener("pointermove", onMove);
-    window.removeEventListener("pointerup", onUp);
-    window.removeEventListener("pointercancel", onUp);
-    updateInspector();
-  }
-  window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onUp);
-  window.addEventListener("pointercancel", onUp);
+  startDragLoop(
+    e,
+    (ev) => {
+      const idx = scene.objects.findIndex((o) => o.id === id);
+      if (idx >= 0) {
+        scene.objects[idx] = { ...scene.objects[idx], rotation: getAngle(ev) } as typeof scene.objects[number];
+        scheduleRender();
+      }
+    },
+    updateInspector,
+  );
 }
 
 async function fetchYaml(url: string): Promise<unknown> {
@@ -332,11 +330,8 @@ function initPalette(): void {
     const raw = e.dataTransfer?.getData("text/plain");
     if (!raw) return;
     const item = JSON.parse(raw) as PaletteItem;
-    const mapSvg = canvasWrap.querySelector<SVGSVGElement>("svg.map-svg");
-    if (!mapSvg) return;
-    const rect = mapSvg.getBoundingClientRect();
-    const svgX = ((e.clientX - rect.left) / rect.width) * scene.boardWidth;
-    const svgY = ((e.clientY - rect.top) / rect.height) * scene.boardHeight;
+    if (!canvasWrap.querySelector("svg.map-svg")) return;
+    const { x: svgX, y: svgY } = mapCoords(e.clientX, e.clientY);
     scene.objects.push(createObjectFromPalette(item, svgX, svgY, scene));
     scheduleRender();
   });

@@ -1,6 +1,6 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
-import { getLayoutBuildings } from "./terrain-config.js";
+import { DEFAULT_AREA_TERRAIN_SIZE, getLayoutBuildings } from "./terrain-config.js";
 import type { FullConfig } from "./types.js";
 
 /** True when a usable layout is selected in the terrain config. */
@@ -147,7 +147,7 @@ function makeAreaTerrain(config: FullConfig): SVGElement | null {
       AREA_TERRAIN_STYLES[item.label ?? ""] ?? DEFAULT_AREA_TERRAIN_STYLE;
     let shape: SVGElement;
     if (item.shape === "circle") {
-      const r = (item.width ?? 4) / 2;
+      const r = (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
       shape = makeElement("circle");
       shape.setAttribute("cx", `${item.x + r}`);
       shape.setAttribute("cy", `${item.y + r}`);
@@ -163,11 +163,43 @@ function makeAreaTerrain(config: FullConfig): SVGElement | null {
     shape.setAttribute("stroke", style.stroke);
     shape.setAttribute("stroke-width", "0.3");
     if (item.rotation) {
-      const cx = item.x + (item.width ?? 4) / 2;
-      const cy = item.y + (item.height ?? item.width ?? 4) / 2;
+      const cx = item.x + (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
+      const cy =
+        item.y + (item.height ?? item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
       shape.setAttribute("transform", `rotate(${item.rotation} ${cx} ${cy})`);
     }
     group.appendChild(shape);
+  }
+  return group;
+}
+
+/** Numbered objective markers sit on top of zones, terrain, and buildings. */
+const OBJECTIVE_RADIUS = 1.5;
+
+function makeObjectives(config: FullConfig): SVGElement | null {
+  const items = config.objectives;
+  if (!items || items.length === 0) return null;
+  const group = makeElement("g");
+  group.setAttribute("id", "objectives");
+  for (const item of items) {
+    const marker = makeElement("circle");
+    marker.setAttribute("cx", `${item.x}`);
+    marker.setAttribute("cy", `${item.y}`);
+    marker.setAttribute("r", `${OBJECTIVE_RADIUS}`);
+    marker.setAttribute("fill", "#1a1a1a");
+    marker.setAttribute("stroke", "white");
+    marker.setAttribute("stroke-width", "0.3");
+    group.appendChild(marker);
+
+    const label = makeElement("text");
+    label.setAttribute("x", `${item.x}`);
+    label.setAttribute("y", `${item.y}`);
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("dominant-baseline", "central");
+    label.setAttribute("font-size", "2");
+    label.setAttribute("fill", "white");
+    label.textContent = `${item.number}`;
+    group.appendChild(label);
   }
   return group;
 }
@@ -271,6 +303,11 @@ export function makeMissionCard(config: FullConfig): SVGElement {
     const empty = makeElement("g");
     empty.setAttribute("id", "buildings");
     svg.appendChild(empty);
+  }
+
+  const objectives = makeObjectives(config);
+  if (objectives) {
+    svg.appendChild(objectives);
   }
 
   const annotations = makeAnnotations(config);

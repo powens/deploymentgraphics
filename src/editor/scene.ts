@@ -1,6 +1,12 @@
 import { templateBounds, type BuildingPlacement } from "../building-coordinates.js";
 import type { AreaTerrain } from "../terrain-config.js";
-import type { Annotation, BaseConfig, DeploymentConfig, FullConfig } from "../types.js";
+import type {
+  Annotation,
+  BaseConfig,
+  DeploymentConfig,
+  FullConfig,
+  Objective,
+} from "../types.js";
 import type { Template } from "../building-coordinates.js";
 
 export type SceneObjectBase = {
@@ -164,9 +170,9 @@ export function sceneToConfig(
       endY: o.endY,
     }));
 
-  // Objectives are not mapped to FullConfig — the renderer has no objectives
-  // field since the 11th-edition objective marker system was removed.
-  // ObjectiveObject exists in the scene model for future editor use.
+  const objectiveItems: Objective[] = scene.objects
+    .filter((o): o is ObjectiveObject => o.type === "objective")
+    .map((o) => ({ x: o.x, y: o.y, number: o.number }));
 
   const deployment: DeploymentConfig = {
     name: scene.missionName,
@@ -193,6 +199,7 @@ export function sceneToConfig(
       layout_name: "editor",
       ...(areaTerrainItems.length > 0 && { area_terrain: areaTerrainItems }),
     },
+    ...(objectiveItems.length > 0 && { objectives: objectiveItems }),
     ...(annotationItems.length > 0 && { annotations: annotationItems }),
   };
 }
