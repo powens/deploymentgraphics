@@ -12,6 +12,7 @@
  */
 export * from "./main.js";
 export * from "./types.js";
+export * from "./theme.js";
 export * from "./building-coordinates.js";
 export * from "./buildings.js";
 export * from "./terrain-config.js";

@@ -135,10 +135,24 @@ function buildMissions() {
   return out;
 }
 
+function buildTheme() {
+  return (
+    header("static/data/theme.yml") +
+    'import type { Theme } from "../theme.js";\n\n' +
+    declaration(
+      "baseTheme",
+      "Theme",
+      loadYaml("theme.yml"),
+      "/** Default SVG styling for every rendered element. */",
+    )
+  );
+}
+
 const targets = [
   ["base.ts", buildBase()],
   ["missions.ts", buildMissions()],
   ["terrain.ts", buildTerrain()],
+  ["theme.ts", buildTheme()],
 ];
 
 const check = process.argv.includes("--check");

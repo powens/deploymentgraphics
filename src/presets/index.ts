@@ -17,3 +17,4 @@ export {
 export type { MissionId } from "./missions.js";
 export { buildConfig } from "./build-config.js";
 export type { BuildConfigOptions } from "./build-config.js";
+export { baseTheme } from "./theme.js";

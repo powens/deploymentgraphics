@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 import { baseConfig } from "./base.js";
 import { missions } from "./missions.js";
 import { gwTerrain } from "./terrain.js";
+import { baseTheme } from "./theme.js";
 
 // The presets are generated from the YAML the browser app loads (see
 // scripts/gen-presets.mjs). These tests confirm the generated modules
@@ -27,5 +28,9 @@ describe("presets match the YAML source", () => {
     expect(missions[id as keyof typeof missions]).toEqual(
       loadYaml(`deployment/${id}.yml`),
     );
+  });
+
+  it("baseTheme matches theme.yml", () => {
+    expect(baseTheme).toEqual(loadYaml("theme.yml"));
   });
 });

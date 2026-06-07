@@ -1,0 +1,23 @@
+import type { SVGProperties } from "./types.js";
+
+/**
+ * The single home for SVG visual properties. Every leaf is a bag of SVG
+ * attributes (snake_case keys are rewritten to kebab-case by
+ * `applyAttributes`). Geometry and behaviour live elsewhere; the theme only
+ * decides how things look, never whether they are drawn.
+ */
+export type Theme = {
+  background: SVGProperties;
+  half_way_lines: SVGProperties;
+  deployment: { attacker: SVGProperties; defender: SVGProperties };
+  building: { group: SVGProperties; template: SVGProperties };
+  grid: SVGProperties;
+  objective: { marker: SVGProperties; label: SVGProperties };
+  annotation: {
+    text: SVGProperties;
+    text_outline: SVGProperties;
+    arrow: SVGProperties;
+  };
+  /** Keyed by area-terrain `label`; `default` is the fallback. */
+  area_terrain: { default: SVGProperties } & Record<string, SVGProperties>;
+};
