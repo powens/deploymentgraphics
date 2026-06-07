@@ -2,7 +2,6 @@ import { templateBounds, type BuildingPlacement } from "../building-coordinates.
 import type { AreaTerrain } from "../terrain-config.js";
 import type {
   Annotation,
-  BaseConfig,
   DeploymentConfig,
   FullConfig,
   Objective,
@@ -101,34 +100,6 @@ export function buildingToPlacement(
   };
 }
 
-const BASE_DEFAULTS: Omit<BaseConfig, "size"> = {
-  background: { fill: "#f4f1e8" },
-  half_way_lines: {
-    svg_properties: {
-      stroke: "black",
-      stroke_dasharray: "0.5 0.5",
-      stroke_width: 0.2,
-      opacity: 0.5,
-    },
-  },
-  deployment: {
-    attacker: { svg_properties: { fill: "#cf4b33", stroke: "none", stroke_width: 0.4 } },
-    defender: { svg_properties: { fill: "#7d8b7f", stroke: "none", stroke_width: 0.4 } },
-  },
-  building: {
-    draw: false,
-    svg_properties: { opacity: 1 },
-    template: {
-      "vector-effect": "non-scaling-stroke",
-      stroke: "black",
-      stroke_width: 1.2,
-      fill: "#808080",
-      opacity: 1,
-    },
-  },
-  grid: { draw: false, svg_properties: { opacity: 0.3, stroke: "black", stroke_width: 0.15 } },
-};
-
 export function sceneToConfig(
   scene: Scene,
   templates: Record<string, Template>,
@@ -189,8 +160,10 @@ export function sceneToConfig(
 
   return {
     base: {
-      ...BASE_DEFAULTS,
       size: { width: scene.boardWidth, height: scene.boardHeight },
+      half_way_lines: { draw: true },
+      building: { draw: false },
+      grid: { draw: false },
     },
     deployment,
     terrain: {

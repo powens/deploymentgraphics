@@ -3,45 +3,10 @@
 
 import type { BaseConfig } from "../types.js";
 
-/** Default board size and styling. */
+/** Default board size and draw flags. */
 export const baseConfig: BaseConfig = {
   size: { width: 60, height: 44 },
-  background: { fill: "#f4f1e8" },
-  half_way_lines: {
-    draw: true,
-    svg_properties: {
-      stroke: "black",
-      stroke_dasharray: "0.5 0.5",
-      stroke_width: 0.2,
-      opacity: 0.5,
-    },
-  },
-  deployment: {
-    attacker: {
-      svg_properties: { fill: "#cf4b33", stroke: "none", stroke_width: 0.4 },
-    },
-    defender: {
-      svg_properties: { fill: "#7d8b7f", stroke: "none", stroke_width: 0.4 },
-    },
-  },
-  building: {
-    draw: false,
-    svg_properties: { opacity: 1 },
-    template: {
-      "vector-effect": "non-scaling-stroke",
-      stroke: "black",
-      stroke_width: 1.2,
-      fill: "#808080",
-      opacity: 1,
-    },
-  },
-  grid: {
-    draw: true,
-    svg_properties: {
-      opacity: 0.3,
-      stroke: "black",
-      stroke_width: 0.15,
-      stroke_dasharray: "0.1 0.1",
-    },
-  },
+  half_way_lines: { draw: true },
+  building: { draw: false },
+  grid: { draw: true },
 };

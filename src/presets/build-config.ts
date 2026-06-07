@@ -14,7 +14,7 @@ export interface BuildConfigOptions {
    * renders no buildings.
    */
   layout?: string;
-  /** Board size and styling. Defaults to {@link baseConfig}. */
+  /** Board size and draw flags. Defaults to {@link baseConfig}. */
   base?: BaseConfig;
   /** Override the grid's `draw` flag without mutating `base`. */
   grid?: boolean;

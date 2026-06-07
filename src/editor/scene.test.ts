@@ -103,6 +103,16 @@ describe("sceneToConfig", () => {
     expect(config.terrain.area_terrain![0].label).toBe("Forest");
   });
 
+  it("emits a structure-only base (no styling keys)", () => {
+    const config = sceneToConfig(emptyScene(), RECT_TEMPLATES);
+    expect(config.base).toEqual({
+      size: { width: 60, height: 44 },
+      half_way_lines: { draw: true },
+      building: { draw: false },
+      grid: { draw: false },
+    });
+  });
+
   it("includes annotations in config", () => {
     const scene: Scene = {
       ...emptyScene(),

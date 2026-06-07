@@ -46,10 +46,7 @@ export function scheduleRender(): void {
 function renderCanvas(): void {
   const config = sceneToConfig(scene, loadedTemplates);
   if (gridEnabled) {
-    config.base.grid = {
-      draw: true,
-      svg_properties: { opacity: 0.3, stroke: "black", stroke_width: 0.15, stroke_dasharray: "0.1 0.1" },
-    };
+    config.base.grid = { draw: true };
   }
   const card = makeMissionCard(config);
 

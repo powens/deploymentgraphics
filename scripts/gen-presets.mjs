@@ -89,7 +89,7 @@ function buildBase() {
       "baseConfig",
       "BaseConfig",
       loadYaml("base.yml"),
-      "/** Default board size and styling. */",
+      "/** Default board size and draw flags. */",
     )
   );
 }

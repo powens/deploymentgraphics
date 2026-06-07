@@ -5,29 +5,11 @@ export type SVGProperties = Record<string, string | number>;
 
 export type Size = { width: number; height: number };
 
-export type DrawAndProperties = {
-  draw?: boolean;
-  svg_properties: SVGProperties;
-};
-
-export type DeploymentSide = { svg_properties: SVGProperties };
-export type BaseDeployment = { attacker: DeploymentSide; defender: DeploymentSide };
-
-export type Building = {
-  draw: boolean;
-  svg_properties: SVGProperties;
-  template: SVGProperties;
-};
-
-export type Grid = { draw: boolean; svg_properties: SVGProperties };
-
 export type BaseConfig = {
-  half_way_lines: DrawAndProperties;
   size: Size;
-  deployment: BaseDeployment;
-  building: Building;
-  grid: Grid;
-  background: SVGProperties;
+  half_way_lines: { draw?: boolean };
+  building: { draw?: boolean };
+  grid: { draw?: boolean };
 };
 
 export type AttackerDefender = {
