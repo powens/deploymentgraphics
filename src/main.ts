@@ -1,6 +1,8 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { baseTheme } from "./presets/theme.js";
 import { DEFAULT_AREA_TERRAIN_SIZE, getLayoutBuildings } from "./terrain-config.js";
+import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
 
 /** True when a usable layout is selected in the terrain config. */
@@ -8,15 +10,15 @@ function hasSelectedLayout(config: FullConfig): boolean {
   return !!config.terrain.layout[config.terrain.layout_name];
 }
 
-function injectDefs(svg: SVGElement, config: FullConfig) {
+function injectDefs(svg: SVGElement, config: FullConfig, theme: Theme) {
   const defs = makeElement("defs");
   svg.appendChild(defs);
 
   // Template rects carry both the generic building props and the
   // template-specific stroke/fill overrides.
   const templateProps = {
-    ...config.base.building.svg_properties,
-    ...config.base.building.template,
+    ...theme.building.group,
+    ...theme.building.template,
   };
   injectTemplateDefs(config.terrain.templates, defs, templateProps);
 
@@ -38,13 +40,13 @@ function injectDefs(svg: SVGElement, config: FullConfig) {
   }
 }
 
-function makeHalfwayLines(config: FullConfig): SVGElement | null {
+function makeHalfwayLines(config: FullConfig, theme: Theme): SVGElement | null {
   // Absent `draw` defaults to on; only an explicit `false` suppresses.
   if (config.base.half_way_lines.draw === false) {
     return null;
   }
   const group = makeElement("g");
-  const guideConfig = config.base.half_way_lines.svg_properties;
+  const guideConfig = theme.half_way_lines;
 
   const vertHalfLine = makeElement("line");
   vertHalfLine.setAttribute("x1", `${config.base.size.width / 2}`);
@@ -68,9 +70,10 @@ function makeHalfwayLines(config: FullConfig): SVGElement | null {
 function makeDeploymentZone(
   config: FullConfig,
   attackerDefender: "attacker" | "defender",
+  theme: Theme,
 ): SVGElement {
   const playerConfig = config.deployment[attackerDefender];
-  const colorConfig = config.base.deployment[attackerDefender];
+  const colorConfig = theme.deployment[attackerDefender];
   const maskRadius = playerConfig.mask_center ?? 0;
 
   if (maskRadius > 0) {
@@ -87,23 +90,23 @@ function makeDeploymentZone(
     dz.setAttribute("id", attackerDefender);
     dz.setAttribute("fill-rule", "evenodd");
     dz.setAttribute("d", `${polyPath} ${circlePath}`);
-    applyAttributes(dz, colorConfig.svg_properties);
+    applyAttributes(dz, colorConfig);
     return dz;
   }
 
   const dz = makeElement("polygon");
   dz.setAttribute("id", attackerDefender);
   dz.setAttribute("points", playerConfig.deployment_zone.join(" "));
-  applyAttributes(dz, colorConfig.svg_properties);
+  applyAttributes(dz, colorConfig);
   return dz;
 }
 
-function makeGrid(config: FullConfig): SVGElement | null {
+function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
   if (config?.base?.grid?.draw !== true) {
     return null;
   }
   const group = makeElement("g");
-  applyAttributes(group, config.base.grid.svg_properties);
+  applyAttributes(group, theme.grid);
   const size = config.base.size;
 
   for (let x = 1; x < size.width; x++) {
@@ -127,24 +130,14 @@ function makeGrid(config: FullConfig): SVGElement | null {
   return group;
 }
 
-const AREA_TERRAIN_STYLES: Record<string, { fill: string; stroke: string }> = {
-  Forest: { fill: "rgba(60,120,60,0.3)", stroke: "#3a6b3a" },
-  Crater: { fill: "rgba(100,80,60,0.3)", stroke: "#6b5030" },
-  Rubble: { fill: "rgba(140,130,120,0.3)", stroke: "#807060" },
-};
-const DEFAULT_AREA_TERRAIN_STYLE = {
-  fill: "rgba(140,130,120,0.2)",
-  stroke: "#808080",
-};
-
-function makeAreaTerrain(config: FullConfig): SVGElement | null {
+function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
   const items = config.terrain.area_terrain;
   if (!items || items.length === 0) return null;
   const group = makeElement("g");
   group.setAttribute("id", "area-terrain");
   for (const item of items) {
     const style =
-      AREA_TERRAIN_STYLES[item.label ?? ""] ?? DEFAULT_AREA_TERRAIN_STYLE;
+      theme.area_terrain[item.label ?? ""] ?? theme.area_terrain.default;
     let shape: SVGElement;
     if (item.shape === "circle") {
       const r = (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
@@ -159,9 +152,7 @@ function makeAreaTerrain(config: FullConfig): SVGElement | null {
       shape = makeElement("polygon");
       shape.setAttribute("points", pts);
     }
-    shape.setAttribute("fill", style.fill);
-    shape.setAttribute("stroke", style.stroke);
-    shape.setAttribute("stroke-width", "0.3");
+    applyAttributes(shape, style);
     if (item.rotation) {
       const cx = item.x + (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
       const cy =
@@ -176,7 +167,7 @@ function makeAreaTerrain(config: FullConfig): SVGElement | null {
 /** Numbered objective markers sit on top of zones, terrain, and buildings. */
 const OBJECTIVE_RADIUS = 1.5;
 
-function makeObjectives(config: FullConfig): SVGElement | null {
+function makeObjectives(config: FullConfig, theme: Theme): SVGElement | null {
   const items = config.objectives;
   if (!items || items.length === 0) return null;
   const group = makeElement("g");
@@ -186,9 +177,7 @@ function makeObjectives(config: FullConfig): SVGElement | null {
     marker.setAttribute("cx", `${item.x}`);
     marker.setAttribute("cy", `${item.y}`);
     marker.setAttribute("r", `${OBJECTIVE_RADIUS}`);
-    marker.setAttribute("fill", "#1a1a1a");
-    marker.setAttribute("stroke", "white");
-    marker.setAttribute("stroke-width", "0.3");
+    applyAttributes(marker, theme.objective.marker);
     group.appendChild(marker);
 
     const label = makeElement("text");
@@ -196,29 +185,25 @@ function makeObjectives(config: FullConfig): SVGElement | null {
     label.setAttribute("y", `${item.y}`);
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("dominant-baseline", "central");
-    label.setAttribute("font-size", "2");
-    label.setAttribute("fill", "white");
+    applyAttributes(label, theme.objective.label);
     label.textContent = `${item.number}`;
     group.appendChild(label);
   }
   return group;
 }
 
-function makeAnnotations(config: FullConfig): SVGElement | null {
+function makeAnnotations(config: FullConfig, theme: Theme): SVGElement | null {
   const items = config.annotations;
   if (!items || items.length === 0) return null;
   const group = makeElement("g");
   group.setAttribute("id", "annotations");
-  group.setAttribute("font-size", "1.5");
-  group.setAttribute("fill", "black");
+  applyAttributes(group, theme.annotation.text);
   for (const item of items) {
     if (item.kind === "text") {
       const el = makeElement("text");
       el.setAttribute("x", `${item.x}`);
       el.setAttribute("y", `${item.y}`);
-      el.setAttribute("stroke", "white");
-      el.setAttribute("stroke-width", "0.3");
-      el.setAttribute("paint-order", "stroke");
+      applyAttributes(el, theme.annotation.text_outline);
       el.textContent = item.text ?? "";
       group.appendChild(el);
     } else {
@@ -227,8 +212,7 @@ function makeAnnotations(config: FullConfig): SVGElement | null {
       line.setAttribute("y1", `${item.y}`);
       line.setAttribute("x2", `${item.endX ?? item.x}`);
       line.setAttribute("y2", `${item.endY ?? item.y}`);
-      line.setAttribute("stroke", "black");
-      line.setAttribute("stroke-width", "0.4");
+      applyAttributes(line, theme.annotation.arrow);
       line.setAttribute("marker-end", "url(#arrowhead)");
       group.appendChild(line);
     }
@@ -236,7 +220,10 @@ function makeAnnotations(config: FullConfig): SVGElement | null {
   return group;
 }
 
-export function makeMissionCard(config: FullConfig): SVGElement {
+export function makeMissionCard(
+  config: FullConfig,
+  theme: Theme = baseTheme,
+): SVGElement {
   const svg = makeElement("svg");
   svg.setAttribute(
     "viewBox",
@@ -249,33 +236,33 @@ export function makeMissionCard(config: FullConfig): SVGElement {
   title.textContent = `Deployment map: ${config.deployment.name}`;
   svg.appendChild(title);
 
-  if (config.base.background.fill) {
+  if (theme.background.fill) {
     const background = makeElement("rect");
     background.setAttribute("x", "0");
     background.setAttribute("y", "0");
     background.setAttribute("width", `${config.base.size.width}`);
     background.setAttribute("height", `${config.base.size.height}`);
-    background.setAttribute("fill", `${config.base.background.fill}`);
+    background.setAttribute("fill", `${theme.background.fill}`);
     svg.appendChild(background);
   }
 
-  injectDefs(svg, config);
+  injectDefs(svg, config, theme);
 
-  svg.appendChild(makeDeploymentZone(config, "attacker"));
-  svg.appendChild(makeDeploymentZone(config, "defender"));
+  svg.appendChild(makeDeploymentZone(config, "attacker", theme));
+  svg.appendChild(makeDeploymentZone(config, "defender", theme));
 
   // Grid first so it sits behind everything else.
-  const grid = makeGrid(config);
+  const grid = makeGrid(config, theme);
   if (grid) {
     svg.appendChild(grid);
   }
 
-  const halfwayLines = makeHalfwayLines(config);
+  const halfwayLines = makeHalfwayLines(config, theme);
   if (halfwayLines) {
     svg.appendChild(halfwayLines);
   }
 
-  const areaTerrain = makeAreaTerrain(config);
+  const areaTerrain = makeAreaTerrain(config, theme);
   if (areaTerrain) {
     svg.appendChild(areaTerrain);
   }
@@ -294,7 +281,7 @@ export function makeMissionCard(config: FullConfig): SVGElement {
         placements,
         config.terrain.templates,
         canvas,
-        config.base.building.svg_properties,
+        theme.building.group,
       ),
     );
   } else {
@@ -305,12 +292,12 @@ export function makeMissionCard(config: FullConfig): SVGElement {
     svg.appendChild(empty);
   }
 
-  const objectives = makeObjectives(config);
+  const objectives = makeObjectives(config, theme);
   if (objectives) {
     svg.appendChild(objectives);
   }
 
-  const annotations = makeAnnotations(config);
+  const annotations = makeAnnotations(config, theme);
   if (annotations) {
     svg.appendChild(annotations);
   }
@@ -318,7 +305,11 @@ export function makeMissionCard(config: FullConfig): SVGElement {
   return svg;
 }
 
-export function injectMissionCard(rootElement: SVGElement, config: FullConfig) {
-  const missionCard = makeMissionCard(config);
+export function injectMissionCard(
+  rootElement: SVGElement,
+  config: FullConfig,
+  theme: Theme = baseTheme,
+) {
+  const missionCard = makeMissionCard(config, theme);
   rootElement.appendChild(missionCard);
 }

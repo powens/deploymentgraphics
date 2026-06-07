@@ -1,24 +1,16 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
 import { injectMissionCard, makeMissionCard } from "./main";
+import { baseTheme } from "./presets/theme.js";
 import type { FullConfig } from "./types";
 
 function buildMinimalConfig(): FullConfig {
   return {
     base: {
       size: { width: 60, height: 44 },
-      background: { fill: "black" },
-      half_way_lines: { draw: true, svg_properties: { stroke: "black" } },
-      deployment: {
-        attacker: { svg_properties: { fill: "#cf4b33", stroke: "none" } },
-        defender: { svg_properties: { fill: "#7d8b7f", stroke: "none" } },
-      },
-      building: {
-        draw: true,
-        svg_properties: { opacity: 1 },
-        template: { fill: "#808080", stroke: "black" },
-      },
-      grid: { draw: false, svg_properties: {} },
+      half_way_lines: { draw: true },
+      building: { draw: true },
+      grid: { draw: false },
     },
     terrain: {
       layout_name: "1",
@@ -112,22 +104,11 @@ describe("makeDeploymentZone styling", () => {
     }
   });
 
-  it("takes the deployment-zone stroke-width from config", () => {
-    const widened = {
-      ...config,
-      base: {
-        ...config.base,
-        deployment: {
-          attacker: {
-            svg_properties: { fill: "#cf4b33", stroke: "none", stroke_width: 0.6 },
-          },
-          defender: {
-            svg_properties: { fill: "#7d8b7f", stroke: "none", stroke_width: 0.6 },
-          },
-        },
-      },
-    } as FullConfig;
-    const svg = makeMissionCard(widened);
+  it("takes the deployment-zone stroke-width from the theme", () => {
+    const theme = structuredClone(baseTheme);
+    theme.deployment.attacker.stroke_width = 0.6;
+    theme.deployment.defender.stroke_width = 0.6;
+    const svg = makeMissionCard(config, theme);
     expect(svg.querySelector("#attacker")?.getAttribute("stroke-width")).toBe(
       "0.6",
     );
@@ -175,6 +156,17 @@ describe("makeAreaTerrain", () => {
     const group = svg.querySelector("#area-terrain");
     expect(group).toBeNull();
   });
+
+  it("falls back to area_terrain.default for an unknown label", () => {
+    const cfg = buildMinimalConfig();
+    cfg.terrain.area_terrain = [
+      { shape: "circle", x: 0, y: 0, width: 6, label: "Nonexistent" },
+    ];
+    const svg = makeMissionCard(cfg);
+    expect(
+      svg.querySelector("#area-terrain circle")?.getAttribute("fill"),
+    ).toBe("rgba(140,130,120,0.2)");
+  });
 });
 
 describe("makeAnnotations", () => {
@@ -207,6 +199,25 @@ describe("makeAnnotations", () => {
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#annotations")).toBeNull();
   });
+
+  it("applies the text-outline stroke to a text annotation", () => {
+    const cfg = buildMinimalConfig();
+    cfg.annotations = [{ kind: "text", x: 1, y: 1, text: "X" }];
+    const svg = makeMissionCard(cfg);
+    const el = svg.querySelector("#annotations text");
+    expect(el?.getAttribute("stroke")).toBe("white");
+    expect(el?.getAttribute("stroke-width")).toBe("0.3");
+    expect(el?.getAttribute("paint-order")).toBe("stroke");
+  });
+
+  it("applies the arrow stroke from the theme", () => {
+    const cfg = buildMinimalConfig();
+    cfg.annotations = [{ kind: "arrow", x: 0, y: 0, endX: 5, endY: 5 }];
+    const svg = makeMissionCard(cfg);
+    const line = svg.querySelector("#annotations line");
+    expect(line?.getAttribute("stroke")).toBe("black");
+    expect(line?.getAttribute("stroke-width")).toBe("0.4");
+  });
 });
 
 describe("makeObjectives", () => {
@@ -230,6 +241,15 @@ describe("makeObjectives", () => {
     const cfg = buildMinimalConfig();
     const svg = makeMissionCard(cfg);
     expect(svg.querySelector("#objectives")).toBeNull();
+  });
+
+  it("styles objective markers from the theme", () => {
+    const cfg = buildMinimalConfig();
+    cfg.objectives = [{ x: 30, y: 22, number: 1 }];
+    const svg = makeMissionCard(cfg);
+    expect(svg.querySelector("#objectives circle")?.getAttribute("fill")).toBe(
+      "#1a1a1a",
+    );
   });
 });
 
