@@ -37,8 +37,8 @@ const GW_YML = fileURLToPath(
 describe("placeholder gw.yml", () => {
   const gwTerrain = yaml.load(readFileSync(GW_YML, "utf8")) as TerrainConfig;
 
-  it("defines layouts 1 and 2", () => {
-    expect(Object.keys(gwTerrain.layout).sort()).toEqual(["1", "2"]);
+  it("defines layout 1", () => {
+    expect(Object.keys(gwTerrain.layout).sort()).toEqual(["1"]);
   });
 
   it("every building in every layout resolves without throwing", () => {

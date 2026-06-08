@@ -6,50 +6,18 @@ import type { TerrainConfig } from "../terrain-config.js";
 /** Built-in building templates and numbered layouts. */
 export const gwTerrain: TerrainConfig = {
   templates: {
-    "4x6": { width: 4, height: 6 },
-    "6x12": { width: 6, height: 12 },
-    "5x10": { width: 5, height: 10 },
-    "ruins-a": {
-      points: [
-        [1.5, 0],
-        [4.5, 0.6],
-        [5.5, 2.2],
-        [7, 4.5],
-        [5.8, 6.5],
-        [6, 8.5],
-        [4, 11],
-        [2.5, 9.5],
-        [2, 6.5],
-        [0, 4],
-        [1, 1.8],
-      ],
-    },
-    "curved-bastion": {
-      width: 8,
-      height: 8,
-      start: [4, 0],
-      segments: [
-        { cubic: [8, 4], controls: [[6.21, 0], [8, 1.79]] },
-        { cubic: [4, 8], controls: [[8, 6.21], [6.21, 8]] },
-        { cubic: [0, 4], controls: [[1.79, 8], [0, 6.21]] },
-        { cubic: [4, 0], controls: [[0, 1.79], [1.79, 0]] },
-      ],
-    },
+    "large-area": { width: 7, height: 11 },
+    "small-area": { width: 4, height: 6 },
+    pipes: { width: 6, height: 2 },
+    "large-pipes": { width: 10, height: 2.5 },
+    shoe: { points: [[0, 0], [8, 0], [2, 11.5], [0, 11.5]] },
   },
   layout: {
     "1": {
       buildings: [
-        { type: "6x12", corners: { TL: [8, 6], TR: [14, 6] } },
-        { type: "4x6", corners: { TL: [24, 4], TR: [28, 4] } },
-        { type: "5x10", corners: { TL: [40, 8], TR: [45, 8] } },
-        { type: "ruins-a", corners: { TL: [22, 14], TR: [29, 14] } },
-      ],
-    },
-    "2": {
-      buildings: [
-        { type: "6x12", corners: { TL: [6, 10], TR: [12, 10] } },
-        { type: "4x6", corners: { TL: [30, 8], TR: [34, 8] } },
-        { type: "curved-bastion", corners: { TL: [20, 24], TR: [28, 24] } },
+        { type: "large-pipes", corners: { BL: [12, 6], TL: [14.5, 6] } },
+        { type: "large-area", corners: { TL: [18.5, 0], TR: [25.5, 0] } },
+        { type: "large-area", corners: { TR: [17, 19.5] } },
       ],
     },
   },

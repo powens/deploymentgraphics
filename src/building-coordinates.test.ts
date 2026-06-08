@@ -102,6 +102,85 @@ describe("resolveBuilding (single, non-mirrored)", () => {
   });
 });
 
+describe("resolveBuilding (single corner)", () => {
+  it("pins a single TL corner with no rotation", () => {
+    const result = resolveBuilding(
+      { type: "4x6", mirror: false, corners: { TL: [10, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].templateName).toBe("4x6");
+    expect(result[0].translate[0]).toBeCloseTo(10);
+    expect(result[0].translate[1]).toBeCloseTo(5);
+    expect(result[0].rotation).toBeCloseTo(0);
+  });
+
+  it("pins a single TR corner (translate offset by the template width)", () => {
+    // building TR corner -> canvas point (10,5); localCorner(TR)=(4,0)
+    const result = resolveBuilding(
+      { type: "4x6", mirror: false, corners: { TR: [10, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result[0].translate[0]).toBeCloseTo(6);
+    expect(result[0].translate[1]).toBeCloseTo(5);
+    expect(result[0].rotation).toBeCloseTo(0);
+  });
+
+  it("pins a single BL corner (translate offset by the template height)", () => {
+    // building BL corner -> canvas point (10,5); localCorner(BL)=(0,6)
+    const result = resolveBuilding(
+      { type: "4x6", mirror: false, corners: { BL: [10, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result[0].translate[0]).toBeCloseTo(10);
+    expect(result[0].translate[1]).toBeCloseTo(-1);
+    expect(result[0].rotation).toBeCloseTo(0);
+  });
+
+  it("pins a single BR corner (offset by width and height)", () => {
+    // building BR corner -> canvas point (10,5); localCorner(BR)=(4,6)
+    const result = resolveBuilding(
+      { type: "4x6", mirror: false, corners: { BR: [10, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result[0].translate[0]).toBeCloseTo(6);
+    expect(result[0].translate[1]).toBeCloseTo(-1);
+    expect(result[0].rotation).toBeCloseTo(0);
+  });
+
+  it("honours the canvas anchor for a single corner", () => {
+    // building TL corner -> (10,5) from canvas TR = (60-10, 5) = (50,5)
+    const result = resolveBuilding(
+      { type: "4x6", mirror: false, corners: { TL: [10, 5, "TR"] } },
+      templates,
+      canvas,
+    );
+    expect(result[0].translate[0]).toBeCloseTo(50);
+    expect(result[0].translate[1]).toBeCloseTo(5);
+    expect(result[0].rotation).toBeCloseTo(0);
+  });
+
+  it("mirrors a single corner by default (mirror at rotation 180)", () => {
+    const result = resolveBuilding(
+      { type: "4x6", corners: { TL: [10, 5] } },
+      templates,
+      canvas,
+    );
+    expect(result).toHaveLength(2);
+    const [primary, mirrored] = result;
+    expect(primary.translate[0]).toBeCloseTo(10);
+    expect(primary.translate[1]).toBeCloseTo(5);
+    expect(primary.rotation).toBeCloseTo(0);
+    expect(mirrored.translate[0]).toBeCloseTo(50);
+    expect(mirrored.translate[1]).toBeCloseTo(39);
+    expect(mirrored.rotation).toBeCloseTo(180);
+  });
+});
+
 describe("resolveBuilding mirroring", () => {
   it("emits a 180-degree point-reflected copy by default", () => {
     const result = resolveBuilding(
@@ -150,14 +229,20 @@ describe("resolveBuilding validation", () => {
     ).toThrow(/unknown template/i);
   });
 
-  it("throws when there are not exactly 2 corners", () => {
+  it("throws when there are no corners", () => {
+    expect(() =>
+      resolveBuilding({ type: "4x6", corners: {} }, templates, canvas),
+    ).toThrow(/1 or 2 corners/i);
+  });
+
+  it("throws when there are more than 2 corners", () => {
     expect(() =>
       resolveBuilding(
-        { type: "4x6", corners: { TL: [10, 5] } },
+        { type: "4x6", corners: { TL: [10, 5], TR: [14, 5], BR: [14, 11] } },
         templates,
         canvas,
       ),
-    ).toThrow(/exactly 2 corners/i);
+    ).toThrow(/1 or 2 corners/i);
   });
 
   it("throws when the corner distance disagrees with the template edge", () => {
