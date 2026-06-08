@@ -20,4 +20,6 @@ export type Theme = {
   };
   /** Keyed by area-terrain `label`; `default` is the fallback. */
   area_terrain: { default: SVGProperties } & Record<string, SVGProperties>;
+  /** Icon markers: `circle` styles the disk + border ring; `glyph` fills the art. */
+  icon: { circle: SVGProperties; glyph: SVGProperties };
 };
