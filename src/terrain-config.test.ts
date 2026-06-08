@@ -2,7 +2,11 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
-import { getLayoutBuildings, type TerrainConfig } from "./terrain-config";
+import {
+  getLayoutBuildings,
+  getLayoutIcons,
+  type TerrainConfig,
+} from "./terrain-config";
 import { resolveBuilding } from "./building-coordinates";
 
 const terrain: TerrainConfig = {
@@ -50,5 +54,27 @@ describe("placeholder gw.yml", () => {
         ).not.toThrow();
       }
     }
+  });
+});
+
+describe("getLayoutIcons", () => {
+  const t: TerrainConfig = {
+    templates: {},
+    layout: {
+      "1": { buildings: [], icons: [{ type: "skull", pos: [5, 10] }] },
+      "2": { buildings: [] },
+    },
+  };
+
+  it("returns the icon placements for a layout that has them", () => {
+    expect(getLayoutIcons(t, "1")).toEqual([{ type: "skull", pos: [5, 10] }]);
+  });
+
+  it("returns [] for a layout with no icons", () => {
+    expect(getLayoutIcons(t, "2")).toEqual([]);
+  });
+
+  it("returns [] for a missing layout", () => {
+    expect(getLayoutIcons(t, "9")).toEqual([]);
   });
 });
