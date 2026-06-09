@@ -146,6 +146,34 @@ describe("sceneToConfig with icons", () => {
     const config = sceneToConfig(emptyScene(), RECT_TEMPLATES);
     expect(config.terrain.layout["editor"].icons).toBeUndefined();
   });
+
+  it("includes the player tag when set", () => {
+    const scene: Scene = {
+      ...emptyScene(),
+      objects: [{
+        id: "ic1", type: "icon", iconType: "fortress",
+        x: 8, y: 10, rotation: 0, player: "attacker",
+      }],
+    };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].icons).toEqual([
+      { type: "fortress", pos: [10, 12], player: "attacker" },
+    ]);
+  });
+
+  it("omits player when the icon has none", () => {
+    const scene: Scene = {
+      ...emptyScene(),
+      objects: [{
+        id: "ic2", type: "icon", iconType: "skull",
+        x: 8, y: 10, rotation: 0,
+      }],
+    };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].icons).toEqual([
+      { type: "skull", pos: [10, 12] },
+    ]);
+  });
 });
 
 describe("sceneToConfig with centerHoleRadius", () => {

@@ -53,6 +53,7 @@ export type AnnotationObject = SceneObjectBase & {
 export type IconObject = SceneObjectBase & {
   type: "icon";
   iconType: "skull" | "fortress";
+  player?: "attacker" | "defender";
 };
 
 export type SceneObject =
@@ -157,6 +158,7 @@ export function sceneToConfig(
     .map((o) => ({
       type: o.iconType,
       pos: [o.x + ICON_SIZE / 2, o.y + ICON_SIZE / 2],
+      ...(o.player && { player: o.player }),
     }));
 
   const deployment: DeploymentConfig = {
