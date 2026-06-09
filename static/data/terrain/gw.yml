@@ -89,7 +89,7 @@ layout:
         y: 21
         width: 5
         height: 7
-        color: stone
+        color: green
       - type: generator
         x: 28
         y: 21.5
