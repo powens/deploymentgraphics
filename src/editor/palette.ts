@@ -8,7 +8,15 @@ export type PaletteItem =
   | { category: "objective" }
   | { category: "deployment-zone"; player: "attacker" | "defender" }
   | { category: "annotation"; kind: "text" | "arrow" }
-  | { category: "icon"; iconType: "skull" | "fortress"; label: string };
+  | { category: "icon"; iconType: "skull" | "fortress"; label: string }
+  | {
+      category: "feature";
+      featureType: "l-ruin" | "sandbags" | "generator" | "pipe";
+      width: number;
+      height: number;
+      color: string;
+      label: string;
+    };
 
 const FIXED_ITEMS: PaletteItem[] = [
   { category: "area-terrain", shape: "circle", label: "Forest" },
@@ -21,6 +29,13 @@ const FIXED_ITEMS: PaletteItem[] = [
   { category: "deployment-zone", player: "defender" },
   { category: "annotation", kind: "text" },
   { category: "annotation", kind: "arrow" },
+  { category: "feature", featureType: "l-ruin", width: 3, height: 7, color: "stone", label: "L-ruin 3×7" },
+  { category: "feature", featureType: "l-ruin", width: 5, height: 7, color: "stone", label: "L-ruin 5×7" },
+  { category: "feature", featureType: "sandbags", width: 2, height: 2, color: "sand", label: "Sandbags 2×2" },
+  { category: "feature", featureType: "sandbags", width: 2, height: 3, color: "sand", label: "Sandbags 2×3" },
+  { category: "feature", featureType: "generator", width: 5, height: 3, color: "gunmetal", label: "Generator 5×3" },
+  { category: "feature", featureType: "pipe", width: 6, height: 2, color: "rust", label: "Pipe (small)" },
+  { category: "feature", featureType: "pipe", width: 10, height: 2.5, color: "rust", label: "Pipe (large)" },
 ];
 
 const SECTION_LABELS: Record<string, string> = {
@@ -30,6 +45,7 @@ const SECTION_LABELS: Record<string, string> = {
   "deployment-zone": "Deployment",
   annotation: "Annotations",
   icon: "Icons",
+  feature: "Features",
 };
 
 function itemIcon(item: PaletteItem): string {
@@ -42,6 +58,7 @@ function itemIcon(item: PaletteItem): string {
   if (item.category === "objective") return "①";
   if (item.category === "deployment-zone") return item.player === "attacker" ? "🔴" : "🔵";
   if (item.category === "icon") return item.iconType === "skull" ? "💀" : "🏰";
+  if (item.category === "feature") return "▰";
   return item.kind === "text" ? "T" : "→";
 }
 
@@ -51,6 +68,7 @@ function itemLabel(item: PaletteItem): string {
   if (item.category === "objective") return "Objective";
   if (item.category === "deployment-zone") return item.player === "attacker" ? "Attacker Zone" : "Defender Zone";
   if (item.category === "icon") return item.label;
+  if (item.category === "feature") return item.label;
   return item.kind === "text" ? "Text Label" : "Arrow";
 }
 
@@ -139,6 +157,19 @@ export function createObjectFromPalette(
   }
   if (item.category === "icon") {
     return { id, type: "icon", iconType: item.iconType, x, y, rotation: 0 };
+  }
+  if (item.category === "feature") {
+    return {
+      id,
+      type: "feature",
+      featureType: item.featureType,
+      x,
+      y,
+      rotation: 0,
+      width: item.width,
+      height: item.height,
+      color: item.color,
+    };
   }
   const _exhaustive: never = item;
   throw new Error(`Unhandled PaletteItem category: ${(_exhaustive as { category: string }).category}`);
