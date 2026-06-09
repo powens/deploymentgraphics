@@ -95,32 +95,44 @@ function makeShape(shape: IconShape): SVGElement {
   }
 }
 
+/** Def element id for an icon, suffixed by player when the disk is tinted. */
+function iconDefId(type: string, player?: "attacker" | "defender"): string {
+  return player ? `icon-${type}-${player}` : `icon-${type}`;
+}
+
 /**
- * Appends one `<g id="icon-<type>">` per distinct used type into `defs`: a
- * background circle styled by `theme.icon.circle`, then a glyph group whose
- * body shapes take `theme.icon.glyph` and whose cutouts take the circle fill.
- * Throws on an unknown type.
+ * Appends one `<g id="icon-<type>[-<player>]">` per distinct (type, player) pair
+ * used in `placements`. The disk fill resolves from `theme.deployment[player]`
+ * when tagged, else `theme.icon.circle`; the glyph body takes `theme.icon.glyph`
+ * and the cutouts take the resolved disk fill so they read as the disk showing
+ * through. Throws on an unknown type.
  */
 export function injectIconDefs(
-  types: string[],
+  placements: IconPlacement[],
   defs: SVGElement,
   theme: Theme,
 ): void {
   const seen = new Set<string>();
-  for (const type of types) {
-    if (seen.has(type)) continue;
-    seen.add(type);
+  for (const { type, player } of placements) {
+    const id = iconDefId(type, player);
+    if (seen.has(id)) continue;
+    seen.add(id);
     const def = icons[type];
     if (!def) throw new Error(`unknown icon type: ${type}`);
 
+    const diskFill = player
+      ? `${theme.deployment[player].fill}`
+      : `${theme.icon.circle.fill}`;
+
     const group = makeElement("g");
-    group.setAttribute("id", `icon-${type}`);
+    group.setAttribute("id", id);
 
     const circle = makeElement("circle");
     circle.setAttribute("cx", `${def.circle.cx}`);
     circle.setAttribute("cy", `${def.circle.cy}`);
     circle.setAttribute("r", `${def.circle.r}`);
     applyAttributes(circle, theme.icon.circle);
+    circle.setAttribute("fill", diskFill);
     group.appendChild(circle);
 
     const glyph = makeElement("g");
@@ -132,7 +144,7 @@ export function injectIconDefs(
     }
     for (const shape of def.glyph.cutouts ?? []) {
       const el = makeShape(shape);
-      el.setAttribute("fill", `${theme.icon.circle.fill}`);
+      el.setAttribute("fill", diskFill);
       glyph.appendChild(el);
     }
     group.appendChild(glyph);
@@ -154,7 +166,7 @@ export function makeIcons(placements: IconPlacement[]): SVGElement {
       throw new Error(`unknown icon type: ${placement.type}`);
     }
     const use = makeElement("use");
-    use.setAttribute("href", `#icon-${placement.type}`);
+    use.setAttribute("href", `#${iconDefId(placement.type, placement.player)}`);
     const [x, y] = placement.pos;
     use.setAttribute(
       "transform",
