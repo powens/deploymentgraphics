@@ -19,9 +19,21 @@ export type AreaTerrain = {
   rotation?: number;
 };
 
-/** One numbered layout: an ordered list of building placements. */
+/**
+ * A placed icon marker: `type` selects a predefined icon, `pos` is its center
+ * (inches). An optional `player` tints the disk with that player's deployment
+ * colour; absent leaves the neutral theme.icon disk.
+ */
+export type IconPlacement = {
+  type: string;
+  pos: [number, number];
+  player?: "attacker" | "defender";
+};
+
+/** One numbered layout: building placements and optional icon markers. */
 export type TerrainLayout = {
   buildings: BuildingPlacement[];
+  icons?: IconPlacement[];
 };
 
 /**
@@ -50,4 +62,16 @@ export function getLayoutBuildings(
     throw new Error(`terrain has no layout named: ${layoutName}`);
   }
   return layout.buildings;
+}
+
+/**
+ * Returns the icon placements for a named layout, or `[]` when the layout is
+ * missing or has no icons. Unlike `getLayoutBuildings`, never throws — icons
+ * are optional everywhere.
+ */
+export function getLayoutIcons(
+  terrain: TerrainConfig,
+  layoutName: string,
+): IconPlacement[] {
+  return terrain.layout[layoutName]?.icons ?? [];
 }

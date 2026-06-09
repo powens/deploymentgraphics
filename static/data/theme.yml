@@ -76,3 +76,11 @@ area_terrain:
     fill: "rgba(140,130,120,0.3)"
     stroke: "#807060"
     stroke_width: 0.3
+
+icon:
+  circle:
+    fill: "#e8dcc0"
+    stroke: "#33312c"
+    stroke_width: 0.25
+  glyph:
+    fill: "#33312c"

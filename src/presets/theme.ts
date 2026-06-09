@@ -63,4 +63,8 @@ export const baseTheme: Theme = {
       stroke_width: 0.3,
     },
   },
+  icon: {
+    circle: { fill: "#e8dcc0", stroke: "#33312c", stroke_width: 0.25 },
+    glyph: { fill: "#33312c" },
+  },
 };

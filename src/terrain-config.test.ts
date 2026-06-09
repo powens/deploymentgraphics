@@ -2,7 +2,11 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
-import { getLayoutBuildings, type TerrainConfig } from "./terrain-config";
+import {
+  getLayoutBuildings,
+  getLayoutIcons,
+  type TerrainConfig,
+} from "./terrain-config";
 import { resolveBuilding } from "./building-coordinates";
 
 const terrain: TerrainConfig = {
@@ -37,8 +41,8 @@ const GW_YML = fileURLToPath(
 describe("placeholder gw.yml", () => {
   const gwTerrain = yaml.load(readFileSync(GW_YML, "utf8")) as TerrainConfig;
 
-  it("defines layouts 1 and 2", () => {
-    expect(Object.keys(gwTerrain.layout).sort()).toEqual(["1", "2"]);
+  it("defines layout 1", () => {
+    expect(Object.keys(gwTerrain.layout).sort()).toEqual(["1"]);
   });
 
   it("every building in every layout resolves without throwing", () => {
@@ -50,5 +54,48 @@ describe("placeholder gw.yml", () => {
         ).not.toThrow();
       }
     }
+  });
+
+  it("tags the two demo fortresses with opposite players", () => {
+    const icons = gwTerrain.layout["1"].icons ?? [];
+    const players = icons
+      .filter((i) => i.type === "fortress")
+      .map((i) => i.player);
+    expect(players).toContain("attacker");
+    expect(players).toContain("defender");
+  });
+});
+
+describe("getLayoutIcons", () => {
+  const t: TerrainConfig = {
+    templates: {},
+    layout: {
+      "1": { buildings: [], icons: [{ type: "skull", pos: [5, 10] }] },
+      "2": { buildings: [] },
+    },
+  };
+
+  it("returns the icon placements for a layout that has them", () => {
+    expect(getLayoutIcons(t, "1")).toEqual([{ type: "skull", pos: [5, 10] }]);
+  });
+
+  it("returns [] for a layout with no icons", () => {
+    expect(getLayoutIcons(t, "2")).toEqual([]);
+  });
+
+  it("returns [] for a missing layout", () => {
+    expect(getLayoutIcons(t, "9")).toEqual([]);
+  });
+
+  it("preserves a player tag on an icon placement", () => {
+    const tp: TerrainConfig = {
+      templates: {},
+      layout: {
+        "1": { buildings: [], icons: [{ type: "fortress", pos: [5, 10], player: "attacker" }] },
+      },
+    };
+    expect(getLayoutIcons(tp, "1")).toEqual([
+      { type: "fortress", pos: [5, 10], player: "attacker" },
+    ]);
   });
 });

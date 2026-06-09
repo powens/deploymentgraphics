@@ -1,5 +1,6 @@
 import { templateBounds, type BuildingPlacement } from "../building-coordinates.js";
-import type { AreaTerrain } from "../terrain-config.js";
+import type { AreaTerrain, IconPlacement } from "../terrain-config.js";
+import { ICON_SIZE } from "../icons.js";
 import type {
   Annotation,
   DeploymentConfig,
@@ -49,12 +50,19 @@ export type AnnotationObject = SceneObjectBase & {
   endY?: number;
 };
 
+export type IconObject = SceneObjectBase & {
+  type: "icon";
+  iconType: "skull" | "fortress";
+  player?: "attacker" | "defender";
+};
+
 export type SceneObject =
   | BuildingObject
   | AreaTerrainObject
   | ObjectiveObject
   | DeploymentZoneObject
-  | AnnotationObject;
+  | AnnotationObject
+  | IconObject;
 
 export type Scene = {
   boardWidth: number;
@@ -145,6 +153,14 @@ export function sceneToConfig(
     .filter((o): o is ObjectiveObject => o.type === "objective")
     .map((o) => ({ x: o.x, y: o.y, number: o.number }));
 
+  const iconItems: IconPlacement[] = scene.objects
+    .filter((o): o is IconObject => o.type === "icon")
+    .map((o) => ({
+      type: o.iconType,
+      pos: [o.x + ICON_SIZE / 2, o.y + ICON_SIZE / 2],
+      ...(o.player && { player: o.player }),
+    }));
+
   const deployment: DeploymentConfig = {
     name: scene.missionName,
     home_edge: scene.homeEdge,
@@ -168,7 +184,12 @@ export function sceneToConfig(
     deployment,
     terrain: {
       templates,
-      layout: { editor: { buildings } },
+      layout: {
+        editor: {
+          buildings,
+          ...(iconItems.length > 0 && { icons: iconItems }),
+        },
+      },
       layout_name: "editor",
       ...(areaTerrainItems.length > 0 && { area_terrain: areaTerrainItems }),
     },

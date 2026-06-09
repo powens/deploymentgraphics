@@ -19,7 +19,10 @@ export default [
       tsPlugin(),
       copy({ targets: [] }),
       ...(isWatch
-        ? [serve({ contentBase: ["dist", "static", "samples"], open: true }), autoReload()]
+        ? // Serve live sources first so a prior `make build-gh-pages` copy of
+          // static/* into dist/ can't shadow edits during dev. dist still
+          // provides the built bundle.js / editor.bundle.js (absent from static).
+          [serve({ contentBase: ["static", "samples", "dist"], open: true }), autoReload()]
         : []),
     ],
   },

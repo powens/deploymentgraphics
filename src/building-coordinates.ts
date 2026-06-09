@@ -122,7 +122,7 @@ export function templateBounds(
 
 export type BuildingPlacement = {
   type: string;
-  corners: Partial<Record<Anchor, CornerSpec>>; // exactly 2 entries
+  corners: Partial<Record<Anchor, CornerSpec>>; // 1 or 2 entries
   from?: Anchor; // default anchor for 2-element corner specs; default "TL"
   mirror?: boolean; // default true
 };
@@ -175,33 +175,40 @@ export function resolveBuilding(
     );
   }
   const entries = Object.entries(placement.corners) as [Anchor, CornerSpec][];
-  if (entries.length !== 2) {
+  if (entries.length < 1 || entries.length > 2) {
     throw new Error(
-      `building ${placement.type}: expected exactly 2 corners, got ${entries.length}`,
+      `building ${placement.type}: expected 1 or 2 corners, got ${entries.length}`,
     );
   }
   const defaultFrom: Anchor = placement.from ?? "TL";
-
-  const [[cornerA, specA], [cornerB, specB]] = entries;
-  const pA = resolveCorner(specA, defaultFrom, canvas);
-  const pB = resolveCorner(specB, defaultFrom, canvas);
   const size = templateBounds(template, placement.type);
+
+  const [[cornerA, specA]] = entries;
+  const pA = resolveCorner(specA, defaultFrom, canvas);
   const lA = localCorner(cornerA, size);
-  const lB = localCorner(cornerB, size);
 
-  const targetLength = Math.hypot(pB[0] - pA[0], pB[1] - pA[1]);
-  const templateLength = Math.hypot(lB[0] - lA[0], lB[1] - lA[1]);
-  if (Math.abs(targetLength - templateLength) > 0.1) {
-    throw new Error(
-      `building ${placement.type}: corners ${cornerA}->${cornerB} measure ` +
-        `${targetLength.toFixed(1)}" apart but template edge is ` +
-        `${templateLength.toFixed(1)}"`,
-    );
+  // A single corner pins position with no rotation; a second corner derives
+  // the rotation (and is checked against the template's edge length).
+  let theta = 0;
+  if (entries.length === 2) {
+    const [, [cornerB, specB]] = entries;
+    const pB = resolveCorner(specB, defaultFrom, canvas);
+    const lB = localCorner(cornerB, size);
+
+    const targetLength = Math.hypot(pB[0] - pA[0], pB[1] - pA[1]);
+    const templateLength = Math.hypot(lB[0] - lA[0], lB[1] - lA[1]);
+    if (Math.abs(targetLength - templateLength) > 0.1) {
+      throw new Error(
+        `building ${placement.type}: corners ${cornerA}->${cornerB} measure ` +
+          `${targetLength.toFixed(1)}" apart but template edge is ` +
+          `${templateLength.toFixed(1)}"`,
+      );
+    }
+
+    theta =
+      Math.atan2(pB[1] - pA[1], pB[0] - pA[0]) -
+      Math.atan2(lB[1] - lA[1], lB[0] - lA[0]);
   }
-
-  const theta =
-    Math.atan2(pB[1] - pA[1], pB[0] - pA[0]) -
-    Math.atan2(lB[1] - lA[1], lB[0] - lA[0]);
   const rotatedLA = rotate(lA, theta);
   const translate: Point = [pA[0] - rotatedLA[0], pA[1] - rotatedLA[1]];
   const rotation = (((theta * 180) / Math.PI) % 360 + 360) % 360;
