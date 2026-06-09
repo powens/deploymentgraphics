@@ -1,7 +1,12 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
+import { injectIconDefs, makeIcons } from "./icons.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { baseTheme } from "./presets/theme.js";
-import { DEFAULT_AREA_TERRAIN_SIZE, getLayoutBuildings } from "./terrain-config.js";
+import {
+  DEFAULT_AREA_TERRAIN_SIZE,
+  getLayoutBuildings,
+  getLayoutIcons,
+} from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
 
@@ -21,6 +26,14 @@ function injectDefs(svg: SVGElement, config: FullConfig, theme: Theme) {
     ...theme.building.template,
   };
   injectTemplateDefs(config.terrain.templates, defs, templateProps);
+
+  if (hasSelectedLayout(config)) {
+    const iconTypes = getLayoutIcons(
+      config.terrain,
+      config.terrain.layout_name,
+    ).map((i) => i.type);
+    if (iconTypes.length > 0) injectIconDefs(iconTypes, defs, theme);
+  }
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
   if (hasArrow) {
@@ -300,6 +313,14 @@ export function makeMissionCard(
   const annotations = makeAnnotations(config, theme);
   if (annotations) {
     svg.appendChild(annotations);
+  }
+
+  if (hasSelectedLayout(config)) {
+    const iconPlacements = getLayoutIcons(
+      config.terrain,
+      config.terrain.layout_name,
+    );
+    if (iconPlacements.length > 0) svg.appendChild(makeIcons(iconPlacements));
   }
 
   return svg;
