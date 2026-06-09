@@ -127,6 +127,27 @@ describe("sceneToConfig", () => {
   });
 });
 
+describe("sceneToConfig with icons", () => {
+  it("emits layout.editor.icons with pos at the object center", () => {
+    const scene: Scene = {
+      ...emptyScene(),
+      objects: [{
+        id: "ic1", type: "icon", iconType: "skull",
+        x: 8, y: 10, rotation: 0,
+      }],
+    };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].icons).toEqual([
+      { type: "skull", pos: [10, 12] },
+    ]);
+  });
+
+  it("omits the icons key when there are no icon objects", () => {
+    const config = sceneToConfig(emptyScene(), RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].icons).toBeUndefined();
+  });
+});
+
 describe("sceneToConfig with centerHoleRadius", () => {
   it("emits mask_center on both players when centerHoleRadius is set", () => {
     const scene: Scene = { ...emptyScene(), centerHoleRadius: 9 };
