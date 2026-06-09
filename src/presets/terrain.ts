@@ -6,11 +6,11 @@ import type { TerrainConfig } from "../terrain-config.js";
 /** Built-in building templates and numbered layouts. */
 export const gwTerrain: TerrainConfig = {
   templates: {
-    "large-area": { width: 7, height: 11 },
+    "large-area": { width: 7, height: 11.5 },
     "small-area": { width: 4, height: 6 },
-    pipes: { width: 6, height: 2 },
+    "small-pipes": { width: 6, height: 2 },
     "large-pipes": { width: 10, height: 2.5 },
-    shoe: { points: [[0, 0], [8, 0], [2, 11.5], [0, 11.5]] },
+    shoe: { points: [[0, 0], [2, 0], [8, 11.5], [0, 11.5]] },
   },
   layout: {
     "1": {
@@ -18,6 +18,15 @@ export const gwTerrain: TerrainConfig = {
         { type: "large-pipes", corners: { BL: [12, 6], TL: [14.5, 6] } },
         { type: "large-area", corners: { TL: [18.5, 0], TR: [25.5, 0] } },
         { type: "large-area", corners: { TR: [17, 19.5] } },
+        { type: "small-pipes", corners: { BL: [17, 31], TL: [19, 31] } },
+        { type: "small-pipes", corners: { BL: [11, 39] } },
+        { type: "shoe", corners: { TL: [25, 16.25] } },
+        { type: "small-area", corners: { BL: [19.5, 44] } },
+        { type: "small-area", corners: { BR: [23.5, 38], TR: [29.5, 38] } },
+      ],
+      icons: [
+        { type: "skull", pos: [15, 22] },
+        { type: "fortress", pos: [45, 22] },
       ],
     },
   },
