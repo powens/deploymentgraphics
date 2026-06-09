@@ -77,4 +77,16 @@ describe("getLayoutIcons", () => {
   it("returns [] for a missing layout", () => {
     expect(getLayoutIcons(t, "9")).toEqual([]);
   });
+
+  it("preserves a player tag on an icon placement", () => {
+    const tp: TerrainConfig = {
+      templates: {},
+      layout: {
+        "1": { buildings: [], icons: [{ type: "fortress", pos: [5, 10], player: "attacker" }] },
+      },
+    };
+    expect(getLayoutIcons(tp, "1")).toEqual([
+      { type: "fortress", pos: [5, 10], player: "attacker" },
+    ]);
+  });
 });

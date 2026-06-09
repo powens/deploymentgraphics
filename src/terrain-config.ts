@@ -19,8 +19,16 @@ export type AreaTerrain = {
   rotation?: number;
 };
 
-/** A placed icon marker: `type` selects a predefined icon, `pos` is its center (inches). */
-export type IconPlacement = { type: string; pos: [number, number] };
+/**
+ * A placed icon marker: `type` selects a predefined icon, `pos` is its center
+ * (inches). An optional `player` tints the disk with that player's deployment
+ * colour; absent leaves the neutral theme.icon disk.
+ */
+export type IconPlacement = {
+  type: string;
+  pos: [number, number];
+  player?: "attacker" | "defender";
+};
 
 /** One numbered layout: building placements and optional icon markers. */
 export type TerrainLayout = {
