@@ -183,6 +183,31 @@ export function renderInspector(
     bodyEl.appendChild(txtField);
   }
 
+  if (obj.type === "icon") {
+    const { wrap: pField } = makeField("Player colour");
+    const sel = document.createElement("select");
+    sel.className = "field-input field-select";
+    const playerOptions: { value: string; label: string }[] = [
+      { value: "", label: "None" },
+      { value: "attacker", label: "Attacker" },
+      { value: "defender", label: "Defender" },
+    ];
+    for (const o of playerOptions) {
+      const opt = document.createElement("option");
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if ((obj.player ?? "") === o.value) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.addEventListener("change", () =>
+      onChange(obj.id, {
+        player: sel.value === "" ? undefined : (sel.value as "attacker" | "defender"),
+      } as Partial<SceneObject>),
+    );
+    pField.appendChild(sel);
+    bodyEl.appendChild(pField);
+  }
+
   const delBtn = document.createElement("button");
   delBtn.className = "del-btn";
   delBtn.textContent = "Delete Object";
