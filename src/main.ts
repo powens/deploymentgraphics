@@ -28,11 +28,11 @@ function injectDefs(svg: SVGElement, config: FullConfig, theme: Theme) {
   injectTemplateDefs(config.terrain.templates, defs, templateProps);
 
   if (hasSelectedLayout(config)) {
-    const iconTypes = getLayoutIcons(
+    const iconPlacements = getLayoutIcons(
       config.terrain,
       config.terrain.layout_name,
-    ).map((i) => i.type);
-    if (iconTypes.length > 0) injectIconDefs(iconTypes, defs, theme);
+    );
+    if (iconPlacements.length > 0) injectIconDefs(iconPlacements, defs, theme);
   }
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
