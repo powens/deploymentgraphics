@@ -11,6 +11,7 @@ const CHIP_LABELS: Record<string, string> = {
   objective: "OBJECTIVE",
   "deployment-zone": "DEPLOY ZONE",
   annotation: "ANNOTATION",
+  icon: "ICON",
 };
 
 function numInput(value: number, onchange: (v: number) => void): HTMLInputElement {

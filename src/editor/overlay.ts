@@ -1,6 +1,7 @@
 import { templateBounds } from "../building-coordinates.js";
 import type { Template } from "../building-coordinates.js";
 import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
+import { ICON_SIZE } from "../icons.js";
 import type { Scene, SceneObject, DeploymentZoneObject } from "./scene.js";
 
 export type SelectionState = {
@@ -34,6 +35,9 @@ export function objectBounds(
     const ys = obj.vertices.map(([, vy]) => vy);
     const x = Math.min(...xs), y = Math.min(...ys);
     return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
+  }
+  if (obj.type === "icon") {
+    return { x: obj.x, y: obj.y, w: ICON_SIZE, h: ICON_SIZE };
   }
   return { x: obj.x - 1, y: obj.y - 1, w: 8, h: 3 };
 }
@@ -145,26 +149,28 @@ export function renderOverlay(
       box.style.pointerEvents = "none";
       wrapper.appendChild(box);
 
-      const cx = b.x + b.w / 2;
-      const stem = svgEl("line");
-      stem.setAttribute("x1", `${cx}`);
-      stem.setAttribute("y1", `${b.y}`);
-      stem.setAttribute("x2", `${cx}`);
-      stem.setAttribute("y2", `${b.y - 2.5}`);
-      stem.setAttribute("stroke", "#b9842f");
-      stem.setAttribute("stroke-width", "0.2");
-      wrapper.appendChild(stem);
+      if (obj.type !== "icon") {
+        const cx = b.x + b.w / 2;
+        const stem = svgEl("line");
+        stem.setAttribute("x1", `${cx}`);
+        stem.setAttribute("y1", `${b.y}`);
+        stem.setAttribute("x2", `${cx}`);
+        stem.setAttribute("y2", `${b.y - 2.5}`);
+        stem.setAttribute("stroke", "#b9842f");
+        stem.setAttribute("stroke-width", "0.2");
+        wrapper.appendChild(stem);
 
-      const rotHandle = svgEl("circle") as SVGCircleElement;
-      rotHandle.setAttribute("cx", `${cx}`);
-      rotHandle.setAttribute("cy", `${b.y - 2.5}`);
-      rotHandle.setAttribute("r", "1");
-      rotHandle.setAttribute("fill", "#b9842f");
-      rotHandle.style.pointerEvents = "all";
-      rotHandle.style.cursor = "grab";
-      rotHandle.dataset.type = "rotate";
-      rotHandle.dataset.objectId = obj.id;
-      wrapper.appendChild(rotHandle);
+        const rotHandle = svgEl("circle") as SVGCircleElement;
+        rotHandle.setAttribute("cx", `${cx}`);
+        rotHandle.setAttribute("cy", `${b.y - 2.5}`);
+        rotHandle.setAttribute("r", "1");
+        rotHandle.setAttribute("fill", "#b9842f");
+        rotHandle.style.pointerEvents = "all";
+        rotHandle.style.cursor = "grab";
+        rotHandle.dataset.type = "rotate";
+        rotHandle.dataset.objectId = obj.id;
+        wrapper.appendChild(rotHandle);
+      }
     }
   }
 }
