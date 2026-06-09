@@ -7,12 +7,15 @@ export type PaletteItem =
   | { category: "area-terrain"; shape: "circle" | "polygon"; label: string }
   | { category: "objective" }
   | { category: "deployment-zone"; player: "attacker" | "defender" }
-  | { category: "annotation"; kind: "text" | "arrow" };
+  | { category: "annotation"; kind: "text" | "arrow" }
+  | { category: "icon"; iconType: "skull" | "fortress"; label: string };
 
 const FIXED_ITEMS: PaletteItem[] = [
   { category: "area-terrain", shape: "circle", label: "Forest" },
   { category: "area-terrain", shape: "circle", label: "Crater" },
   { category: "area-terrain", shape: "circle", label: "Rubble" },
+  { category: "icon", iconType: "skull", label: "Skull" },
+  { category: "icon", iconType: "fortress", label: "Fortress" },
   { category: "objective" },
   { category: "deployment-zone", player: "attacker" },
   { category: "deployment-zone", player: "defender" },
@@ -26,6 +29,7 @@ const SECTION_LABELS: Record<string, string> = {
   objective: "Objectives",
   "deployment-zone": "Deployment",
   annotation: "Annotations",
+  icon: "Icons",
 };
 
 function itemIcon(item: PaletteItem): string {
@@ -37,6 +41,7 @@ function itemIcon(item: PaletteItem): string {
   }
   if (item.category === "objective") return "①";
   if (item.category === "deployment-zone") return item.player === "attacker" ? "🔴" : "🔵";
+  if (item.category === "icon") return item.iconType === "skull" ? "💀" : "🏰";
   return item.kind === "text" ? "T" : "→";
 }
 
@@ -45,6 +50,7 @@ function itemLabel(item: PaletteItem): string {
   if (item.category === "area-terrain") return item.label;
   if (item.category === "objective") return "Objective";
   if (item.category === "deployment-zone") return item.player === "attacker" ? "Attacker Zone" : "Defender Zone";
+  if (item.category === "icon") return item.label;
   return item.kind === "text" ? "Text Label" : "Arrow";
 }
 
@@ -130,6 +136,9 @@ export function createObjectFromPalette(
       endX: item.kind === "arrow" ? x + 5 : undefined,
       endY: item.kind === "arrow" ? y + 5 : undefined,
     };
+  }
+  if (item.category === "icon") {
+    return { id, type: "icon", iconType: item.iconType, x, y, rotation: 0 };
   }
   const _exhaustive: never = item;
   throw new Error(`Unhandled PaletteItem category: ${(_exhaustive as { category: string }).category}`);
