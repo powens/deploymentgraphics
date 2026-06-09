@@ -26,23 +26,45 @@ const lRuin: FeatureDraw = (w, h) => {
   };
 };
 
-// Sandbags: a tiling grid of ~1" bags as ellipses; the body stroke around
-// each delineates the stack. A bigger box gets more bags.
+// A rounded-rect ("bag") path, top-left (x,y) with size wd×ht and soft corners.
+function bagPath(x: number, y: number, wd: number, ht: number): string {
+  const rr = Math.min(wd, ht) * 0.4;
+  return (
+    `M${x + rr} ${y} H${x + wd - rr} A${rr} ${rr} 0 0 1 ${x + wd} ${y + rr} ` +
+    `V${y + ht - rr} A${rr} ${rr} 0 0 1 ${x + wd - rr} ${y + ht} ` +
+    `H${x + rr} A${rr} ${rr} 0 0 1 ${x} ${y + ht - rr} ` +
+    `V${y + rr} A${rr} ${rr} 0 0 1 ${x + rr} ${y} Z`
+  );
+}
+
+// Sandbags: a low barrier wall of ~1" bags laid in 2–3 courses that run along
+// the box's long axis. Each course fills the full length edge-to-edge, and
+// alternate courses carry one extra bag so their seams fall mid-bag against the
+// neighbour for a brick-bond weave. Bags overlap slightly and each takes the
+// body stroke, so the stack reads as packed sandbags rather than a uniform
+// grid. A bigger box gets more bags.
 const sandbags: FeatureDraw = (w, h) => {
-  const cols = Math.max(1, Math.round(w));
-  const rows = Math.max(1, Math.round(h));
-  const cw = w / cols;
-  const ch = h / rows;
+  const horizontal = w >= h;
+  const len = horizontal ? w : h; // along the wall
+  const thick = horizontal ? h : w; // across the wall
+  const courses = Math.max(2, Math.min(3, Math.round(thick)));
+  const n = Math.max(2, Math.round(len)); // base bags per course
+  const cv = thick / courses; // course depth across the wall
+  const bagV = cv * 1.12; // slight overlap across courses
   const body: IconShape[] = [];
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      body.push({
-        tag: "ellipse",
-        cx: col * cw + cw / 2,
-        cy: row * ch + ch / 2,
-        rx: cw * 0.5,
-        ry: ch * 0.5,
-      });
+  for (let c = 0; c < courses; c++) {
+    const count = n + (c % 2); // alternate +1 bag to stagger the seams
+    const pitch = len / count; // bag spacing along this course
+    const bagU = pitch * 1.06; // slight overlap along the wall
+    const vCenter = (c + 0.5) * cv;
+    for (let i = 0; i < count; i++) {
+      const uCenter = (i + 0.5) * pitch;
+      // Map oriented (along, across) back to box (x, y); swap for a vertical wall.
+      const x = horizontal ? uCenter - bagU / 2 : vCenter - bagV / 2;
+      const y = horizontal ? vCenter - bagV / 2 : uCenter - bagU / 2;
+      const wd = horizontal ? bagU : bagV;
+      const ht = horizontal ? bagV : bagU;
+      body.push({ tag: "path", d: bagPath(x, y, wd, ht) });
     }
   }
   return { body, accent: [] };
@@ -68,24 +90,29 @@ const generator: FeatureDraw = (w, h) => {
   return { body: [{ tag: "rect", x: 0, y: 0, width: w, height: h }], accent };
 };
 
-// Pipe: a capsule (rounded ends, radius = half height) with evenly spaced
-// flange rings along its interior length. The radius is also capped at half
-// the width so a pipe resized taller than it is wide stays a valid shape
-// rather than producing negative path coordinates.
+// Pipe: a thin capsule tube running down the centre of the box (rounded ends,
+// radius = half the tube thickness) sitting on a few small linear supports —
+// short struts that cross the tube and extend off both sides to the box edges,
+// like trestle legs. The radius is capped at half the width so a pipe resized
+// taller than it is wide stays a valid shape rather than producing negative
+// path coordinates.
 const pipe: FeatureDraw = (w, h) => {
-  const r = Math.min(h / 2, w / 2);
+  const tube = h * 0.46; // thin pipe band, vertically centred
+  const top = (h - tube) / 2;
+  const bot = top + tube;
+  const r = Math.min(tube / 2, w / 2);
   const d =
-    `M${r} 0 L${w - r} 0 A${r} ${r} 0 0 1 ${w - r} ${h} ` +
-    `L${r} ${h} A${r} ${r} 0 0 1 ${r} 0 Z`;
-  const ringW = Math.max(0.15, h * 0.18);
-  const start = Math.min(h, w * 0.2);
+    `M${r} ${top} L${w - r} ${top} A${r} ${r} 0 0 1 ${w - r} ${bot} ` +
+    `L${r} ${bot} A${r} ${r} 0 0 1 ${r} ${top} Z`;
+  const supportW = Math.max(0.15, tube * 0.4);
+  const start = Math.min(w * 0.2, w / 2);
   const end = w - start;
+  const supports = Math.max(2, Math.min(5, Math.round(w / 2)));
   const accent: IconShape[] = [];
-  const rings = Math.max(2, Math.round(w / (h * 2)));
-  for (let i = 0; i < rings; i++) {
-    const x =
-      end <= start ? w / 2 : start + ((end - start) * i) / (rings - 1);
-    accent.push({ tag: "rect", x: x - ringW / 2, y: 0, width: ringW, height: h });
+  for (let i = 0; i < supports; i++) {
+    const cx = start + ((end - start) * i) / (supports - 1);
+    const x = Math.min(Math.max(cx, supportW / 2), w - supportW / 2);
+    accent.push({ tag: "rect", x: x - supportW / 2, y: 0, width: supportW, height: h });
   }
   return { body: [{ tag: "path", d }], accent };
 };

@@ -51,7 +51,7 @@ export const gwTerrain: TerrainConfig = {
         { type: "skull", pos: { x: 38, y: 39 } },
       ],
       features: [
-        { type: "l-ruin", x: 4, y: 21, width: 5, height: 7, color: "stone" },
+        { type: "l-ruin", x: 4, y: 21, width: 5, height: 7, color: "green" },
         {
           type: "generator",
           x: 28,
