@@ -1,5 +1,5 @@
 import { templateBounds, type BuildingPlacement, type Point } from "../building-coordinates.js";
-import type { AreaTerrain, IconPlacement } from "../terrain-config.js";
+import type { AreaTerrain, FeaturePlacement, IconPlacement } from "../terrain-config.js";
 import { ICON_SIZE } from "../icons.js";
 import type {
   Annotation,
@@ -56,13 +56,22 @@ export type IconObject = SceneObjectBase & {
   player?: "attacker" | "defender";
 };
 
+export type FeatureObject = SceneObjectBase & {
+  type: "feature";
+  featureType: "l-ruin" | "sandbags" | "generator" | "pipe";
+  width: number;
+  height: number;
+  color: string;
+};
+
 export type SceneObject =
   | BuildingObject
   | AreaTerrainObject
   | ObjectiveObject
   | DeploymentZoneObject
   | AnnotationObject
-  | IconObject;
+  | IconObject
+  | FeatureObject;
 
 export type Scene = {
   boardWidth: number;
@@ -161,6 +170,18 @@ export function sceneToConfig(
       ...(o.player && { player: o.player }),
     }));
 
+  const featureItems: FeaturePlacement[] = scene.objects
+    .filter((o): o is FeatureObject => o.type === "feature")
+    .map((o) => ({
+      type: o.featureType,
+      x: o.x,
+      y: o.y,
+      width: o.width,
+      height: o.height,
+      rotation: o.rotation,
+      color: o.color,
+    }));
+
   const deployment: DeploymentConfig = {
     name: scene.missionName,
     home_edge: scene.homeEdge,
@@ -195,5 +216,6 @@ export function sceneToConfig(
     },
     ...(objectiveItems.length > 0 && { objectives: objectiveItems }),
     ...(annotationItems.length > 0 && { annotations: annotationItems }),
+    ...(featureItems.length > 0 && { features: featureItems }),
   };
 }

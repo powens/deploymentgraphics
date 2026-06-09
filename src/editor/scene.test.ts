@@ -176,6 +176,32 @@ describe("sceneToConfig with icons", () => {
   });
 });
 
+describe("sceneToConfig with features", () => {
+  it("maps feature objects to the top-level features array", () => {
+    const scene = emptyScene();
+    scene.objects.push({
+      id: "f1",
+      type: "feature",
+      featureType: "pipe",
+      x: 12,
+      y: 6,
+      width: 10,
+      height: 2.5,
+      rotation: 45,
+      color: "rust",
+    });
+    const config = sceneToConfig(scene, {});
+    expect(config.features).toEqual([
+      { type: "pipe", x: 12, y: 6, width: 10, height: 2.5, rotation: 45, color: "rust" },
+    ]);
+  });
+
+  it("omits the features key when there are no feature objects", () => {
+    const config = sceneToConfig(emptyScene(), {});
+    expect(config.features).toBeUndefined();
+  });
+});
+
 describe("sceneToConfig with centerHoleRadius", () => {
   it("emits mask_center on both players when centerHoleRadius is set", () => {
     const scene: Scene = { ...emptyScene(), centerHoleRadius: 9 };
