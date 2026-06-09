@@ -12,6 +12,7 @@ const CHIP_LABELS: Record<string, string> = {
   "deployment-zone": "DEPLOY ZONE",
   annotation: "ANNOTATION",
   icon: "ICON",
+  feature: "FEATURE",
 };
 
 function numInput(value: number, onchange: (v: number) => void): HTMLInputElement {
@@ -206,6 +207,52 @@ export function renderInspector(
     );
     pField.appendChild(sel);
     bodyEl.appendChild(pField);
+  }
+
+  if (obj.type === "feature") {
+    const { wrap: wField } = makeField("Width (inches)");
+    wField.appendChild(
+      numInput(obj.width, (v) =>
+        onChange(obj.id, { width: Math.max(0.5, v) } as Partial<SceneObject>),
+      ),
+    );
+    bodyEl.appendChild(wField);
+
+    const { wrap: hField } = makeField("Height (inches)");
+    hField.appendChild(
+      numInput(obj.height, (v) =>
+        onChange(obj.id, { height: Math.max(0.5, v) } as Partial<SceneObject>),
+      ),
+    );
+    bodyEl.appendChild(hField);
+
+    const { wrap: rField } = makeField("Rotation (°)");
+    rField.appendChild(
+      numInput(obj.rotation, (v) =>
+        onChange(obj.id, {
+          rotation: ((v % 360) + 360) % 360,
+        } as Partial<SceneObject>),
+      ),
+    );
+    bodyEl.appendChild(rField);
+
+    const { wrap: cField } = makeField("Colour");
+    const sel = document.createElement("select");
+    sel.className = "field-input field-select";
+    // Mirrors the palette keys in static/data/theme.yml
+    const colours = ["stone", "rust", "sand", "green", "gunmetal", "bone"];
+    for (const c of colours) {
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      if (obj.color === c) opt.selected = true;
+      sel.appendChild(opt);
+    }
+    sel.addEventListener("change", () =>
+      onChange(obj.id, { color: sel.value } as Partial<SceneObject>),
+    );
+    cField.appendChild(sel);
+    bodyEl.appendChild(cField);
   }
 
   const delBtn = document.createElement("button");

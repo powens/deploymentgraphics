@@ -39,6 +39,9 @@ export function objectBounds(
   if (obj.type === "icon") {
     return { x: obj.x, y: obj.y, w: ICON_SIZE, h: ICON_SIZE };
   }
+  if (obj.type === "feature") {
+    return { x: obj.x, y: obj.y, w: obj.width, h: obj.height };
+  }
   return { x: obj.x - 1, y: obj.y - 1, w: 8, h: 3 };
 }
 
@@ -109,7 +112,17 @@ export function renderOverlay(
 
     const wrapper = svgEl("g");
     if (obj.type !== "deployment-zone" && obj.rotation !== 0) {
-      wrapper.setAttribute("transform", `rotate(${obj.rotation}, ${obj.x}, ${obj.y})`);
+      // Features rotate about their box center to match the renderer
+      // (features.ts uses `rotate(rot w/2 h/2)`); buildings and others keep the
+      // top-left pivot, which matches their own rendering convention.
+      const [pivotX, pivotY] =
+        obj.type === "feature"
+          ? [b.x + b.w / 2, b.y + b.h / 2]
+          : [obj.x, obj.y];
+      wrapper.setAttribute(
+        "transform",
+        `rotate(${obj.rotation}, ${pivotX}, ${pivotY})`,
+      );
     }
     overlaySvg.appendChild(wrapper);
 
