@@ -25,8 +25,11 @@ export const gwTerrain: TerrainConfig = {
         { type: "small-area", corners: { BR: [23.5, 38], TR: [29.5, 38] } },
       ],
       icons: [
-        { type: "skull", pos: [15, 22] },
-        { type: "fortress", pos: [45, 22] },
+        { type: "skull", pos: [30, 22] },
+        { type: "fortress", pos: [46.5, 19] },
+        { type: "fortress", pos: [13.5, 25] },
+        { type: "skull", pos: [22, 5] },
+        { type: "skull", pos: [38, 39] },
       ],
     },
   },
