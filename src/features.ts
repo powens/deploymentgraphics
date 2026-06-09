@@ -9,20 +9,19 @@ export type FeatureArt = { body: IconShape[]; accent: IconShape[] };
 /** Maps a bounding box (inches) to feature geometry in local 0..w / 0..h. */
 export type FeatureDraw = (w: number, h: number) => FeatureArt;
 
-// L-shaped ruin: a vertical arm down the left and a horizontal arm along the
-// bottom, drawn as a single path so the body stroke reads as wall edges, plus
-// a few rubble dots.
+// L-shaped ruin: thin walls — a vertical wall down the left and a horizontal
+// wall along the bottom — drawn as a single path so the body reads as standing
+// wall sections, plus a few rubble dots along the walls and inner corner.
 const lRuin: FeatureDraw = (w, h) => {
-  const armW = Math.min(w, Math.max(2, w * 0.42));
-  const armH = Math.min(h, Math.max(2, h * 0.42));
-  const d = `M0 0 H${armW} V${h - armH} H${w} V${h} H0 Z`;
-  const r = Math.max(0.15, Math.min(w, h) * 0.05);
+  const wall = Math.min(0.5, w, h);
+  const d = `M0 0 H${wall} V${h - wall} H${w} V${h} H0 Z`;
+  const r = Math.max(0.15, wall * 0.4);
   return {
     body: [{ tag: "path", d }],
     accent: [
-      { tag: "circle", cx: armW * 0.5, cy: h * 0.45, r },
-      { tag: "circle", cx: w * 0.55, cy: h - armH * 0.5, r: r * 0.8 },
-      { tag: "circle", cx: w * 0.78, cy: h - armH * 0.35, r: r * 0.6 },
+      { tag: "circle", cx: wall * 0.5, cy: h * 0.45, r },
+      { tag: "circle", cx: w * 0.45, cy: h - wall * 0.5, r: r * 0.8 },
+      { tag: "circle", cx: w * 0.72, cy: h - wall * 0.5, r: r * 0.6 },
     ],
   };
 };
