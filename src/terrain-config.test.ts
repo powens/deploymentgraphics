@@ -55,6 +55,15 @@ describe("placeholder gw.yml", () => {
       }
     }
   });
+
+  it("tags the two demo fortresses with opposite players", () => {
+    const icons = gwTerrain.layout["1"].icons ?? [];
+    const players = icons
+      .filter((i) => i.type === "fortress")
+      .map((i) => i.player);
+    expect(players).toContain("attacker");
+    expect(players).toContain("defender");
+  });
 });
 
 describe("getLayoutIcons", () => {

@@ -26,8 +26,8 @@ export const gwTerrain: TerrainConfig = {
       ],
       icons: [
         { type: "skull", pos: [30, 22] },
-        { type: "fortress", pos: [46.5, 19] },
-        { type: "fortress", pos: [13.5, 25] },
+        { type: "fortress", pos: [46.5, 19], player: "defender" },
+        { type: "fortress", pos: [13.5, 25], player: "attacker" },
         { type: "skull", pos: [22, 5] },
         { type: "skull", pos: [38, 39] },
       ],

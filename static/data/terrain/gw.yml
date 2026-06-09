@@ -18,7 +18,9 @@
 #
 # A layout may also list `icons` (sibling to `buildings`): predefined marker
 # graphics placed by their circle centre. Each is `{ type: <skull|fortress>,
-# pos: [x, y] }` in inches. Icons are styled by theme.yml and drawn on top.
+# pos: [x, y] }` in inches, with an optional `player: <attacker|defender>` that
+# tints the icon's disk with that player's deployment colour. Icons are styled
+# by theme.yml and drawn on top.
 
 templates:
   large-area: { width: 7, height: 11.5 }
@@ -61,8 +63,10 @@ layout:
         pos: [30, 22]
       - type: fortress
         pos: [46.5, 19]
+        player: defender
       - type: fortress
         pos: [13.5, 25]
+        player: attacker
       - type: skull
         pos: [22, 5]
       - type: skull
