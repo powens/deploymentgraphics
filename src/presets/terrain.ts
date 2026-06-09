@@ -50,6 +50,20 @@ export const gwTerrain: TerrainConfig = {
         { type: "skull", pos: { x: 22, y: 5 } },
         { type: "skull", pos: { x: 38, y: 39 } },
       ],
+      features: [
+        { type: "l-ruin", x: 4, y: 21, width: 5, height: 7, color: "stone" },
+        {
+          type: "generator",
+          x: 28,
+          y: 21.5,
+          width: 5,
+          height: 3,
+          rotation: 90,
+          color: "gunmetal",
+        },
+        { type: "sandbags", x: 21, y: 33, width: 2, height: 3, color: "sand" },
+        { type: "pipe", x: 33, y: 15, width: 6, height: 2, color: "rust" },
+      ],
     },
   },
 };

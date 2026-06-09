@@ -46,10 +46,14 @@ export type FeaturePlacement = {
   color: string;
 };
 
-/** One numbered layout: building placements and optional icon markers. */
+/**
+ * One numbered layout: building placements and optional icon markers and
+ * terrain features (both drawn on top of the buildings).
+ */
 export type TerrainLayout = {
   buildings: BuildingPlacement[];
   icons?: IconPlacement[];
+  features?: FeaturePlacement[];
 };
 
 /**
@@ -90,4 +94,16 @@ export function getLayoutIcons(
   layoutName: string,
 ): IconPlacement[] {
   return terrain.layout[layoutName]?.icons ?? [];
+}
+
+/**
+ * Returns the feature placements for a named layout, or `[]` when the layout is
+ * missing or has no features. Like `getLayoutIcons`, never throws — features
+ * are optional everywhere.
+ */
+export function getLayoutFeatures(
+  terrain: TerrainConfig,
+  layoutName: string,
+): FeaturePlacement[] {
+  return terrain.layout[layoutName]?.features ?? [];
 }

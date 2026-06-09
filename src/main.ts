@@ -7,6 +7,7 @@ import { baseTheme } from "./presets/theme.js";
 import {
   DEFAULT_AREA_TERRAIN_SIZE,
   getLayoutBuildings,
+  getLayoutFeatures,
   getLayoutIcons,
 } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
@@ -317,8 +318,14 @@ export function makeMissionCard(
     svg.appendChild(empty);
   }
 
-  if (config.features && config.features.length > 0) {
-    svg.appendChild(makeFeatures(config.features, theme));
+  // Features come from two sources: a top-level array (the editor / a
+  // hand-written full config) and the selected layout (built-in terrain files).
+  const layoutFeatures = hasSelectedLayout(config)
+    ? getLayoutFeatures(config.terrain, config.terrain.layout_name)
+    : [];
+  const features = [...(config.features ?? []), ...layoutFeatures];
+  if (features.length > 0) {
+    svg.appendChild(makeFeatures(features, theme));
   }
 
   const objectives = makeObjectives(config, theme);

@@ -240,6 +240,27 @@ describe("makeFeatures integration", () => {
     const svg = makeMissionCard(buildMinimalConfig());
     expect(svg.querySelector("#features")).toBeNull();
   });
+
+  it("renders features declared in the selected layout", () => {
+    const config = buildMinimalConfig();
+    config.terrain.layout["1"].features = [
+      { type: "sandbags", x: 5, y: 5, width: 2, height: 2, color: "sand" },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#features")!.childNodes.length).toBe(1);
+  });
+
+  it("merges top-level features with the layout's features", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 1, y: 1, width: 5, height: 3, color: "gunmetal" },
+    ];
+    config.terrain.layout["1"].features = [
+      { type: "sandbags", x: 5, y: 5, width: 2, height: 2, color: "sand" },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#features")!.childNodes.length).toBe(2);
+  });
 });
 
 describe("makeObjectives", () => {

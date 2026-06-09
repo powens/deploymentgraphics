@@ -21,6 +21,13 @@
 # pos: { x, y } }` in inches, with an optional `player: <attacker|defender>`
 # that tints the icon's disk with that player's deployment colour. Icons are
 # styled by theme.yml and drawn on top.
+#
+# A layout may also list `features` (sibling to `buildings`): abstract top-down
+# terrain pieces — `type` is one of l-ruin, sandbags, generator, pipe. Each is
+# `{ type, x, y, width, height, color }` in inches (`x`/`y` = top-left of the
+# unrotated bounding box), with an optional `rotation` (degrees about the box
+# centre). `color` is a theme.yml palette key: stone, rust, sand, green,
+# gunmetal, bone. Features are drawn on top of the buildings.
 
 templates:
   large-area: { width: 7, height: 11.5 }
@@ -75,3 +82,30 @@ layout:
         pos: { x: 22, y: 5 }
       - type: skull
         pos: { x: 38, y: 39 }
+    features:
+      # Illustrative pieces showcasing each feature type — replace freely.
+      - type: l-ruin
+        x: 4
+        y: 21
+        width: 5
+        height: 7
+        color: stone
+      - type: generator
+        x: 28
+        y: 21.5
+        width: 5
+        height: 3
+        rotation: 90
+        color: gunmetal
+      - type: sandbags
+        x: 21
+        y: 33
+        width: 2
+        height: 3
+        color: sand
+      - type: pipe
+        x: 33
+        y: 15
+        width: 6
+        height: 2
+        color: rust
