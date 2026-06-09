@@ -1,5 +1,5 @@
 import type { Point } from "./building-coordinates.js";
-import type { TerrainConfig } from "./terrain-config.js";
+import type { FeaturePlacement, TerrainConfig } from "./terrain-config.js";
 
 export type Coordinate = Point;
 export type SVGProperties = Record<string, string | number>;
@@ -54,4 +54,5 @@ export type FullConfig = {
   deployment: DeploymentConfig;
   objectives?: Objective[];
   annotations?: Annotation[];
+  features?: FeaturePlacement[];
 };

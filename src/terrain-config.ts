@@ -30,6 +30,22 @@ export type IconPlacement = {
   player?: "attacker" | "defender";
 };
 
+/**
+ * A placed terrain feature: `type` selects a draw function, `x`/`y` is the
+ * top-left of its unrotated bounding box (inches), `width`/`height` its box,
+ * `color` a palette key resolved from `theme.feature.palette`, `rotation`
+ * degrees about the box center.
+ */
+export type FeaturePlacement = {
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation?: number;
+  color: string;
+};
+
 /** One numbered layout: building placements and optional icon markers. */
 export type TerrainLayout = {
   buildings: BuildingPlacement[];

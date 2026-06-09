@@ -22,4 +22,9 @@ export type Theme = {
   area_terrain: { default: SVGProperties } & Record<string, SVGProperties>;
   /** Icon markers: `circle` styles the disk + border ring; `glyph` fills the art. */
   icon: { circle: SVGProperties; glyph: SVGProperties };
+  /** Terrain features: `palette` keys map to fill+accent; `stroke_width` shared. */
+  feature: {
+    palette: Record<string, { fill: string; accent: string }>;
+    stroke_width: number;
+  };
 };
