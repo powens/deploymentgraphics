@@ -1,4 +1,5 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
+import { makeFeatures } from "./features.js";
 import { injectIconDefs, makeIcons } from "./icons.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { toPoint } from "./building-coordinates.js";
@@ -314,6 +315,10 @@ export function makeMissionCard(
     const empty = makeElement("g");
     empty.setAttribute("id", "buildings");
     svg.appendChild(empty);
+  }
+
+  if (config.features && config.features.length > 0) {
+    svg.appendChild(makeFeatures(config.features, theme));
   }
 
   const objectives = makeObjectives(config, theme);

@@ -220,6 +220,28 @@ describe("makeAnnotations", () => {
   });
 });
 
+describe("makeFeatures integration", () => {
+  it("renders a features group on top of buildings", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal" },
+    ];
+    const svg = makeMissionCard(config);
+    const featuresGroup = svg.querySelector("#features");
+    expect(featuresGroup).not.toBeNull();
+    expect(featuresGroup!.childNodes.length).toBe(1);
+
+    // Features must come after the buildings group in document order.
+    const ids = [...svg.children].map((c) => c.getAttribute("id"));
+    expect(ids.indexOf("features")).toBeGreaterThan(ids.indexOf("buildings"));
+  });
+
+  it("renders no features group when none are present", () => {
+    const svg = makeMissionCard(buildMinimalConfig());
+    expect(svg.querySelector("#features")).toBeNull();
+  });
+});
+
 describe("makeObjectives", () => {
   it("renders a numbered marker per objective", () => {
     const cfg = buildMinimalConfig();
