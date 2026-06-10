@@ -6,6 +6,8 @@ import {
   getLayoutBuildings,
   getLayoutFeatures,
   getLayoutIcons,
+  getLayoutAreaTerrain,
+  getLayoutObjectives,
   type TerrainConfig,
 } from "./terrain-config";
 import { resolveBuilding } from "./building-coordinates";
@@ -138,5 +140,40 @@ describe("getLayoutFeatures", () => {
 
   it("returns [] for a missing layout", () => {
     expect(getLayoutFeatures(t, "9")).toEqual([]);
+  });
+});
+
+const terrainWithExtras = {
+  templates: {},
+  layout: {
+    a: {
+      buildings: [],
+      area_terrain: [
+        { shape: "polygon", x: 0, y: 0, points: [{ x: 1, y: 1 }], label: "area" },
+      ],
+      objectives: [{ x: 5, y: 6, number: 1 }],
+    },
+    bare: { buildings: [] },
+  },
+} as unknown as TerrainConfig;
+
+describe("getLayoutAreaTerrain", () => {
+  it("returns a layout's area terrain", () => {
+    expect(getLayoutAreaTerrain(terrainWithExtras, "a")).toHaveLength(1);
+  });
+  it("returns [] for a layout without area terrain", () => {
+    expect(getLayoutAreaTerrain(terrainWithExtras, "bare")).toEqual([]);
+  });
+  it("returns [] for a missing layout", () => {
+    expect(getLayoutAreaTerrain(terrainWithExtras, "nope")).toEqual([]);
+  });
+});
+
+describe("getLayoutObjectives", () => {
+  it("returns a layout's objectives", () => {
+    expect(getLayoutObjectives(terrainWithExtras, "a")).toEqual([{ x: 5, y: 6, number: 1 }]);
+  });
+  it("returns [] for a missing layout", () => {
+    expect(getLayoutObjectives(terrainWithExtras, "nope")).toEqual([]);
   });
 });

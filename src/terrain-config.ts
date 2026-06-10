@@ -50,12 +50,15 @@ export type FeaturePlacement = {
 
 /**
  * One numbered layout: building placements and optional icon markers and
- * terrain features (both drawn on top of the buildings).
+ * terrain features (drawn on top of the buildings). Layouts ported from
+ * external data may instead carry `area_terrain` polygons and `objectives`.
  */
 export type TerrainLayout = {
   buildings: BuildingPlacement[];
   icons?: IconPlacement[];
   features?: FeaturePlacement[];
+  area_terrain?: AreaTerrain[];
+  objectives?: { x: number; y: number; number: number }[];
 };
 
 /**
@@ -108,4 +111,26 @@ export function getLayoutFeatures(
   layoutName: string,
 ): FeaturePlacement[] {
   return terrain.layout[layoutName]?.features ?? [];
+}
+
+/**
+ * Returns the area-terrain polygons for a named layout, or `[]` when the
+ * layout is missing or carries none. Never throws.
+ */
+export function getLayoutAreaTerrain(
+  terrain: TerrainConfig,
+  layoutName: string,
+): AreaTerrain[] {
+  return terrain.layout[layoutName]?.area_terrain ?? [];
+}
+
+/**
+ * Returns the objective markers for a named layout, or `[]` when the layout is
+ * missing or carries none. Never throws.
+ */
+export function getLayoutObjectives(
+  terrain: TerrainConfig,
+  layoutName: string,
+): { x: number; y: number; number: number }[] {
+  return terrain.layout[layoutName]?.objectives ?? [];
 }
