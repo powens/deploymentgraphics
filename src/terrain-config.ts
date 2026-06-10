@@ -46,6 +46,10 @@ export type FeaturePlacement = {
   rotation?: number;
   color: string;
   mirror?: boolean; // default true
+  // Material category, shared with area_terrain labels (ruin, pipe, generator,
+  // barricade, gantry, catwalk). Currently styling comes from `color`; the
+  // label is carried for consistency with the ported 40kdc pieces.
+  label?: string;
 };
 
 /**

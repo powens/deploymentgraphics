@@ -53,6 +53,7 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
+          label: "ruin",
           x: 10.5,
           y: 24.5,
           width: 7,
@@ -63,6 +64,7 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
+          label: "generator",
           x: 28,
           y: 21.5,
           width: 5,
@@ -73,6 +75,7 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "sandbags",
+          label: "barricade",
           x: 21,
           y: 33,
           width: 2,
@@ -82,6 +85,7 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "pipe",
+          label: "pipe",
           x: 33,
           y: 15,
           width: 6,
