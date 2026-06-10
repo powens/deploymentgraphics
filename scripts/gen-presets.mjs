@@ -103,7 +103,7 @@ function buildTerrain() {
     layout: { ...gw.layout, ...dc.layout },
   };
   return (
-    header("static/data/terrain/gw.yml") +
+    header("static/data/terrain/gw.yml + static/data/terrain/40kdc.yml") +
     'import type { TerrainConfig } from "../terrain-config.js";\n\n' +
     declaration(
       "gwTerrain",
