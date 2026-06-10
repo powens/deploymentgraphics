@@ -224,7 +224,7 @@ describe("makeFeatures integration", () => {
   it("renders a features group on top of buildings", () => {
     const config = buildMinimalConfig();
     config.features = [
-      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal" },
+      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal", mirror: false },
     ];
     const svg = makeMissionCard(config);
     const featuresGroup = svg.querySelector("#features");
@@ -236,6 +236,15 @@ describe("makeFeatures integration", () => {
     expect(ids.indexOf("features")).toBeGreaterThan(ids.indexOf("buildings"));
   });
 
+  it("mirrors a feature through the board centre by default", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal" },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#features")!.childNodes.length).toBe(2);
+  });
+
   it("renders no features group when none are present", () => {
     const svg = makeMissionCard(buildMinimalConfig());
     expect(svg.querySelector("#features")).toBeNull();
@@ -244,7 +253,7 @@ describe("makeFeatures integration", () => {
   it("renders features declared in the selected layout", () => {
     const config = buildMinimalConfig();
     config.terrain.layout["1"].features = [
-      { type: "sandbags", x: 5, y: 5, width: 2, height: 2, color: "sand" },
+      { type: "sandbags", x: 5, y: 5, width: 2, height: 2, color: "sand", mirror: false },
     ];
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#features")!.childNodes.length).toBe(1);
@@ -253,10 +262,10 @@ describe("makeFeatures integration", () => {
   it("merges top-level features with the layout's features", () => {
     const config = buildMinimalConfig();
     config.features = [
-      { type: "generator", x: 1, y: 1, width: 5, height: 3, color: "gunmetal" },
+      { type: "generator", x: 1, y: 1, width: 5, height: 3, color: "gunmetal", mirror: false },
     ];
     config.terrain.layout["1"].features = [
-      { type: "sandbags", x: 5, y: 5, width: 2, height: 2, color: "sand" },
+      { type: "sandbags", x: 5, y: 5, width: 2, height: 2, color: "sand", mirror: false },
     ];
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#features")!.childNodes.length).toBe(2);

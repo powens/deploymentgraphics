@@ -1,3 +1,4 @@
+import type { CanvasSize } from "./building-coordinates.js";
 import { makeElement } from "./dom-helpers.js";
 import { makeShape, type IconShape } from "./icons.js";
 import type { FeaturePlacement } from "./terrain-config.js";
@@ -125,15 +126,31 @@ export const features: Record<string, FeatureDraw> = {
   pipe,
 };
 
+/** Point-reflects a placement through the canvas centre (rotation += 180). */
+function mirrorPlacement(
+  placement: FeaturePlacement,
+  canvas: CanvasSize,
+): FeaturePlacement {
+  return {
+    ...placement,
+    x: canvas.width - placement.x - placement.width,
+    y: canvas.height - placement.y - placement.height,
+    rotation: ((placement.rotation ?? 0) + 180) % 360,
+  };
+}
+
 /**
  * Builds `<g id="features">`, one inner `<g>` per placement (translated to its
  * position and rotated about its box center). Body shapes take the palette fill
  * plus a thin accent-coloured outline; accent shapes take the accent fill and
- * draw on top. Throws on an unknown feature type or palette colour.
+ * draw on top. Like buildings, each placement also emits a copy point-reflected
+ * through the canvas centre unless `mirror: false`. Throws on an unknown feature
+ * type or palette colour.
  */
 export function makeFeatures(
   placements: FeaturePlacement[],
   theme: Theme,
+  canvas: CanvasSize,
 ): SVGElement {
   const group = makeElement("g");
   group.setAttribute("id", "features");
@@ -145,30 +162,37 @@ export function makeFeatures(
     if (!palette) throw new Error(`unknown feature colour: ${placement.color}`);
 
     const { body, accent } = draw(placement.width, placement.height);
-    const g = makeElement("g");
-    const rotation = placement.rotation ?? 0;
-    g.setAttribute(
-      "transform",
-      `translate(${placement.x} ${placement.y}) ` +
-        `rotate(${rotation} ${placement.width / 2} ${placement.height / 2})`,
-    );
-    g.setAttribute("id", `feature-${counter}`);
+    const copies =
+      placement.mirror === false
+        ? [placement]
+        : [placement, mirrorPlacement(placement, canvas)];
 
-    for (const shape of body) {
-      const el = makeShape(shape);
-      el.setAttribute("fill", palette.fill);
-      el.setAttribute("stroke", palette.accent);
-      el.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
-      g.appendChild(el);
-    }
-    for (const shape of accent) {
-      const el = makeShape(shape);
-      el.setAttribute("fill", palette.accent);
-      g.appendChild(el);
-    }
+    for (const copy of copies) {
+      const g = makeElement("g");
+      const rotation = copy.rotation ?? 0;
+      g.setAttribute(
+        "transform",
+        `translate(${copy.x} ${copy.y}) ` +
+          `rotate(${rotation} ${copy.width / 2} ${copy.height / 2})`,
+      );
+      g.setAttribute("id", `feature-${counter}`);
 
-    group.appendChild(g);
-    counter++;
+      for (const shape of body) {
+        const el = makeShape(shape);
+        el.setAttribute("fill", palette.fill);
+        el.setAttribute("stroke", palette.accent);
+        el.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
+        g.appendChild(el);
+      }
+      for (const shape of accent) {
+        const el = makeShape(shape);
+        el.setAttribute("fill", palette.accent);
+        g.appendChild(el);
+      }
+
+      group.appendChild(g);
+      counter++;
+    }
   }
   return group;
 }

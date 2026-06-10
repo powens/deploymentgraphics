@@ -169,6 +169,7 @@ export function createObjectFromPalette(
       width: item.width,
       height: item.height,
       color: item.color,
+      mirror: true,
     };
   }
   const _exhaustive: never = item;

@@ -34,7 +34,8 @@ export type IconPlacement = {
  * A placed terrain feature: `type` selects a draw function, `x`/`y` is the
  * top-left of its unrotated bounding box (inches), `width`/`height` its box,
  * `color` a palette key resolved from `theme.feature.palette`, `rotation`
- * degrees about the box center.
+ * degrees about the box center. Like buildings, a feature is mirrored 180°
+ * through the canvas centre unless `mirror: false`.
  */
 export type FeaturePlacement = {
   type: string;
@@ -44,6 +45,7 @@ export type FeaturePlacement = {
   height: number;
   rotation?: number;
   color: string;
+  mirror?: boolean; // default true
 };
 
 /**

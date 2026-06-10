@@ -62,6 +62,7 @@ export type FeatureObject = SceneObjectBase & {
   width: number;
   height: number;
   color: string;
+  mirror: boolean;
 };
 
 export type SceneObject =
@@ -180,6 +181,7 @@ export function sceneToConfig(
       height: o.height,
       rotation: o.rotation,
       color: o.color,
+      mirror: o.mirror ? undefined : false, // mirror defaults to true in renderer
     }));
 
   const deployment: DeploymentConfig = {

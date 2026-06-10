@@ -253,6 +253,20 @@ export function renderInspector(
     );
     cField.appendChild(sel);
     bodyEl.appendChild(cField);
+
+    const { wrap: mField } = makeField("Mirror");
+    const mirrorRow = document.createElement("div");
+    mirrorRow.style.cssText = "display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text)";
+    const mirrorChk = document.createElement("input");
+    mirrorChk.type = "checkbox";
+    mirrorChk.checked = obj.mirror;
+    mirrorChk.style.accentColor = "var(--accent)";
+    mirrorChk.addEventListener("change", () => onChange(obj.id, { mirror: mirrorChk.checked } as Partial<SceneObject>));
+    const mirrorLabel = document.createTextNode("180° copy through center");
+    mirrorRow.appendChild(mirrorChk);
+    mirrorRow.appendChild(mirrorLabel);
+    mField.appendChild(mirrorRow);
+    bodyEl.appendChild(mField);
   }
 
   const delBtn = document.createElement("button");

@@ -325,7 +325,12 @@ export function makeMissionCard(
     : [];
   const features = [...(config.features ?? []), ...layoutFeatures];
   if (features.length > 0) {
-    svg.appendChild(makeFeatures(features, theme));
+    svg.appendChild(
+      makeFeatures(features, theme, {
+        width: config.base.size.width,
+        height: config.base.size.height,
+      }),
+    );
   }
 
   const objectives = makeObjectives(config, theme);

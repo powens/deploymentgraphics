@@ -16,6 +16,7 @@ describe("objectBounds for features", () => {
       height: 3,
       rotation: 0,
       color: "gunmetal",
+      mirror: false,
     };
     expect(objectBounds(obj, {})).toEqual({ x: 4, y: 9, w: 5, h: 3 });
   });
@@ -34,6 +35,7 @@ describe("renderOverlay rotation for features", () => {
       height: 3,
       rotation: 45,
       color: "gunmetal",
+      mirror: false,
     });
     const svg = createOverlaySvg(scene.boardWidth, scene.boardHeight);
     renderOverlay(svg, scene, { selectedId: null, vertexEditId: null }, {});
