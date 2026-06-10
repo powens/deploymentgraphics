@@ -20,6 +20,28 @@ const templates = readJson("terrain-templates.json");
 const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => footprintById.get(id);
 
+// Theme label per piece. Area pieces share one translucent-zone style; feature
+// pieces are coloured by material category, mirroring the demo layout's palette
+// (green ruins, rust pipes, gunmetal generators, sand barricades, metal
+// gantries/catwalks). Unknown feature templates fall back to the generic
+// `feature` style. Categories resolve to colours in static/data/theme.yml.
+const FEATURE_LABELS = {
+  "corner-tiny": "ruin",
+  "corner-short": "ruin",
+  "corner-ruin-balanced-left": "ruin",
+  "corner-ruin-balanced-right": "ruin",
+  "corner-ruin-left": "ruin",
+  "corner-ruin-right": "ruin",
+  pipe: "pipe",
+  generator: "generator",
+  barricade: "barricade",
+  gantry: "gantry",
+  catwalk: "catwalk",
+};
+
+const labelFor = (piece) =>
+  piece.piece_type === "area" ? "area" : (FEATURE_LABELS[piece.template] ?? "feature");
+
 // Round to 3 decimals and normalise negative zero to 0 so the YAML never
 // carries `-0` (which the preset serializer collapses to `0`, causing a
 // spurious mismatch in presets.test.ts).
@@ -46,7 +68,7 @@ for (const layout of layouts) {
       x: 0,
       y: 0,
       points,
-      label: piece.piece_type === "area" ? "area" : "feature",
+      label: labelFor(piece),
     });
     if (piece.is_objective) {
       objectives.push({

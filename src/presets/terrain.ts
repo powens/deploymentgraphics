@@ -140,7 +140,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.049, y: 5.419 },
             { x: 29.181, y: 1.324 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -152,7 +152,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.549, y: 9.919 },
             { x: 32.681, y: 5.824 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -164,7 +164,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 38.049, y: 13.419 },
             { x: 35.181, y: 9.324 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -176,7 +176,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.509, y: 10.785 },
             { x: 34.362, y: 9.147 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -284,7 +284,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.951, y: 38.581 },
             { x: 30.819, y: 42.676 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -296,7 +296,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.489, y: 34.042 },
             { x: 27.357, y: 38.137 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -308,7 +308,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.109, y: 30.468 },
             { x: 24.977, y: 34.564 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -320,7 +320,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.628, y: 33.076 },
             { x: 25.775, y: 34.714 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -392,7 +392,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.25, y: 26.375 },
             { x: 35.25, y: 26.375 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -404,7 +404,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.375, y: 24.5 },
             { x: 35.375, y: 26.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -416,7 +416,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.75, y: 17.625 },
             { x: 24.75, y: 17.625 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -428,7 +428,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.625, y: 19.5 },
             { x: 24.625, y: 17.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -440,7 +440,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.875, y: 22.5 },
             { x: 34.875, y: 17.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -452,7 +452,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30, y: 17.375 },
             { x: 35, y: 17.375 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -464,7 +464,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.757, y: 26.776 },
             { x: 45.299, y: 28.497 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -476,7 +476,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.165, y: 18.291 },
             { x: 45.069, y: 21.159 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -488,7 +488,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.125, y: 8.5 },
             { x: 43.125, y: 11.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -500,7 +500,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49, y: 11.625 },
             { x: 43, y: 11.625 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -512,7 +512,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 53.405, y: 7.593 },
             { x: 53.405, y: 5.593 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -524,7 +524,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 51.53, y: 5.468 },
             { x: 53.53, y: 5.468 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -536,7 +536,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.125, y: 21.5 },
             { x: 25.125, y: 26.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -548,7 +548,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30, y: 26.625 },
             { x: 25, y: 26.625 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -560,7 +560,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.188, y: 17.24 },
             { x: 14.646, y: 15.52 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -572,7 +572,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.969, y: 25.606 },
             { x: 15.065, y: 22.739 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -584,7 +584,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.875, y: 35.5 },
             { x: 16.875, y: 32.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -596,7 +596,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11, y: 32.375 },
             { x: 17, y: 32.375 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -608,7 +608,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 6.63, y: 36.52 },
             { x: 6.63, y: 38.52 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -620,7 +620,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.505, y: 38.645 },
             { x: 6.505, y: 38.645 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -632,7 +632,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.852, y: 10.841 },
             { x: 24.395, y: 12.562 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -644,7 +644,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.839, y: 43.106 },
             { x: 52.754, y: 39.665 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -656,7 +656,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.913, y: 33.962 },
             { x: 52.928, y: 39.696 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -668,7 +668,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.195, y: 31.935 },
             { x: 42.099, y: 34.803 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -680,7 +680,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.793, y: 38.868 },
             { x: 41.925, y: 34.773 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -692,7 +692,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.148, y: 33.159 },
             { x: 35.605, y: 31.438 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -704,7 +704,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.161, y: 0.894 },
             { x: 7.246, y: 4.335 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -716,7 +716,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.087, y: 10.038 },
             { x: 7.072, y: 4.304 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -728,7 +728,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.806, y: 12.065 },
             { x: 17.901, y: 9.197 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -740,7 +740,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.208, y: 5.132 },
             { x: 18.075, y: 9.228 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -752,7 +752,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.852, y: 21.612 },
             { x: 30.852, y: 21.612 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -764,7 +764,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.153, y: 11.418 },
             { x: 43.153, y: 8.918 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -776,7 +776,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.926, y: 37.203 },
             { x: 42.206, y: 34.746 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -788,7 +788,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.44, y: 37.981 },
             { x: 50.488, y: 36.547 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -800,7 +800,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.148, y: 22.388 },
             { x: 29.148, y: 22.388 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -812,7 +812,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.847, y: 32.582 },
             { x: 16.847, y: 35.082 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -824,7 +824,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.074, y: 6.797 },
             { x: 17.794, y: 9.254 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -836,7 +836,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.56, y: 6.019 },
             { x: 9.512, y: 7.453 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
     },
@@ -877,7 +877,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 39.91, y: 2.465 },
             { x: 39.91, y: 0.465 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -889,7 +889,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 38.035, y: 0.34 },
             { x: 40.035, y: 0.34 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -901,7 +901,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.063, y: 3.653 },
             { x: 37.063, y: 5.653 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -913,7 +913,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 38.938, y: 5.778 },
             { x: 36.938, y: 5.778 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -937,7 +937,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 31.074, y: 9.488 },
             { x: 31.074, y: 6.488 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -961,7 +961,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.541, y: 27.315 },
             { x: 34.541, y: 27.315 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -973,7 +973,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.666, y: 25.44 },
             { x: 34.666, y: 27.44 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -985,7 +985,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.731, y: 16.807 },
             { x: 29.731, y: 16.807 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -997,7 +997,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.542, y: 19.682 },
             { x: 34.542, y: 16.682 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1009,7 +1009,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.604, y: 19.682 },
             { x: 30.604, y: 16.682 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1069,7 +1069,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.501, y: 13.549 },
             { x: 43.501, y: 13.549 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1081,7 +1081,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.376, y: 19.424 },
             { x: 43.376, y: 13.424 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1093,7 +1093,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.501, y: 17.565 },
             { x: 43.501, y: 17.565 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1105,7 +1105,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.495, y: 6.424 },
             { x: 43.495, y: 6.424 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1117,7 +1117,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.506, y: 12.638 },
             { x: 41.506, y: 7.638 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1129,7 +1129,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.576, y: 23.825 },
             { x: 49.576, y: 23.825 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1141,7 +1141,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.701, y: 21.95 },
             { x: 49.701, y: 23.95 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1153,7 +1153,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.81, y: 34.027 },
             { x: 45.81, y: 34.027 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -1165,7 +1165,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.364, y: 33.424 },
             { x: 46.364, y: 28.424 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1177,7 +1177,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.364, y: 37.592 },
             { x: 46.364, y: 32.592 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1189,7 +1189,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.131, y: 33.12 },
             { x: 36.131, y: 33.12 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1201,7 +1201,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.951, y: 35.995 },
             { x: 40.951, y: 32.995 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1213,7 +1213,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.946, y: 43.576 },
             { x: 34.946, y: 38.576 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1225,7 +1225,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 38.071, y: 43.646 },
             { x: 35.071, y: 43.646 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1237,7 +1237,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.642, y: 43.494 },
             { x: 35.142, y: 43.494 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1249,7 +1249,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36.935, y: 35.565 },
             { x: 36.935, y: 33.065 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1285,7 +1285,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 20.09, y: 41.535 },
             { x: 20.09, y: 43.535 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1297,7 +1297,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 21.965, y: 43.66 },
             { x: 19.965, y: 43.66 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1309,7 +1309,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.937, y: 40.347 },
             { x: 22.937, y: 38.347 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1321,7 +1321,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 21.062, y: 38.222 },
             { x: 23.062, y: 38.222 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1345,7 +1345,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 28.927, y: 34.512 },
             { x: 28.927, y: 37.512 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -1369,7 +1369,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.46, y: 16.685 },
             { x: 25.46, y: 16.685 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1381,7 +1381,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.335, y: 18.56 },
             { x: 25.335, y: 16.56 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1393,7 +1393,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.269, y: 27.193 },
             { x: 30.269, y: 27.193 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1405,7 +1405,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.458, y: 24.318 },
             { x: 25.458, y: 27.318 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1417,7 +1417,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.396, y: 24.318 },
             { x: 29.396, y: 27.318 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1477,7 +1477,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.499, y: 30.451 },
             { x: 16.499, y: 30.451 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1489,7 +1489,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.624, y: 24.576 },
             { x: 16.624, y: 30.576 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1501,7 +1501,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.499, y: 26.435 },
             { x: 16.499, y: 26.435 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1513,7 +1513,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.506, y: 37.576 },
             { x: 16.505, y: 37.576 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1525,7 +1525,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.495, y: 31.362 },
             { x: 18.495, y: 36.362 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1537,7 +1537,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.424, y: 20.175 },
             { x: 10.424, y: 20.175 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1549,7 +1549,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.299, y: 22.05 },
             { x: 10.299, y: 20.05 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1561,7 +1561,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.19, y: 9.973 },
             { x: 14.19, y: 9.973 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -1573,7 +1573,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.636, y: 10.576 },
             { x: 13.636, y: 15.576 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1585,7 +1585,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.636, y: 6.408 },
             { x: 13.636, y: 11.408 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1597,7 +1597,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.869, y: 10.881 },
             { x: 23.869, y: 10.881 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1609,7 +1609,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.049, y: 8.006 },
             { x: 19.049, y: 11.006 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1621,7 +1621,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.054, y: 0.425 },
             { x: 25.054, y: 5.425 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1633,7 +1633,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 21.929, y: 0.354 },
             { x: 24.929, y: 0.354 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1645,7 +1645,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.358, y: 0.506 },
             { x: 24.858, y: 0.506 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -1657,7 +1657,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.065, y: 8.435 },
             { x: 23.065, y: 10.935 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
     },
@@ -1700,7 +1700,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.84, y: 17.8 },
             { x: 30.84, y: 17.3 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1714,7 +1714,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.16, y: 26.2 },
             { x: 29.16, y: 26.7 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1728,7 +1728,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.101, y: 19.391 },
             { x: 24.601, y: 19.391 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1742,7 +1742,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.899, y: 24.609 },
             { x: 35.399, y: 24.609 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -1802,7 +1802,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.466, y: 10.914 },
             { x: 22.096, y: 9.456 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -1814,7 +1814,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36.534, y: 33.086 },
             { x: 37.904, y: 34.544 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -1830,7 +1830,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.711, y: 12.244 },
             { x: 27.054, y: 12.608 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1846,7 +1846,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.289, y: 31.756 },
             { x: 32.946, y: 31.392 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1862,7 +1862,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.511, y: 7.844 },
             { x: 22.854, y: 8.208 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1878,7 +1878,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.489, y: 36.156 },
             { x: 37.146, y: 35.792 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -1890,7 +1890,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.75, y: 23.5 },
             { x: 45.25, y: 23.5 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1902,7 +1902,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.25, y: 20.5 },
             { x: 14.75, y: 20.5 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -1938,7 +1938,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.5, y: 17 },
             { x: 44.5, y: 17 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -1950,7 +1950,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.5, y: 27 },
             { x: 15.5, y: 27 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -1988,7 +1988,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.435, y: 10.975 },
             { x: 44.435, y: 8.475 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2002,7 +2002,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.565, y: 33.025 },
             { x: 15.565, y: 35.525 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2016,7 +2016,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.103, y: 8.447 },
             { x: 54.603, y: 8.447 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2030,7 +2030,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.897, y: 35.553 },
             { x: 5.397, y: 35.553 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2068,7 +2068,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.13, y: 14.45 },
             { x: 9.13, y: 14.95 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2082,7 +2082,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.87, y: 29.55 },
             { x: 50.87, y: 29.05 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2096,7 +2096,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.07, y: 5 },
             { x: 12.07, y: 4.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2110,7 +2110,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.93, y: 39 },
             { x: 47.93, y: 39.5 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2148,7 +2148,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.713, y: 4.867 },
             { x: 30.713, y: 4.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2162,7 +2162,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.287, y: 39.133 },
             { x: 29.287, y: 39.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2176,7 +2176,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.287, y: 9.133 },
             { x: 33.287, y: 9.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2190,7 +2190,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.713, y: 34.867 },
             { x: 26.713, y: 34.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2226,7 +2226,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.5, y: 12 },
             { x: 33.5, y: 12 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -2238,7 +2238,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.5, y: 32 },
             { x: 26.5, y: 32 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -2289,7 +2289,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.43, y: 34.98 },
             { x: 40.43, y: 34.48 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2303,7 +2303,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.57, y: 9.02 },
             { x: 19.57, y: 9.52 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2317,7 +2317,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.995, y: 39.985 },
             { x: 45.995, y: 37.485 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2331,7 +2331,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.005, y: 4.015 },
             { x: 14.005, y: 6.515 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2369,7 +2369,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.603, y: 28.847 },
             { x: 47.603, y: 28.347 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2383,7 +2383,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.397, y: 15.153 },
             { x: 12.397, y: 15.653 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2397,7 +2397,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.387, y: 33.083 },
             { x: 50.387, y: 33.583 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2411,7 +2411,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.613, y: 10.917 },
             { x: 9.613, y: 10.417 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2449,7 +2449,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.255, y: 14.435 },
             { x: 45.755, y: 14.435 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2463,7 +2463,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.745, y: 29.565 },
             { x: 14.245, y: 29.565 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2477,7 +2477,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 53.153, y: 17.437 },
             { x: 53.653, y: 17.437 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2491,7 +2491,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 6.847, y: 26.563 },
             { x: 6.347, y: 26.563 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2527,7 +2527,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.5, y: 27.5 },
             { x: 40.5, y: 20.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -2539,7 +2539,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.5, y: 16.5 },
             { x: 19.5, y: 23.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -2575,7 +2575,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.75, y: 8 },
             { x: 43.75, y: 6 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -2587,7 +2587,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.25, y: 36 },
             { x: 16.25, y: 38 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -2603,7 +2603,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.419, y: 11.18 },
             { x: 45.419, y: 11.68 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -2619,7 +2619,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.581, y: 32.82 },
             { x: 14.581, y: 32.32 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -2635,7 +2635,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.409, y: 5.34 },
             { x: 45.409, y: 5.84 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -2651,7 +2651,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.591, y: 38.66 },
             { x: 14.591, y: 38.16 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -2687,7 +2687,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33, y: 11.5 },
             { x: 33, y: 8.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -2699,7 +2699,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27, y: 32.5 },
             { x: 27, y: 35.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -2735,7 +2735,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.5, y: 9.75 },
             { x: 30.5, y: 4.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -2747,7 +2747,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.5, y: 34.25 },
             { x: 29.5, y: 39.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -2785,7 +2785,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.12, y: 21.17 },
             { x: 34.62, y: 21.17 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2799,7 +2799,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.88, y: 22.83 },
             { x: 25.38, y: 22.83 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2813,7 +2813,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.451, y: 17.231 },
             { x: 27.451, y: 16.731 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2827,7 +2827,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.549, y: 26.769 },
             { x: 32.549, y: 27.269 },
           ],
-          label: "feature",
+          label: "ruin",
         },
       ],
       objectives: [
@@ -2900,7 +2900,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.9, y: 25.16 },
             { x: 17.567, y: 23.785 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -2912,7 +2912,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.1, y: 18.84 },
             { x: 42.433, y: 20.215 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -2926,7 +2926,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.055, y: 13.925 },
             { x: 10.555, y: 13.925 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2940,7 +2940,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.945, y: 30.075 },
             { x: 49.445, y: 30.075 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2954,7 +2954,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.07, y: 23.37 },
             { x: 12.07, y: 23.87 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -2968,7 +2968,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.93, y: 20.63 },
             { x: 47.93, y: 20.13 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3006,7 +3006,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.711, y: 17.891 },
             { x: 26.711, y: 17.391 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3020,7 +3020,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.289, y: 26.109 },
             { x: 33.289, y: 26.609 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3034,7 +3034,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.74, y: 18.11 },
             { x: 30.74, y: 17.61 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3048,7 +3048,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.26, y: 25.89 },
             { x: 29.26, y: 26.39 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3086,7 +3086,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 7.957, y: 5.945 },
             { x: 7.627, y: 5.57 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3100,7 +3100,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 52.043, y: 38.055 },
             { x: 52.373, y: 38.43 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3114,7 +3114,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.933, y: 7.215 },
             { x: 13.263, y: 7.59 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3128,7 +3128,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.067, y: 36.785 },
             { x: 46.737, y: 36.41 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3164,7 +3164,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 20.754, y: 6.62 },
             { x: 14.359, y: 9.467 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -3176,7 +3176,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 39.246, y: 37.38 },
             { x: 45.641, y: 34.533 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -3214,7 +3214,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.815, y: 10.135 },
             { x: 24.815, y: 7.635 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3228,7 +3228,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.185, y: 33.865 },
             { x: 35.185, y: 36.365 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3242,7 +3242,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.493, y: 7.497 },
             { x: 34.993, y: 7.497 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3256,7 +3256,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.507, y: 36.503 },
             { x: 25.007, y: 36.503 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3292,7 +3292,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.436, y: 10.467 },
             { x: 43.603, y: 9.666 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -3304,7 +3304,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.564, y: 33.533 },
             { x: 16.397, y: 34.334 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -3320,7 +3320,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.571, y: 8.015 },
             { x: 44.029, y: 8.215 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -3336,7 +3336,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.429, y: 35.985 },
             { x: 15.971, y: 35.785 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -3352,7 +3352,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.921, y: 10.324 },
             { x: 49.379, y: 10.524 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -3368,7 +3368,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.079, y: 33.676 },
             { x: 10.621, y: 33.476 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -3404,7 +3404,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.427, y: 6.035 },
             { x: 51.386, y: 10.618 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -3416,7 +3416,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.573, y: 37.965 },
             { x: 8.614, y: 33.382 },
           ],
-          label: "feature",
+          label: "pipe",
         },
       ],
       objectives: [
@@ -3467,7 +3467,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.705, y: 15.855 },
             { x: 46.705, y: 13.355 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3481,7 +3481,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.295, y: 28.145 },
             { x: 13.295, y: 30.645 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3495,7 +3495,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.357, y: 5.817 },
             { x: 49.357, y: 5.317 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3509,7 +3509,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.643, y: 38.183 },
             { x: 10.643, y: 38.683 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3569,7 +3569,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.5, y: 9.75 },
             { x: 33.5, y: 4.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -3581,7 +3581,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.5, y: 34.25 },
             { x: 26.5, y: 39.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -3593,7 +3593,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36, y: 11.5 },
             { x: 36, y: 8.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -3605,7 +3605,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24, y: 32.5 },
             { x: 24, y: 35.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -3643,7 +3643,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.11, y: 17.08 },
             { x: 30.11, y: 16.58 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3657,7 +3657,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.89, y: 26.92 },
             { x: 29.89, y: 27.42 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3671,7 +3671,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.891, y: 18.601 },
             { x: 25.391, y: 18.601 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3685,7 +3685,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.109, y: 25.399 },
             { x: 34.609, y: 25.399 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3723,7 +3723,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.875, y: 2.955 },
             { x: 19.875, y: 5.455 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3737,7 +3737,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.125, y: 41.045 },
             { x: 40.125, y: 38.545 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3751,7 +3751,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.97, y: 35.34 },
             { x: 34.47, y: 35.34 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3765,7 +3765,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.03, y: 8.66 },
             { x: 25.53, y: 8.66 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3803,7 +3803,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.035, y: 32.405 },
             { x: 47.702, y: 32.777 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3817,7 +3817,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.965, y: 11.595 },
             { x: 12.298, y: 11.223 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3831,7 +3831,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.903, y: 27.36 },
             { x: 49.236, y: 26.987 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3845,7 +3845,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.097, y: 16.64 },
             { x: 10.764, y: 17.013 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -3881,7 +3881,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 51.388, y: 39.348 },
             { x: 46.268, y: 34.574 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -3893,7 +3893,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.612, y: 4.652 },
             { x: 13.732, y: 9.426 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -3929,7 +3929,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.75, y: 23 },
             { x: 41.75, y: 21 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -3941,7 +3941,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.25, y: 21 },
             { x: 18.25, y: 23 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -3957,7 +3957,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.369, y: 26.23 },
             { x: 43.369, y: 26.73 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -3973,7 +3973,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.631, y: 17.77 },
             { x: 16.631, y: 17.27 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -3989,7 +3989,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.299, y: 20.16 },
             { x: 43.299, y: 20.66 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4005,7 +4005,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.701, y: 23.84 },
             { x: 16.701, y: 23.34 },
           ],
-          label: "feature",
+          label: "barricade",
         },
       ],
       objectives: [
@@ -4056,7 +4056,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.649, y: 26.899 },
             { x: 32.649, y: 27.399 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4070,7 +4070,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.351, y: 17.101 },
             { x: 27.351, y: 16.601 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4084,7 +4084,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.01, y: 17.17 },
             { x: 30.01, y: 16.67 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4098,7 +4098,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.99, y: 26.83 },
             { x: 29.99, y: 27.33 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4134,7 +4134,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25, y: 12.5 },
             { x: 25, y: 9.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -4146,7 +4146,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35, y: 31.5 },
             { x: 35, y: 34.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -4182,7 +4182,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.5, y: 10.75 },
             { x: 22.5, y: 5.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -4194,7 +4194,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.5, y: 33.25 },
             { x: 37.5, y: 38.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -4232,7 +4232,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.313, y: 31.773 },
             { x: 46.813, y: 31.773 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4246,7 +4246,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.687, y: 12.227 },
             { x: 13.187, y: 12.227 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4260,7 +4260,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.203, y: 34.307 },
             { x: 54.703, y: 34.307 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4274,7 +4274,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.797, y: 9.693 },
             { x: 5.297, y: 9.693 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4310,7 +4310,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.8, y: 22.65 },
             { x: 44.6, y: 21.05 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -4322,7 +4322,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.2, y: 21.35 },
             { x: 15.4, y: 22.95 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -4338,7 +4338,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.019, y: 24.211 },
             { x: 49.319, y: 24.611 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4354,7 +4354,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.981, y: 19.789 },
             { x: 10.681, y: 19.389 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4370,7 +4370,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.503, y: 19.523 },
             { x: 45.803, y: 19.923 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4386,7 +4386,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.497, y: 24.477 },
             { x: 14.197, y: 24.077 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4424,7 +4424,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 55.873, y: 12.039 },
             { x: 54.077, y: 10.3 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4438,7 +4438,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 4.127, y: 31.961 },
             { x: 5.923, y: 33.7 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4452,7 +4452,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.009, y: 11.819 },
             { x: 47.661, y: 12.178 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4466,7 +4466,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.991, y: 32.181 },
             { x: 12.339, y: 31.822 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4504,7 +4504,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.867, y: 14.317 },
             { x: 37.367, y: 14.317 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4518,7 +4518,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.133, y: 29.683 },
             { x: 22.633, y: 29.683 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4532,7 +4532,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 42.133, y: 11.683 },
             { x: 42.633, y: 11.683 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4546,7 +4546,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 17.867, y: 32.317 },
             { x: 17.367, y: 32.317 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4582,7 +4582,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35, y: 11.5 },
             { x: 35, y: 4.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -4594,7 +4594,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25, y: 32.5 },
             { x: 25, y: 39.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -4645,7 +4645,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.78, y: 21.95 },
             { x: 35.28, y: 21.95 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4659,7 +4659,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.22, y: 22.05 },
             { x: 24.72, y: 22.05 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4673,7 +4673,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.701, y: 18.051 },
             { x: 26.701, y: 17.551 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4687,7 +4687,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.299, y: 25.949 },
             { x: 33.299, y: 26.449 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4725,7 +4725,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.867, y: 25.317 },
             { x: 45.367, y: 25.317 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4739,7 +4739,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.133, y: 18.683 },
             { x: 14.633, y: 18.683 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4753,7 +4753,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.133, y: 22.683 },
             { x: 50.633, y: 22.683 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4767,7 +4767,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.867, y: 21.317 },
             { x: 9.367, y: 21.317 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4803,7 +4803,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43, y: 22.5 },
             { x: 43, y: 15.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -4815,7 +4815,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 17, y: 21.5 },
             { x: 17, y: 28.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -4853,7 +4853,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.593, y: 11.123 },
             { x: 49.593, y: 11.623 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4867,7 +4867,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.407, y: 32.877 },
             { x: 10.407, y: 32.377 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4881,7 +4881,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 42.353, y: 11.097 },
             { x: 42.353, y: 8.597 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4895,7 +4895,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 17.647, y: 32.903 },
             { x: 17.647, y: 35.403 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -4931,7 +4931,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36.8, y: 11.15 },
             { x: 35.6, y: 9.55 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -4943,7 +4943,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.2, y: 32.85 },
             { x: 24.4, y: 34.45 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -4959,7 +4959,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.019, y: 12.711 },
             { x: 40.319, y: 13.111 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4975,7 +4975,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.981, y: 31.289 },
             { x: 19.681, y: 30.889 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -4991,7 +4991,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36.503, y: 8.023 },
             { x: 36.803, y: 8.423 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -5007,7 +5007,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.497, y: 35.977 },
             { x: 23.197, y: 35.577 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -5043,7 +5043,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25, y: 12.5 },
             { x: 25, y: 9.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -5055,7 +5055,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35, y: 31.5 },
             { x: 35, y: 34.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -5091,7 +5091,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.5, y: 10.75 },
             { x: 22.5, y: 5.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -5103,7 +5103,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.5, y: 33.25 },
             { x: 37.5, y: 38.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -5141,7 +5141,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.29, y: 31.7 },
             { x: 47.29, y: 31.2 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5155,7 +5155,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.71, y: 12.3 },
             { x: 12.71, y: 12.8 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5169,7 +5169,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 6.903, y: 6.883 },
             { x: 6.903, y: 9.383 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5183,7 +5183,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 53.097, y: 37.117 },
             { x: 53.097, y: 34.617 },
           ],
-          label: "feature",
+          label: "ruin",
         },
       ],
       objectives: [
@@ -5234,7 +5234,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.191, y: 24.559 },
             { x: 24.691, y: 24.559 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5248,7 +5248,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.809, y: 19.441 },
             { x: 35.309, y: 19.441 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5262,7 +5262,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.06, y: 17.8 },
             { x: 29.06, y: 17.3 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5276,7 +5276,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.94, y: 26.2 },
             { x: 30.94, y: 26.7 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5314,7 +5314,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.587, y: 16.307 },
             { x: 13.087, y: 16.307 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5328,7 +5328,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.413, y: 27.693 },
             { x: 46.913, y: 27.693 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5342,7 +5342,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.953, y: 10.973 },
             { x: 5.953, y: 13.473 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5356,7 +5356,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.047, y: 33.027 },
             { x: 54.047, y: 30.527 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5394,7 +5394,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.077, y: 8.036 },
             { x: 12.616, y: 8.228 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5408,7 +5408,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.923, y: 35.964 },
             { x: 47.384, y: 35.772 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5422,7 +5422,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.003, y: 3.964 },
             { x: 16.464, y: 3.772 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5436,7 +5436,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.997, y: 40.036 },
             { x: 43.536, y: 40.228 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5472,7 +5472,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 28.95, y: 10.4 },
             { x: 27.35, y: 9.2 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -5484,7 +5484,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 31.05, y: 33.6 },
             { x: 32.65, y: 34.8 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -5500,7 +5500,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.477, y: 10.997 },
             { x: 32.877, y: 11.297 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -5516,7 +5516,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.523, y: 33.003 },
             { x: 27.123, y: 32.703 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -5532,7 +5532,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.789, y: 7.481 },
             { x: 28.189, y: 7.781 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -5548,7 +5548,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.211, y: 36.519 },
             { x: 31.811, y: 36.219 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -5586,7 +5586,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.58, y: 37.88 },
             { x: 16.08, y: 37.88 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5600,7 +5600,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.42, y: 6.12 },
             { x: 43.92, y: 6.12 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5614,7 +5614,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.103, y: 7.397 },
             { x: 54.603, y: 7.397 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5628,7 +5628,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.897, y: 36.603 },
             { x: 5.397, y: 36.603 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5664,7 +5664,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.382, y: 18.259 },
             { x: 45.405, y: 16.044 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -5676,7 +5676,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.618, y: 25.741 },
             { x: 14.595, y: 27.956 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -5712,7 +5712,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 52.842, y: 18.27 },
             { x: 48.82, y: 22.021 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -5724,7 +5724,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 7.158, y: 25.73 },
             { x: 11.18, y: 21.979 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -5760,7 +5760,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 39.675, y: 8.162 },
             { x: 34.458, y: 12.829 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -5772,7 +5772,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 20.325, y: 35.838 },
             { x: 25.542, y: 31.171 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -5823,7 +5823,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.691, y: 17.941 },
             { x: 26.691, y: 17.441 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5837,7 +5837,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.309, y: 26.059 },
             { x: 33.309, y: 26.559 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5851,7 +5851,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.99, y: 21.84 },
             { x: 35.49, y: 21.84 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5865,7 +5865,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.01, y: 22.16 },
             { x: 24.51, y: 22.16 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -5901,7 +5901,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27, y: 12.5 },
             { x: 27, y: 9.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -5913,7 +5913,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33, y: 31.5 },
             { x: 33, y: 34.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -5949,7 +5949,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.5, y: 10.75 },
             { x: 24.5, y: 5.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -5961,7 +5961,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.5, y: 33.25 },
             { x: 35.5, y: 38.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -5997,7 +5997,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.838, y: 10.353 },
             { x: 36.897, y: 8.588 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -6009,7 +6009,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.162, y: 33.647 },
             { x: 23.103, y: 35.412 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -6025,7 +6025,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.781, y: 12.388 },
             { x: 41.016, y: 12.829 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6041,7 +6041,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.219, y: 31.612 },
             { x: 18.984, y: 31.171 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6057,7 +6057,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 38.023, y: 7.217 },
             { x: 38.258, y: 7.658 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6073,7 +6073,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 21.977, y: 36.783 },
             { x: 21.742, y: 36.342 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6111,7 +6111,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.735, y: 18.578 },
             { x: 43.456, y: 18.163 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6125,7 +6125,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.265, y: 25.422 },
             { x: 16.544, y: 25.837 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6139,7 +6139,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.305, y: 20.642 },
             { x: 48.584, y: 21.057 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6153,7 +6153,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.695, y: 23.358 },
             { x: 11.416, y: 22.943 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6191,7 +6191,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.333, y: 11.207 },
             { x: 46.333, y: 8.707 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6205,7 +6205,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.667, y: 32.793 },
             { x: 13.667, y: 35.293 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6219,7 +6219,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 56.103, y: 8.337 },
             { x: 56.603, y: 8.337 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6233,7 +6233,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 3.897, y: 35.663 },
             { x: 3.397, y: 35.663 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6293,7 +6293,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.618, y: 28.531 },
             { x: 46.704, y: 22.728 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -6305,7 +6305,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.382, y: 15.469 },
             { x: 13.296, y: 21.272 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -6356,7 +6356,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.12, y: 22.05 },
             { x: 24.62, y: 22.05 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6370,7 +6370,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.88, y: 21.95 },
             { x: 35.38, y: 21.95 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6384,7 +6384,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.801, y: 17.941 },
             { x: 26.801, y: 17.441 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6398,7 +6398,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.199, y: 26.059 },
             { x: 33.199, y: 26.559 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6434,7 +6434,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.5, y: 6 },
             { x: 35.5, y: 6 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -6446,7 +6446,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.5, y: 38 },
             { x: 24.5, y: 38 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -6482,7 +6482,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 39.75, y: 12.5 },
             { x: 34.25, y: 12.5 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -6494,7 +6494,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 20.25, y: 31.5 },
             { x: 25.75, y: 31.5 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -6532,7 +6532,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.027, y: 12.427 },
             { x: 22.527, y: 12.427 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6546,7 +6546,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.973, y: 31.573 },
             { x: 37.473, y: 31.573 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6560,7 +6560,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.693, y: 2.903 },
             { x: 19.693, y: 5.403 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6574,7 +6574,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.307, y: 41.097 },
             { x: 40.307, y: 38.597 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6612,7 +6612,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.06, y: 27.14 },
             { x: 12.06, y: 27.64 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6626,7 +6626,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.94, y: 16.86 },
             { x: 47.94, y: 16.36 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6640,7 +6640,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.397, y: 26.643 },
             { x: 46.397, y: 27.143 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6654,7 +6654,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.603, y: 17.357 },
             { x: 13.603, y: 16.857 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6690,7 +6690,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.75, y: 36 },
             { x: 46.75, y: 34 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -6702,7 +6702,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.25, y: 8 },
             { x: 13.25, y: 10 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -6718,7 +6718,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.389, y: 39.18 },
             { x: 48.389, y: 39.68 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6734,7 +6734,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.611, y: 4.82 },
             { x: 11.611, y: 4.32 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6750,7 +6750,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.389, y: 33.32 },
             { x: 48.389, y: 33.82 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6766,7 +6766,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.611, y: 10.68 },
             { x: 11.611, y: 10.18 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -6804,7 +6804,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.683, y: 4.867 },
             { x: 45.683, y: 4.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6818,7 +6818,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.317, y: 39.133 },
             { x: 14.317, y: 39.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6832,7 +6832,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.317, y: 9.133 },
             { x: 48.317, y: 9.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6846,7 +6846,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.683, y: 34.867 },
             { x: 11.683, y: 34.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6882,7 +6882,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 55.5, y: 12 },
             { x: 48.5, y: 12 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -6894,7 +6894,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 4.5, y: 32 },
             { x: 11.5, y: 32 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -6945,7 +6945,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.25, y: 17.96 },
             { x: 29.25, y: 17.46 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6959,7 +6959,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.75, y: 26.04 },
             { x: 30.75, y: 26.54 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6973,7 +6973,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.101, y: 24.509 },
             { x: 24.601, y: 24.509 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -6987,7 +6987,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.899, y: 19.491 },
             { x: 35.399, y: 19.491 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7023,7 +7023,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.538, y: 8.913 },
             { x: 26.077, y: 7.548 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -7035,7 +7035,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.462, y: 35.087 },
             { x: 33.923, y: 36.452 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -7051,7 +7051,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.981, y: 9.887 },
             { x: 31.346, y: 10.228 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7067,7 +7067,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.019, y: 34.113 },
             { x: 28.654, y: 33.772 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7083,7 +7083,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.698, y: 5.886 },
             { x: 27.064, y: 6.228 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7099,7 +7099,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.302, y: 38.114 },
             { x: 32.936, y: 37.772 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7137,7 +7137,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.851, y: 11.902 },
             { x: 34.478, y: 12.234 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7151,7 +7151,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.149, y: 32.098 },
             { x: 25.522, y: 31.766 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7165,7 +7165,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36.289, y: 7.098 },
             { x: 36.662, y: 6.766 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7179,7 +7179,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.711, y: 36.902 },
             { x: 23.338, y: 37.234 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7217,7 +7217,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 53.053, y: 8.447 },
             { x: 53.553, y: 8.447 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7231,7 +7231,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 6.947, y: 35.553 },
             { x: 6.447, y: 35.553 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7245,7 +7245,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.63, y: 36.84 },
             { x: 17.13, y: 36.84 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7259,7 +7259,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.37, y: 7.16 },
             { x: 42.87, y: 7.16 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7295,7 +7295,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.05, y: 19.073 },
             { x: 43.291, y: 17.079 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -7307,7 +7307,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.95, y: 24.927 },
             { x: 16.709, y: 26.921 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -7345,7 +7345,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.973, y: 16.027 },
             { x: 5.973, y: 13.527 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7359,7 +7359,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.027, y: 27.973 },
             { x: 54.027, y: 30.473 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7373,7 +7373,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.637, y: 10.743 },
             { x: 13.137, y: 10.743 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7387,7 +7387,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.363, y: 33.257 },
             { x: 46.863, y: 33.257 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7423,7 +7423,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.5, y: 10.5 },
             { x: 16.5, y: 3.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -7435,7 +7435,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.5, y: 33.5 },
             { x: 43.5, y: 40.5 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -7486,7 +7486,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.733, y: 15.557 },
             { x: 48.733, y: 13.057 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7500,7 +7500,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.267, y: 28.443 },
             { x: 11.267, y: 30.943 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7514,7 +7514,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 51.307, y: 5.867 },
             { x: 51.307, y: 5.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7528,7 +7528,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.693, y: 38.133 },
             { x: 8.693, y: 38.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7564,7 +7564,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.8, y: 25.15 },
             { x: 47.6, y: 23.55 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -7576,7 +7576,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.2, y: 18.85 },
             { x: 12.4, y: 20.45 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -7592,7 +7592,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 52.019, y: 26.711 },
             { x: 52.319, y: 27.111 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7608,7 +7608,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 7.981, y: 17.289 },
             { x: 7.681, y: 16.889 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7624,7 +7624,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.503, y: 22.023 },
             { x: 48.803, y: 22.423 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7640,7 +7640,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.497, y: 21.977 },
             { x: 11.197, y: 21.577 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -7678,7 +7678,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.778, y: 6.608 },
             { x: 35.491, y: 6.198 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7692,7 +7692,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.222, y: 37.392 },
             { x: 24.509, y: 37.802 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7706,7 +7706,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.382, y: 8.592 },
             { x: 40.669, y: 9.002 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7720,7 +7720,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.618, y: 35.408 },
             { x: 19.331, y: 34.998 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7756,7 +7756,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.888, y: 16.541 },
             { x: 37.873, y: 10.807 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -7768,7 +7768,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.112, y: 27.459 },
             { x: 22.127, y: 33.193 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -7806,7 +7806,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.794, y: 14.558 },
             { x: 17.08, y: 14.968 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7820,7 +7820,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.206, y: 29.442 },
             { x: 42.92, y: 29.032 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7834,7 +7834,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.818, y: 36.822 },
             { x: 48.39, y: 34.77 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7848,7 +7848,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.182, y: 7.178 },
             { x: 11.61, y: 9.23 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7886,7 +7886,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.101, y: 15.161 },
             { x: 35.101, y: 14.661 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7900,7 +7900,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.899, y: 28.839 },
             { x: 24.899, y: 29.339 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7914,7 +7914,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.83, y: 21.11 },
             { x: 33.33, y: 21.11 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7928,7 +7928,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.17, y: 22.89 },
             { x: 26.67, y: 22.89 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -7964,7 +7964,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29, y: 35.5 },
             { x: 29, y: 32.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -7976,7 +7976,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 31, y: 8.5 },
             { x: 31, y: 11.5 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -8012,7 +8012,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.5, y: 39.75 },
             { x: 34.5, y: 34.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -8024,7 +8024,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.5, y: 4.25 },
             { x: 25.5, y: 9.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
       ],
       objectives: [
@@ -8097,7 +8097,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.25, y: 28 },
             { x: 45.25, y: 26 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -8109,7 +8109,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.75, y: 16 },
             { x: 14.75, y: 18 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -8125,7 +8125,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.889, y: 31.18 },
             { x: 46.889, y: 31.68 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8141,7 +8141,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.111, y: 12.82 },
             { x: 13.111, y: 12.32 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8157,7 +8157,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.889, y: 25.32 },
             { x: 46.889, y: 25.82 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8173,7 +8173,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.111, y: 18.68 },
             { x: 13.111, y: 18.18 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8211,7 +8211,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.683, y: 32.867 },
             { x: 47.683, y: 32.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8225,7 +8225,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.317, y: 11.133 },
             { x: 12.317, y: 11.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8239,7 +8239,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.317, y: 37.133 },
             { x: 50.317, y: 37.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8253,7 +8253,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.683, y: 6.867 },
             { x: 9.683, y: 6.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8291,7 +8291,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.433, y: 19.272 },
             { x: 37.893, y: 19.468 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8305,7 +8305,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.567, y: 24.728 },
             { x: 22.107, y: 24.532 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8319,7 +8319,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.965, y: 23.895 },
             { x: 33.768, y: 24.355 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8333,7 +8333,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.035, y: 20.105 },
             { x: 26.232, y: 19.645 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8369,7 +8369,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 36.5, y: 27 },
             { x: 39.5, y: 27 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -8381,7 +8381,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.5, y: 17 },
             { x: 20.5, y: 17 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -8395,7 +8395,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.653, y: 16.767 },
             { x: 46.653, y: 14.267 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8409,7 +8409,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.347, y: 27.233 },
             { x: 13.347, y: 29.733 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8423,7 +8423,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.437, y: 6.867 },
             { x: 49.437, y: 6.367 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8437,7 +8437,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.563, y: 37.133 },
             { x: 10.563, y: 37.633 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8497,7 +8497,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.5, y: 9.75 },
             { x: 35.5, y: 4.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -8509,7 +8509,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.5, y: 34.25 },
             { x: 24.5, y: 39.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -8545,7 +8545,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.5, y: 10 },
             { x: 36.5, y: 10 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -8557,7 +8557,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.5, y: 34 },
             { x: 23.5, y: 34 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -8608,7 +8608,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.263, y: 9.157 },
             { x: 33.263, y: 6.657 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8622,7 +8622,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.737, y: 34.843 },
             { x: 26.737, y: 37.343 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8636,7 +8636,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.723, y: 9.083 },
             { x: 40.723, y: 9.583 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8650,7 +8650,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.277, y: 34.917 },
             { x: 19.277, y: 34.417 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8686,7 +8686,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.574, y: 10.944 },
             { x: 25.666, y: 10.344 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -8698,7 +8698,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.426, y: 33.056 },
             { x: 34.334, y: 33.656 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -8714,7 +8714,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 31.099, y: 10.335 },
             { x: 31.576, y: 10.485 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8730,7 +8730,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 28.901, y: 33.665 },
             { x: 28.424, y: 33.515 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8746,7 +8746,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.509, y: 8.576 },
             { x: 25.986, y: 8.726 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8762,7 +8762,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.491, y: 35.424 },
             { x: 34.014, y: 35.274 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -8800,7 +8800,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.289, y: 22.964 },
             { x: 21.868, y: 23.235 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8814,7 +8814,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.711, y: 21.036 },
             { x: 38.132, y: 20.765 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8828,7 +8828,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.438, y: 27.155 },
             { x: 26.708, y: 27.575 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8842,7 +8842,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.562, y: 16.845 },
             { x: 33.292, y: 16.425 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8878,7 +8878,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 53.793, y: 14.293 },
             { x: 49.643, y: 17.902 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -8890,7 +8890,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 6.207, y: 29.707 },
             { x: 10.357, y: 26.098 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -8926,7 +8926,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.016, y: 14.055 },
             { x: 46.28, y: 12.086 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -8938,7 +8938,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.984, y: 29.945 },
             { x: 13.72, y: 31.914 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -8976,7 +8976,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 3.97, y: 16.11 },
             { x: 3.47, y: 16.11 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -8990,7 +8990,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 56.03, y: 27.89 },
             { x: 56.53, y: 27.89 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9004,7 +9004,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.787, y: 14.823 },
             { x: 11.287, y: 14.823 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9018,7 +9018,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.213, y: 29.177 },
             { x: 48.713, y: 29.177 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9056,7 +9056,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 6.102, y: 6.049 },
             { x: 5.729, y: 5.716 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9070,7 +9070,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 53.898, y: 37.951 },
             { x: 54.271, y: 38.284 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9084,7 +9084,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.038, y: 6.931 },
             { x: 11.411, y: 7.264 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9098,7 +9098,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.962, y: 37.069 },
             { x: 48.589, y: 36.736 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9134,7 +9134,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.786, y: 6.689 },
             { x: 12.251, y: 9.198 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -9146,7 +9146,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.214, y: 37.311 },
             { x: 47.749, y: 34.802 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -9197,7 +9197,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.97, y: 22.23 },
             { x: 24.47, y: 22.23 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9211,7 +9211,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.03, y: 21.77 },
             { x: 35.53, y: 21.77 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9225,7 +9225,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.491, y: 17.781 },
             { x: 26.491, y: 17.281 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9239,7 +9239,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.509, y: 26.219 },
             { x: 33.509, y: 26.719 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9299,7 +9299,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 41.5, y: 15 },
             { x: 44.5, y: 15 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -9311,7 +9311,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 18.5, y: 29 },
             { x: 15.5, y: 29 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -9325,7 +9325,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 48.8, y: 13.66 },
             { x: 48.3, y: 13.66 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9339,7 +9339,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.2, y: 30.34 },
             { x: 11.7, y: 30.34 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9353,7 +9353,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 51.467, y: 7.957 },
             { x: 51.467, y: 7.457 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9367,7 +9367,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.533, y: 36.043 },
             { x: 8.533, y: 36.543 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9403,7 +9403,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 38.75, y: 10 },
             { x: 38.75, y: 8 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -9415,7 +9415,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 21.25, y: 34 },
             { x: 21.25, y: 36 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -9431,7 +9431,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.389, y: 13.18 },
             { x: 40.389, y: 13.68 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9447,7 +9447,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.611, y: 30.82 },
             { x: 19.611, y: 30.32 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9463,7 +9463,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.389, y: 7.32 },
             { x: 40.389, y: 7.82 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9479,7 +9479,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.611, y: 36.68 },
             { x: 19.611, y: 36.18 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9517,7 +9517,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.197, y: 14.727 },
             { x: 16.697, y: 14.727 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9531,7 +9531,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 40.803, y: 29.273 },
             { x: 43.303, y: 29.273 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9545,7 +9545,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 46.317, y: 39.327 },
             { x: 46.317, y: 36.827 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9559,7 +9559,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.683, y: 4.673 },
             { x: 13.683, y: 7.173 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9597,7 +9597,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.683, y: 23.367 },
             { x: 47.683, y: 22.867 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9611,7 +9611,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.317, y: 20.633 },
             { x: 12.317, y: 21.133 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9625,7 +9625,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 50.317, y: 27.633 },
             { x: 50.317, y: 28.133 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9639,7 +9639,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 9.683, y: 16.367 },
             { x: 9.683, y: 15.867 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9675,7 +9675,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.5, y: 38.75 },
             { x: 32.5, y: 33.25 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -9687,7 +9687,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.5, y: 5.25 },
             { x: 27.5, y: 10.75 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -9723,7 +9723,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.5, y: 35 },
             { x: 25.5, y: 35 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -9735,7 +9735,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.5, y: 9 },
             { x: 34.5, y: 9 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
@@ -9810,7 +9810,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 42.52, y: 6.62 },
             { x: 42.02, y: 6.62 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9824,7 +9824,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 17.48, y: 37.38 },
             { x: 17.98, y: 37.38 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9838,7 +9838,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.643, y: 10.543 },
             { x: 49.643, y: 11.043 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9852,7 +9852,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.357, y: 33.457 },
             { x: 10.357, y: 32.957 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -9888,7 +9888,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.424, y: 18.636 },
             { x: 45.624, y: 17.764 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -9900,7 +9900,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.576, y: 25.364 },
             { x: 14.376, y: 26.236 },
           ],
-          label: "feature",
+          label: "gantry",
         },
         {
           shape: "polygon",
@@ -9916,7 +9916,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 51.001, y: 18.547 },
             { x: 51.451, y: 18.765 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9932,7 +9932,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.999, y: 25.453 },
             { x: 8.549, y: 25.235 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9948,7 +9948,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.726, y: 15.993 },
             { x: 46.176, y: 16.211 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -9964,7 +9964,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.274, y: 28.007 },
             { x: 13.824, y: 27.789 },
           ],
-          label: "feature",
+          label: "barricade",
         },
         {
           shape: "polygon",
@@ -10002,7 +10002,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.853, y: 19.187 },
             { x: 5.853, y: 16.687 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10016,7 +10016,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 54.147, y: 24.813 },
             { x: 54.147, y: 27.313 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10030,7 +10030,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.687, y: 13.773 },
             { x: 13.187, y: 13.773 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10044,7 +10044,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 44.313, y: 30.227 },
             { x: 46.813, y: 30.227 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10058,7 +10058,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.25, y: 17.97 },
             { x: 29.25, y: 17.47 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10072,7 +10072,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.75, y: 26.03 },
             { x: 30.75, y: 26.53 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10086,7 +10086,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.181, y: 24.509 },
             { x: 24.681, y: 24.509 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10100,7 +10100,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 34.819, y: 19.491 },
             { x: 35.319, y: 19.491 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10136,7 +10136,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 32.609, y: 12.941 },
             { x: 30.609, y: 10.705 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -10148,7 +10148,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.391, y: 31.059 },
             { x: 29.391, y: 33.295 },
           ],
-          label: "feature",
+          label: "generator",
         },
         {
           shape: "polygon",
@@ -10184,7 +10184,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 28.725, y: 11.991 },
             { x: 24.512, y: 8.455 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -10196,7 +10196,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 31.275, y: 32.009 },
             { x: 35.488, y: 35.545 },
           ],
-          label: "feature",
+          label: "pipe",
         },
         {
           shape: "polygon",
@@ -10234,7 +10234,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.701, y: 9.879 },
             { x: 14.326, y: 10.209 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10248,7 +10248,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.299, y: 34.121 },
             { x: 45.674, y: 33.791 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10262,7 +10262,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.159, y: 5.081 },
             { x: 16.534, y: 4.751 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10276,7 +10276,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.841, y: 38.919 },
             { x: 43.466, y: 39.249 },
           ],
-          label: "feature",
+          label: "ruin",
         },
         {
           shape: "polygon",
@@ -10312,7 +10312,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.832, y: 9.835 },
             { x: 5.63, y: 5.151 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
         {
           shape: "polygon",
@@ -10324,7 +10324,7 @@ export const gwTerrain: TerrainConfig = {
             { x: 49.168, y: 34.165 },
             { x: 54.37, y: 38.849 },
           ],
-          label: "feature",
+          label: "catwalk",
         },
       ],
       objectives: [
