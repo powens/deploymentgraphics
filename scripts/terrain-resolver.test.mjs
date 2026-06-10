@@ -89,4 +89,38 @@ describe("resolvePiece", () => {
     };
     expect(() => resolvePiece(piece, () => null)).toThrow(/unsupported footprint/);
   });
+
+  it("explicit-parent-feature: composes a child through its parent's transform", () => {
+    const parent = {
+      id: "a1",
+      footprint: { type: "rectangle", width: 11.5, height: 7 },
+      position: { x: 30, y: 22 },
+      rotation_degrees: 90,
+      mirror: "horizontal",
+    };
+    const child = {
+      id: "back-wall",
+      footprint: { type: "rectangle", width: 7, height: 0.25 },
+      parent_area_id: "a1",
+      position: { x: 0, y: -3 },
+    };
+    const getParent = (id) => (id === "a1" ? parent : undefined);
+    near(resolvePiece(child, () => null, getParent), [
+      { x: 33.125, y: 25.5 },
+      { x: 33.125, y: 18.5 },
+      { x: 32.875, y: 18.5 },
+      { x: 32.875, y: 25.5 },
+    ]);
+  });
+
+  it("throws when a parented piece's parent is missing", () => {
+    const child = {
+      footprint: { type: "rectangle", width: 7, height: 0.25 },
+      parent_area_id: "nope",
+      position: { x: 0, y: 0 },
+    };
+    expect(() => resolvePiece(child, () => null, () => undefined)).toThrow(
+      /missing parent/,
+    );
+  });
 });
