@@ -58,7 +58,7 @@ export type IconObject = SceneObjectBase & {
 
 export type FeatureObject = SceneObjectBase & {
   type: "feature";
-  featureType: "l-ruin" | "sandbags" | "generator" | "pipe";
+  featureType: "l-ruin" | "l-ruin-roof" | "generator" | "pipe";
   width: number;
   height: number;
   color: string;

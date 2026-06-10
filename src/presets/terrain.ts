@@ -63,6 +63,16 @@ export const gwTerrain: TerrainConfig = {
           mirror: true,
         },
         {
+          type: "l-ruin-roof",
+          label: "ruin",
+          x: 43,
+          y: 3,
+          width: 5,
+          height: 7,
+          color: "green",
+          mirror: false,
+        },
+        {
           type: "generator",
           label: "generator",
           x: 28,
@@ -71,16 +81,6 @@ export const gwTerrain: TerrainConfig = {
           height: 3,
           rotation: 90,
           color: "gunmetal",
-          mirror: false,
-        },
-        {
-          type: "sandbags",
-          label: "barricade",
-          x: 21,
-          y: 33,
-          width: 2,
-          height: 3,
-          color: "sand",
           mirror: false,
         },
         {

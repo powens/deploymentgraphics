@@ -8,8 +8,8 @@ describe("feature draw functions", () => {
     expect(Object.keys(features).sort()).toEqual([
       "generator",
       "l-ruin",
+      "l-ruin-roof",
       "pipe",
-      "sandbags",
     ]);
   });
 
@@ -18,12 +18,6 @@ describe("feature draw functions", () => {
       expect(draw(5, 3).body.length).toBeGreaterThan(0);
       expect(draw(2.5, 7.3).body.length).toBeGreaterThan(0);
     }
-  });
-
-  it("tiles more sandbags into a bigger box", () => {
-    expect(features.sandbags(2, 2).body.length).toBeLessThan(
-      features.sandbags(4, 3).body.length,
-    );
   });
 
   it("keeps the pipe path valid (no negative coords) when taller than wide", () => {

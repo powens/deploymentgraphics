@@ -27,50 +27,6 @@ const lRuin: FeatureDraw = (w, h) => {
   };
 };
 
-// A rounded-rect ("bag") path, top-left (x,y) with size wd×ht and soft corners.
-function bagPath(x: number, y: number, wd: number, ht: number): string {
-  const rr = Math.min(wd, ht) * 0.4;
-  return (
-    `M${x + rr} ${y} H${x + wd - rr} A${rr} ${rr} 0 0 1 ${x + wd} ${y + rr} ` +
-    `V${y + ht - rr} A${rr} ${rr} 0 0 1 ${x + wd - rr} ${y + ht} ` +
-    `H${x + rr} A${rr} ${rr} 0 0 1 ${x} ${y + ht - rr} ` +
-    `V${y + rr} A${rr} ${rr} 0 0 1 ${x + rr} ${y} Z`
-  );
-}
-
-// Sandbags: a low barrier wall of ~1" bags laid in 2–3 courses that run along
-// the box's long axis. Each course fills the full length edge-to-edge, and
-// alternate courses carry one extra bag so their seams fall mid-bag against the
-// neighbour for a brick-bond weave. Bags overlap slightly and each takes the
-// body stroke, so the stack reads as packed sandbags rather than a uniform
-// grid. A bigger box gets more bags.
-const sandbags: FeatureDraw = (w, h) => {
-  const horizontal = w >= h;
-  const len = horizontal ? w : h; // along the wall
-  const thick = horizontal ? h : w; // across the wall
-  const courses = Math.max(2, Math.min(3, Math.round(thick)));
-  const n = Math.max(2, Math.round(len)); // base bags per course
-  const cv = thick / courses; // course depth across the wall
-  const bagV = cv * 1.12; // slight overlap across courses
-  const body: IconShape[] = [];
-  for (let c = 0; c < courses; c++) {
-    const count = n + (c % 2); // alternate +1 bag to stagger the seams
-    const pitch = len / count; // bag spacing along this course
-    const bagU = pitch * 1.06; // slight overlap along the wall
-    const vCenter = (c + 0.5) * cv;
-    for (let i = 0; i < count; i++) {
-      const uCenter = (i + 0.5) * pitch;
-      // Map oriented (along, across) back to box (x, y); swap for a vertical wall.
-      const x = horizontal ? uCenter - bagU / 2 : vCenter - bagV / 2;
-      const y = horizontal ? vCenter - bagV / 2 : uCenter - bagU / 2;
-      const wd = horizontal ? bagU : bagV;
-      const ht = horizontal ? bagV : bagU;
-      body.push({ tag: "path", d: bagPath(x, y, wd, ht) });
-    }
-  }
-  return { body, accent: [] };
-};
-
 // Generator: a body box, three vent slots on the left, and a turbine disc on
 // the right held to a fixed-ish radius and vertically centered so it stays
 // round when the box is stretched.
@@ -118,10 +74,34 @@ const pipe: FeatureDraw = (w, h) => {
   return { body: [{ tag: "path", d }], accent };
 };
 
+// L-ruin with a corner roof: the same two l-ruin walls (left + bottom, rubble
+// and all) plus a right-triangular floor/ceiling slab tucked into the inner
+// corner where they meet. The roof's right angle sits at the walls' inner
+// corner (so it rests against their inner faces rather than overlapping them);
+// its legs run halfway up and along the open span, and an accent beam hugs the
+// hypotenuse so the slab reads as a raised platform edge.
+const lRuinRoof: FeatureDraw = (w, h) => {
+  const base = lRuin(w, h);
+  const wall = Math.min(0.5, w, h);
+  const cx = wall; // inner corner x (right of the left wall)
+  const cy = h - wall; // inner corner y (top of the bottom wall)
+  const lw = (w - wall) * 0.5;
+  const lh = (h - wall) * 0.5;
+  const roof = `M${cx} ${cy - lh} V${cy} H${cx + lw} Z`;
+  const t = Math.min(0.4, lw * 0.3, lh * 0.3);
+  const beam =
+    `M${cx} ${cy - lh} L${cx + lw} ${cy} ` +
+    `L${cx + lw - t} ${cy} L${cx} ${cy - lh + t} Z`;
+  return {
+    body: [...base.body, { tag: "path", d: roof }],
+    accent: [...base.accent, { tag: "path", d: beam }],
+  };
+};
+
 /** Feature draw registry, keyed by `FeaturePlacement.type`. */
 export const features: Record<string, FeatureDraw> = {
   "l-ruin": lRuin,
-  sandbags,
+  "l-ruin-roof": lRuinRoof,
   generator,
   pipe,
 };
