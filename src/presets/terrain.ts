@@ -59,7 +59,7 @@ export const gwTerrain: TerrainConfig = {
           height: 5,
           rotation: -90,
           color: "green",
-          mirror: false,
+          mirror: true,
         },
         {
           type: "generator",
