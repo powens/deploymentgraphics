@@ -2,7 +2,7 @@
 // demo layout) with the vendored 40kdc-data terrain JSON into a single
 // static/data/terrain/combined.yml. Each 40kdc piece becomes a polygon
 // area_terrain entry (absolute points), and each is_objective piece becomes a
-// numbered objective. Deterministic + re-runnable.
+// skull icon at its centre. Deterministic + re-runnable.
 //
 // Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
 
@@ -67,8 +67,7 @@ for (const layout of layouts) {
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
   const getParent = (id) => byId.get(id);
   const area_terrain = [];
-  const objectives = [];
-  let objNumber = 1;
+  const icons = [];
   for (const piece of layout.pieces) {
     const points = resolvePiece(piece, lookupFootprint, getParent).map((p) => ({
       x: round(p.x),
@@ -82,15 +81,14 @@ for (const layout of layouts) {
       label: labelFor(piece),
     });
     if (piece.is_objective) {
-      objectives.push({
-        x: round(piece.position.x),
-        y: round(piece.position.y),
-        number: objNumber++,
+      icons.push({
+        type: "skull",
+        pos: { x: round(piece.position.x), y: round(piece.position.y) },
       });
     }
   }
   const entry = { buildings: [], area_terrain };
-  if (objectives.length > 0) entry.objectives = objectives;
+  if (icons.length > 0) entry.icons = icons;
   out.layout[layout.id] = entry;
 }
 

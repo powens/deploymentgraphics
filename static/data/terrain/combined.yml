@@ -2509,25 +2509,31 @@ layout:
           - x: 26.5
             'y': 32
         label: catwalk
-    objectives:
-      - x: 31.15
-        'y': 19.8
-        number: 1
-      - x: 28.85
-        'y': 24.2
-        number: 2
-      - x: 49.25
-        'y': 8.5
-        number: 3
-      - x: 10.75
-        'y': 35.5
-        number: 4
-      - x: 10.5
-        'y': 9.75
-        number: 5
-      - x: 49.5
-        'y': 34.25
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 49.25
+          'y': 8.5
+      - type: skull
+        pos:
+          x: 10.75
+          'y': 35.5
+      - type: skull
+        pos:
+          x: 10.5
+          'y': 9.75
+      - type: skull
+        pos:
+          x: 49.5
+          'y': 34.25
   take-and-hold-mirror-1:
     buildings: []
     area_terrain:
@@ -3199,25 +3205,31 @@ layout:
           - x: 32.549
             'y': 27.269
         label: ruin
-    objectives:
-      - x: 41.25
-        'y': 37.5
-        number: 1
-      - x: 18.75
-        'y': 6.5
-        number: 2
-      - x: 48.24
-        'y': 17.5
-        number: 3
-      - x: 11.76
-        'y': 26.5
-        number: 4
-      - x: 32.2
-        'y': 20.85
-        number: 5
-      - x: 27.8
-        'y': 23.15
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 41.25
+          'y': 37.5
+      - type: skull
+        pos:
+          x: 18.75
+          'y': 6.5
+      - type: skull
+        pos:
+          x: 48.24
+          'y': 17.5
+      - type: skull
+        pos:
+          x: 11.76
+          'y': 26.5
+      - type: skull
+        pos:
+          x: 32.2
+          'y': 20.85
+      - type: skull
+        pos:
+          x: 27.8
+          'y': 23.15
   take-and-hold-mirror-2:
     buildings: []
     area_terrain:
@@ -3889,25 +3901,31 @@ layout:
           - x: 8.614
             'y': 33.382
         label: pipe
-    objectives:
-      - x: 10.5
-        'y': 18.75
-        number: 1
-      - x: 49.5
-        'y': 25.25
-        number: 2
-      - x: 28.85
-        'y': 19.8
-        number: 3
-      - x: 31.15
-        'y': 24.2
-        number: 4
-      - x: 29.75
-        'y': 7.5
-        number: 5
-      - x: 30.25
-        'y': 36.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 10.5
+          'y': 18.75
+      - type: skull
+        pos:
+          x: 49.5
+          'y': 25.25
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 29.75
+          'y': 7.5
+      - type: skull
+        pos:
+          x: 30.25
+          'y': 36.5
   take-and-hold-vs-purge-the-foe-3:
     buildings: []
     area_terrain:
@@ -4579,25 +4597,31 @@ layout:
           - x: 16.701
             'y': 23.34
         label: barricade
-    objectives:
-      - x: 49.5
-        'y': 10.75
-        number: 1
-      - x: 10.5
-        'y': 33.25
-        number: 2
-      - x: 32.2
-        'y': 20.85
-        number: 3
-      - x: 27.8
-        'y': 23.15
-        number: 4
-      - x: 37.5
-        'y': 36.25
-        number: 5
-      - x: 22.5
-        'y': 7.75
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 49.5
+          'y': 10.75
+      - type: skull
+        pos:
+          x: 10.5
+          'y': 33.25
+      - type: skull
+        pos:
+          x: 32.2
+          'y': 20.85
+      - type: skull
+        pos:
+          x: 27.8
+          'y': 23.15
+      - type: skull
+        pos:
+          x: 37.5
+          'y': 36.25
+      - type: skull
+        pos:
+          x: 22.5
+          'y': 7.75
   take-and-hold-mirror-3:
     buildings: []
     area_terrain:
@@ -5269,25 +5293,31 @@ layout:
           - x: 25
             'y': 39.5
         label: catwalk
-    objectives:
-      - x: 32.2
-        'y': 20.85
-        number: 1
-      - x: 27.8
-        'y': 23.15
-        number: 2
-      - x: 49.25
-        'y': 34.5
-        number: 3
-      - x: 10.75
-        'y': 9.5
-        number: 4
-      - x: 50.43
-        'y': 10.51
-        number: 5
-      - x: 9.57
-        'y': 33.49
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 32.2
+          'y': 20.85
+      - type: skull
+        pos:
+          x: 27.8
+          'y': 23.15
+      - type: skull
+        pos:
+          x: 49.25
+          'y': 34.5
+      - type: skull
+        pos:
+          x: 10.75
+          'y': 9.5
+      - type: skull
+        pos:
+          x: 50.43
+          'y': 10.51
+      - type: skull
+        pos:
+          x: 9.57
+          'y': 33.49
   take-and-hold-vs-reconnaissance-3:
     buildings: []
     area_terrain:
@@ -5959,25 +5989,31 @@ layout:
           - x: 53.097
             'y': 34.617
         label: ruin
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 47.25
-        'y': 8.5
-        number: 3
-      - x: 12.75
-        'y': 35.5
-        number: 4
-      - x: 48.25
-        'y': 34.5
-        number: 5
-      - x: 11.75
-        'y': 9.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 47.25
+          'y': 8.5
+      - type: skull
+        pos:
+          x: 12.75
+          'y': 35.5
+      - type: skull
+        pos:
+          x: 48.25
+          'y': 34.5
+      - type: skull
+        pos:
+          x: 11.75
+          'y': 9.5
   take-and-hold-vs-disruption-1:
     buildings: []
     area_terrain:
@@ -6649,25 +6685,31 @@ layout:
           - x: 25.542
             'y': 31.171
         label: catwalk
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 10.75
-        'y': 13.5
-        number: 3
-      - x: 49.25
-        'y': 30.5
-        number: 4
-      - x: 49.25
-        'y': 7.5
-        number: 5
-      - x: 10.75
-        'y': 36.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 10.75
+          'y': 13.5
+      - type: skull
+        pos:
+          x: 49.25
+          'y': 30.5
+      - type: skull
+        pos:
+          x: 49.25
+          'y': 7.5
+      - type: skull
+        pos:
+          x: 10.75
+          'y': 36.5
   take-and-hold-vs-disruption-2:
     buildings: []
     area_terrain:
@@ -7271,25 +7313,31 @@ layout:
           - x: 13.296
             'y': 21.272
         label: catwalk
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 51.25
-        'y': 8.5
-        number: 3
-      - x: 8.75
-        'y': 35.5
-        number: 4
-      - x: 47.84
-        'y': 33.28
-        number: 5
-      - x: 12.16
-        'y': 10.72
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 51.25
+          'y': 8.5
+      - type: skull
+        pos:
+          x: 8.75
+          'y': 35.5
+      - type: skull
+        pos:
+          x: 47.84
+          'y': 33.28
+      - type: skull
+        pos:
+          x: 12.16
+          'y': 10.72
   take-and-hold-vs-disruption-3:
     buildings: []
     area_terrain:
@@ -7961,25 +8009,31 @@ layout:
           - x: 11.5
             'y': 32
         label: catwalk
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 37.5
-        'y': 36.25
-        number: 3
-      - x: 22.5
-        'y': 7.75
-        number: 4
-      - x: 46.5
-        'y': 21.75
-        number: 5
-      - x: 13.5
-        'y': 22.25
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 37.5
+          'y': 36.25
+      - type: skull
+        pos:
+          x: 22.5
+          'y': 7.75
+      - type: skull
+        pos:
+          x: 46.5
+          'y': 21.75
+      - type: skull
+        pos:
+          x: 13.5
+          'y': 22.25
   sweeping-engagement-1:
     buildings: []
     area_terrain:
@@ -8599,25 +8653,31 @@ layout:
           - x: 43.5
             'y': 40.5
         label: catwalk
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 48.25
-        'y': 8.5
-        number: 3
-      - x: 11.75
-        'y': 35.5
-        number: 4
-      - x: 49.25
-        'y': 30.5
-        number: 5
-      - x: 10.75
-        'y': 13.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 48.25
+          'y': 8.5
+      - type: skull
+        pos:
+          x: 11.75
+          'y': 35.5
+      - type: skull
+        pos:
+          x: 49.25
+          'y': 30.5
+      - type: skull
+        pos:
+          x: 10.75
+          'y': 13.5
   take-and-hold-vs-priority-assets-1:
     buildings: []
     area_terrain:
@@ -9289,25 +9349,31 @@ layout:
           - x: 25.5
             'y': 9.75
         label: pipe
-    objectives:
-      - x: 51.5
-        'y': 10.75
-        number: 1
-      - x: 8.5
-        'y': 33.25
-        number: 2
-      - x: 44.84
-        'y': 34.28
-        number: 3
-      - x: 15.16
-        'y': 9.72
-        number: 4
-      - x: 35.8
-        'y': 21.4
-        number: 5
-      - x: 24.2
-        'y': 22.6
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 51.5
+          'y': 10.75
+      - type: skull
+        pos:
+          x: 8.5
+          'y': 33.25
+      - type: skull
+        pos:
+          x: 44.84
+          'y': 34.28
+      - type: skull
+        pos:
+          x: 15.16
+          'y': 9.72
+      - type: skull
+        pos:
+          x: 35.8
+          'y': 21.4
+      - type: skull
+        pos:
+          x: 24.2
+          'y': 22.6
   take-and-hold-vs-priority-assets-2:
     buildings: []
     area_terrain:
@@ -9911,25 +9977,31 @@ layout:
           - x: 23.5
             'y': 34
         label: catwalk
-    objectives:
-      - x: 35.97
-        'y': 18.27
-        number: 1
-      - x: 24.03
-        'y': 25.73
-        number: 2
-      - x: 10.5
-        'y': 32.25
-        number: 3
-      - x: 49.5
-        'y': 11.75
-        number: 4
-      - x: 35.25
-        'y': 37.5
-        number: 5
-      - x: 24.75
-        'y': 6.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 35.97
+          'y': 18.27
+      - type: skull
+        pos:
+          x: 24.03
+          'y': 25.73
+      - type: skull
+        pos:
+          x: 10.5
+          'y': 32.25
+      - type: skull
+        pos:
+          x: 49.5
+          'y': 11.75
+      - type: skull
+        pos:
+          x: 35.25
+          'y': 37.5
+      - type: skull
+        pos:
+          x: 24.75
+          'y': 6.5
   take-and-hold-vs-priority-assets-3:
     buildings: []
     area_terrain:
@@ -10601,25 +10673,31 @@ layout:
           - x: 47.749
             'y': 34.802
         label: catwalk
-    objectives:
-      - x: 38.25
-        'y': 6.5
-        number: 1
-      - x: 21.75
-        'y': 37.5
-        number: 2
-      - x: 23.62
-        'y': 21.68
-        number: 3
-      - x: 36.38
-        'y': 22.32
-        number: 4
-      - x: 8.75
-        'y': 17.5
-        number: 5
-      - x: 51.25
-        'y': 26.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 38.25
+          'y': 6.5
+      - type: skull
+        pos:
+          x: 21.75
+          'y': 37.5
+      - type: skull
+        pos:
+          x: 23.62
+          'y': 21.68
+      - type: skull
+        pos:
+          x: 36.38
+          'y': 22.32
+      - type: skull
+        pos:
+          x: 8.75
+          'y': 17.5
+      - type: skull
+        pos:
+          x: 51.25
+          'y': 26.5
   take-and-hold-vs-reconnaissance-1:
     buildings: []
     area_terrain:
@@ -11291,25 +11369,31 @@ layout:
           - x: 34.5
             'y': 9
         label: catwalk
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 51.5
-        'y': 12.75
-        number: 3
-      - x: 8.5
-        'y': 31.25
-        number: 4
-      - x: 43.5
-        'y': 34.25
-        number: 5
-      - x: 16.5
-        'y': 9.75
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 51.5
+          'y': 12.75
+      - type: skull
+        pos:
+          x: 8.5
+          'y': 31.25
+      - type: skull
+        pos:
+          x: 43.5
+          'y': 34.25
+      - type: skull
+        pos:
+          x: 16.5
+          'y': 9.75
   take-and-hold-vs-reconnaissance-2:
     buildings: []
     area_terrain:
@@ -11981,22 +12065,28 @@ layout:
           - x: 54.37
             'y': 38.849
         label: catwalk
-    objectives:
-      - x: 28.85
-        'y': 19.8
-        number: 1
-      - x: 31.15
-        'y': 24.2
-        number: 2
-      - x: 47.25
-        'y': 8
-        number: 3
-      - x: 12.75
-        'y': 36
-        number: 4
-      - x: 10.75
-        'y': 16.5
-        number: 5
-      - x: 49.25
-        'y': 27.5
-        number: 6
+    icons:
+      - type: skull
+        pos:
+          x: 28.85
+          'y': 19.8
+      - type: skull
+        pos:
+          x: 31.15
+          'y': 24.2
+      - type: skull
+        pos:
+          x: 47.25
+          'y': 8
+      - type: skull
+        pos:
+          x: 12.75
+          'y': 36
+      - type: skull
+        pos:
+          x: 10.75
+          'y': 16.5
+      - type: skull
+        pos:
+          x: 49.25
+          'y': 27.5
