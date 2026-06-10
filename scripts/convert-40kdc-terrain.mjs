@@ -20,7 +20,13 @@ const templates = readJson("terrain-templates.json");
 const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => footprintById.get(id);
 
-const round = (n) => Math.round(n * 1000) / 1000;
+// Round to 3 decimals and normalise negative zero to 0 so the YAML never
+// carries `-0` (which the preset serializer collapses to `0`, causing a
+// spurious mismatch in presets.test.ts).
+const round = (n) => {
+  const r = Math.round(n * 1000) / 1000;
+  return r === 0 ? 0 : r;
+};
 
 const out = { templates: {}, layout: {} };
 
