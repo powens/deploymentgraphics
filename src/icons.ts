@@ -1,4 +1,5 @@
 import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { toPoint } from "./building-coordinates.js";
 import type { IconPlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 
@@ -167,7 +168,7 @@ export function makeIcons(placements: IconPlacement[]): SVGElement {
     }
     const use = makeElement("use");
     use.setAttribute("href", `#${iconDefId(placement.type, placement.player)}`);
-    const [x, y] = placement.pos;
+    const { x, y } = toPoint(placement.pos, `icon ${placement.type} pos`);
     use.setAttribute(
       "transform",
       `translate(${x - ICON_SIZE / 2} ${y - ICON_SIZE / 2})`,

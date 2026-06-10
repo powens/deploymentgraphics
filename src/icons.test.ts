@@ -10,7 +10,7 @@ const defsEl = (): SVGElement =>
 describe("injectIconDefs", () => {
   it("builds a themed <g id='icon-skull'> with a circle and a glyph path", () => {
     const defs = defsEl();
-    injectIconDefs([{ type: "skull", pos: [0, 0] }], defs, baseTheme);
+    injectIconDefs([{ type: "skull", pos: { x: 0, y: 0 } }], defs, baseTheme);
     const group = defs.querySelector("#icon-skull");
     expect(group).not.toBeNull();
     const circle = group!.querySelector("circle");
@@ -25,7 +25,7 @@ describe("injectIconDefs", () => {
   it("dedupes repeated (type, player) combos", () => {
     const defs = defsEl();
     injectIconDefs(
-      [{ type: "skull", pos: [0, 0] }, { type: "skull", pos: [1, 1] }],
+      [{ type: "skull", pos: { x: 0, y: 0 } }, { type: "skull", pos: { x: 1, y: 1 } }],
       defs,
       baseTheme,
     );
@@ -34,7 +34,7 @@ describe("injectIconDefs", () => {
 
   it("fills fortress cutouts with the disk fill, body with the glyph fill", () => {
     const defs = defsEl();
-    injectIconDefs([{ type: "fortress", pos: [0, 0] }], defs, baseTheme);
+    injectIconDefs([{ type: "fortress", pos: { x: 0, y: 0 } }], defs, baseTheme);
     const rects = [...defs.querySelectorAll("#icon-fortress rect")];
     expect(rects.some((r) => r.getAttribute("fill") === baseTheme.icon.glyph.fill)).toBe(true);
     expect(rects.some((r) => r.getAttribute("fill") === baseTheme.icon.circle.fill)).toBe(true);
@@ -43,7 +43,7 @@ describe("injectIconDefs", () => {
   it("tints a player-tagged disk and its cutouts with the deployment fill", () => {
     const defs = defsEl();
     injectIconDefs(
-      [{ type: "fortress", pos: [0, 0], player: "attacker" }],
+      [{ type: "fortress", pos: { x: 0, y: 0 }, player: "attacker" }],
       defs,
       baseTheme,
     );
@@ -63,8 +63,8 @@ describe("injectIconDefs", () => {
     const defs = defsEl();
     injectIconDefs(
       [
-        { type: "fortress", pos: [0, 0], player: "attacker" },
-        { type: "fortress", pos: [1, 1], player: "defender" },
+        { type: "fortress", pos: { x: 0, y: 0 }, player: "attacker" },
+        { type: "fortress", pos: { x: 1, y: 1 }, player: "defender" },
       ],
       defs,
       baseTheme,
@@ -75,14 +75,14 @@ describe("injectIconDefs", () => {
 
   it("throws on an unknown icon type", () => {
     expect(() =>
-      injectIconDefs([{ type: "dragon", pos: [0, 0] }], defsEl(), baseTheme),
+      injectIconDefs([{ type: "dragon", pos: { x: 0, y: 0 } }], defsEl(), baseTheme),
     ).toThrow(/unknown icon type: dragon/);
   });
 });
 
 describe("makeIcons", () => {
   it("emits a <use> recentered on pos", () => {
-    const g = makeIcons([{ type: "skull", pos: [10, 20] }]);
+    const g = makeIcons([{ type: "skull", pos: { x: 10, y: 20 } }]);
     const use = g.querySelector("use")!;
     expect(use.getAttribute("href")).toBe("#icon-skull");
     expect(use.getAttribute("transform")).toBe(
@@ -91,14 +91,14 @@ describe("makeIcons", () => {
   });
 
   it("references the tinted def id for a player-tagged placement", () => {
-    const g = makeIcons([{ type: "fortress", pos: [0, 0], player: "defender" }]);
+    const g = makeIcons([{ type: "fortress", pos: { x: 0, y: 0 }, player: "defender" }]);
     expect(g.querySelector("use")!.getAttribute("href")).toBe(
       "#icon-fortress-defender",
     );
   });
 
   it("throws on an unknown icon type", () => {
-    expect(() => makeIcons([{ type: "dragon", pos: [0, 0] }])).toThrow(
+    expect(() => makeIcons([{ type: "dragon", pos: { x: 0, y: 0 } }])).toThrow(
       /unknown icon type: dragon/,
     );
   });

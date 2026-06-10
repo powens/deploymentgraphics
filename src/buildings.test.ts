@@ -31,7 +31,7 @@ describe("injectTemplateDefs", () => {
 describe("makeBuildings", () => {
   it("emits a <use> per resolved building (primary + mirror)", () => {
     const group = makeBuildings(
-      [{ type: "4x6", corners: { TL: [10, 5], TR: [14, 5] } }],
+      [{ type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
       templates,
       canvas,
     );
@@ -46,7 +46,7 @@ describe("makeBuildings", () => {
 
   it("emits one <use> when mirror is false", () => {
     const group = makeBuildings(
-      [{ type: "4x6", mirror: false, corners: { TL: [10, 5], TR: [14, 5] } }],
+      [{ type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
       templates,
       canvas,
     );
@@ -56,8 +56,8 @@ describe("makeBuildings", () => {
   it("numbers <use> ids sequentially across placements", () => {
     const group = makeBuildings(
       [
-        { type: "4x6", mirror: false, corners: { TL: [10, 5], TR: [14, 5] } },
-        { type: "4x6", mirror: false, corners: { TL: [20, 5], TR: [24, 5] } },
+        { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } },
+        { type: "4x6", mirror: false, corners: { TL: { x: 20, y: 5 }, TR: { x: 24, y: 5 } } },
       ],
       templates,
       canvas,
@@ -86,7 +86,7 @@ describe("svg property styling", () => {
 
   it("makeBuildings applies svg properties to building uses", () => {
     const group = makeBuildings(
-      [{ type: "4x6", corners: { TL: [0, 0], TR: [4, 0] }, mirror: false }],
+      [{ type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } }, mirror: false }],
       { "4x6": { width: 4, height: 6 } },
       { width: 60, height: 44 },
       { opacity: 1 },
@@ -114,10 +114,10 @@ describe("polygon templates", () => {
       {
         ruins: {
           points: [
-            [0, 0],
-            [7, 0],
-            [7, 11],
-            [0, 11],
+            { x: 0, y: 0 },
+            { x: 7, y: 0 },
+            { x: 7, y: 11 },
+            { x: 0, y: 11 },
           ],
         },
       },
@@ -138,9 +138,9 @@ describe("polygon templates", () => {
       {
         ruins: {
           points: [
-            [0, 0],
-            [7, 0],
-            [0, 11],
+            { x: 0, y: 0 },
+            { x: 7, y: 0 },
+            { x: 0, y: 11 },
           ],
         },
       },
@@ -154,14 +154,14 @@ describe("polygon templates", () => {
 
   it("makeBuildings emits a <use> referencing a polygon template", () => {
     const group = makeBuildings(
-      [{ type: "ruins", mirror: false, corners: { TL: [10, 5], TR: [17, 5] } }],
+      [{ type: "ruins", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 17, y: 5 } } }],
       {
         ruins: {
           points: [
-            [0, 0],
-            [7, 0],
-            [7, 11],
-            [0, 11],
+            { x: 0, y: 0 },
+            { x: 7, y: 0 },
+            { x: 7, y: 11 },
+            { x: 0, y: 11 },
           ],
         },
       },
@@ -174,11 +174,11 @@ describe("polygon templates", () => {
 });
 
 describe("path templates", () => {
-  const start: Point = [0, 0];
+  const start: Point = { x: 0, y: 0 };
   const segments: PathSegment[] = [
-    { line: [4, 0] },
-    { quad: [4, 4], control: [6, 2] },
-    { cubic: [0, 4], controls: [[3, 6], [1, 5]] },
+    { line: { x: 4, y: 0 } },
+    { quad: { x: 4, y: 4 }, control: { x: 6, y: 2 } },
+    { cubic: { x: 0, y: 4 }, controls: [{ x: 3, y: 6 }, { x: 1, y: 5 }] },
   ];
 
   it("segmentsToPathData builds an M/L/Q/C/Z path string", () => {
@@ -189,8 +189,16 @@ describe("path templates", () => {
 
   it("segmentsToPathData throws on an unrecognized segment", () => {
     expect(() =>
-      segmentsToPathData(start, [{ bogus: [1, 1] }] as unknown as PathSegment[]),
+      segmentsToPathData(start, [{ bogus: { x: 1, y: 1 } }] as unknown as PathSegment[]),
     ).toThrow(/unrecognized/i);
+  });
+
+  it("throws on a legacy array start (not {x, y})", () => {
+    expect(() =>
+      segmentsToPathData([4, 0] as unknown as Point, [
+        { line: { x: 4, y: 8 } },
+      ]),
+    ).toThrow(/expected \{ x, y \}/i);
   });
 
   it("injectTemplateDefs emits a <path> for a path template", () => {
@@ -229,12 +237,12 @@ describe("path templates", () => {
       bastion: {
         width: 8,
         height: 8,
-        start: [0, 0],
-        segments: [{ line: [8, 0] }, { line: [8, 8] }, { line: [0, 8] }],
+        start: { x: 0, y: 0 },
+        segments: [{ line: { x: 8, y: 0 } }, { line: { x: 8, y: 8 } }, { line: { x: 0, y: 8 } }],
       },
     };
     const group = makeBuildings(
-      [{ type: "bastion", mirror: false, corners: { TL: [10, 5], TR: [18, 5] } }],
+      [{ type: "bastion", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 18, y: 5 } } }],
       templates,
       canvas,
     );

@@ -277,7 +277,7 @@ function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
     if (obj.type !== "deployment-zone") return;
     scene.objects[idx] = {
       ...obj,
-      vertices: obj.vertices.map((v, i) => (i === vi ? [snappedX, snappedY] as [number, number] : v)),
+      vertices: obj.vertices.map((v, i) => (i === vi ? { x: snappedX, y: snappedY } : v)),
     };
     scheduleRender();
   });

@@ -3,13 +3,12 @@ home_edge: short
 
 attacker:
   deployment_zone:
-    - [60, 0]
-    - [60, 44]
-    - [30, 0]
+    - { x: 60, y: 0 }
+    - { x: 60, y: 44 }
+    - { x: 30, y: 0 }
 
 defender:
   deployment_zone:
-    - [30, 44]
-    - [0, 44]
-    - [0, 0]
-
+    - { x: 30, y: 44 }
+    - { x: 0, y: 44 }
+    - { x: 0, y: 0 }

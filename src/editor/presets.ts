@@ -1,5 +1,5 @@
 import { resolveBuilding } from "../building-coordinates.js";
-import type { Template, BuildingPlacement } from "../building-coordinates.js";
+import type { Template, BuildingPlacement, Point } from "../building-coordinates.js";
 import { missions } from "../presets/missions.js";
 import { gwTerrain } from "../presets/terrain.js";
 import type { Scene, SceneObject } from "./scene.js";
@@ -19,8 +19,8 @@ export const TERRAIN_LAYOUTS = Object.keys(gwTerrain.layout).map((id) => ({
 type MissionYaml = {
   name: string;
   home_edge: "short" | "long";
-  attacker: { deployment_zone: [number, number][]; mask_center?: number };
-  defender: { deployment_zone: [number, number][]; mask_center?: number };
+  attacker: { deployment_zone: Point[]; mask_center?: number };
+  defender: { deployment_zone: Point[]; mask_center?: number };
 };
 
 type TerrainYaml = {
@@ -69,8 +69,8 @@ export async function loadPreset(
         id: `bld-${Math.random().toString(36).slice(2)}`,
         type: "building",
         templateKey: bld.type,
-        x: r.translate[0],
-        y: r.translate[1],
+        x: r.translate.x,
+        y: r.translate.y,
         rotation: r.rotation,
         mirror: bld.mirror !== false,
       });

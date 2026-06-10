@@ -1,4 +1,4 @@
-import type { BuildingPlacement, Template } from "./building-coordinates.js";
+import type { BuildingPlacement, Point, Template } from "./building-coordinates.js";
 
 /**
  * Default width/height (inches) for area terrain placed without an explicit
@@ -14,7 +14,7 @@ export type AreaTerrain = {
   y: number;
   width?: number;   // diameter for circles; bounding-box width for polygons
   height?: number;
-  points?: [number, number][];  // polygon-only: template-local closed ring
+  points?: Point[];  // polygon-only: template-local closed ring
   label?: string;
   rotation?: number;
 };
@@ -26,7 +26,7 @@ export type AreaTerrain = {
  */
 export type IconPlacement = {
   type: string;
-  pos: [number, number];
+  pos: Point;
   player?: "attacker" | "defender";
 };
 

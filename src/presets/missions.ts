@@ -7,24 +7,56 @@ import type { DeploymentConfig } from "../types.js";
 export const crucibleOfBattle: DeploymentConfig = {
   name: "Crucible of Battle",
   home_edge: "short",
-  attacker: { deployment_zone: [[60, 0], [60, 44], [30, 0]] },
-  defender: { deployment_zone: [[30, 44], [0, 44], [0, 0]] },
+  attacker: {
+    deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 44 }, { x: 30, y: 0 }],
+  },
+  defender: {
+    deployment_zone: [{ x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 0 }],
+  },
 };
 
 /** Dawn of War, from `static/data/deployment/dawn_of_war.yml`. */
 export const dawnOfWar: DeploymentConfig = {
   name: "Dawn of War",
   home_edge: "long",
-  attacker: { deployment_zone: [[0, 0], [0, 12], [60, 12], [60, 0]] },
-  defender: { deployment_zone: [[0, 32], [0, 44], [60, 44], [60, 32]] },
+  attacker: {
+    deployment_zone: [
+      { x: 0, y: 0 },
+      { x: 0, y: 12 },
+      { x: 60, y: 12 },
+      { x: 60, y: 0 },
+    ],
+  },
+  defender: {
+    deployment_zone: [
+      { x: 0, y: 32 },
+      { x: 0, y: 44 },
+      { x: 60, y: 44 },
+      { x: 60, y: 32 },
+    ],
+  },
 };
 
 /** Hammer and Anvil, from `static/data/deployment/hammer_and_anvil.yml`. */
 export const hammerAndAnvil: DeploymentConfig = {
   name: "Hammer and Anvil",
   home_edge: "short",
-  attacker: { deployment_zone: [[60, 0], [42, 0], [42, 44], [60, 44]] },
-  defender: { deployment_zone: [[18, 0], [0, 0], [0, 44], [18, 44]] },
+  attacker: {
+    deployment_zone: [
+      { x: 60, y: 0 },
+      { x: 42, y: 0 },
+      { x: 42, y: 44 },
+      { x: 60, y: 44 },
+    ],
+  },
+  defender: {
+    deployment_zone: [
+      { x: 18, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 44 },
+      { x: 18, y: 44 },
+    ],
+  },
 };
 
 /** Search and Destroy, from `static/data/deployment/search_and_destroy.yml`. */
@@ -33,11 +65,21 @@ export const searchAndDestroy: DeploymentConfig = {
   home_edge: "long",
   attacker: {
     mask_center: 9,
-    deployment_zone: [[60, 0], [60, 22], [30, 22], [30, 0]],
+    deployment_zone: [
+      { x: 60, y: 0 },
+      { x: 60, y: 22 },
+      { x: 30, y: 22 },
+      { x: 30, y: 0 },
+    ],
   },
   defender: {
     mask_center: 9,
-    deployment_zone: [[30, 22], [30, 44], [0, 44], [0, 22]],
+    deployment_zone: [
+      { x: 30, y: 22 },
+      { x: 30, y: 44 },
+      { x: 0, y: 44 },
+      { x: 0, y: 22 },
+    ],
   },
 };
 
@@ -46,10 +88,24 @@ export const sweepingEngagement: DeploymentConfig = {
   name: "Sweeping Engagement",
   home_edge: "long",
   attacker: {
-    deployment_zone: [[60, 44], [0, 44], [0, 30], [30, 30], [30, 36], [60, 36]],
+    deployment_zone: [
+      { x: 60, y: 44 },
+      { x: 0, y: 44 },
+      { x: 0, y: 30 },
+      { x: 30, y: 30 },
+      { x: 30, y: 36 },
+      { x: 60, y: 36 },
+    ],
   },
   defender: {
-    deployment_zone: [[0, 0], [60, 0], [60, 14], [30, 14], [30, 8], [0, 8]],
+    deployment_zone: [
+      { x: 0, y: 0 },
+      { x: 60, y: 0 },
+      { x: 60, y: 14 },
+      { x: 30, y: 14 },
+      { x: 30, y: 8 },
+      { x: 0, y: 8 },
+    ],
   },
 };
 
@@ -59,17 +115,24 @@ export const tippingPoint: DeploymentConfig = {
   home_edge: "short",
   attacker: {
     deployment_zone: [
-      [0, 44],
-      [0, 0],
-      [12, 0],
-      [12, 22],
-      [20, 22],
-      [20, 32],
-      [20, 44],
+      { x: 0, y: 44 },
+      { x: 0, y: 0 },
+      { x: 12, y: 0 },
+      { x: 12, y: 22 },
+      { x: 20, y: 22 },
+      { x: 20, y: 32 },
+      { x: 20, y: 44 },
     ],
   },
   defender: {
-    deployment_zone: [[60, 0], [60, 44], [48, 44], [48, 22], [40, 22], [40, 0]],
+    deployment_zone: [
+      { x: 60, y: 0 },
+      { x: 60, y: 44 },
+      { x: 48, y: 44 },
+      { x: 48, y: 22 },
+      { x: 40, y: 22 },
+      { x: 40, y: 0 },
+    ],
   },
 };
 

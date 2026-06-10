@@ -1,30 +1,46 @@
 export type Anchor = "TL" | "TR" | "BL" | "BR";
-export type Point = [number, number];
+export type Point = { x: number; y: number };
 export type CanvasSize = { width: number; height: number };
 
-/** A corner: [x, y] or [x, y, from_anchor]. x/y are inward distances. */
-export type CornerSpec = [number, number] | [number, number, Anchor];
+/** A corner: { x, y } with an optional `from` anchor override. x/y are inward distances. */
+export type CornerSpec = { x: number; y: number; from?: Anchor };
+
+/** Validates an untyped value as a Point, throwing with `context` on failure. */
+export function toPoint(value: unknown, context: string): Point {
+  if (
+    !value ||
+    typeof value !== "object" ||
+    Array.isArray(value) ||
+    typeof (value as Point).x !== "number" ||
+    typeof (value as Point).y !== "number"
+  ) {
+    throw new Error(
+      `${context}: expected { x, y }, got ${JSON.stringify(value)}`,
+    );
+  }
+  return value as Point;
+}
 
 /**
  * Resolves a corner spec to an absolute canvas point. x/y are measured
- * inward from the spec's anchor (its 3rd element, or `defaultFrom`).
+ * inward from the spec's anchor (its `from` field, or `defaultFrom`).
  */
 export function resolveCorner(
   spec: CornerSpec,
   defaultFrom: Anchor,
   canvas: CanvasSize,
 ): Point {
-  const [x, y] = spec;
-  const from: Anchor = spec.length === 3 ? spec[2] : defaultFrom;
+  const { x, y } = toPoint(spec, "building corner");
+  const from: Anchor = spec.from ?? defaultFrom;
   switch (from) {
     case "TL":
-      return [x, y];
+      return { x, y };
     case "TR":
-      return [canvas.width - x, y];
+      return { x: canvas.width - x, y };
     case "BL":
-      return [x, canvas.height - y];
+      return { x, y: canvas.height - y };
     case "BR":
-      return [canvas.width - x, canvas.height - y];
+      return { x: canvas.width - x, y: canvas.height - y };
   }
 }
 
@@ -84,11 +100,7 @@ export function templateBounds(
         `template ${name}: path needs a positive width and height`,
       );
     }
-    if (!Array.isArray(start) || start.length !== 2) {
-      throw new Error(
-        `template ${name}: path needs a [number, number] start point`,
-      );
-    }
+    toPoint(start, `template ${name}: path start`);
     if (!Array.isArray(segments) || segments.length < 2) {
       throw new Error(`template ${name}: path needs at least 2 segments`);
     }
@@ -99,8 +111,8 @@ export function templateBounds(
     if (!Array.isArray(points) || points.length < 3) {
       throw new Error(`template ${name}: polygon needs at least 3 points`);
     }
-    const xs = points.map((p) => p[0]);
-    const ys = points.map((p) => p[1]);
+    const xs = points.map((p) => p.x);
+    const ys = points.map((p) => p.y);
     const minX = Math.min(...xs);
     const minY = Math.min(...ys);
     if (minX !== 0 || minY !== 0) {
@@ -123,7 +135,7 @@ export function templateBounds(
 export type BuildingPlacement = {
   type: string;
   corners: Partial<Record<Anchor, CornerSpec>>; // 1 or 2 entries
-  from?: Anchor; // default anchor for 2-element corner specs; default "TL"
+  from?: Anchor; // default anchor for corner specs; default "TL"
   mirror?: boolean; // default true
 };
 
@@ -140,13 +152,13 @@ function localCorner(
 ): Point {
   switch (corner) {
     case "TL":
-      return [0, 0];
+      return { x: 0, y: 0 };
     case "TR":
-      return [size.width, 0];
+      return { x: size.width, y: 0 };
     case "BR":
-      return [size.width, size.height];
+      return { x: size.width, y: size.height };
     case "BL":
-      return [0, size.height];
+      return { x: 0, y: size.height };
   }
 }
 
@@ -154,7 +166,7 @@ function localCorner(
 function rotate(p: Point, rad: number): Point {
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
-  return [p[0] * cos - p[1] * sin, p[0] * sin + p[1] * cos];
+  return { x: p.x * cos - p.y * sin, y: p.x * sin + p.y * cos };
 }
 
 /**
@@ -195,8 +207,8 @@ export function resolveBuilding(
     const pB = resolveCorner(specB, defaultFrom, canvas);
     const lB = localCorner(cornerB, size);
 
-    const targetLength = Math.hypot(pB[0] - pA[0], pB[1] - pA[1]);
-    const templateLength = Math.hypot(lB[0] - lA[0], lB[1] - lA[1]);
+    const targetLength = Math.hypot(pB.x - pA.x, pB.y - pA.y);
+    const templateLength = Math.hypot(lB.x - lA.x, lB.y - lA.y);
     if (Math.abs(targetLength - templateLength) > 0.1) {
       throw new Error(
         `building ${placement.type}: corners ${cornerA}->${cornerB} measure ` +
@@ -206,11 +218,11 @@ export function resolveBuilding(
     }
 
     theta =
-      Math.atan2(pB[1] - pA[1], pB[0] - pA[0]) -
-      Math.atan2(lB[1] - lA[1], lB[0] - lA[0]);
+      Math.atan2(pB.y - pA.y, pB.x - pA.x) -
+      Math.atan2(lB.y - lA.y, lB.x - lA.x);
   }
   const rotatedLA = rotate(lA, theta);
-  const translate: Point = [pA[0] - rotatedLA[0], pA[1] - rotatedLA[1]];
+  const translate: Point = { x: pA.x - rotatedLA.x, y: pA.y - rotatedLA.y };
   const rotation = (((theta * 180) / Math.PI) % 360 + 360) % 360;
 
   const primary: ResolvedBuilding = {
@@ -223,7 +235,7 @@ export function resolveBuilding(
   }
   const mirrored: ResolvedBuilding = {
     templateName: placement.type,
-    translate: [canvas.width - translate[0], canvas.height - translate[1]],
+    translate: { x: canvas.width - translate.x, y: canvas.height - translate.y },
     rotation: (rotation + 180) % 360,
   };
   return [primary, mirrored];
