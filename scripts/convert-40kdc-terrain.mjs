@@ -1,15 +1,18 @@
-// Converts the vendored 40kdc-data terrain JSON into static/data/terrain/40kdc.yml.
-// Each piece becomes a polygon area_terrain entry (absolute points), and each
-// is_objective piece becomes a numbered objective. Deterministic + re-runnable.
+// Merges the hand-authored static/data/terrain/gw.yml (building templates +
+// demo layout) with the vendored 40kdc-data terrain JSON into a single
+// static/data/terrain/combined.yml. Each 40kdc piece becomes a polygon
+// area_terrain entry (absolute points), and each is_objective piece becomes a
+// numbered objective. Deterministic + re-runnable.
 //
-// Run: node scripts/convert-40kdc-terrain.mjs
+// Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
 
 import { readFileSync, writeFileSync } from "node:fs";
 import yaml from "js-yaml";
 import { resolvePiece } from "./terrain-resolver.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
-const outPath = new URL("../static/data/terrain/40kdc.yml", import.meta.url);
+const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
+const outPath = new URL("../static/data/terrain/combined.yml", import.meta.url);
 
 const readJson = (name) =>
   JSON.parse(readFileSync(new URL(name, srcDir), "utf8"));
@@ -50,7 +53,15 @@ const round = (n) => {
   return r === 0 ? 0 : r;
 };
 
-const out = { templates: {}, layout: {} };
+// gw.yml is the hand-authored input: building templates plus the demo
+// layout ("1"). The ported 40kdc layouts are layered on top of it, so the
+// combined file is a superset of the demo with the real layouts added.
+const gw = yaml.load(readFileSync(gwPath, "utf8"));
+const out = {
+  ...gw,
+  templates: { ...(gw.templates ?? {}) },
+  layout: { ...(gw.layout ?? {}) },
+};
 
 for (const layout of layouts) {
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
@@ -85,11 +96,14 @@ for (const layout of layouts) {
 
 const header =
   "# GENERATED FILE - do not edit by hand.\n" +
-  "# Produced by scripts/convert-40kdc-terrain.mjs from the vendored\n" +
-  "# 40kdc-data JSON under static/data/terrain/source/40kdc/.\n" +
-  "# Regenerate with: node scripts/convert-40kdc-terrain.mjs\n\n";
+  "# Produced by scripts/convert-40kdc-terrain.mjs by merging the\n" +
+  "# hand-authored static/data/terrain/gw.yml (templates + demo layout)\n" +
+  "# with the vendored 40kdc-data JSON under\n" +
+  "# static/data/terrain/source/40kdc/.\n" +
+  "# Edit gw.yml or the source JSON, then regenerate with:\n" +
+  "#   pnpm convert:40kdc\n\n";
 
 writeFileSync(outPath, header + yaml.dump(out, { lineWidth: 100 }), "utf8");
 console.log(
-  `Wrote ${Object.keys(out.layout).length} layouts to static/data/terrain/40kdc.yml`,
+  `Wrote ${Object.keys(out.layout).length} layouts to static/data/terrain/combined.yml`,
 );
