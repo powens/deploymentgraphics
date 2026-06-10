@@ -6,9 +6,11 @@ import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
 import {
   DEFAULT_AREA_TERRAIN_SIZE,
+  getLayoutAreaTerrain,
   getLayoutBuildings,
   getLayoutFeatures,
   getLayoutIcons,
+  getLayoutObjectives,
 } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
@@ -156,8 +158,11 @@ function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
 }
 
 function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
-  const items = config.terrain.area_terrain;
-  if (!items || items.length === 0) return null;
+  const items = [
+    ...(config.terrain.area_terrain ?? []),
+    ...getLayoutAreaTerrain(config.terrain, config.terrain.layout_name),
+  ];
+  if (items.length === 0) return null;
   const group = makeElement("g");
   group.setAttribute("id", "area-terrain");
   for (const item of items) {
@@ -194,8 +199,11 @@ function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
 const OBJECTIVE_RADIUS = 1.5;
 
 function makeObjectives(config: FullConfig, theme: Theme): SVGElement | null {
-  const items = config.objectives;
-  if (!items || items.length === 0) return null;
+  const items = [
+    ...(config.objectives ?? []),
+    ...getLayoutObjectives(config.terrain, config.terrain.layout_name),
+  ];
+  if (items.length === 0) return null;
   const group = makeElement("g");
   group.setAttribute("id", "objectives");
   for (const item of items) {
