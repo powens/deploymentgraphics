@@ -1,7 +1,8 @@
 // Merges the hand-authored static/data/terrain/gw.yml (building templates +
 // demo layout) with the vendored 40kdc-data terrain JSON into a single
-// static/data/terrain/combined.yml. Each 40kdc piece becomes a polygon
-// area_terrain entry (absolute points), and each is_objective piece becomes a
+// static/data/terrain/combined.yml. Each `area` piece becomes a building
+// placement referencing a gw template; each `feature` piece becomes a polygon
+// area_terrain entry (absolute points); each is_objective piece becomes a
 // skull icon at its centre. Deterministic + re-runnable.
 //
 // Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
@@ -9,6 +10,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import yaml from "js-yaml";
 import { resolvePiece } from "./terrain-resolver.mjs";
+import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
@@ -23,11 +25,11 @@ const templates = readJson("terrain-templates.json");
 const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => footprintById.get(id);
 
-// Theme label per piece. Area pieces share one translucent-zone style; feature
-// pieces are coloured by material category, mirroring the demo layout's palette
-// (green ruins, rust pipes, gunmetal generators, sand barricades, metal
-// gantries/catwalks). Unknown feature templates fall back to the generic
-// `feature` style. Categories resolve to colours in static/data/theme.yml.
+// Theme label per feature piece, coloured by material category, mirroring the
+// demo layout's palette (green ruins, rust pipes, gunmetal generators, sand
+// barricades, metal gantries/catwalks). Unknown feature templates fall back to
+// the generic `feature` style. Categories resolve to colours in
+// static/data/theme.yml. (Area pieces are emitted as buildings, not labelled.)
 const FEATURE_LABELS = {
   "corner-tiny": "ruin",
   "corner-short": "ruin",
@@ -42,16 +44,7 @@ const FEATURE_LABELS = {
   catwalk: "catwalk",
 };
 
-const labelFor = (piece) =>
-  piece.piece_type === "area" ? "area" : (FEATURE_LABELS[piece.template] ?? "feature");
-
-// Round to 3 decimals and normalise negative zero to 0 so the YAML never
-// carries `-0` (which the preset serializer collapses to `0`, causing a
-// spurious mismatch in presets.test.ts).
-const round = (n) => {
-  const r = Math.round(n * 1000) / 1000;
-  return r === 0 ? 0 : r;
-};
+const labelFor = (piece) => FEATURE_LABELS[piece.template] ?? "feature";
 
 // gw.yml is the hand-authored input: building templates plus the demo
 // layout ("1"). The ported 40kdc layouts are layered on top of it, so the
@@ -66,20 +59,31 @@ const out = {
 for (const layout of layouts) {
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
   const getParent = (id) => byId.get(id);
+  const buildings = [];
   const area_terrain = [];
   const icons = [];
   for (const piece of layout.pieces) {
-    const points = resolvePiece(piece, lookupFootprint, getParent).map((p) => ({
-      x: round(p.x),
-      y: round(p.y),
-    }));
-    area_terrain.push({
-      shape: "polygon",
-      x: 0,
-      y: 0,
-      points,
-      label: labelFor(piece),
-    });
+    if (piece.piece_type === "area") {
+      buildings.push(
+        areaBuildingPlacement(
+          piece,
+          lookupFootprint(piece.template),
+          out.templates,
+        ),
+      );
+    } else {
+      const points = resolvePiece(piece, lookupFootprint, getParent).map((p) => ({
+        x: round(p.x),
+        y: round(p.y),
+      }));
+      area_terrain.push({
+        shape: "polygon",
+        x: 0,
+        y: 0,
+        points,
+        label: labelFor(piece),
+      });
+    }
     if (piece.is_objective) {
       icons.push({
         type: "skull",
@@ -87,7 +91,7 @@ for (const layout of layouts) {
       });
     }
   }
-  const entry = { buildings: [], area_terrain };
+  const entry = { buildings, area_terrain };
   if (icons.length > 0) entry.icons = icons;
   out.layout[layout.id] = entry;
 }

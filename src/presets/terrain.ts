@@ -18,6 +18,14 @@ export const gwTerrain: TerrainConfig = {
         { x: 0, y: 11.5 },
       ],
     },
+    "shoe-mirror": {
+      points: [
+        { x: 0, y: 0 },
+        { x: 8, y: 0 },
+        { x: 2, y: 11.5 },
+        { x: 0, y: 11.5 },
+      ],
+    },
   },
   layout: {
     "1": {
@@ -96,44 +104,101 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "gw-11e-crucible": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 54, y: 5 }, TR: { x: 54, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 33.75, y: 4.75 }, TR: { x: 39.486, y: 12.941 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 30, y: 0 }, TR: { x: 33.441, y: 4.915 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 48.441, y: 26.915 },
+            TR: { x: 45.165, y: 29.209 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 43.75, y: 20.25 }, TR: { x: 48.665, y: 16.809 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: {
+            TL: { x: 53.596, y: 39.92 },
+            TR: { x: 47.862, y: 43.935 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 39.191, y: 35.665 },
+            TR: { x: 35.915, y: 37.959 },
+          },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 6, y: 39 }, TR: { x: 6, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 26.25, y: 39.25 }, TR: { x: 20.514, y: 31.059 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 30, y: 44 }, TR: { x: 26.559, y: 39.085 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 11.559, y: 17.085 },
+            TR: { x: 14.835, y: 14.791 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 16.25, y: 23.75 }, TR: { x: 11.335, y: 27.191 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 6.404, y: 4.08 }, TR: { x: 12.138, y: 0.065 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 20.802, y: 8.335 }, TR: { x: 24.079, y: 6.041 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 42.5, y: 5 },
-            { x: 54, y: 5 },
-            { x: 54, y: 12 },
-            { x: 42.5, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 33.75, y: 4.75 },
-            { x: 39.486, y: 12.941 },
-            { x: 37.438, y: 14.375 },
-            { x: 31.702, y: 6.184 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 30, y: 0 },
-            { x: 33.441, y: 4.915 },
-            { x: 31.803, y: 6.062 },
-            { x: 28.362, y: 1.147 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -187,102 +252,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 45, y: 22 },
-            { x: 48.441, y: 26.915 },
-            { x: 45.165, y: 29.209 },
-            { x: 41.723, y: 24.294 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43.75, y: 20.25 },
-            { x: 48.665, y: 16.809 },
-            { x: 49.812, y: 18.447 },
-            { x: 44.897, y: 21.888 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 47, y: 30.5 },
-            { x: 53.596, y: 39.92 },
-            { x: 47.862, y: 43.935 },
-            { x: 41.266, y: 34.515 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 30.75 },
-            { x: 39.191, y: 35.665 },
-            { x: 35.915, y: 37.959 },
-            { x: 32.473, y: 33.044 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17.5, y: 39 },
-            { x: 6, y: 39 },
-            { x: 6, y: 32 },
-            { x: 17.5, y: 32 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26.25, y: 39.25 },
-            { x: 20.514, y: 31.059 },
-            { x: 22.562, y: 29.625 },
-            { x: 28.298, y: 37.816 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 30, y: 44 },
-            { x: 26.559, y: 39.085 },
-            { x: 28.197, y: 37.938 },
-            { x: 31.638, y: 42.853 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 30, y: 43.25 },
             { x: 27.132, y: 39.154 },
             { x: 27.951, y: 38.581 },
@@ -325,66 +294,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.775, y: 34.714 },
           ],
           label: "gantry",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15, y: 22 },
-            { x: 11.559, y: 17.085 },
-            { x: 14.835, y: 14.791 },
-            { x: 18.277, y: 19.706 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16.25, y: 23.75 },
-            { x: 11.335, y: 27.191 },
-            { x: 10.188, y: 25.553 },
-            { x: 15.103, y: 22.112 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 13, y: 13.5 },
-            { x: 6.404, y: 4.08 },
-            { x: 12.138, y: 0.065 },
-            { x: 18.734, y: 9.485 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.244, y: 13.25 },
-            { x: 20.802, y: 8.335 },
-            { x: 24.079, y: 6.041 },
-            { x: 27.52, y: 10.956 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -845,32 +754,89 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "gw-11e-hammer-anvil": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 50, y: 24.5 }, TR: { x: 43, y: 24.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 40.5, y: 6 }, TR: { x: 36.5, y: 6 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 36.5, y: 6 }, TR: { x: 36.5, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 43, y: 5 }, TR: { x: 49, y: 5 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 43, y: 6.931 }, TR: { x: 43, y: 12.931 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 41.5, y: 44 }, TR: { x: 34.5, y: 44 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 48, y: 28 }, TR: { x: 48, y: 38 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 10, y: 19.5 }, TR: { x: 17, y: 19.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 19.5, y: 38 }, TR: { x: 23.5, y: 38 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 23.5, y: 38 }, TR: { x: 23.5, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 25, y: 16.25 }, TR: { x: 33, y: 16.25 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 17, y: 39 }, TR: { x: 11, y: 39 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 17, y: 37.069 }, TR: { x: 17, y: 31.069 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 18.5, y: 0 }, TR: { x: 25.5, y: 0 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 12, y: 16 }, TR: { x: 12, y: 6 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 50, y: 13 },
-            { x: 50, y: 24.5 },
-            { x: 43, y: 24.5 },
-            { x: 43, y: 13 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 40.5, y: 0 },
-            { x: 40.5, y: 6 },
-            { x: 36.5, y: 6 },
-            { x: 36.5, y: 0 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -924,36 +890,12 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 30.5, y: 6 },
-            { x: 36.5, y: 6 },
-            { x: 36.5, y: 10 },
-            { x: 30.5, y: 10 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 36.074, y: 6.488 },
             { x: 36.074, y: 9.488 },
             { x: 31.074, y: 9.488 },
             { x: 31.074, y: 6.488 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35, y: 16.25 },
-            { x: 27, y: 16.25 },
-            { x: 33, y: 27.75 },
-            { x: 35, y: 27.75 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -1014,54 +956,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.604, y: 16.682 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43, y: 5 },
-            { x: 49, y: 5 },
-            { x: 49, y: 7 },
-            { x: 43, y: 7 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43, y: 6.931 },
-            { x: 43, y: 12.931 },
-            { x: 41, y: 12.931 },
-            { x: 41, y: 6.931 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41.5, y: 32.5 },
-            { x: 41.5, y: 44 },
-            { x: 34.5, y: 44 },
-            { x: 34.5, y: 32.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 48, y: 28 },
-            { x: 48, y: 38 },
-            { x: 45.5, y: 38 },
-            { x: 45.5, y: 28 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -1260,30 +1154,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 10, y: 31 },
-            { x: 10, y: 19.5 },
-            { x: 17, y: 19.5 },
-            { x: 17, y: 31 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 19.5, y: 44 },
-            { x: 19.5, y: 38 },
-            { x: 23.5, y: 38 },
-            { x: 23.5, y: 44 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 19.84, y: 43.535 },
             { x: 19.84, y: 41.535 },
             { x: 20.09, y: 41.535 },
@@ -1332,36 +1202,12 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 29.5, y: 38 },
-            { x: 23.5, y: 38 },
-            { x: 23.5, y: 34 },
-            { x: 29.5, y: 34 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 23.927, y: 37.512 },
             { x: 23.927, y: 34.512 },
             { x: 28.927, y: 34.512 },
             { x: 28.927, y: 37.512 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 27.75 },
-            { x: 33, y: 27.75 },
-            { x: 27, y: 16.25 },
-            { x: 25, y: 16.25 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -1422,54 +1268,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.396, y: 27.318 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17, y: 39 },
-            { x: 11, y: 39 },
-            { x: 11, y: 37 },
-            { x: 17, y: 37 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17, y: 37.069 },
-            { x: 17, y: 31.069 },
-            { x: 19, y: 31.069 },
-            { x: 19, y: 37.069 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 18.5, y: 11.5 },
-            { x: 18.5, y: 0 },
-            { x: 25.5, y: 0 },
-            { x: 25.5, y: 11.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 12, y: 16 },
-            { x: 12, y: 6 },
-            { x: 14.5, y: 6 },
-            { x: 14.5, y: 16 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -1666,32 +1464,89 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-purge-the-foe-2": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe-mirror",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe-mirror",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 45, y: 22 }, TR: { x: 51, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 15, y: 22 }, TR: { x: 9, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 20.998, y: 5 }, TR: { x: 27.844, y: 12.288 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 39.002, y: 39 }, TR: { x: 32.156, y: 31.712 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 45, y: 22 }, TR: { x: 41, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 15, y: 22 }, TR: { x: 19, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 55, y: 5 }, TR: { x: 55, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 5, y: 39 }, TR: { x: 5, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 14, y: 15.5 }, TR: { x: 7, y: 15.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 46, y: 28.5 }, TR: { x: 53, y: 28.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 34, y: 10 }, TR: { x: 30, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 26, y: 34 }, TR: { x: 30, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 34, y: 10 }, TR: { x: 40, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 26, y: 34 }, TR: { x: 20, y: 34 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 17 },
-            { x: 35.75, y: 25 },
-            { x: 24.25, y: 19 },
-            { x: 24.25, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 27 },
-            { x: 24.25, y: 19 },
-            { x: 35.75, y: 25 },
-            { x: 35.75, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -1747,54 +1602,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.399, y: 24.609 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 45, y: 22 },
-            { x: 51, y: 22 },
-            { x: 51, y: 24 },
-            { x: 45, y: 24 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15, y: 22 },
-            { x: 9, y: 22 },
-            { x: 9, y: 20 },
-            { x: 15, y: 20 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 20.998, y: 5 },
-            { x: 27.844, y: 12.288 },
-            { x: 26.022, y: 14 },
-            { x: 19.176, y: 6.712 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 39.002, y: 39 },
-            { x: 32.156, y: 31.712 },
-            { x: 33.978, y: 30 },
-            { x: 40.824, y: 37.288 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -1913,30 +1720,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 45, y: 16 },
-            { x: 45, y: 22 },
-            { x: 41, y: 22 },
-            { x: 41, y: 16 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15, y: 28 },
-            { x: 15, y: 22 },
-            { x: 19, y: 22 },
-            { x: 19, y: 28 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 44.5, y: 21 },
             { x: 41.5, y: 21 },
             { x: 41.5, y: 17 },
@@ -1955,30 +1738,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 15.5, y: 27 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43.5, y: 5 },
-            { x: 55, y: 5 },
-            { x: 55, y: 12 },
-            { x: 43.5, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16.5, y: 39 },
-            { x: 5, y: 39 },
-            { x: 5, y: 32 },
-            { x: 16.5, y: 32 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -2041,30 +1800,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 14, y: 4 },
-            { x: 14, y: 15.5 },
-            { x: 7, y: 15.5 },
-            { x: 7, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 46, y: 40 },
-            { x: 46, y: 28.5 },
-            { x: 53, y: 28.5 },
-            { x: 53, y: 40 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 13.63, y: 14.95 },
             { x: 13.63, y: 9.95 },
             { x: 13.13, y: 9.95 },
@@ -2115,30 +1850,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 47.93, y: 39.5 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 34, y: 4 },
-            { x: 34, y: 10 },
-            { x: 30, y: 10 },
-            { x: 30, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26, y: 40 },
-            { x: 26, y: 34 },
-            { x: 30, y: 34 },
-            { x: 30, y: 40 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -2201,30 +1912,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 34, y: 10 },
-            { x: 40, y: 10 },
-            { x: 40, y: 12 },
-            { x: 34, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26, y: 34 },
-            { x: 20, y: 34 },
-            { x: 20, y: 32 },
-            { x: 26, y: 32 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 33.5, y: 10 },
             { x: 40.5, y: 10 },
             { x: 40.5, y: 12 },
@@ -2255,32 +1942,89 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-mirror-1": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 47, y: 34 }, TR: { x: 47, y: 41 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 13, y: 10 }, TR: { x: 13, y: 3 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 13, y: 16 }, TR: { x: 9, y: 16 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 47, y: 28 }, TR: { x: 51, y: 28 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 53.99, y: 14 }, TR: { x: 53.99, y: 21 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 6.01, y: 30 }, TR: { x: 6.01, y: 23 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 42.5, y: 21 }, TR: { x: 42.5, y: 27 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 17.5, y: 23 }, TR: { x: 17.5, y: 17 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 46, y: 2 }, TR: { x: 46, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 14, y: 42 }, TR: { x: 14, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 38, y: 8 }, TR: { x: 38, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 22, y: 36 }, TR: { x: 22, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 32, y: 4 }, TR: { x: 32, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 28, y: 40 }, TR: { x: 28, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 25, y: 16.25 }, TR: { x: 33, y: 16.25 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.5, y: 34 },
-            { x: 47, y: 34 },
-            { x: 47, y: 41 },
-            { x: 35.5, y: 41 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.5, y: 10 },
-            { x: 13, y: 10 },
-            { x: 13, y: 3 },
-            { x: 24.5, y: 3 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -2336,30 +2080,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 14.005, y: 6.515 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 13, y: 10 },
-            { x: 13, y: 16 },
-            { x: 9, y: 16 },
-            { x: 9, y: 10 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 47, y: 34 },
-            { x: 47, y: 28 },
-            { x: 51, y: 28 },
-            { x: 51, y: 34 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -2422,30 +2142,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 42.49, y: 14 },
-            { x: 53.99, y: 14 },
-            { x: 53.99, y: 21 },
-            { x: 42.49, y: 21 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17.51, y: 30 },
-            { x: 6.01, y: 30 },
-            { x: 6.01, y: 23 },
-            { x: 17.51, y: 23 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 45.755, y: 13.935 },
             { x: 42.755, y: 13.935 },
             { x: 42.755, y: 20.435 },
@@ -2502,30 +2198,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 42.5, y: 21 },
-            { x: 42.5, y: 27 },
-            { x: 40.5, y: 27 },
-            { x: 40.5, y: 21 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17.5, y: 23 },
-            { x: 17.5, y: 17 },
-            { x: 19.5, y: 17 },
-            { x: 19.5, y: 23 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 42.5, y: 20.5 },
             { x: 42.5, y: 27.5 },
             { x: 40.5, y: 27.5 },
@@ -2544,30 +2216,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.5, y: 23.5 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 46, y: 2 },
-            { x: 46, y: 12 },
-            { x: 43.5, y: 12 },
-            { x: 43.5, y: 2 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 14, y: 42 },
-            { x: 14, y: 32 },
-            { x: 16.5, y: 32 },
-            { x: 16.5, y: 42 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -2662,30 +2310,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 32, y: 8 },
-            { x: 38, y: 8 },
-            { x: 38, y: 12 },
-            { x: 32, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 28, y: 36 },
-            { x: 22, y: 36 },
-            { x: 22, y: 32 },
-            { x: 28, y: 32 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 37, y: 8.5 },
             { x: 37, y: 11.5 },
             { x: 33, y: 11.5 },
@@ -2710,30 +2334,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 32, y: 4 },
-            { x: 32, y: 10 },
-            { x: 30, y: 10 },
-            { x: 30, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 28, y: 40 },
-            { x: 28, y: 34 },
-            { x: 30, y: 34 },
-            { x: 30, y: 40 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 31.5, y: 4.25 },
             { x: 31.5, y: 9.75 },
             { x: 30.5, y: 9.75 },
@@ -2752,30 +2352,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.5, y: 39.75 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35, y: 16.25 },
-            { x: 27, y: 16.25 },
-            { x: 33, y: 27.75 },
-            { x: 35, y: 27.75 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 27.75 },
-            { x: 33, y: 27.75 },
-            { x: 27, y: 16.25 },
-            { x: 25, y: 16.25 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -2844,56 +2420,107 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-mirror-2": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 14, y: 24.5 }, TR: { x: 7, y: 24.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 46, y: 19.5 }, TR: { x: 53, y: 19.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 20.302, y: 28 }, TR: { x: 16.747, y: 29.833 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 39.698, y: 16 }, TR: { x: 43.253, y: 14.167 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 13.964, y: 7.497 },
+            TR: { x: 10.964, y: 10.143 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 46.036, y: 36.503 },
+            TR: { x: 49.036, y: 33.857 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 14.003, y: 7.437 }, TR: { x: 19.484, y: 4.996 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 45.997, y: 36.563 },
+            TR: { x: 40.516, y: 39.004 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 35.5, y: 4 }, TR: { x: 35.5, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 24.5, y: 40 }, TR: { x: 24.5, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: {
+            TL: { x: 40.838, y: 6.004 },
+            TR: { x: 50.003, y: 10.005 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: {
+            TL: { x: 19.162, y: 37.996 },
+            TR: { x: 9.997, y: 33.995 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 49.998, y: 9.997 }, TR: { x: 53.315, y: 4.997 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 10.002, y: 34.003 },
+            TR: { x: 6.685, y: 39.003 },
+          },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 14, y: 13 },
-            { x: 14, y: 24.5 },
-            { x: 7, y: 24.5 },
-            { x: 7, y: 13 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 46, y: 31 },
-            { x: 46, y: 19.5 },
-            { x: 53, y: 19.5 },
-            { x: 53, y: 31 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17.553, y: 22.667 },
-            { x: 20.302, y: 28 },
-            { x: 16.747, y: 29.833 },
-            { x: 13.998, y: 24.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 42.447, y: 21.333 },
-            { x: 39.698, y: 16 },
-            { x: 43.253, y: 14.167 },
-            { x: 46.002, y: 19.5 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -2979,30 +2606,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 24.711, y: 17.391 },
             { x: 24.711, y: 19.391 },
             { x: 25.211, y: 19.391 },
@@ -3053,30 +2656,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 29.26, y: 26.39 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 9.996, y: 2.997 },
-            { x: 13.964, y: 7.497 },
-            { x: 10.964, y: 10.143 },
-            { x: 6.996, y: 5.643 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 50.004, y: 41.003 },
-            { x: 46.036, y: 36.503 },
-            { x: 49.036, y: 33.857 },
-            { x: 53.004, y: 38.357 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -3139,30 +2718,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 14.003, y: 7.437 },
-            { x: 19.484, y: 4.996 },
-            { x: 20.297, y: 6.823 },
-            { x: 14.816, y: 9.264 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 45.997, y: 36.563 },
-            { x: 40.516, y: 39.004 },
-            { x: 39.703, y: 37.177 },
-            { x: 45.184, y: 34.736 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 13.546, y: 7.64 },
             { x: 19.941, y: 4.793 },
             { x: 20.754, y: 6.62 },
@@ -3181,30 +2736,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 45.641, y: 34.533 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24, y: 4 },
-            { x: 35.5, y: 4 },
-            { x: 35.5, y: 11 },
-            { x: 24, y: 11 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 36, y: 40 },
-            { x: 24.5, y: 40 },
-            { x: 24.5, y: 33 },
-            { x: 36, y: 33 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -3261,30 +2792,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.007, y: 36.503 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 40.838, y: 6.004 },
-            { x: 50.003, y: 10.005 },
-            { x: 49.002, y: 12.296 },
-            { x: 39.837, y: 8.295 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 19.162, y: 37.996 },
-            { x: 9.997, y: 33.995 },
-            { x: 10.998, y: 31.704 },
-            { x: 20.163, y: 35.705 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -3379,30 +2886,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 49.998, y: 9.997 },
-            { x: 53.315, y: 4.997 },
-            { x: 54.982, y: 6.103 },
-            { x: 51.665, y: 11.103 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 10.002, y: 34.003 },
-            { x: 6.685, y: 39.003 },
-            { x: 5.018, y: 37.897 },
-            { x: 8.335, y: 32.897 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 50.553, y: 10.065 },
             { x: 53.594, y: 5.482 },
             { x: 54.427, y: 6.035 },
@@ -3433,32 +2916,98 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-purge-the-foe-3": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 53, y: 16.5 }, TR: { x: 46, y: 16.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 7, y: 27.5 }, TR: { x: 14, y: 27.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 41, y: 8 }, TR: { x: 41, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 19, y: 36 }, TR: { x: 19, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 35, y: 4 }, TR: { x: 35, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 25, y: 40 }, TR: { x: 25, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 25, y: 16.25 }, TR: { x: 33, y: 16.25 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 41, y: 42 }, TR: { x: 34, y: 42 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 19, y: 2 }, TR: { x: 26, y: 2 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 49.019, y: 26.331 },
+            TR: { x: 52.001, y: 28.997 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 10.981, y: 17.669 },
+            TR: { x: 7.999, y: 15.003 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 47.998, y: 33.453 },
+            TR: { x: 52.386, y: 37.545 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 12.002, y: 10.547 }, TR: { x: 7.614, y: 6.455 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 44, y: 17 }, TR: { x: 44, y: 27 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 16, y: 27 }, TR: { x: 16, y: 17 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 53, y: 5 },
-            { x: 53, y: 16.5 },
-            { x: 46, y: 16.5 },
-            { x: 46, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 7, y: 39 },
-            { x: 7, y: 27.5 },
-            { x: 14, y: 27.5 },
-            { x: 14, y: 39 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -3520,54 +3069,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 35, y: 8 },
-            { x: 41, y: 8 },
-            { x: 41, y: 12 },
-            { x: 35, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 36 },
-            { x: 19, y: 36 },
-            { x: 19, y: 32 },
-            { x: 25, y: 32 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35, y: 4 },
-            { x: 35, y: 10 },
-            { x: 33, y: 10 },
-            { x: 33, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 40 },
-            { x: 25, y: 34 },
-            { x: 27, y: 34 },
-            { x: 27, y: 40 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 34.5, y: 4.25 },
             { x: 34.5, y: 9.75 },
             { x: 33.5, y: 9.75 },
@@ -3610,30 +3111,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 24, y: 35.5 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35, y: 16.25 },
-            { x: 27, y: 16.25 },
-            { x: 33, y: 27.75 },
-            { x: 35, y: 27.75 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 27.75 },
-            { x: 33, y: 27.75 },
-            { x: 27, y: 16.25 },
-            { x: 25, y: 16.25 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -3696,30 +3173,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 41, y: 30.5 },
-            { x: 41, y: 42 },
-            { x: 34, y: 42 },
-            { x: 34, y: 30.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 19, y: 13.5 },
-            { x: 19, y: 2 },
-            { x: 26, y: 2 },
-            { x: 26, y: 13.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 19.375, y: 5.455 },
             { x: 19.375, y: 2.455 },
             { x: 25.875, y: 2.455 },
@@ -3770,30 +3223,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.53, y: 8.66 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 45.019, y: 30.803 },
-            { x: 49.019, y: 26.331 },
-            { x: 52.001, y: 28.997 },
-            { x: 48.001, y: 33.469 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 14.981, y: 13.197 },
-            { x: 10.981, y: 17.669 },
-            { x: 7.999, y: 15.003 },
-            { x: 11.999, y: 10.531 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -3856,30 +3285,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 47.998, y: 33.453 },
-            { x: 52.386, y: 37.545 },
-            { x: 51.022, y: 39.007 },
-            { x: 46.634, y: 34.915 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 12.002, y: 10.547 },
-            { x: 7.614, y: 6.455 },
-            { x: 8.978, y: 4.993 },
-            { x: 13.366, y: 9.085 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 47.632, y: 33.112 },
             { x: 52.752, y: 37.886 },
             { x: 51.388, y: 39.348 },
@@ -3898,30 +3303,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.732, y: 9.426 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 44, y: 17 },
-            { x: 44, y: 27 },
-            { x: 41.5, y: 27 },
-            { x: 41.5, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16, y: 27 },
-            { x: 16, y: 17 },
-            { x: 18.5, y: 17 },
-            { x: 18.5, y: 27 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -4022,32 +3403,92 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-mirror-3": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 25, y: 16.25 }, TR: { x: 33, y: 16.25 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 30, y: 9 }, TR: { x: 30, y: 13 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 30, y: 35 }, TR: { x: 30, y: 31 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 24, y: 5 }, TR: { x: 24, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 36, y: 39 }, TR: { x: 36, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 55, y: 31 }, TR: { x: 55, y: 38 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 5, y: 13 }, TR: { x: 5, y: 6 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 44, y: 16.5 }, TR: { x: 50, y: 24.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 16, y: 27.5 }, TR: { x: 10, y: 19.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: {
+            TL: { x: 56.995, y: 11.996 },
+            TR: { x: 52.126, y: 17.024 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 3.005, y: 32.004 }, TR: { x: 7.874, y: 26.976 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 43, y: 11 }, TR: { x: 43, y: 15 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 17, y: 33 }, TR: { x: 17, y: 29 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 37, y: 5 }, TR: { x: 37, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 23, y: 39 }, TR: { x: 23, y: 33 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35, y: 16.25 },
-            { x: 27, y: 16.25 },
-            { x: 33, y: 27.75 },
-            { x: 35, y: 27.75 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 27.75 },
-            { x: 33, y: 27.75 },
-            { x: 27, y: 16.25 },
-            { x: 25, y: 16.25 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -4109,30 +3550,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 24, y: 9 },
-            { x: 30, y: 9 },
-            { x: 30, y: 13 },
-            { x: 24, y: 13 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 36, y: 35 },
-            { x: 30, y: 35 },
-            { x: 30, y: 31 },
-            { x: 36, y: 31 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 29, y: 9.5 },
             { x: 29, y: 12.5 },
             { x: 25, y: 12.5 },
@@ -4157,30 +3574,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 24, y: 5 },
-            { x: 24, y: 11 },
-            { x: 22, y: 11 },
-            { x: 22, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 36, y: 39 },
-            { x: 36, y: 33 },
-            { x: 38, y: 33 },
-            { x: 38, y: 39 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 23.5, y: 5.25 },
             { x: 23.5, y: 10.75 },
             { x: 22.5, y: 10.75 },
@@ -4199,30 +3592,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.5, y: 38.75 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43.5, y: 31 },
-            { x: 55, y: 31 },
-            { x: 55, y: 38 },
-            { x: 43.5, y: 38 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16.5, y: 13 },
-            { x: 5, y: 13 },
-            { x: 5, y: 6 },
-            { x: 16.5, y: 6 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -4279,30 +3648,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 5.297, y: 9.693 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 44, y: 16.5 },
-            { x: 50, y: 24.5 },
-            { x: 48, y: 26 },
-            { x: 42, y: 18 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16, y: 27.5 },
-            { x: 10, y: 19.5 },
-            { x: 12, y: 18 },
-            { x: 18, y: 26 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -4397,30 +3742,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 48.734, y: 3.996 },
-            { x: 56.995, y: 11.996 },
-            { x: 52.126, y: 17.024 },
-            { x: 43.865, y: 9.024 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11.266, y: 40.004 },
-            { x: 3.005, y: 32.004 },
-            { x: 7.874, y: 26.976 },
-            { x: 16.135, y: 34.976 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 54.425, y: 9.941 },
             { x: 56.58, y: 12.028 },
             { x: 52.058, y: 16.697 },
@@ -4471,30 +3792,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 12.339, y: 31.822 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 37, y: 11 },
-            { x: 43, y: 11 },
-            { x: 43, y: 15 },
-            { x: 37, y: 15 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 23, y: 33 },
-            { x: 17, y: 33 },
-            { x: 17, y: 29 },
-            { x: 23, y: 29 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -4557,30 +3854,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 37, y: 5 },
-            { x: 37, y: 11 },
-            { x: 35, y: 11 },
-            { x: 35, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 23, y: 39 },
-            { x: 23, y: 33 },
-            { x: 25, y: 33 },
-            { x: 25, y: 39 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 37, y: 4.5 },
             { x: 37, y: 11.5 },
             { x: 35, y: 11.5 },
@@ -4611,32 +3884,89 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-reconnaissance-3": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 51, y: 22 }, TR: { x: 51, y: 26 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 9, y: 22 }, TR: { x: 9, y: 18 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 45, y: 16 }, TR: { x: 45, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 15, y: 28 }, TR: { x: 15, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 53, y: 5 }, TR: { x: 53, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 7, y: 39 }, TR: { x: 7, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 35, y: 5 }, TR: { x: 41, y: 13 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 25, y: 39 }, TR: { x: 19, y: 31 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 30, y: 9 }, TR: { x: 30, y: 13 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 30, y: 35 }, TR: { x: 30, y: 31 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 24, y: 5 }, TR: { x: 24, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 36, y: 39 }, TR: { x: 36, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 54, y: 31 }, TR: { x: 54, y: 38 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 6, y: 13 }, TR: { x: 6, y: 6 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -4692,30 +4022,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.299, y: 26.449 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 45, y: 22 },
-            { x: 51, y: 22 },
-            { x: 51, y: 26 },
-            { x: 45, y: 26 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15, y: 22 },
-            { x: 9, y: 22 },
-            { x: 9, y: 18 },
-            { x: 15, y: 18 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -4778,30 +4084,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 45, y: 16 },
-            { x: 45, y: 22 },
-            { x: 43, y: 22 },
-            { x: 43, y: 16 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15, y: 28 },
-            { x: 15, y: 22 },
-            { x: 17, y: 22 },
-            { x: 17, y: 28 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 45, y: 15.5 },
             { x: 45, y: 22.5 },
             { x: 43, y: 22.5 },
@@ -4820,30 +4102,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 17, y: 28.5 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41.5, y: 5 },
-            { x: 53, y: 5 },
-            { x: 53, y: 12 },
-            { x: 41.5, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 18.5, y: 39 },
-            { x: 7, y: 39 },
-            { x: 7, y: 32 },
-            { x: 18.5, y: 32 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -4900,30 +4158,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 17.647, y: 35.403 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35, y: 5 },
-            { x: 41, y: 13 },
-            { x: 39, y: 14.5 },
-            { x: 33, y: 6.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25, y: 39 },
-            { x: 19, y: 31 },
-            { x: 21, y: 29.5 },
-            { x: 27, y: 37.5 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -5018,30 +4252,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 24, y: 9 },
-            { x: 30, y: 9 },
-            { x: 30, y: 13 },
-            { x: 24, y: 13 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 36, y: 35 },
-            { x: 30, y: 35 },
-            { x: 30, y: 31 },
-            { x: 36, y: 31 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 29, y: 9.5 },
             { x: 29, y: 12.5 },
             { x: 25, y: 12.5 },
@@ -5066,30 +4276,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 24, y: 5 },
-            { x: 24, y: 11 },
-            { x: 22, y: 11 },
-            { x: 22, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 36, y: 39 },
-            { x: 36, y: 33 },
-            { x: 38, y: 33 },
-            { x: 38, y: 39 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 23.5, y: 5.25 },
             { x: 23.5, y: 10.75 },
             { x: 22.5, y: 10.75 },
@@ -5108,30 +4294,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 37.5, y: 38.75 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 42.5, y: 31 },
-            { x: 54, y: 31 },
-            { x: 54, y: 38 },
-            { x: 42.5, y: 38 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17.5, y: 13 },
-            { x: 6, y: 13 },
-            { x: 6, y: 6 },
-            { x: 17.5, y: 6 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -5200,32 +4362,101 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-disruption-1": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 16.5, y: 10 }, TR: { x: 16.5, y: 17 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 43.5, y: 34 }, TR: { x: 43.5, y: 27 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 16.54, y: 3 }, TR: { x: 18.078, y: 6.692 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 43.46, y: 41 }, TR: { x: 41.922, y: 37.308 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 25.5, y: 5 }, TR: { x: 33.5, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 34.5, y: 39 }, TR: { x: 26.5, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 55, y: 4 }, TR: { x: 55, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 5, y: 40 }, TR: { x: 5, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 49.434, y: 19.047 }, TR: { x: 46.736, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 10.566, y: 24.953 }, TR: { x: 13.264, y: 22 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 47.614, y: 21.095 },
+            TR: { x: 52.002, y: 17.003 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 12.386, y: 22.905 },
+            TR: { x: 7.998, y: 26.997 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 33.497, y: 11.005 },
+            TR: { x: 37.969, y: 7.005 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 26.503, y: 32.995 },
+            TR: { x: 22.031, y: 36.995 },
+          },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -5281,30 +4512,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 30.94, y: 26.7 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 5, y: 10 },
-            { x: 16.5, y: 10 },
-            { x: 16.5, y: 17 },
-            { x: 5, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 55, y: 34 },
-            { x: 43.5, y: 34 },
-            { x: 43.5, y: 27 },
-            { x: 55, y: 27 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -5367,30 +4574,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 11.002, y: 5.308 },
-            { x: 16.54, y: 3 },
-            { x: 18.078, y: 6.692 },
-            { x: 12.54, y: 9 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 48.998, y: 38.692 },
-            { x: 43.46, y: 41 },
-            { x: 41.922, y: 37.308 },
-            { x: 47.46, y: 35 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 11.462, y: 5.459 },
             { x: 13.308, y: 4.69 },
             { x: 13.5, y: 5.151 },
@@ -5441,30 +4624,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.536, y: 40.228 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 25.5, y: 5 },
-            { x: 33.5, y: 11 },
-            { x: 32, y: 13 },
-            { x: 24, y: 7 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 34.5, y: 39 },
-            { x: 26.5, y: 33 },
-            { x: 28, y: 31 },
-            { x: 36, y: 37 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -5559,30 +4718,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 43.5, y: 4 },
-            { x: 55, y: 4 },
-            { x: 55, y: 11 },
-            { x: 43.5, y: 11 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16.5, y: 40 },
-            { x: 5, y: 40 },
-            { x: 5, y: 33 },
-            { x: 16.5, y: 33 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 16.08, y: 33.38 },
             { x: 11.08, y: 33.38 },
             { x: 11.08, y: 33.88 },
@@ -5639,30 +4774,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 45.004, y: 15 },
-            { x: 49.434, y: 19.047 },
-            { x: 46.736, y: 22 },
-            { x: 42.306, y: 17.953 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 14.996, y: 29 },
-            { x: 10.566, y: 24.953 },
-            { x: 13.264, y: 22 },
-            { x: 17.694, y: 26.047 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.358, y: 18.741 },
             { x: 46.335, y: 20.956 },
             { x: 43.382, y: 18.259 },
@@ -5687,30 +4798,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 47.614, y: 21.095 },
-            { x: 52.002, y: 17.003 },
-            { x: 53.366, y: 18.465 },
-            { x: 48.978, y: 22.557 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 12.386, y: 22.905 },
-            { x: 7.998, y: 26.997 },
-            { x: 6.634, y: 25.535 },
-            { x: 11.022, y: 21.443 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.138, y: 21.29 },
             { x: 52.16, y: 17.539 },
             { x: 52.842, y: 18.27 },
@@ -5729,30 +4816,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.18, y: 21.979 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 33.497, y: 11.005 },
-            { x: 37.969, y: 7.005 },
-            { x: 39.303, y: 8.495 },
-            { x: 34.831, y: 12.495 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26.503, y: 32.995 },
-            { x: 22.031, y: 36.995 },
-            { x: 20.697, y: 35.505 },
-            { x: 25.169, y: 31.505 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -5789,32 +4852,104 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-disruption-2": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 32, y: 9 }, TR: { x: 32, y: 13 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 28, y: 35 }, TR: { x: 28, y: 31 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 26, y: 5 }, TR: { x: 26, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 34, y: 39 }, TR: { x: 34, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 37, y: 4 }, TR: { x: 41.706, y: 12.824 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 23, y: 40 }, TR: { x: 18.294, y: 31.176 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 49.356, y: 20.979 },
+            TR: { x: 46.04, y: 23.215 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 10.644, y: 23.021 },
+            TR: { x: 13.96, y: 20.785 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 57, y: 5 }, TR: { x: 57, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 3, y: 39 }, TR: { x: 3, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: {
+            TL: { x: 53.998, y: 35.999 },
+            TR: { x: 48.253, y: 39.999 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 6.002, y: 8.001 }, TR: { x: 11.747, y: 4.001 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 48.641, y: 22.024 },
+            TR: { x: 51.997, y: 26.998 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 11.359, y: 21.976 },
+            TR: { x: 8.003, y: 17.002 },
+          },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -5876,30 +5011,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 26, y: 9 },
-            { x: 32, y: 9 },
-            { x: 32, y: 13 },
-            { x: 26, y: 13 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 34, y: 35 },
-            { x: 28, y: 35 },
-            { x: 28, y: 31 },
-            { x: 34, y: 31 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 31, y: 9.5 },
             { x: 31, y: 12.5 },
             { x: 27, y: 12.5 },
@@ -5924,30 +5035,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 26, y: 5 },
-            { x: 26, y: 11 },
-            { x: 24, y: 11 },
-            { x: 24, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 34, y: 39 },
-            { x: 34, y: 33 },
-            { x: 36, y: 33 },
-            { x: 36, y: 39 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 25.5, y: 5.25 },
             { x: 25.5, y: 10.75 },
             { x: 24.5, y: 10.75 },
@@ -5966,30 +5053,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.5, y: 38.75 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 37, y: 4 },
-            { x: 41.706, y: 12.824 },
-            { x: 39.5, y: 14 },
-            { x: 34.794, y: 5.176 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 23, y: 40 },
-            { x: 18.294, y: 31.176 },
-            { x: 20.5, y: 30 },
-            { x: 25.206, y: 38.824 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -6084,30 +5147,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 46, y: 16.005 },
-            { x: 49.356, y: 20.979 },
-            { x: 46.04, y: 23.215 },
-            { x: 42.684, y: 18.241 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 14, y: 27.995 },
-            { x: 10.644, y: 23.021 },
-            { x: 13.96, y: 20.785 },
-            { x: 17.316, y: 25.759 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 45.943, y: 16.486 },
             { x: 47.061, y: 18.144 },
             { x: 46.647, y: 18.423 },
@@ -6158,30 +5197,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 11.416, y: 22.943 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 45.5, y: 5 },
-            { x: 57, y: 5 },
-            { x: 57, y: 12 },
-            { x: 45.5, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 14.5, y: 39 },
-            { x: 3, y: 39 },
-            { x: 3, y: 32 },
-            { x: 14.5, y: 32 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -6244,54 +5259,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 47.427, y: 26.561 },
-            { x: 53.998, y: 35.999 },
-            { x: 48.253, y: 39.999 },
-            { x: 41.682, y: 30.561 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 12.573, y: 17.439 },
-            { x: 6.002, y: 8.001 },
-            { x: 11.747, y: 4.001 },
-            { x: 18.318, y: 13.439 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 48.641, y: 22.024 },
-            { x: 51.997, y: 26.998 },
-            { x: 50.339, y: 28.116 },
-            { x: 46.983, y: 23.142 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11.359, y: 21.976 },
-            { x: 8.003, y: 17.002 },
-            { x: 9.661, y: 15.884 },
-            { x: 13.017, y: 20.858 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.362, y: 21.609 },
             { x: 52.276, y: 27.412 },
             { x: 50.618, y: 28.531 },
@@ -6322,32 +5289,89 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-disruption-3": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 36, y: 11 }, TR: { x: 32, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 24, y: 33 }, TR: { x: 28, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 34, y: 11 }, TR: { x: 40, y: 11 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 26, y: 33 }, TR: { x: 20, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 41, y: 42 }, TR: { x: 34, y: 42 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 19, y: 2 }, TR: { x: 26, y: 2 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 50, y: 27.5 }, TR: { x: 43, y: 27.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 10, y: 16.5 }, TR: { x: 17, y: 16.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 49, y: 30 }, TR: { x: 49, y: 40 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 11, y: 14 }, TR: { x: 11, y: 4 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 49, y: 10 }, TR: { x: 45, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 11, y: 34 }, TR: { x: 15, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 49, y: 10 }, TR: { x: 55, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 11, y: 34 }, TR: { x: 5, y: 34 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -6409,30 +5433,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 36, y: 5 },
-            { x: 36, y: 11 },
-            { x: 32, y: 11 },
-            { x: 32, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24, y: 39 },
-            { x: 24, y: 33 },
-            { x: 28, y: 33 },
-            { x: 28, y: 39 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 35.5, y: 10 },
             { x: 32.5, y: 10 },
             { x: 32.5, y: 6 },
@@ -6457,30 +5457,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 34, y: 11 },
-            { x: 40, y: 11 },
-            { x: 40, y: 13 },
-            { x: 34, y: 13 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26, y: 33 },
-            { x: 20, y: 33 },
-            { x: 20, y: 31 },
-            { x: 26, y: 31 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 34.25, y: 11.5 },
             { x: 39.75, y: 11.5 },
             { x: 39.75, y: 12.5 },
@@ -6499,30 +5475,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 25.75, y: 31.5 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41, y: 30.5 },
-            { x: 41, y: 42 },
-            { x: 34, y: 42 },
-            { x: 34, y: 30.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 19, y: 13.5 },
-            { x: 19, y: 2 },
-            { x: 26, y: 2 },
-            { x: 26, y: 13.5 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -6585,30 +5537,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 50, y: 16 },
-            { x: 50, y: 27.5 },
-            { x: 43, y: 27.5 },
-            { x: 43, y: 16 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 10, y: 28 },
-            { x: 10, y: 16.5 },
-            { x: 17, y: 16.5 },
-            { x: 17, y: 28 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 16.56, y: 27.64 },
             { x: 16.56, y: 22.64 },
             { x: 16.06, y: 22.64 },
@@ -6659,30 +5587,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.603, y: 16.857 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 49, y: 30 },
-            { x: 49, y: 40 },
-            { x: 46.5, y: 40 },
-            { x: 46.5, y: 30 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11, y: 14 },
-            { x: 11, y: 4 },
-            { x: 13.5, y: 4 },
-            { x: 13.5, y: 14 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -6777,30 +5681,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 49, y: 4 },
-            { x: 49, y: 10 },
-            { x: 45, y: 10 },
-            { x: 45, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11, y: 40 },
-            { x: 11, y: 34 },
-            { x: 15, y: 34 },
-            { x: 15, y: 40 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.683, y: 4.367 },
             { x: 48.683, y: 6.367 },
             { x: 48.183, y: 6.367 },
@@ -6857,30 +5737,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 49, y: 10 },
-            { x: 55, y: 10 },
-            { x: 55, y: 12 },
-            { x: 49, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11, y: 34 },
-            { x: 5, y: 34 },
-            { x: 5, y: 32 },
-            { x: 11, y: 32 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.5, y: 10 },
             { x: 55.5, y: 10 },
             { x: 55.5, y: 12 },
@@ -6911,32 +5767,79 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "sweeping-engagement-1": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 24.69, y: 3.173 }, TR: { x: 31.997, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 35.31, y: 40.827 }, TR: { x: 28.003, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 36.482, y: 6.012 }, TR: { x: 39.141, y: 9 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 23.518, y: 37.988 }, TR: { x: 20.859, y: 35 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 54, y: 5 }, TR: { x: 54, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 6, y: 39 }, TR: { x: 6, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 46.988, y: 20.482 }, TR: { x: 44, y: 23.141 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 13.012, y: 23.518 }, TR: { x: 16, y: 20.859 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 55, y: 27 }, TR: { x: 55, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 5, y: 17 }, TR: { x: 5, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 18.5, y: 4 }, TR: { x: 18.5, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 41.5, y: 40 }, TR: { x: 41.5, y: 34 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -6992,30 +5895,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.399, y: 19.491 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.69, y: 3.173 },
-            { x: 31.997, y: 10 },
-            { x: 30.29, y: 11.827 },
-            { x: 22.983, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.31, y: 40.827 },
-            { x: 28.003, y: 34 },
-            { x: 29.71, y: 32.173 },
-            { x: 37.017, y: 39 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -7110,30 +5989,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 31.999, y: 10 },
-            { x: 36.482, y: 6.012 },
-            { x: 39.141, y: 9 },
-            { x: 34.658, y: 12.988 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 28.001, y: 34 },
-            { x: 23.518, y: 37.988 },
-            { x: 20.859, y: 35 },
-            { x: 25.342, y: 31.012 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 32.484, y: 9.993 },
             { x: 33.978, y: 8.663 },
             { x: 34.31, y: 9.037 },
@@ -7184,30 +6039,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 23.338, y: 37.234 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 42.5, y: 5 },
-            { x: 54, y: 5 },
-            { x: 54, y: 12 },
-            { x: 42.5, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17.5, y: 39 },
-            { x: 6, y: 39 },
-            { x: 6, y: 32 },
-            { x: 17.5, y: 32 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -7270,30 +6101,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 43, y: 15.999 },
-            { x: 46.988, y: 20.482 },
-            { x: 44, y: 23.141 },
-            { x: 40.012, y: 18.658 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 17, y: 28.001 },
-            { x: 13.012, y: 23.518 },
-            { x: 16, y: 20.859 },
-            { x: 19.988, y: 25.342 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 45.95, y: 20.067 },
             { x: 43.709, y: 22.061 },
             { x: 41.05, y: 19.073 },
@@ -7312,30 +6119,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 16.709, y: 26.921 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43.5, y: 27 },
-            { x: 55, y: 27 },
-            { x: 55, y: 34 },
-            { x: 43.5, y: 34 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16.5, y: 17 },
-            { x: 5, y: 17 },
-            { x: 5, y: 10 },
-            { x: 16.5, y: 10 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -7398,30 +6181,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 18.5, y: 4 },
-            { x: 18.5, y: 10 },
-            { x: 16.5, y: 10 },
-            { x: 16.5, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41.5, y: 40 },
-            { x: 41.5, y: 34 },
-            { x: 43.5, y: 34 },
-            { x: 43.5, y: 40 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 18.5, y: 3.5 },
             { x: 18.5, y: 10.5 },
             { x: 16.5, y: 10.5 },
@@ -7452,32 +6211,101 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-priority-assets-1": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 55, y: 16.5 }, TR: { x: 48, y: 16.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 5, y: 27.5 }, TR: { x: 12, y: 27.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 47, y: 19 }, TR: { x: 53, y: 27 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 13, y: 25 }, TR: { x: 7, y: 17 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 41.439, y: 8.91 }, TR: { x: 38.162, y: 11.205 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 18.561, y: 35.09 },
+            TR: { x: 21.838, y: 32.795 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 39.798, y: 10.069 },
+            TR: { x: 43.24, y: 14.984 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 20.202, y: 33.931 },
+            TR: { x: 16.76, y: 29.016 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: {
+            TL: { x: 50.998, y: 36.999 },
+            TR: { x: 45.253, y: 40.999 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 9.002, y: 7.001 }, TR: { x: 14.747, y: 3.001 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 33, y: 14.5 }, TR: { x: 41, y: 14.5 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 27, y: 29.5 }, TR: { x: 19, y: 29.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 34, y: 32 }, TR: { x: 34, y: 36 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 26, y: 12 }, TR: { x: 26, y: 8 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 36, y: 34 }, TR: { x: 36, y: 40 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 24, y: 10 }, TR: { x: 24, y: 4 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 55, y: 5 },
-            { x: 55, y: 16.5 },
-            { x: 48, y: 16.5 },
-            { x: 48, y: 5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 5, y: 39 },
-            { x: 5, y: 27.5 },
-            { x: 12, y: 27.5 },
-            { x: 12, y: 39 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -7533,30 +6361,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.693, y: 38.633 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 47, y: 19 },
-            { x: 53, y: 27 },
-            { x: 51, y: 28.5 },
-            { x: 45, y: 20.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 13, y: 25 },
-            { x: 7, y: 17 },
-            { x: 9, y: 15.5 },
-            { x: 15, y: 23.5 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -7651,30 +6455,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 37.998, y: 3.995 },
-            { x: 41.439, y: 8.91 },
-            { x: 38.162, y: 11.205 },
-            { x: 34.721, y: 6.29 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 22.002, y: 40.005 },
-            { x: 18.561, y: 35.09 },
-            { x: 21.838, y: 32.795 },
-            { x: 25.279, y: 37.71 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 37.948, y: 4.477 },
             { x: 39.096, y: 6.116 },
             { x: 38.686, y: 6.402 },
@@ -7731,30 +6511,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 39.798, y: 10.069 },
-            { x: 43.24, y: 14.984 },
-            { x: 41.602, y: 16.131 },
-            { x: 38.16, y: 11.216 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 20.202, y: 33.931 },
-            { x: 16.76, y: 29.016 },
-            { x: 18.398, y: 27.869 },
-            { x: 21.84, y: 32.784 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 39.512, y: 9.659 },
             { x: 43.527, y: 15.393 },
             { x: 41.888, y: 16.541 },
@@ -7773,30 +6529,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 22.127, y: 33.193 },
           ],
           label: "catwalk",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 44.427, y: 27.561 },
-            { x: 50.998, y: 36.999 },
-            { x: 45.253, y: 40.999 },
-            { x: 38.682, y: 31.561 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15.573, y: 16.439 },
-            { x: 9.002, y: 7.001 },
-            { x: 14.747, y: 3.001 },
-            { x: 21.318, y: 12.439 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -7859,30 +6591,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 33, y: 26 },
-            { x: 41, y: 26 },
-            { x: 35, y: 14.5 },
-            { x: 33, y: 14.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 27, y: 18 },
-            { x: 19, y: 18 },
-            { x: 25, y: 29.5 },
-            { x: 27, y: 29.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 33.101, y: 14.661 },
             { x: 33.101, y: 16.661 },
             { x: 33.601, y: 16.661 },
@@ -7939,30 +6647,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 28, y: 32 },
-            { x: 34, y: 32 },
-            { x: 34, y: 36 },
-            { x: 28, y: 36 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 32, y: 12 },
-            { x: 26, y: 12 },
-            { x: 26, y: 8 },
-            { x: 32, y: 8 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 33, y: 32.5 },
             { x: 33, y: 35.5 },
             { x: 29, y: 35.5 },
@@ -7981,30 +6665,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 31, y: 11.5 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 36, y: 34 },
-            { x: 36, y: 40 },
-            { x: 34, y: 40 },
-            { x: 34, y: 34 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24, y: 10 },
-            { x: 24, y: 4 },
-            { x: 26, y: 4 },
-            { x: 26, y: 10 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -8041,56 +6701,95 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-priority-assets-2": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: {
+            TL: { x: 35.834, y: 25.715 },
+            TR: { x: 28.478, y: 22.573 },
+          },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: {
+            TL: { x: 24.166, y: 18.285 },
+            TR: { x: 31.522, y: 21.427 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 47.5, y: 22 }, TR: { x: 47.5, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 12.5, y: 22 }, TR: { x: 12.5, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 51, y: 38 }, TR: { x: 47, y: 38 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 9, y: 6 }, TR: { x: 13, y: 6 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 14, y: 38 }, TR: { x: 7, y: 38 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 46, y: 6 }, TR: { x: 53, y: 6 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 40, y: 32 }, TR: { x: 36, y: 32 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 20, y: 12 }, TR: { x: 24, y: 12 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 41, y: 34 }, TR: { x: 41, y: 41 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 19, y: 10 }, TR: { x: 19, y: 3 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 37, y: 4 }, TR: { x: 37, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 23, y: 40 }, TR: { x: 23, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 37, y: 8 }, TR: { x: 43, y: 8 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 23, y: 36 }, TR: { x: 17, y: 36 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 40.352, y: 15.14 },
-            { x: 32.995, y: 11.997 },
-            { x: 33.995, y: 24.93 },
-            { x: 35.834, y: 25.715 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 19.648, y: 28.86 },
-            { x: 27.005, y: 32.003 },
-            { x: 26.005, y: 19.07 },
-            { x: 24.166, y: 18.285 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 47.5, y: 22 },
-            { x: 47.5, y: 32 },
-            { x: 45, y: 32 },
-            { x: 45, y: 22 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 12.5, y: 22 },
-            { x: 12.5, y: 12 },
-            { x: 15, y: 12 },
-            { x: 15, y: 22 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -8184,30 +6883,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 51, y: 32 },
-            { x: 51, y: 38 },
-            { x: 47, y: 38 },
-            { x: 47, y: 32 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 9, y: 12 },
-            { x: 9, y: 6 },
-            { x: 13, y: 6 },
-            { x: 13, y: 12 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 50.683, y: 32.367 },
             { x: 50.683, y: 34.367 },
             { x: 50.183, y: 34.367 },
@@ -8264,30 +6939,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 14, y: 26.5 },
-            { x: 14, y: 38 },
-            { x: 7, y: 38 },
-            { x: 7, y: 26.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 46, y: 17.5 },
-            { x: 46, y: 6 },
-            { x: 53, y: 6 },
-            { x: 53, y: 17.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 39.66, y: 15.33 },
             { x: 35.062, y: 13.366 },
             { x: 34.866, y: 13.825 },
@@ -8338,30 +6989,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 26.232, y: 19.645 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 40, y: 26 },
-            { x: 40, y: 32 },
-            { x: 36, y: 32 },
-            { x: 36, y: 26 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 20, y: 18 },
-            { x: 20, y: 12 },
-            { x: 24, y: 12 },
-            { x: 24, y: 18 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -8448,54 +7075,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 29.5, y: 34 },
-            { x: 41, y: 34 },
-            { x: 41, y: 41 },
-            { x: 29.5, y: 41 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 30.5, y: 10 },
-            { x: 19, y: 10 },
-            { x: 19, y: 3 },
-            { x: 30.5, y: 3 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 37, y: 4 },
-            { x: 37, y: 10 },
-            { x: 35, y: 10 },
-            { x: 35, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 23, y: 40 },
-            { x: 23, y: 34 },
-            { x: 25, y: 34 },
-            { x: 25, y: 40 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 36.5, y: 4.25 },
             { x: 36.5, y: 9.75 },
             { x: 35.5, y: 9.75 },
@@ -8514,30 +7093,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 24.5, y: 39.75 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 37, y: 8 },
-            { x: 43, y: 8 },
-            { x: 43, y: 10 },
-            { x: 37, y: 10 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 23, y: 36 },
-            { x: 17, y: 36 },
-            { x: 17, y: 34 },
-            { x: 23, y: 34 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -8574,32 +7129,113 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-priority-assets-3": {
-      buildings: [],
+      buildings: [
+        {
+          type: "large-area",
+          corners: { TL: { x: 44, y: 3 }, TR: { x: 44, y: 10 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 16, y: 41 }, TR: { x: 16, y: 34 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 22.525, y: 6.997 }, TR: { x: 32.065, y: 9.998 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: {
+            TL: { x: 37.475, y: 37.003 },
+            TR: { x: 27.935, y: 34.002 },
+          },
+          mirror: false,
+        },
+        {
+          type: "shoe-mirror",
+          corners: {
+            TL: { x: 18.775, y: 19.328 },
+            TR: { x: 25.501, y: 14.997 },
+          },
+          mirror: false,
+        },
+        {
+          type: "shoe-mirror",
+          corners: {
+            TL: { x: 41.225, y: 24.672 },
+            TR: { x: 34.499, y: 29.003 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 48.47, y: 16.933 },
+            TR: { x: 52.998, y: 12.997 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 11.53, y: 27.067 }, TR: { x: 7.002, y: 31.003 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 49.938, y: 15.532 },
+            TR: { x: 46.919, y: 18.156 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 10.062, y: 28.468 },
+            TR: { x: 13.081, y: 25.844 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 14.5, y: 14 }, TR: { x: 14.5, y: 21 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 45.5, y: 30 }, TR: { x: 45.5, y: 23 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 12.139, y: 6.999 }, TR: { x: 9.473, y: 9.981 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 47.861, y: 37.001 },
+            TR: { x: 50.527, y: 34.019 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 12.001, y: 7.152 }, TR: { x: 17.602, y: 5.001 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 47.999, y: 36.848 },
+            TR: { x: 42.398, y: 38.999 },
+          },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 32.5, y: 3 },
-            { x: 44, y: 3 },
-            { x: 44, y: 10 },
-            { x: 32.5, y: 10 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 27.5, y: 41 },
-            { x: 16, y: 41 },
-            { x: 16, y: 34 },
-            { x: 27.5, y: 34 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -8655,30 +7291,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 19.277, y: 34.417 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 22.525, y: 6.997 },
-            { x: 32.065, y: 9.998 },
-            { x: 31.315, y: 12.383 },
-            { x: 21.775, y: 9.382 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 37.475, y: 37.003 },
-            { x: 27.935, y: 34.002 },
-            { x: 28.685, y: 31.617 },
-            { x: 38.225, y: 34.618 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -8773,30 +7385,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 18.775, y: 19.328 },
-            { x: 25.501, y: 14.997 },
-            { x: 26.683, y: 27.914 },
-            { x: 25.002, y: 28.997 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41.225, y: 24.672 },
-            { x: 34.499, y: 29.003 },
-            { x: 33.317, y: 16.086 },
-            { x: 34.998, y: 15.003 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 19.432, y: 19.451 },
             { x: 23.636, y: 16.744 },
             { x: 23.907, y: 17.164 },
@@ -8853,30 +7441,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 48.47, y: 16.933 },
-            { x: 52.998, y: 12.997 },
-            { x: 54.31, y: 14.507 },
-            { x: 49.782, y: 18.443 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11.53, y: 27.067 },
-            { x: 7.002, y: 31.003 },
-            { x: 5.69, y: 29.493 },
-            { x: 10.218, y: 25.557 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.987, y: 17.147 },
             { x: 53.137, y: 13.538 },
             { x: 53.793, y: 14.293 },
@@ -8901,30 +7465,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 46.001, y: 11.004 },
-            { x: 49.938, y: 15.532 },
-            { x: 46.919, y: 18.156 },
-            { x: 42.982, y: 13.628 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 13.999, y: 32.996 },
-            { x: 10.062, y: 28.468 },
-            { x: 13.081, y: 25.844 },
-            { x: 17.018, y: 30.372 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 48.904, y: 15.105 },
             { x: 46.64, y: 17.074 },
             { x: 44.016, y: 14.055 },
@@ -8943,30 +7483,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.72, y: 31.914 },
           ],
           label: "generator",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 3, y: 14 },
-            { x: 14.5, y: 14 },
-            { x: 14.5, y: 21 },
-            { x: 3, y: 21 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 57, y: 30 },
-            { x: 45.5, y: 30 },
-            { x: 45.5, y: 23 },
-            { x: 57, y: 23 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -9029,30 +7545,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 7.667, y: 2.999 },
-            { x: 12.139, y: 6.999 },
-            { x: 9.473, y: 9.981 },
-            { x: 5.001, y: 5.981 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 52.333, y: 41.001 },
-            { x: 47.861, y: 37.001 },
-            { x: 50.527, y: 34.019 },
-            { x: 54.999, y: 38.019 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 7.729, y: 3.48 },
             { x: 9.22, y: 4.813 },
             { x: 8.887, y: 5.186 },
@@ -9109,30 +7601,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 12.001, y: 7.152 },
-            { x: 17.602, y: 5.001 },
-            { x: 18.319, y: 6.868 },
-            { x: 12.718, y: 9.019 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 47.999, y: 36.848 },
-            { x: 42.398, y: 38.999 },
-            { x: 41.681, y: 37.132 },
-            { x: 47.282, y: 34.981 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 11.534, y: 7.331 },
             { x: 18.069, y: 4.822 },
             { x: 18.786, y: 6.689 },
@@ -9163,32 +7631,89 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-reconnaissance-1": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 55, y: 18.5 }, TR: { x: 48, y: 18.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 5, y: 25.5 }, TR: { x: 12, y: 25.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 45, y: 20 }, TR: { x: 41, y: 20 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 15, y: 24 }, TR: { x: 19, y: 24 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 41, y: 4 }, TR: { x: 41, y: 14 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: { TL: { x: 19, y: 40 }, TR: { x: 19, y: 30 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 47, y: 40 }, TR: { x: 40, y: 40 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 13, y: 4 }, TR: { x: 20, y: 4 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 51, y: 28.5 }, TR: { x: 47, y: 28.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 9, y: 15.5 }, TR: { x: 13, y: 15.5 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 34, y: 33 }, TR: { x: 34, y: 39 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 26, y: 11 }, TR: { x: 26, y: 5 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 26, y: 33 }, TR: { x: 32, y: 33 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 34, y: 11 }, TR: { x: 28, y: 11 } },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -9244,54 +7769,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 33.509, y: 26.719 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 55, y: 7 },
-            { x: 55, y: 18.5 },
-            { x: 48, y: 18.5 },
-            { x: 48, y: 7 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 5, y: 37 },
-            { x: 5, y: 25.5 },
-            { x: 12, y: 25.5 },
-            { x: 12, y: 37 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 45, y: 14 },
-            { x: 45, y: 20 },
-            { x: 41, y: 20 },
-            { x: 41, y: 14 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 15, y: 30 },
-            { x: 15, y: 24 },
-            { x: 19, y: 24 },
-            { x: 19, y: 30 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -9372,30 +7849,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 8.533, y: 36.543 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41, y: 4 },
-            { x: 41, y: 14 },
-            { x: 38.5, y: 14 },
-            { x: 38.5, y: 4 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 19, y: 40 },
-            { x: 19, y: 30 },
-            { x: 21.5, y: 30 },
-            { x: 21.5, y: 40 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -9490,30 +7943,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 47, y: 28.5 },
-            { x: 47, y: 40 },
-            { x: 40, y: 40 },
-            { x: 40, y: 28.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 13, y: 15.5 },
-            { x: 13, y: 4 },
-            { x: 20, y: 4 },
-            { x: 20, y: 15.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 16.697, y: 15.227 },
             { x: 19.697, y: 15.227 },
             { x: 19.697, y: 8.727 },
@@ -9564,30 +7993,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.683, y: 7.173 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 51, y: 22.5 },
-            { x: 51, y: 28.5 },
-            { x: 47, y: 28.5 },
-            { x: 47, y: 22.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 9, y: 21.5 },
-            { x: 9, y: 15.5 },
-            { x: 13, y: 15.5 },
-            { x: 13, y: 21.5 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -9650,30 +8055,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 34, y: 33 },
-            { x: 34, y: 39 },
-            { x: 32, y: 39 },
-            { x: 32, y: 33 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26, y: 11 },
-            { x: 26, y: 5 },
-            { x: 28, y: 5 },
-            { x: 28, y: 11 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 33.5, y: 33.25 },
             { x: 33.5, y: 38.75 },
             { x: 32.5, y: 38.75 },
@@ -9692,30 +8073,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 27.5, y: 10.75 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 26, y: 33 },
-            { x: 32, y: 33 },
-            { x: 32, y: 35 },
-            { x: 26, y: 35 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 34, y: 11 },
-            { x: 28, y: 11 },
-            { x: 28, y: 9 },
-            { x: 34, y: 9 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -9752,56 +8109,110 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-reconnaissance-2": {
-      buildings: [],
+      buildings: [
+        {
+          type: "shoe",
+          corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
+          mirror: false,
+        },
+        {
+          type: "shoe",
+          corners: { TL: { x: 24.25, y: 27 }, TR: { x: 24.25, y: 19 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 53, y: 4.5 }, TR: { x: 53, y: 11.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 7, y: 39.5 }, TR: { x: 7, y: 32.5 } },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: {
+            TL: { x: 43.005, y: 13.996 },
+            TR: { x: 52.005, y: 18.354 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-pipes",
+          corners: {
+            TL: { x: 16.995, y: 30.004 },
+            TR: { x: 7.995, y: 25.646 },
+          },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 16.5, y: 13 }, TR: { x: 16.5, y: 20 } },
+          mirror: false,
+        },
+        {
+          type: "large-area",
+          corners: { TL: { x: 43.5, y: 31 }, TR: { x: 43.5, y: 24 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 34.003, y: 6.999 }, TR: { x: 36.669, y: 9.981 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 25.997, y: 37.001 },
+            TR: { x: 23.331, y: 34.019 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 25.285, y: 7.146 },
+            TR: { x: 29.881, y: 11.002 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 34.715, y: 36.854 },
+            TR: { x: 30.119, y: 32.998 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: { TL: { x: 16.357, y: 3.996 }, TR: { x: 19.003, y: 6.996 } },
+          mirror: false,
+        },
+        {
+          type: "small-area",
+          corners: {
+            TL: { x: 43.643, y: 40.004 },
+            TR: { x: 40.997, y: 37.004 },
+          },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: { TL: { x: 7.34, y: 3.999 }, TR: { x: 11.799, y: 8.014 } },
+          mirror: false,
+        },
+        {
+          type: "small-pipes",
+          corners: {
+            TL: { x: 52.66, y: 40.001 },
+            TR: { x: 48.201, y: 35.986 },
+          },
+          mirror: false,
+        },
+      ],
       area_terrain: [
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 24.25, y: 17 },
-            { x: 24.25, y: 25 },
-            { x: 35.75, y: 19 },
-            { x: 35.75, y: 17 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 35.75, y: 27 },
-            { x: 35.75, y: 19 },
-            { x: 24.25, y: 25 },
-            { x: 24.25, y: 27 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 41.5, y: 4.5 },
-            { x: 53, y: 4.5 },
-            { x: 53, y: 11.5 },
-            { x: 41.5, y: 11.5 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 18.5, y: 39.5 },
-            { x: 7, y: 39.5 },
-            { x: 7, y: 32.5 },
-            { x: 18.5, y: 32.5 },
-          ],
-          label: "area",
-        },
         {
           shape: "polygon",
           x: 0,
@@ -9857,30 +8268,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 10.357, y: 32.957 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 43.005, y: 13.996 },
-            { x: 52.005, y: 18.354 },
-            { x: 50.915, y: 20.604 },
-            { x: 41.915, y: 16.246 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 16.995, y: 30.004 },
-            { x: 7.995, y: 25.646 },
-            { x: 9.085, y: 23.396 },
-            { x: 18.085, y: 27.754 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -9969,30 +8356,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 13.824, y: 27.789 },
           ],
           label: "barricade",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 5, y: 13 },
-            { x: 16.5, y: 13 },
-            { x: 16.5, y: 20 },
-            { x: 5, y: 20 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 55, y: 31 },
-            { x: 43.5, y: 31 },
-            { x: 43.5, y: 24 },
-            { x: 55, y: 24 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -10111,30 +8474,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 29.531, y: 10.999 },
-            { x: 34.003, y: 6.999 },
-            { x: 36.669, y: 9.981 },
-            { x: 32.197, y: 13.981 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 30.469, y: 33.001 },
-            { x: 25.997, y: 37.001 },
-            { x: 23.331, y: 34.019 },
-            { x: 27.803, y: 30.019 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 33.591, y: 8.039 },
             { x: 35.591, y: 10.275 },
             { x: 32.609, y: 12.941 },
@@ -10159,30 +8498,6 @@ export const gwTerrain: TerrainConfig = {
           x: 0,
           y: 0,
           points: [
-            { x: 25.285, y: 7.146 },
-            { x: 29.881, y: 11.002 },
-            { x: 28.595, y: 12.534 },
-            { x: 23.999, y: 8.678 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 34.715, y: 36.854 },
-            { x: 30.119, y: 32.998 },
-            { x: 31.405, y: 31.466 },
-            { x: 36.001, y: 35.322 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
             { x: 25.155, y: 7.689 },
             { x: 29.368, y: 11.225 },
             { x: 28.725, y: 11.991 },
@@ -10201,30 +8516,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 35.488, y: 35.545 },
           ],
           label: "pipe",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 11.857, y: 7.964 },
-            { x: 16.357, y: 3.996 },
-            { x: 19.003, y: 6.996 },
-            { x: 14.503, y: 10.964 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 48.143, y: 36.036 },
-            { x: 43.643, y: 40.004 },
-            { x: 40.997, y: 37.004 },
-            { x: 45.497, y: 33.036 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
@@ -10281,30 +8572,6 @@ export const gwTerrain: TerrainConfig = {
             { x: 43.466, y: 39.249 },
           ],
           label: "ruin",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 7.34, y: 3.999 },
-            { x: 11.799, y: 8.014 },
-            { x: 10.46, y: 9.501 },
-            { x: 6.001, y: 5.486 },
-          ],
-          label: "area",
-        },
-        {
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: [
-            { x: 52.66, y: 40.001 },
-            { x: 48.201, y: 35.986 },
-            { x: 49.54, y: 34.499 },
-            { x: 53.999, y: 38.514 },
-          ],
-          label: "area",
         },
         {
           shape: "polygon",
