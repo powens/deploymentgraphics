@@ -62,6 +62,16 @@ export const baseTheme: Theme = {
       stroke: "#807060",
       stroke_width: 0.3,
     },
+    area: {
+      fill: "rgba(60,120,60,0.25)",
+      stroke: "#3a6b3a",
+      stroke_width: 0.3,
+    },
+    feature: {
+      fill: "rgba(120,120,120,0.55)",
+      stroke: "#555555",
+      stroke_width: 0.3,
+    },
   },
   icon: {
     circle: { fill: "#e8dcc0", stroke: "#33312c", stroke_width: 0.25 },
