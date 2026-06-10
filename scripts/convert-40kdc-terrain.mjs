@@ -103,7 +103,26 @@ const header =
   "# Edit gw.yml or the source JSON, then regenerate with:\n" +
   "#   pnpm convert:40kdc\n\n";
 
-writeFileSync(outPath, header + yaml.dump(out, { lineWidth: 100 }), "utf8");
-console.log(
-  `Wrote ${Object.keys(out.layout).length} layouts to static/data/terrain/combined.yml`,
-);
+const content = header + yaml.dump(out, { lineWidth: 100 });
+
+if (process.argv.includes("--check")) {
+  let current = "";
+  try {
+    current = readFileSync(outPath, "utf8");
+  } catch {
+    // missing file counts as stale
+  }
+  if (current !== content) {
+    console.error(
+      "static/data/terrain/combined.yml is stale.\n" +
+        "Run `pnpm convert:40kdc` and commit the result.",
+    );
+    process.exit(1);
+  }
+  console.log("combined.yml is up to date.");
+} else {
+  writeFileSync(outPath, content, "utf8");
+  console.log(
+    `Wrote ${Object.keys(out.layout).length} layouts to static/data/terrain/combined.yml`,
+  );
+}
