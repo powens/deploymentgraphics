@@ -296,11 +296,6 @@ export function makeMissionCard(
     svg.appendChild(halfwayLines);
   }
 
-  const areaTerrain = makeAreaTerrain(config, theme);
-  if (areaTerrain) {
-    svg.appendChild(areaTerrain);
-  }
-
   if (hasSelectedLayout(config)) {
     const placements = getLayoutBuildings(
       config.terrain,
@@ -324,6 +319,14 @@ export function makeMissionCard(
     const empty = makeElement("g");
     empty.setAttribute("id", "buildings");
     svg.appendChild(empty);
+  }
+
+  // Area terrain draws after buildings: imported 40kdc area pieces render as
+  // opaque buildings, and the smaller feature pieces (l-ruins, pipes, ...) are
+  // emitted as area_terrain that sits on top of them.
+  const areaTerrain = makeAreaTerrain(config, theme);
+  if (areaTerrain) {
+    svg.appendChild(areaTerrain);
   }
 
   // Features come from two sources: a top-level array (the editor / a

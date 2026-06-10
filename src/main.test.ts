@@ -236,6 +236,30 @@ describe("makeFeatures integration", () => {
     expect(ids.indexOf("features")).toBeGreaterThan(ids.indexOf("buildings"));
   });
 
+  it("renders area terrain on top of buildings", () => {
+    // 40kdc feature pieces (l-ruins, pipes, ...) are emitted as area_terrain
+    // and sit on top of the area pieces, which render as opaque buildings.
+    // Area terrain must therefore draw after the buildings group.
+    const config = buildMinimalConfig();
+    (config.terrain.layout["1"] as { area_terrain?: unknown }).area_terrain = [
+      {
+        shape: "polygon",
+        x: 0,
+        y: 0,
+        points: [
+          { x: 0, y: 0 },
+          { x: 5, y: 0 },
+          { x: 5, y: 5 },
+        ],
+        label: "ruin",
+      },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#area-terrain")).not.toBeNull();
+    const ids = [...svg.children].map((c) => c.getAttribute("id"));
+    expect(ids.indexOf("area-terrain")).toBeGreaterThan(ids.indexOf("buildings"));
+  });
+
   it("mirrors a feature through the board centre by default", () => {
     const config = buildMinimalConfig();
     config.features = [
