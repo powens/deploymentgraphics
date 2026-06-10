@@ -31,8 +31,8 @@ export function objectBounds(
   }
   if (obj.type === "deployment-zone") {
     if (obj.vertices.length === 0) return { x: 0, y: 0, w: 0, h: 0 };
-    const xs = obj.vertices.map(([vx]) => vx);
-    const ys = obj.vertices.map(([, vy]) => vy);
+    const xs = obj.vertices.map((v) => v.x);
+    const ys = obj.vertices.map((v) => v.y);
     const x = Math.min(...xs), y = Math.min(...ys);
     return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
   }
@@ -68,8 +68,8 @@ export function renderOverlay(
       const n = obj.vertices.length;
       // Midpoint handles rendered first (lower z-order)
       for (let i = 0; i < n; i++) {
-        const [vx, vy] = obj.vertices[i];
-        const [nx, ny] = obj.vertices[(i + 1) % n];
+        const { x: vx, y: vy } = obj.vertices[i];
+        const { x: nx, y: ny } = obj.vertices[(i + 1) % n];
         const mid = svgEl("circle") as SVGCircleElement;
         mid.setAttribute("cx", `${(vx + nx) / 2}`);
         mid.setAttribute("cy", `${(vy + ny) / 2}`);
@@ -87,7 +87,7 @@ export function renderOverlay(
       }
       // Vertex handles rendered second (higher z-order)
       for (let i = 0; i < n; i++) {
-        const [vx, vy] = obj.vertices[i];
+        const { x: vx, y: vy } = obj.vertices[i];
         const handle = svgEl("circle") as SVGCircleElement;
         handle.setAttribute("cx", `${vx}`);
         handle.setAttribute("cy", `${vy}`);
@@ -118,7 +118,7 @@ export function renderOverlay(
     if (obj.type === "deployment-zone") {
       hitEl = svgEl("polygon");
       const pts = (obj as DeploymentZoneObject).vertices
-        .map(([vx, vy]) => `${vx},${vy}`)
+        .map((v) => `${v.x},${v.y}`)
         .join(" ");
       hitEl.setAttribute("points", pts);
       hitEl.setAttribute("fill", "transparent");

@@ -20,9 +20,9 @@ describe("buildingToPlacement", () => {
     };
     const p = buildingToPlacement(obj, RECT_TEMPLATES);
     expect(p.type).toBe("4x6");
-    expect(p.corners.TL).toEqual([10, 8]);
-    expect((p.corners.TR as number[])[0]).toBeCloseTo(14, 5);
-    expect((p.corners.TR as number[])[1]).toBeCloseTo(8, 5);
+    expect(p.corners.TL).toEqual({ x: 10, y: 8 });
+    expect((p.corners.TR as { x: number; y: number }).x).toBeCloseTo(14, 5);
+    expect((p.corners.TR as { x: number; y: number }).y).toBeCloseTo(8, 5);
   });
 
   it("rotates TR corner 90 degrees", () => {
@@ -31,9 +31,9 @@ describe("buildingToPlacement", () => {
       x: 10, y: 8, rotation: 90, mirror: false,
     };
     const p = buildingToPlacement(obj, RECT_TEMPLATES);
-    // TR = [x + w*cos(90°), y + w*sin(90°)] = [10, 12]
-    expect((p.corners.TR as number[])[0]).toBeCloseTo(10, 5);
-    expect((p.corners.TR as number[])[1]).toBeCloseTo(12, 5);
+    // TR = {x: x + w*cos(90°), y: y + w*sin(90°)} = {x: 10, y: 12}
+    expect((p.corners.TR as { x: number; y: number }).x).toBeCloseTo(10, 5);
+    expect((p.corners.TR as { x: number; y: number }).y).toBeCloseTo(12, 5);
   });
 
   it("sets mirror: false when obj.mirror is false", () => {
@@ -80,13 +80,13 @@ describe("sceneToConfig", () => {
       ...emptyScene(),
       objects: [{
         id: "az", type: "deployment-zone", player: "attacker",
-        vertices: [[0, 0], [60, 0], [60, 12], [0, 12]],
+        vertices: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 12 }, { x: 0, y: 12 }],
         x: 0, y: 0, rotation: 0,
       }],
     };
     const config = sceneToConfig(scene, RECT_TEMPLATES);
     expect(config.deployment.attacker.deployment_zone).toEqual([
-      [0, 0], [60, 0], [60, 12], [0, 12],
+      { x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 12 }, { x: 0, y: 12 },
     ]);
   });
 
@@ -138,7 +138,7 @@ describe("sceneToConfig with icons", () => {
     };
     const config = sceneToConfig(scene, RECT_TEMPLATES);
     expect(config.terrain.layout["editor"].icons).toEqual([
-      { type: "skull", pos: [10, 12] },
+      { type: "skull", pos: { x: 10, y: 12 } },
     ]);
   });
 
@@ -157,7 +157,7 @@ describe("sceneToConfig with icons", () => {
     };
     const config = sceneToConfig(scene, RECT_TEMPLATES);
     expect(config.terrain.layout["editor"].icons).toEqual([
-      { type: "fortress", pos: [10, 12], player: "attacker" },
+      { type: "fortress", pos: { x: 10, y: 12 }, player: "attacker" },
     ]);
   });
 
@@ -171,7 +171,7 @@ describe("sceneToConfig with icons", () => {
     };
     const config = sceneToConfig(scene, RECT_TEMPLATES);
     expect(config.terrain.layout["editor"].icons).toEqual([
-      { type: "skull", pos: [10, 12] },
+      { type: "skull", pos: { x: 10, y: 12 } },
     ]);
   });
 });

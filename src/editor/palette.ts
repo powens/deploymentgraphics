@@ -1,4 +1,4 @@
-import type { Template } from "../building-coordinates.js";
+import type { Template, Point } from "../building-coordinates.js";
 import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
 import type { Scene, SceneObject, ObjectiveObject } from "./scene.js";
 
@@ -124,9 +124,9 @@ export function createObjectFromPalette(
   if (item.category === "deployment-zone") {
     const w = scene.boardWidth;
     const h = scene.boardHeight;
-    const verts: [number, number][] = item.player === "attacker"
-      ? [[0, 0], [w, 0], [w, 12], [0, 12]]
-      : [[0, h - 12], [w, h - 12], [w, h], [0, h]];
+    const verts: Point[] = item.player === "attacker"
+      ? [{ x: 0, y: 0 }, { x: w, y: 0 }, { x: w, y: 12 }, { x: 0, y: 12 }]
+      : [{ x: 0, y: h - 12 }, { x: w, y: h - 12 }, { x: w, y: h }, { x: 0, y: h }];
     return { id, type: "deployment-zone", player: item.player, vertices: verts, x: 0, y: 0, rotation: 0 };
   }
   if (item.category === "annotation") {

@@ -1,4 +1,4 @@
-import { templateBounds, type BuildingPlacement } from "../building-coordinates.js";
+import { templateBounds, type BuildingPlacement, type Point } from "../building-coordinates.js";
 import type { AreaTerrain, IconPlacement } from "../terrain-config.js";
 import { ICON_SIZE } from "../icons.js";
 import type {
@@ -27,7 +27,7 @@ export type AreaTerrainObject = SceneObjectBase & {
   shape: "circle" | "polygon";
   width?: number;
   height?: number;
-  points?: [number, number][];
+  points?: Point[];
   label: string;
 };
 
@@ -39,7 +39,7 @@ export type ObjectiveObject = SceneObjectBase & {
 export type DeploymentZoneObject = SceneObjectBase & {
   type: "deployment-zone";
   player: "attacker" | "defender";
-  vertices: [number, number][];
+  vertices: Point[];
 };
 
 export type AnnotationObject = SceneObjectBase & {
@@ -101,8 +101,8 @@ export function buildingToPlacement(
   return {
     type: obj.templateKey,
     corners: {
-      TL: [obj.x, obj.y],
-      TR: [trX, trY],
+      TL: { x: obj.x, y: obj.y },
+      TR: { x: trX, y: trY },
     },
     mirror: obj.mirror ? undefined : false,  // mirror defaults to true in renderer
   };
@@ -157,7 +157,7 @@ export function sceneToConfig(
     .filter((o): o is IconObject => o.type === "icon")
     .map((o) => ({
       type: o.iconType,
-      pos: [o.x + ICON_SIZE / 2, o.y + ICON_SIZE / 2],
+      pos: { x: o.x + ICON_SIZE / 2, y: o.y + ICON_SIZE / 2 },
       ...(o.player && { player: o.player }),
     }));
 
