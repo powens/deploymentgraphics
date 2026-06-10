@@ -30,7 +30,7 @@ describe("resolveCorner", () => {
     expect(resolveCorner({ x: 10, y: 5 }, "BR", canvas)).toEqual({ x: 50, y: 39 });
   });
 
-  it("lets a 3rd element override the default anchor", () => {
+  it("lets a 'from' field override the default anchor", () => {
     expect(resolveCorner({ x: 10, y: 5, from: "TL" }, "BR", canvas)).toEqual({ x: 10, y: 5 });
   });
 });
@@ -454,5 +454,9 @@ describe("toPoint", () => {
 
   it("throws when x or y is missing", () => {
     expect(() => toPoint({ x: 1 }, "ctx")).toThrow(/expected \{ x, y \}/i);
+  });
+
+  it("throws on null", () => {
+    expect(() => toPoint(null, "ctx")).toThrow(/expected \{ x, y \}/i);
   });
 });
