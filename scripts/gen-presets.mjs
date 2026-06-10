@@ -95,14 +95,21 @@ function buildBase() {
 }
 
 function buildTerrain() {
+  const gw = loadYaml("terrain/gw.yml");
+  const dc = loadYaml("terrain/40kdc.yml");
+  const merged = {
+    ...gw,
+    templates: { ...gw.templates, ...(dc.templates ?? {}) },
+    layout: { ...gw.layout, ...dc.layout },
+  };
   return (
     header("static/data/terrain/gw.yml") +
     'import type { TerrainConfig } from "../terrain-config.js";\n\n' +
     declaration(
       "gwTerrain",
       "TerrainConfig",
-      loadYaml("terrain/gw.yml"),
-      "/** Built-in building templates and numbered layouts. */",
+      merged,
+      "/** Built-in templates and layouts (gw.yml demo + 40kdc.yml ports). */",
     )
   );
 }
