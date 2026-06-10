@@ -105,7 +105,7 @@ function buildTerrain() {
       "gwTerrain",
       "TerrainConfig",
       loadYaml("terrain/combined.yml"),
-      "/** Built-in templates and layouts (gw.yml demo + 40kdc.yml ports). */",
+      "/** Built-in templates and layouts (gw.yml demo + ported 40kdc pieces). */",
     )
   );
 }

@@ -26,7 +26,7 @@ export type DeploymentConfig = {
 };
 
 /**
- * Terrain config as loaded from gw.yml, plus the `layout_name` the page
+ * Terrain config as loaded from combined.yml, plus the `layout_name` the page
  * injects at fetch time (see static/index.html `getTerrain`).
  */
 export type RuntimeTerrainConfig = TerrainConfig & { layout_name: string };

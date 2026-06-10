@@ -3,7 +3,7 @@
 
 import type { TerrainConfig } from "../terrain-config.js";
 
-/** Built-in templates and layouts (gw.yml demo + 40kdc.yml ports). */
+/** Built-in templates and layouts (gw.yml demo + ported 40kdc pieces). */
 export const gwTerrain: TerrainConfig = {
   templates: {
     "large-area": { width: 7, height: 11.5 },
