@@ -49,16 +49,23 @@ function fetchYaml(url) {
 }
 
 async function buildConfig(controls) {
-  const [missionConfig, baseConfig, terrainObj] = await Promise.all([
+  const [missionConfig, baseConfig, terrainObj, dcTerrain] = await Promise.all([
     fetchYaml(`./data/deployment/${controls.m}.yml`),
     fetchYaml("./data/base.yml"),
     fetchYaml("./data/terrain/gw.yml"),
+    fetchYaml("./data/terrain/40kdc.yml"),
   ]);
   // Spread rather than mutate: the cached objects are shared across redraws.
+  // The 40kdc layouts merge over the hand-authored gw.yml demo + templates.
   return {
     deployment: missionConfig,
     base: { ...baseConfig, grid: { ...baseConfig.grid, draw: controls.grid } },
-    terrain: { ...terrainObj, layout_name: controls.t },
+    terrain: {
+      ...terrainObj,
+      templates: { ...terrainObj.templates, ...(dcTerrain.templates ?? {}) },
+      layout: { ...terrainObj.layout, ...dcTerrain.layout },
+      layout_name: controls.t,
+    },
   };
 }
 
