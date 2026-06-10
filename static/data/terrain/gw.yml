@@ -46,6 +46,13 @@ templates:
       - { x: 8, y: 11.5 }
       - { x: 0, y: 11.5 }
 
+  shoe-mirror:
+    points:
+      - { x: 0, y: 0 }
+      - { x: 8, y: 0 }
+      - { x: 2, y: 11.5 }
+      - { x: 0, y: 11.5 }
+
 layout:
   1:
     buildings:
