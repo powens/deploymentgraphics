@@ -1,6 +1,7 @@
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import {
   resolveBuilding,
+  toPoint,
   type BuildingPlacement,
   type CanvasSize,
   type PathSegment,
@@ -17,18 +18,18 @@ export function segmentsToPathData(
   start: Point,
   segments: PathSegment[],
 ): string {
-  let d = `M ${start[0]} ${start[1]}`;
+  let d = `M ${start.x} ${start.y}`;
   for (const segment of segments) {
     if ("line" in segment) {
-      d += ` L ${segment.line[0]} ${segment.line[1]}`;
+      d += ` L ${segment.line.x} ${segment.line.y}`;
     } else if ("quad" in segment) {
       const { quad, control } = segment;
-      d += ` Q ${control[0]} ${control[1]} ${quad[0]} ${quad[1]}`;
+      d += ` Q ${control.x} ${control.y} ${quad.x} ${quad.y}`;
     } else if ("cubic" in segment) {
       const { cubic, controls } = segment;
       d +=
-        ` C ${controls[0][0]} ${controls[0][1]} ` +
-        `${controls[1][0]} ${controls[1][1]} ${cubic[0]} ${cubic[1]}`;
+        ` C ${controls[0].x} ${controls[0].y} ` +
+        `${controls[1].x} ${controls[1].y} ${cubic.x} ${cubic.y}`;
     } else {
       throw new Error(
         `unrecognized path segment: ${JSON.stringify(segment)}`,
@@ -61,7 +62,10 @@ export function injectTemplateDefs(
       shape = makeElement("polygon");
       shape.setAttribute(
         "points",
-        template.points.map((p) => `${p[0]},${p[1]}`).join(" "),
+        template.points
+          .map((p) => toPoint(p, `template ${name}: points`))
+          .map((p) => `${p.x},${p.y}`)
+          .join(" "),
       );
     } else {
       shape = makeElement("rect");
@@ -95,7 +99,7 @@ export function makeBuildings(
       use.setAttribute("href", `#template-${resolved.templateName}`);
       use.setAttribute(
         "transform",
-        `translate(${resolved.translate[0]} ${resolved.translate[1]}) ` +
+        `translate(${resolved.translate.x} ${resolved.translate.y}) ` +
           `rotate(${resolved.rotation})`,
       );
       use.setAttribute("id", `building-${counter}`);

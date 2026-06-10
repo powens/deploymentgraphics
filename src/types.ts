@@ -1,6 +1,7 @@
+import type { Point } from "./building-coordinates.js";
 import type { TerrainConfig } from "./terrain-config.js";
 
-export type Coordinate = [number, number];
+export type Coordinate = Point;
 export type SVGProperties = Record<string, string | number>;
 
 export type Size = { width: number; height: number };

@@ -1,6 +1,7 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { injectIconDefs, makeIcons } from "./icons.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
 import {
   DEFAULT_AREA_TERRAIN_SIZE,
@@ -94,7 +95,10 @@ function makeDeploymentZone(
     const cy = config.base.size.height / 2;
     const r = maskRadius;
     const polyPath = playerConfig.deployment_zone
-      .map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`)
+      .map((raw, i) => {
+        const p = toPoint(raw, `${attackerDefender} deployment_zone`);
+        return `${i === 0 ? "M" : "L"}${p.x},${p.y}`;
+      })
       .join(" ") + " Z";
     const circlePath =
       `M${cx + r},${cy} A${r},${r} 0 1 0 ${cx - r},${cy}` +
@@ -109,7 +113,13 @@ function makeDeploymentZone(
 
   const dz = makeElement("polygon");
   dz.setAttribute("id", attackerDefender);
-  dz.setAttribute("points", playerConfig.deployment_zone.join(" "));
+  dz.setAttribute(
+    "points",
+    playerConfig.deployment_zone
+      .map((raw) => toPoint(raw, `${attackerDefender} deployment_zone`))
+      .map((p) => `${p.x},${p.y}`)
+      .join(" "),
+  );
   applyAttributes(dz, colorConfig);
   return dz;
 }
@@ -160,7 +170,8 @@ function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
       shape.setAttribute("r", `${r}`);
     } else {
       const pts = (item.points ?? [])
-        .map(([px, py]: [number, number]) => `${item.x + px},${item.y + py}`)
+        .map((raw) => toPoint(raw, "area_terrain points"))
+        .map((p) => `${item.x + p.x},${item.y + p.y}`)
         .join(" ");
       shape = makeElement("polygon");
       shape.setAttribute("points", pts);

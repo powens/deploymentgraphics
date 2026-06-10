@@ -13,7 +13,7 @@ const terrain: TerrainConfig = {
   templates: { "4x6": { width: 4, height: 6 } },
   layout: {
     "1": {
-      buildings: [{ type: "4x6", corners: { TL: [0, 0], TR: [4, 0] } }],
+      buildings: [{ type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } } }],
     },
   },
 };
@@ -21,7 +21,7 @@ const terrain: TerrainConfig = {
 describe("getLayoutBuildings", () => {
   it("returns the building placements for an existing layout", () => {
     expect(getLayoutBuildings(terrain, "1")).toEqual([
-      { type: "4x6", corners: { TL: [0, 0], TR: [4, 0] } },
+      { type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } } },
     ]);
   });
 
@@ -70,13 +70,13 @@ describe("getLayoutIcons", () => {
   const t: TerrainConfig = {
     templates: {},
     layout: {
-      "1": { buildings: [], icons: [{ type: "skull", pos: [5, 10] }] },
+      "1": { buildings: [], icons: [{ type: "skull", pos: { x: 5, y: 10 } }] },
       "2": { buildings: [] },
     },
   };
 
   it("returns the icon placements for a layout that has them", () => {
-    expect(getLayoutIcons(t, "1")).toEqual([{ type: "skull", pos: [5, 10] }]);
+    expect(getLayoutIcons(t, "1")).toEqual([{ type: "skull", pos: { x: 5, y: 10 } }]);
   });
 
   it("returns [] for a layout with no icons", () => {
@@ -91,11 +91,11 @@ describe("getLayoutIcons", () => {
     const tp: TerrainConfig = {
       templates: {},
       layout: {
-        "1": { buildings: [], icons: [{ type: "fortress", pos: [5, 10], player: "attacker" }] },
+        "1": { buildings: [], icons: [{ type: "fortress", pos: { x: 5, y: 10 }, player: "attacker" }] },
       },
     };
     expect(getLayoutIcons(tp, "1")).toEqual([
-      { type: "fortress", pos: [5, 10], player: "attacker" },
+      { type: "fortress", pos: { x: 5, y: 10 }, player: "attacker" },
     ]);
   });
 });

@@ -17,15 +17,15 @@ function buildMinimalConfig(): FullConfig {
       templates: { "4x6": { width: 4, height: 6 } },
       layout: {
         "1": {
-          buildings: [{ type: "4x6", corners: { TL: [10, 0], TR: [14, 0] } }],
+          buildings: [{ type: "4x6", corners: { TL: { x: 10, y: 0 }, TR: { x: 14, y: 0 } } }],
         },
       },
     },
     deployment: {
       name: "Test",
       home_edge: "long",
-      attacker: { deployment_zone: [[0, 0], [60, 0], [60, 10]] },
-      defender: { deployment_zone: [[0, 44], [60, 44], [60, 34]] },
+      attacker: { deployment_zone: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 10 }] },
+      defender: { deployment_zone: [{ x: 0, y: 44 }, { x: 60, y: 44 }, { x: 60, y: 34 }] },
     },
   } as unknown as FullConfig;
 }
@@ -140,7 +140,7 @@ describe("makeAreaTerrain", () => {
         shape: "polygon",
         x: 5,
         y: 5,
-        points: [[0, 0], [4, 0], [4, 3], [0, 3]],
+        points: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 3 }, { x: 0, y: 3 }],
         label: "Rubble",
       },
     ];
@@ -259,8 +259,8 @@ describe("makeDeploymentZone rendering", () => {
     config.deployment = {
       name: "Test",
       home_edge: "long",
-      attacker: { deployment_zone: [[60,0],[60,22],[30,22],[30,0]] },
-      defender: { deployment_zone: [[30,22],[30,44],[0,44],[0,22]] },
+      attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }] },
+      defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }] },
     };
     const svg = makeMissionCard(config);
     const attacker = svg.querySelector("#attacker");
@@ -272,8 +272,8 @@ describe("makeDeploymentZone rendering", () => {
     config.deployment = {
       name: "Test",
       home_edge: "long",
-      attacker: { deployment_zone: [[60,0],[60,22],[30,22],[30,0]], mask_center: 9 },
-      defender: { deployment_zone: [[30,22],[30,44],[0,44],[0,22]], mask_center: 9 },
+      attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }], mask_center: 9 },
+      defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }], mask_center: 9 },
     };
     const svg = makeMissionCard(config);
     const attacker = svg.querySelector("#attacker");
@@ -286,8 +286,8 @@ describe("makeDeploymentZone rendering", () => {
     config.deployment = {
       name: "Test",
       home_edge: "long",
-      attacker: { deployment_zone: [[60,0],[60,22],[30,22],[30,0]], mask_center: 9 },
-      defender: { deployment_zone: [[30,22],[30,44],[0,44],[0,22]], mask_center: 9 },
+      attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }], mask_center: 9 },
+      defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }], mask_center: 9 },
     };
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#centerMask")).toBeNull();

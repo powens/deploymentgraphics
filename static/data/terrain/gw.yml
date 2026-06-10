@@ -3,7 +3,7 @@
 # when transcribing real terrain.
 #
 # A template is a rectangle (`width`/`height`), a polygon footprint
-# (`points`: a closed ring of template-local [x, y] inches, bounding box
+# (`points`: a closed ring of template-local { x, y } inches, bounding box
 # starting at 0,0; width/height derived), or a curved path footprint
 # (`start` plus `segments` of line/quad/cubic Béziers, with a declared
 # `width`/`height` bounding box).
@@ -12,15 +12,15 @@
 # corner: TL/TR/BL/BR — the template's bounding-box corners) to inward
 # distances from a canvas corner — by default the canvas top-left. Two
 # corners derive the rotation; a single corner implies no rotation
-# (axis-aligned). A building-level `from:` or a 3rd value inside a corner
+# (axis-aligned). A building-level `from:` or a per-corner `from:` field
 # selects a different canvas corner. Buildings are mirrored 180 degrees
 # through the canvas centre unless `mirror: false`.
 #
 # A layout may also list `icons` (sibling to `buildings`): predefined marker
 # graphics placed by their circle centre. Each is `{ type: <skull|fortress>,
-# pos: [x, y] }` in inches, with an optional `player: <attacker|defender>` that
-# tints the icon's disk with that player's deployment colour. Icons are styled
-# by theme.yml and drawn on top.
+# pos: { x, y } }` in inches, with an optional `player: <attacker|defender>`
+# that tints the icon's disk with that player's deployment colour. Icons are
+# styled by theme.yml and drawn on top.
 
 templates:
   large-area: { width: 7, height: 11.5 }
@@ -30,44 +30,48 @@ templates:
   large-pipes: { width: 10, height: 2.5 }
 
   shoe:
-    points: [[0, 0], [2, 0], [8, 11.5], [0, 11.5]]
+    points:
+      - { x: 0, y: 0 }
+      - { x: 2, y: 0 }
+      - { x: 8, y: 11.5 }
+      - { x: 0, y: 11.5 }
 
 layout:
   1:
     buildings:
       - type: large-pipes
-        corners: { BL: [12, 6], TL: [14.5, 6] }
+        corners: { BL: { x: 12, y: 6 }, TL: { x: 14.5, y: 6 } }
 
       - type: large-area
-        corners: { TL: [18.5, 0], TR: [25.5, 0] }
+        corners: { TL: { x: 18.5, y: 0 }, TR: { x: 25.5, y: 0 } }
 
       - type: large-area
-        corners: { TR: [17, 19.5] }
+        corners: { TR: { x: 17, y: 19.5 } }
 
       - type: small-pipes
-        corners: { BL: [17, 31], TL: [19, 31] }
+        corners: { BL: { x: 17, y: 31 }, TL: { x: 19, y: 31 } }
 
       - type: small-pipes
-        corners: { BL: [11, 39] }
+        corners: { BL: { x: 11, y: 39 } }
 
       - type: shoe
-        corners: { TL: [25, 16.25] }
+        corners: { TL: { x: 25, y: 16.25 } }
 
       - type: small-area
-        corners: { BL: [19.5, 44] }
+        corners: { BL: { x: 19.5, y: 44 } }
 
       - type: small-area
-        corners: { BR: [23.5, 38], TR: [29.5, 38] }
+        corners: { BR: { x: 23.5, y: 38 }, TR: { x: 29.5, y: 38 } }
     icons:
       - type: skull
-        pos: [30, 22]
+        pos: { x: 30, y: 22 }
       - type: fortress
-        pos: [46.5, 19]
+        pos: { x: 46.5, y: 19 }
         player: defender
       - type: fortress
-        pos: [13.5, 25]
+        pos: { x: 13.5, y: 25 }
         player: attacker
       - type: skull
-        pos: [22, 5]
+        pos: { x: 22, y: 5 }
       - type: skull
-        pos: [38, 39]
+        pos: { x: 38, y: 39 }
