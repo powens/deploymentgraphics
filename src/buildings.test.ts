@@ -193,6 +193,14 @@ describe("path templates", () => {
     ).toThrow(/unrecognized/i);
   });
 
+  it("throws on a legacy array start (not {x, y})", () => {
+    expect(() =>
+      segmentsToPathData([4, 0] as unknown as Point, [
+        { line: { x: 4, y: 8 } },
+      ]),
+    ).toThrow(/expected \{ x, y \}/i);
+  });
+
   it("injectTemplateDefs emits a <path> for a path template", () => {
     const defs = document.createElementNS(
       "http://www.w3.org/2000/svg",

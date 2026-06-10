@@ -18,18 +18,21 @@ export function segmentsToPathData(
   start: Point,
   segments: PathSegment[],
 ): string {
-  let d = `M ${start.x} ${start.y}`;
+  const s = toPoint(start, "path start");
+  let d = `M ${s.x} ${s.y}`;
   for (const segment of segments) {
     if ("line" in segment) {
-      d += ` L ${segment.line.x} ${segment.line.y}`;
+      const p = toPoint(segment.line, "path line");
+      d += ` L ${p.x} ${p.y}`;
     } else if ("quad" in segment) {
-      const { quad, control } = segment;
+      const quad = toPoint(segment.quad, "path quad");
+      const control = toPoint(segment.control, "path quad control");
       d += ` Q ${control.x} ${control.y} ${quad.x} ${quad.y}`;
     } else if ("cubic" in segment) {
-      const { cubic, controls } = segment;
-      d +=
-        ` C ${controls[0].x} ${controls[0].y} ` +
-        `${controls[1].x} ${controls[1].y} ${cubic.x} ${cubic.y}`;
+      const cubic = toPoint(segment.cubic, "path cubic");
+      const c0 = toPoint(segment.controls[0], "path cubic control 0");
+      const c1 = toPoint(segment.controls[1], "path cubic control 1");
+      d += ` C ${c0.x} ${c0.y} ${c1.x} ${c1.y} ${cubic.x} ${cubic.y}`;
     } else {
       throw new Error(
         `unrecognized path segment: ${JSON.stringify(segment)}`,
