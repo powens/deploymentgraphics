@@ -250,6 +250,24 @@
         max-height: 72vh;
       }
 
+      .attribution {
+        padding: 0.6rem 1.25rem;
+        background: var(--panel);
+        border-top: 1px solid var(--border);
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        text-align: center;
+      }
+
+      .attribution a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      .attribution a:hover {
+        text-decoration: underline;
+      }
+
       .stage-msg {
         color: var(--text-muted);
         font-size: 0.9rem;
@@ -501,6 +519,11 @@
     </section>
 
     <main class="stage" id="stage" aria-live="polite"></main>
+
+    <footer class="attribution">
+      Powered by
+      <a href="https://40kdc.alpacasoft.dev" target="_blank" rel="noopener">40kdc-data</a>
+    </footer>
 
     <script type="module" src="./app.js"></script>
   </body>

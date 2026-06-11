@@ -35,7 +35,7 @@ export async function loadPreset(
 ): Promise<{ scene: Partial<Scene>; templates: Record<string, Template> }> {
   const [missionData, terrainData] = (await Promise.all([
     fetchYaml(`./data/deployment/${missionId}.yml`),
-    fetchYaml("./data/terrain/gw.yml"),
+    fetchYaml("./data/terrain/combined.yml"),
   ])) as [MissionYaml, TerrainYaml];
 
   const templates = terrainData.templates ?? {};

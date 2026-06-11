@@ -1,11 +1,14 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
+import { makeFeatures } from "./features.js";
 import { injectIconDefs, makeIcons } from "./icons.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
 import {
   DEFAULT_AREA_TERRAIN_SIZE,
+  getLayoutAreaTerrain,
   getLayoutBuildings,
+  getLayoutFeatures,
   getLayoutIcons,
 } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
@@ -154,8 +157,11 @@ function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
 }
 
 function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
-  const items = config.terrain.area_terrain;
-  if (!items || items.length === 0) return null;
+  const items = [
+    ...(config.terrain.area_terrain ?? []),
+    ...getLayoutAreaTerrain(config.terrain, config.terrain.layout_name),
+  ];
+  if (items.length === 0) return null;
   const group = makeElement("g");
   group.setAttribute("id", "area-terrain");
   for (const item of items) {
@@ -286,11 +292,6 @@ export function makeMissionCard(
     svg.appendChild(halfwayLines);
   }
 
-  const areaTerrain = makeAreaTerrain(config, theme);
-  if (areaTerrain) {
-    svg.appendChild(areaTerrain);
-  }
-
   if (hasSelectedLayout(config)) {
     const placements = getLayoutBuildings(
       config.terrain,
@@ -314,6 +315,29 @@ export function makeMissionCard(
     const empty = makeElement("g");
     empty.setAttribute("id", "buildings");
     svg.appendChild(empty);
+  }
+
+  // Area terrain draws after buildings: imported 40kdc area pieces render as
+  // opaque buildings, and the smaller feature pieces (l-ruins, pipes, ...) are
+  // emitted as area_terrain that sits on top of them.
+  const areaTerrain = makeAreaTerrain(config, theme);
+  if (areaTerrain) {
+    svg.appendChild(areaTerrain);
+  }
+
+  // Features come from two sources: a top-level array (the editor / a
+  // hand-written full config) and the selected layout (built-in terrain files).
+  const layoutFeatures = hasSelectedLayout(config)
+    ? getLayoutFeatures(config.terrain, config.terrain.layout_name)
+    : [];
+  const features = [...(config.features ?? []), ...layoutFeatures];
+  if (features.length > 0) {
+    svg.appendChild(
+      makeFeatures(features, theme, {
+        width: config.base.size.width,
+        height: config.base.size.height,
+      }),
+    );
   }
 
   const objectives = makeObjectives(config, theme);

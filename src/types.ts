@@ -1,5 +1,5 @@
 import type { Point } from "./building-coordinates.js";
-import type { TerrainConfig } from "./terrain-config.js";
+import type { FeaturePlacement, TerrainConfig } from "./terrain-config.js";
 
 export type Coordinate = Point;
 export type SVGProperties = Record<string, string | number>;
@@ -26,7 +26,7 @@ export type DeploymentConfig = {
 };
 
 /**
- * Terrain config as loaded from gw.yml, plus the `layout_name` the page
+ * Terrain config as loaded from combined.yml, plus the `layout_name` the page
  * injects at fetch time (see static/index.html `getTerrain`).
  */
 export type RuntimeTerrainConfig = TerrainConfig & { layout_name: string };
@@ -54,4 +54,5 @@ export type FullConfig = {
   deployment: DeploymentConfig;
   objectives?: Objective[];
   annotations?: Annotation[];
+  features?: FeaturePlacement[];
 };

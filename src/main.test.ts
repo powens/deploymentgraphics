@@ -220,6 +220,82 @@ describe("makeAnnotations", () => {
   });
 });
 
+describe("makeFeatures integration", () => {
+  it("renders a features group on top of buildings", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal", mirror: false },
+    ];
+    const svg = makeMissionCard(config);
+    const featuresGroup = svg.querySelector("#features");
+    expect(featuresGroup).not.toBeNull();
+    expect(featuresGroup!.childNodes.length).toBe(1);
+
+    // Features must come after the buildings group in document order.
+    const ids = [...svg.children].map((c) => c.getAttribute("id"));
+    expect(ids.indexOf("features")).toBeGreaterThan(ids.indexOf("buildings"));
+  });
+
+  it("renders area terrain on top of buildings", () => {
+    // 40kdc feature pieces (l-ruins, pipes, ...) are emitted as area_terrain
+    // and sit on top of the area pieces, which render as opaque buildings.
+    // Area terrain must therefore draw after the buildings group.
+    const config = buildMinimalConfig();
+    (config.terrain.layout["1"] as { area_terrain?: unknown }).area_terrain = [
+      {
+        shape: "polygon",
+        x: 0,
+        y: 0,
+        points: [
+          { x: 0, y: 0 },
+          { x: 5, y: 0 },
+          { x: 5, y: 5 },
+        ],
+        label: "ruin",
+      },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#area-terrain")).not.toBeNull();
+    const ids = [...svg.children].map((c) => c.getAttribute("id"));
+    expect(ids.indexOf("area-terrain")).toBeGreaterThan(ids.indexOf("buildings"));
+  });
+
+  it("mirrors a feature through the board centre by default", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal" },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#features")!.childNodes.length).toBe(2);
+  });
+
+  it("renders no features group when none are present", () => {
+    const svg = makeMissionCard(buildMinimalConfig());
+    expect(svg.querySelector("#features")).toBeNull();
+  });
+
+  it("renders features declared in the selected layout", () => {
+    const config = buildMinimalConfig();
+    config.terrain.layout["1"].features = [
+      { type: "pipe", x: 5, y: 5, width: 6, height: 2, color: "rust", mirror: false },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#features")!.childNodes.length).toBe(1);
+  });
+
+  it("merges top-level features with the layout's features", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 1, y: 1, width: 5, height: 3, color: "gunmetal", mirror: false },
+    ];
+    config.terrain.layout["1"].features = [
+      { type: "pipe", x: 5, y: 5, width: 6, height: 2, color: "rust", mirror: false },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("#features")!.childNodes.length).toBe(2);
+  });
+});
+
 describe("makeObjectives", () => {
   it("renders a numbered marker per objective", () => {
     const cfg = buildMinimalConfig();

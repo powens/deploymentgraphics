@@ -52,9 +52,10 @@ async function buildConfig(controls) {
   const [missionConfig, baseConfig, terrainObj] = await Promise.all([
     fetchYaml(`./data/deployment/${controls.m}.yml`),
     fetchYaml("./data/base.yml"),
-    fetchYaml("./data/terrain/gw.yml"),
+    fetchYaml("./data/terrain/combined.yml"),
   ]);
   // Spread rather than mutate: the cached objects are shared across redraws.
+  // combined.yml already holds the demo layout + the ported 40kdc layouts.
   return {
     deployment: missionConfig,
     base: { ...baseConfig, grid: { ...baseConfig.grid, draw: controls.grid } },

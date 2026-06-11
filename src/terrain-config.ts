@@ -30,10 +30,38 @@ export type IconPlacement = {
   player?: "attacker" | "defender";
 };
 
-/** One numbered layout: building placements and optional icon markers. */
+/**
+ * A placed terrain feature: `type` selects a draw function, `x`/`y` is the
+ * top-left of its unrotated bounding box (inches), `width`/`height` its box,
+ * `color` a palette key resolved from `theme.feature.palette`, `rotation`
+ * degrees about the box center. Like buildings, a feature is mirrored 180°
+ * through the canvas centre unless `mirror: false`.
+ */
+export type FeaturePlacement = {
+  type: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rotation?: number;
+  color: string;
+  mirror?: boolean; // default true
+  // Material category, shared with area_terrain labels (ruin, pipe, generator,
+  // barricade, gantry, catwalk). Currently styling comes from `color`; the
+  // label is carried for consistency with the ported 40kdc pieces.
+  label?: string;
+};
+
+/**
+ * One numbered layout: building placements and optional icon markers and
+ * terrain features (drawn on top of the buildings). Layouts ported from
+ * external data may instead carry `area_terrain` polygons.
+ */
 export type TerrainLayout = {
   buildings: BuildingPlacement[];
   icons?: IconPlacement[];
+  features?: FeaturePlacement[];
+  area_terrain?: AreaTerrain[];
 };
 
 /**
@@ -74,4 +102,27 @@ export function getLayoutIcons(
   layoutName: string,
 ): IconPlacement[] {
   return terrain.layout[layoutName]?.icons ?? [];
+}
+
+/**
+ * Returns the feature placements for a named layout, or `[]` when the layout is
+ * missing or has no features. Like `getLayoutIcons`, never throws — features
+ * are optional everywhere.
+ */
+export function getLayoutFeatures(
+  terrain: TerrainConfig,
+  layoutName: string,
+): FeaturePlacement[] {
+  return terrain.layout[layoutName]?.features ?? [];
+}
+
+/**
+ * Returns the area-terrain polygons for a named layout, or `[]` when the
+ * layout is missing or carries none. Never throws.
+ */
+export function getLayoutAreaTerrain(
+  terrain: TerrainConfig,
+  layoutName: string,
+): AreaTerrain[] {
+  return terrain.layout[layoutName]?.area_terrain ?? [];
 }

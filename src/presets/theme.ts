@@ -62,9 +62,27 @@ export const baseTheme: Theme = {
       stroke: "#807060",
       stroke_width: 0.3,
     },
+    feature: {
+      fill: "rgba(120,120,120,0.55)",
+      stroke: "#555555",
+      stroke_width: 0.3,
+    },
+    pipe: { fill: "#b9772e", stroke: "#6e451a", stroke_width: 0.3 },
+    barricade: { fill: "#c9a86a", stroke: "#7d6233", stroke_width: 0.3 },
   },
   icon: {
     circle: { fill: "#e8dcc0", stroke: "#33312c", stroke_width: 0.25 },
     glyph: { fill: "#33312c" },
+  },
+  feature: {
+    stroke_width: 0.2,
+    palette: {
+      stone: { fill: "#9aa0a6", accent: "#5b6068" },
+      rust: { fill: "#b9772e", accent: "#6e451a" },
+      sand: { fill: "#c9a86a", accent: "#7d6233" },
+      green: { fill: "#5a7d4a", accent: "#34502c" },
+      gunmetal: { fill: "#7f868d", accent: "#3f444a" },
+      bone: { fill: "#e8dcc0", accent: "#9a8f76" },
+    },
   },
 };

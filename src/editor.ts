@@ -336,7 +336,7 @@ function initPalette(): void {
 
 async function start(): Promise<void> {
   try {
-    const terrainData = (await fetchYaml("./data/terrain/gw.yml")) as {
+    const terrainData = (await fetchYaml("./data/terrain/combined.yml")) as {
       templates: Record<string, Template>;
     };
     loadedTemplates = terrainData.templates ?? {};

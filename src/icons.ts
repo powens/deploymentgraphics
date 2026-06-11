@@ -63,7 +63,7 @@ const fortress: IconDef = {
 
 export const icons: Record<string, IconDef> = { skull, fortress };
 
-function makeShape(shape: IconShape): SVGElement {
+export function makeShape(shape: IconShape): SVGElement {
   switch (shape.tag) {
     case "circle": {
       const el = makeElement("circle");
