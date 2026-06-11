@@ -166,5 +166,7 @@ node_modules/
 
 # Local Claude Code guidance (not shared)
 CLAUDE.local.md
-
+.claude/
+.playwright-mcp/
 docs/
+examples/
