@@ -22,7 +22,7 @@ function configWithLayout(): FullConfig {
               shape: "polygon",
               x: 0,
               y: 0,
-              label: "area",
+              label: "feature",
               points: [
                 { x: 24.25, y: 18.5 },
                 { x: 35.75, y: 18.5 },
@@ -31,7 +31,6 @@ function configWithLayout(): FullConfig {
               ],
             },
           ],
-          objectives: [{ x: 30, y: 22, number: 1 }],
         },
       },
     },
@@ -44,18 +43,11 @@ function configWithLayout(): FullConfig {
   } as unknown as FullConfig;
 }
 
-describe("per-layout area terrain + objectives", () => {
+describe("per-layout area terrain", () => {
   it("renders the layout's area_terrain polygon", () => {
     const svg = makeMissionCard(configWithLayout());
     const group = svg.querySelector("#area-terrain");
     expect(group).not.toBeNull();
     expect(group!.querySelectorAll("polygon").length).toBe(1);
-  });
-
-  it("renders the layout's objective marker", () => {
-    const svg = makeMissionCard(configWithLayout());
-    const group = svg.querySelector("#objectives");
-    expect(group).not.toBeNull();
-    expect(group!.querySelectorAll("circle").length).toBe(1);
   });
 });

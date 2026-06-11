@@ -11,7 +11,7 @@ export type PaletteItem =
   | { category: "icon"; iconType: "skull" | "fortress"; label: string }
   | {
       category: "feature";
-      featureType: "l-ruin" | "l-ruin-roof" | "generator" | "pipe";
+      featureType: "l-ruin" | "l-ruin-roof" | "generator" | "gantry" | "pipe";
       width: number;
       height: number;
       color: string;
@@ -33,6 +33,7 @@ const FIXED_ITEMS: PaletteItem[] = [
   { category: "feature", featureType: "l-ruin", width: 5, height: 7, color: "stone", label: "L-ruin 5×7" },
   { category: "feature", featureType: "l-ruin-roof", width: 5, height: 7, color: "green", label: "L-ruin roof" },
   { category: "feature", featureType: "generator", width: 5, height: 3, color: "gunmetal", label: "Generator 5×3" },
+  { category: "feature", featureType: "gantry", width: 5, height: 5, color: "gunmetal", label: "Gantry 5×5" },
   { category: "feature", featureType: "pipe", width: 6, height: 2, color: "rust", label: "Pipe (small)" },
   { category: "feature", featureType: "pipe", width: 10, height: 2.5, color: "rust", label: "Pipe (large)" },
 ];
