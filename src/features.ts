@@ -78,15 +78,15 @@ const pipe: FeatureDraw = (w, h) => {
 // and all) plus a right-triangular floor/ceiling slab tucked into the inner
 // corner where they meet. The roof's right angle sits at the walls' inner
 // corner (so it rests against their inner faces rather than overlapping them);
-// its legs run halfway up and along the open span, and an accent beam hugs the
-// hypotenuse so the slab reads as a raised platform edge.
+// its legs run two-thirds up and along the open span, and an accent beam hugs
+// the hypotenuse so the slab reads as a raised platform edge.
 const lRuinRoof: FeatureDraw = (w, h) => {
   const base = lRuin(w, h);
   const wall = Math.min(0.5, w, h);
   const cx = wall; // inner corner x (right of the left wall)
   const cy = h - wall; // inner corner y (top of the bottom wall)
-  const lw = (w - wall) * 0.5;
-  const lh = (h - wall) * 0.5;
+  const lw = ((w - wall) * 2) / 3;
+  const lh = ((h - wall) * 2) / 3;
   const roof = `M${cx} ${cy - lh} V${cy} H${cx + lw} Z`;
   const t = Math.min(0.4, lw * 0.3, lh * 0.3);
   const beam =
@@ -124,8 +124,8 @@ const lRuinRoofMirror: FeatureDraw = (w, h) => {
   const wall = Math.min(0.5, w, h);
   const cx = w - wall; // inner corner x (left of the right wall)
   const cy = h - wall; // inner corner y (top of the bottom wall)
-  const lw = (w - wall) * 0.5;
-  const lh = (h - wall) * 0.5;
+  const lw = ((w - wall) * 2) / 3;
+  const lh = ((h - wall) * 2) / 3;
   const roof = `M${cx} ${cy - lh} V${cy} H${cx - lw} Z`;
   const t = Math.min(0.4, lw * 0.3, lh * 0.3);
   const beam =
