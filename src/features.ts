@@ -137,6 +137,39 @@ const lRuinRoofMirror: FeatureDraw = (w, h) => {
   };
 };
 
+// Gantry: a square deck (body) with an X cross-brace and four corner posts on
+// top (accent), reading as a braced raised platform. The two brace beams are
+// thin quads along the deck's diagonals; their thickness and the post radius
+// derive from w/h so the structure scales with the box.
+const gantry: FeatureDraw = (w, h) => {
+  const t = Math.min(0.3, w * 0.14, h * 0.14); // brace beam thickness
+  // A thin quad beam between two corners, `t` wide, centred on the diagonal.
+  const beam = (ax: number, ay: number, bx: number, by: number): string => {
+    const dx = bx - ax;
+    const dy = by - ay;
+    const len = Math.hypot(dx, dy);
+    const nx = (-dy / len) * (t / 2);
+    const ny = (dx / len) * (t / 2);
+    return (
+      `M${ax + nx} ${ay + ny} L${bx + nx} ${by + ny} ` +
+      `L${bx - nx} ${by - ny} L${ax - nx} ${ay - ny} Z`
+    );
+  };
+  const r = Math.max(0.12, Math.min(w, h) * 0.13);
+  const s = r * 1.4; // corner-post inset
+  return {
+    body: [{ tag: "rect", x: 0, y: 0, width: w, height: h }],
+    accent: [
+      { tag: "path", d: beam(0, 0, w, h) },
+      { tag: "path", d: beam(w, 0, 0, h) },
+      { tag: "circle", cx: s, cy: s, r },
+      { tag: "circle", cx: w - s, cy: s, r },
+      { tag: "circle", cx: w - s, cy: h - s, r },
+      { tag: "circle", cx: s, cy: h - s, r },
+    ],
+  };
+};
+
 /** Feature draw registry, keyed by `FeaturePlacement.type`. */
 export const features: Record<string, FeatureDraw> = {
   "l-ruin": lRuin,
@@ -144,6 +177,7 @@ export const features: Record<string, FeatureDraw> = {
   "l-ruin-roof": lRuinRoof,
   "l-ruin-roof-mirror": lRuinRoofMirror,
   generator,
+  gantry,
   pipe,
 };
 

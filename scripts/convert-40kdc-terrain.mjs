@@ -14,6 +14,7 @@ import yaml from "js-yaml";
 import { resolvePiece } from "./terrain-resolver.mjs";
 import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 import { ruinFeatures } from "./ruin-to-feature.mjs";
+import { rectFeatures } from "./rect-to-feature.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
@@ -29,16 +30,14 @@ const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => footprintById.get(id);
 
 // Theme label per area_terrain feature piece, coloured by material category,
-// mirroring the demo layout's palette (rust pipes, gunmetal generators, sand
-// barricades, metal gantries). Unknown feature templates fall back to the
-// generic `feature` style. Categories resolve to colours in
-// static/data/theme.yml. (Area pieces become buildings and corner-ruins become
-// l-ruin features; neither is labelled here. Catwalks are dropped.)
+// mirroring the demo layout's palette (rust pipes, sand barricades). Unknown
+// feature templates fall back to the generic `feature` style. Categories
+// resolve to colours in static/data/theme.yml. (Area pieces become buildings,
+// corner-ruins become l-ruin features, and generators/gantries become rectangle
+// features; none is labelled here. Catwalks are dropped.)
 const FEATURE_LABELS = {
   pipe: "pipe",
-  generator: "generator",
   barricade: "barricade",
-  gantry: "gantry",
 };
 
 const labelFor = (piece) => FEATURE_LABELS[piece.template] ?? "feature";
@@ -57,9 +56,12 @@ for (const layout of layouts) {
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
   const getParent = (id) => byId.get(id);
   // Corner-ruins become l-ruin features (roofed where a catwalk sits on them);
-  // catwalk pieces are dropped. `consumedIds` are the ruin + catwalk pieces the
-  // area_terrain pass must skip.
-  const { features, consumedIds } = ruinFeatures(layout, lookupFootprint, getParent);
+  // catwalk pieces are dropped. Generators/gantries become rectangle features.
+  // `consumedIds` are the pieces the area_terrain pass must skip.
+  const ruin = ruinFeatures(layout, lookupFootprint, getParent);
+  const rect = rectFeatures(layout, lookupFootprint, getParent);
+  const features = [...ruin.features, ...rect.features];
+  const consumedIds = new Set([...ruin.consumedIds, ...rect.consumedIds]);
   const buildings = [];
   const area_terrain = [];
   const icons = [];

@@ -4,8 +4,9 @@ import { features, makeFeatures } from "./features.js";
 import { baseTheme } from "./presets/theme.js";
 
 describe("feature draw functions", () => {
-  it("registers the six feature types", () => {
+  it("registers the seven feature types", () => {
     expect(Object.keys(features).sort()).toEqual([
+      "gantry",
       "generator",
       "l-ruin",
       "l-ruin-mirror",
@@ -13,6 +14,14 @@ describe("feature draw functions", () => {
       "l-ruin-roof-mirror",
       "pipe",
     ]);
+  });
+
+  it("draws the gantry as a deck body plus brace + post accents", () => {
+    const art = features.gantry(2, 2);
+    expect(art.body).toEqual([{ tag: "rect", x: 0, y: 0, width: 2, height: 2 }]);
+    // Two diagonal brace beams (paths) + four corner posts (circles).
+    expect(art.accent.filter((s) => s.tag === "path").length).toBe(2);
+    expect(art.accent.filter((s) => s.tag === "circle").length).toBe(4);
   });
 
   it("mirrors l-ruin geometry across x = w/2", () => {

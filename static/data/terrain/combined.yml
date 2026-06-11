@@ -342,19 +342,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 36
-            'y': 8
-          - x: 37.147
-            'y': 9.638
-          - x: 35.509
-            'y': 10.785
-          - x: 34.362
-            'y': 9.147
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 30
             'y': 43.25
           - x: 27.132
@@ -394,32 +381,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 24.137
-            'y': 35.861
-          - x: 22.989
-            'y': 34.223
-          - x: 24.628
-            'y': 33.076
-          - x: 25.775
-            'y': 34.714
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 42.431
-            'y': 24.401
-          - x: 44.889
-            'y': 22.681
-          - x: 47.757
-            'y': 26.776
-          - x: 45.299
-            'y': 28.497
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 44.495
             'y': 20.34
           - x: 48.591
@@ -433,19 +394,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 17.513
-            'y': 19.615
-          - x: 15.056
-            'y': 21.336
-          - x: 12.188
-            'y': 17.24
-          - x: 14.646
-            'y': 15.52
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 15.639
             'y': 23.558
           - x: 11.543
@@ -455,32 +403,6 @@ layout:
           - x: 15.065
             'y': 22.739
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 21.527
-            'y': 8.466
-          - x: 23.984
-            'y': 6.746
-          - x: 26.852
-            'y': 10.841
-          - x: 24.395
-            'y': 12.562
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 38.473
-            'y': 35.534
-          - x: 36.016
-            'y': 37.254
-          - x: 33.148
-            'y': 33.159
-          - x: 35.605
-            'y': 31.438
-        label: generator
     features:
       - type: l-ruin
         label: ruin
@@ -589,6 +511,60 @@ layout:
         height: 5
         rotation: 235.001
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 34.754
+        'y': 8.393
+        width: 2
+        height: 2
+        rotation: 55.001
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 23.382
+        'y': 33.468
+        width: 2
+        height: 2
+        rotation: 235.001
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 43.594
+        'y': 23.089
+        width: 3
+        height: 5
+        rotation: 325.001
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 13.351
+        'y': 15.928
+        width: 3
+        height: 5
+        rotation: 145.001
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 22.69
+        'y': 7.154
+        width: 3
+        height: 5
+        rotation: 325.001
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 34.31
+        'y': 31.846
+        width: 3
+        height: 5
+        rotation: 145.001
+        color: gunmetal
         mirror: false
   gw-11e-hammer-anvil:
     buildings:
@@ -741,19 +717,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 36.074
-            'y': 6.488
-          - x: 36.074
-            'y': 9.488
-          - x: 31.074
-            'y': 9.488
-          - x: 31.074
-            'y': 6.488
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 29.731
             'y': 16.557
           - x: 34.731
@@ -802,19 +765,6 @@ layout:
           - x: 41.506
             'y': 7.638
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 45.81
-            'y': 32.027
-          - x: 47.81
-            'y': 32.027
-          - x: 47.81
-            'y': 34.027
-          - x: 45.81
-            'y': 34.027
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -897,19 +847,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 23.927
-            'y': 37.512
-          - x: 23.927
-            'y': 34.512
-          - x: 28.927
-            'y': 34.512
-          - x: 28.927
-            'y': 37.512
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 30.269
             'y': 27.443
           - x: 25.269
@@ -958,19 +895,6 @@ layout:
           - x: 18.495
             'y': 36.362
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 14.19
-            'y': 11.973
-          - x: 12.19
-            'y': 11.973
-          - x: 12.19
-            'y': 9.973
-          - x: 14.19
-            'y': 9.973
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -1140,6 +1064,42 @@ layout:
         rotation: 90
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 32.074
+        'y': 5.488
+        width: 3
+        height: 5
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 45.81
+        'y': 32.027
+        width: 2
+        height: 2
+        rotation: 0
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 24.926
+        'y': 33.512
+        width: 3
+        height: 5
+        rotation: 270
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 12.19
+        'y': 9.973
+        width: 2
+        height: 2
+        rotation: 180
+        color: gunmetal
+        mirror: false
   take-and-hold-vs-purge-the-foe-2:
     buildings:
       - type: shoe-mirror
@@ -1291,32 +1251,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 23.554
-            'y': 8.086
-          - x: 24.924
-            'y': 9.544
-          - x: 23.466
-            'y': 10.914
-          - x: 22.096
-            'y': 9.456
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 36.446
-            'y': 35.914
-          - x: 35.076
-            'y': 34.456
-          - x: 36.534
-            'y': 33.086
-          - x: 37.904
-            'y': 34.544
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 26.325
             'y': 13.293
           - x: 23.929
@@ -1423,32 +1357,6 @@ layout:
           - x: 14.75
             'y': 20.5
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 44.5
-            'y': 21
-          - x: 41.5
-            'y': 21
-          - x: 41.5
-            'y': 17
-          - x: 44.5
-            'y': 17
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 15.5
-            'y': 23
-          - x: 18.5
-            'y': 23
-          - x: 18.5
-            'y': 27
-          - x: 15.5
-            'y': 27
-        label: generator
     features:
       - type: l-ruin
         label: ruin
@@ -1593,6 +1501,42 @@ layout:
         height: 2
         rotation: 180
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 22.51
+        'y': 8.5
+        width: 2
+        height: 2
+        rotation: 46.79
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 35.49
+        'y': 33.5
+        width: 2
+        height: 2
+        rotation: 226.79
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 41.5
+        'y': 17
+        width: 3
+        height: 4
+        rotation: 180
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 15.5
+        'y': 23
+        width: 3
+        height: 4
+        rotation: 0
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -1770,32 +1714,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 45.75
-            'y': 6
-          - x: 45.75
-            'y': 8
-          - x: 43.75
-            'y': 8
-          - x: 43.75
-            'y': 6
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 14.25
-            'y': 38
-          - x: 14.25
-            'y': 36
-          - x: 16.25
-            'y': 36
-          - x: 16.25
-            'y': 38
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 44.419
             'y': 11.68
           - x: 44.419
@@ -1876,32 +1794,6 @@ layout:
           - x: 14.591
             'y': 38.16
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 37
-            'y': 8.5
-          - x: 37
-            'y': 11.5
-          - x: 33
-            'y': 11.5
-          - x: 33
-            'y': 8.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 23
-            'y': 35.5
-          - x: 23
-            'y': 32.5
-          - x: 27
-            'y': 32.5
-          - x: 27
-            'y': 35.5
-        label: generator
       - shape: polygon
         x: 0
         'y': 0
@@ -2072,6 +1964,42 @@ layout:
         height: 2
         rotation: 0
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 43.75
+        'y': 6
+        width: 2
+        height: 2
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 14.25
+        'y': 36
+        width: 2
+        height: 2
+        rotation: 270
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 33.5
+        'y': 8
+        width: 3
+        height: 4
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 23.5
+        'y': 32
+        width: 3
+        height: 4
+        rotation: 270
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -2245,58 +2173,6 @@ layout:
             'y': 39.003
         mirror: false
     area_terrain:
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 19.4
-            'y': 27.34
-          - x: 16.733
-            'y': 28.715
-          - x: 14.9
-            'y': 25.16
-          - x: 17.567
-            'y': 23.785
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 40.6
-            'y': 16.66
-          - x: 43.267
-            'y': 15.285
-          - x: 45.1
-            'y': 18.84
-          - x: 42.433
-            'y': 20.215
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 44.404
-            'y': 7.833
-          - x: 46.237
-            'y': 8.634
-          - x: 45.436
-            'y': 10.467
-          - x: 43.603
-            'y': 9.666
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 15.596
-            'y': 36.167
-          - x: 13.763
-            'y': 35.366
-          - x: 14.564
-            'y': 33.533
-          - x: 16.397
-            'y': 34.334
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -2552,6 +2428,42 @@ layout:
         rotation: 90
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 15.65
+        'y': 24.25
+        width: 3
+        height: 4
+        rotation: 152.73
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 41.35
+        'y': 15.75
+        width: 3
+        height: 4
+        rotation: 332.73
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 43.92
+        'y': 8.15
+        width: 2
+        height: 2
+        rotation: 23.58
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 14.08
+        'y': 33.85
+        width: 2
+        height: 2
+        rotation: 203.58
+        color: gunmetal
+        mirror: false
     icons:
       - type: skull
         pos:
@@ -2750,58 +2662,6 @@ layout:
           - x: 26.5
             'y': 39.75
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 40
-            'y': 8.5
-          - x: 40
-            'y': 11.5
-          - x: 36
-            'y': 11.5
-          - x: 36
-            'y': 8.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 20
-            'y': 35.5
-          - x: 20
-            'y': 32.5
-          - x: 24
-            'y': 32.5
-          - x: 24
-            'y': 35.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 43.75
-            'y': 21
-          - x: 43.75
-            'y': 23
-          - x: 41.75
-            'y': 23
-          - x: 41.75
-            'y': 21
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 16.25
-            'y': 23
-          - x: 16.25
-            'y': 21
-          - x: 18.25
-            'y': 21
-          - x: 18.25
-            'y': 23
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -3031,6 +2891,42 @@ layout:
         rotation: 41.81
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 36.5
+        'y': 8
+        width: 3
+        height: 4
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 20.5
+        'y': 32
+        width: 3
+        height: 4
+        rotation: 270
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 41.75
+        'y': 21
+        width: 2
+        height: 2
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 16.25
+        'y': 21
+        width: 2
+        height: 2
+        rotation: 270
+        color: gunmetal
+        mirror: false
     icons:
       - type: skull
         pos:
@@ -3207,32 +3103,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 29
-            'y': 9.5
-          - x: 29
-            'y': 12.5
-          - x: 25
-            'y': 12.5
-          - x: 25
-            'y': 9.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 31
-            'y': 34.5
-          - x: 31
-            'y': 31.5
-          - x: 35
-            'y': 31.5
-          - x: 35
-            'y': 34.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 23.5
             'y': 5.25
           - x: 23.5
@@ -3255,32 +3125,6 @@ layout:
           - x: 37.5
             'y': 38.75
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 46.2
-            'y': 19.85
-          - x: 47.4
-            'y': 21.45
-          - x: 45.8
-            'y': 22.65
-          - x: 44.6
-            'y': 21.05
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 13.8
-            'y': 24.15
-          - x: 12.6
-            'y': 22.55
-          - x: 14.2
-            'y': 21.35
-          - x: 15.4
-            'y': 22.95
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -3510,6 +3354,42 @@ layout:
         rotation: 90
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 25.5
+        'y': 9
+        width: 3
+        height: 4
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 31.5
+        'y': 31
+        width: 3
+        height: 4
+        rotation: 270
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 45
+        'y': 20.25
+        width: 2
+        height: 2
+        rotation: 53.13
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 13
+        'y': 21.75
+        width: 2
+        height: 2
+        rotation: 233.13
+        color: gunmetal
+        mirror: false
     icons:
       - type: skull
         pos:
@@ -3686,32 +3566,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 37.2
-            'y': 8.35
-          - x: 38.4
-            'y': 9.95
-          - x: 36.8
-            'y': 11.15
-          - x: 35.6
-            'y': 9.55
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 22.8
-            'y': 35.65
-          - x: 21.6
-            'y': 34.05
-          - x: 23.2
-            'y': 32.85
-          - x: 24.4
-            'y': 34.45
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 39.519
             'y': 13.711
           - x: 37.419
@@ -3792,32 +3646,6 @@ layout:
           - x: 23.197
             'y': 35.577
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 29
-            'y': 9.5
-          - x: 29
-            'y': 12.5
-          - x: 25
-            'y': 12.5
-          - x: 25
-            'y': 9.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 31
-            'y': 34.5
-          - x: 31
-            'y': 31.5
-          - x: 35
-            'y': 31.5
-          - x: 35
-            'y': 34.5
-        label: generator
       - shape: polygon
         x: 0
         'y': 0
@@ -3988,6 +3816,42 @@ layout:
         height: 3
         rotation: 0
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 36
+        'y': 8.75
+        width: 2
+        height: 2
+        rotation: 53.13
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 22
+        'y': 33.25
+        width: 2
+        height: 2
+        rotation: 233.13
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 25.5
+        'y': 9
+        width: 3
+        height: 4
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 31.5
+        'y': 31
+        width: 3
+        height: 4
+        rotation: 270
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -4165,32 +4029,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 28.55
-            'y': 7.6
-          - x: 30.15
-            'y': 8.8
-          - x: 28.95
-            'y': 10.4
-          - x: 27.35
-            'y': 9.2
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 31.45
-            'y': 36.4
-          - x: 29.85
-            'y': 35.2
-          - x: 31.05
-            'y': 33.6
-          - x: 32.65
-            'y': 34.8
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 32.277
             'y': 12.097
           - x: 29.477
@@ -4271,32 +4109,6 @@ layout:
           - x: 31.811
             'y': 36.219
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 48.358
-            'y': 18.741
-          - x: 46.335
-            'y': 20.956
-          - x: 43.382
-            'y': 18.259
-          - x: 45.405
-            'y': 16.044
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 11.642
-            'y': 25.259
-          - x: 13.665
-            'y': 23.044
-          - x: 16.618
-            'y': 25.741
-          - x: 14.595
-            'y': 27.956
-        label: generator
       - shape: polygon
         x: 0
         'y': 0
@@ -4467,6 +4279,42 @@ layout:
         height: 2
         rotation: 90
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 27.75
+        'y': 8
+        width: 2
+        height: 2
+        rotation: 36.87
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 30.25
+        'y': 34
+        width: 2
+        height: 2
+        rotation: 216.87
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 44.37
+        'y': 16.5
+        width: 3
+        height: 4
+        rotation: 132.41
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 12.63
+        'y': 23.5
+        width: 3
+        height: 4
+        rotation: 312.41
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -4644,32 +4492,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 31
-            'y': 9.5
-          - x: 31
-            'y': 12.5
-          - x: 27
-            'y': 12.5
-          - x: 27
-            'y': 9.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 29
-            'y': 34.5
-          - x: 29
-            'y': 31.5
-          - x: 33
-            'y': 31.5
-          - x: 33
-            'y': 34.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 25.5
             'y': 5.25
           - x: 25.5
@@ -4692,32 +4514,6 @@ layout:
           - x: 35.5
             'y': 38.75
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 38.662
-            'y': 7.647
-          - x: 39.603
-            'y': 9.412
-          - x: 37.838
-            'y': 10.353
-          - x: 36.897
-            'y': 8.588
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 21.338
-            'y': 36.353
-          - x: 20.397
-            'y': 34.588
-          - x: 22.162
-            'y': 33.647
-          - x: 23.103
-            'y': 35.412
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -4911,6 +4707,42 @@ layout:
         rotation: 90
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 27.5
+        'y': 9
+        width: 3
+        height: 4
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 29.5
+        'y': 31
+        width: 3
+        height: 4
+        rotation: 270
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 37.25
+        'y': 8
+        width: 2
+        height: 2
+        rotation: 61.93
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 20.75
+        'y': 34
+        width: 2
+        height: 2
+        rotation: 241.93
+        color: gunmetal
+        mirror: false
     icons:
       - type: skull
         pos:
@@ -5087,32 +4919,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 35.5
-            'y': 10
-          - x: 32.5
-            'y': 10
-          - x: 32.5
-            'y': 6
-          - x: 35.5
-            'y': 6
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 24.5
-            'y': 34
-          - x: 27.5
-            'y': 34
-          - x: 27.5
-            'y': 38
-          - x: 24.5
-            'y': 38
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 34.25
             'y': 11.5
           - x: 39.75
@@ -5135,32 +4941,6 @@ layout:
           - x: 25.75
             'y': 31.5
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 48.75
-            'y': 34
-          - x: 48.75
-            'y': 36
-          - x: 46.75
-            'y': 36
-          - x: 46.75
-            'y': 34
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 11.25
-            'y': 10
-          - x: 11.25
-            'y': 8
-          - x: 13.25
-            'y': 8
-          - x: 13.25
-            'y': 10
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -5390,6 +5170,42 @@ layout:
         rotation: 180
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 32.5
+        'y': 6
+        width: 3
+        height: 4
+        rotation: 180
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 24.5
+        'y': 34
+        width: 3
+        height: 4
+        rotation: 0
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 46.75
+        'y': 34
+        width: 2
+        height: 2
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 11.25
+        'y': 8
+        width: 2
+        height: 2
+        rotation: 270
+        color: gunmetal
+        mirror: false
     icons:
       - type: skull
         pos:
@@ -5548,32 +5364,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 27.442
-            'y': 6.087
-          - x: 28.903
-            'y': 7.452
-          - x: 27.538
-            'y': 8.913
-          - x: 26.077
-            'y': 7.548
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 32.558
-            'y': 37.913
-          - x: 31.097
-            'y': 36.548
-          - x: 32.462
-            'y': 35.087
-          - x: 33.923
-            'y': 36.452
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 30.663
             'y': 10.959
           - x: 28.106
@@ -5654,32 +5444,6 @@ layout:
           - x: 32.936
             'y': 37.772
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 45.95
-            'y': 20.067
-          - x: 43.709
-            'y': 22.061
-          - x: 41.05
-            'y': 19.073
-          - x: 43.291
-            'y': 17.079
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 14.05
-            'y': 23.933
-          - x: 16.291
-            'y': 21.939
-          - x: 18.95
-            'y': 24.927
-          - x: 16.709
-            'y': 26.921
-        label: generator
     features:
       - type: l-ruin-mirror
         label: ruin
@@ -5824,6 +5588,42 @@ layout:
         height: 3
         rotation: 90
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 26.49
+        'y': 6.5
+        width: 2
+        height: 2
+        rotation: 43.05
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 31.51
+        'y': 35.5
+        width: 2
+        height: 2
+        rotation: 223.05
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 42
+        'y': 17.57
+        width: 3
+        height: 4
+        rotation: 138.34
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 15
+        'y': 22.43
+        width: 3
+        height: 4
+        rotation: 318.34
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -6001,32 +5801,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 49.2
-            'y': 22.35
-          - x: 50.4
-            'y': 23.95
-          - x: 48.8
-            'y': 25.15
-          - x: 47.6
-            'y': 23.55
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 10.8
-            'y': 21.65
-          - x: 9.6
-            'y': 20.05
-          - x: 11.2
-            'y': 18.85
-          - x: 12.4
-            'y': 20.45
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 51.519
             'y': 27.711
           - x: 49.419
@@ -6107,32 +5881,6 @@ layout:
           - x: 11.197
             'y': 21.577
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 33
-            'y': 32.5
-          - x: 33
-            'y': 35.5
-          - x: 29
-            'y': 35.5
-          - x: 29
-            'y': 32.5
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 27
-            'y': 11.5
-          - x: 27
-            'y': 8.5
-          - x: 31
-            'y': 8.5
-          - x: 31
-            'y': 11.5
-        label: generator
       - shape: polygon
         x: 0
         'y': 0
@@ -6303,6 +6051,42 @@ layout:
         height: 5
         rotation: 270
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 48
+        'y': 22.75
+        width: 2
+        height: 2
+        rotation: 53.13
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 10
+        'y': 19.25
+        width: 2
+        height: 2
+        rotation: 233.13
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 29.5
+        'y': 32
+        width: 3
+        height: 4
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 27.5
+        'y': 8
+        width: 3
+        height: 4
+        rotation: 270
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -6480,32 +6264,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 47.25
-            'y': 26
-          - x: 47.25
-            'y': 28
-          - x: 45.25
-            'y': 28
-          - x: 45.25
-            'y': 26
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 12.75
-            'y': 18
-          - x: 12.75
-            'y': 16
-          - x: 14.75
-            'y': 16
-          - x: 14.75
-            'y': 18
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 45.889
             'y': 31.68
           - x: 45.889
@@ -6586,32 +6344,6 @@ layout:
           - x: 13.111
             'y': 18.18
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 39.5
-            'y': 31
-          - x: 36.5
-            'y': 31
-          - x: 36.5
-            'y': 27
-          - x: 39.5
-            'y': 27
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 20.5
-            'y': 13
-          - x: 23.5
-            'y': 13
-          - x: 23.5
-            'y': 17
-          - x: 20.5
-            'y': 17
-        label: generator
       - shape: polygon
         x: 0
         'y': 0
@@ -6746,6 +6478,42 @@ layout:
         height: 2
         rotation: 0
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 45.25
+        'y': 26
+        width: 2
+        height: 2
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 12.75
+        'y': 16
+        width: 2
+        height: 2
+        rotation: 270
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 36.5
+        'y': 27
+        width: 3
+        height: 4
+        rotation: 180
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 20.5
+        'y': 13
+        width: 3
+        height: 4
+        rotation: 0
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -6923,32 +6691,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 26.266
-            'y': 8.436
-          - x: 28.174
-            'y': 9.036
-          - x: 27.574
-            'y': 10.944
-          - x: 25.666
-            'y': 10.344
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 33.734
-            'y': 35.564
-          - x: 31.826
-            'y': 34.964
-          - x: 32.426
-            'y': 33.056
-          - x: 34.334
-            'y': 33.656
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 31.276
             'y': 11.439
           - x: 27.937
@@ -7055,32 +6797,6 @@ layout:
           - x: 10.357
             'y': 26.098
         label: pipe
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 48.904
-            'y': 15.105
-          - x: 46.64
-            'y': 17.074
-          - x: 44.016
-            'y': 14.055
-          - x: 46.28
-            'y': 12.086
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 11.096
-            'y': 28.895
-          - x: 13.36
-            'y': 26.926
-          - x: 15.984
-            'y': 29.945
-          - x: 13.72
-            'y': 31.914
-        label: generator
     features:
       - type: l-ruin
         label: ruin
@@ -7225,6 +6941,42 @@ layout:
         height: 2
         rotation: 131.81
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 25.92
+        'y': 8.69
+        width: 2
+        height: 2
+        rotation: 17.46
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 32.08
+        'y': 33.31
+        width: 2
+        height: 2
+        rotation: 197.46
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 44.96
+        'y': 12.58
+        width: 3
+        height: 4
+        rotation: 139
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 12.04
+        'y': 27.42
+        width: 3
+        height: 4
+        rotation: 319
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
@@ -7398,58 +7150,6 @@ layout:
             'y': 11
         mirror: false
     area_terrain:
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 44.5
-            'y': 19
-          - x: 41.5
-            'y': 19
-          - x: 41.5
-            'y': 15
-          - x: 44.5
-            'y': 15
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 15.5
-            'y': 25
-          - x: 18.5
-            'y': 25
-          - x: 18.5
-            'y': 29
-          - x: 15.5
-            'y': 29
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 40.75
-            'y': 8
-          - x: 40.75
-            'y': 10
-          - x: 38.75
-            'y': 10
-          - x: 38.75
-            'y': 8
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 19.25
-            'y': 36
-          - x: 19.25
-            'y': 34
-          - x: 21.25
-            'y': 34
-          - x: 21.25
-            'y': 36
-        label: gantry
       - shape: polygon
         x: 0
         'y': 0
@@ -7705,6 +7405,42 @@ layout:
         rotation: 180
         color: green
         mirror: false
+      - type: generator
+        label: generator
+        x: 41.5
+        'y': 15
+        width: 3
+        height: 4
+        rotation: 180
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 15.5
+        'y': 25
+        width: 3
+        height: 4
+        rotation: 0
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 38.75
+        'y': 8
+        width: 2
+        height: 2
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 19.25
+        'y': 34
+        width: 2
+        height: 2
+        rotation: 270
+        color: gunmetal
+        mirror: false
     icons:
       - type: skull
         pos:
@@ -7881,32 +7617,6 @@ layout:
         x: 0
         'y': 0
         points:
-          - x: 46.496
-            'y': 15.964
-          - x: 48.296
-            'y': 16.836
-          - x: 47.424
-            'y': 18.636
-          - x: 45.624
-            'y': 17.764
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 13.504
-            'y': 28.036
-          - x: 11.704
-            'y': 27.164
-          - x: 12.576
-            'y': 25.364
-          - x: 14.376
-            'y': 26.236
-        label: gantry
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
           - x: 51.015
             'y': 19.665
           - x: 47.865
@@ -7987,32 +7697,6 @@ layout:
           - x: 13.824
             'y': 27.789
         label: barricade
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 33.591
-            'y': 8.039
-          - x: 35.591
-            'y': 10.275
-          - x: 32.609
-            'y': 12.941
-          - x: 30.609
-            'y': 10.705
-        label: generator
-      - shape: polygon
-        x: 0
-        'y': 0
-        points:
-          - x: 26.409
-            'y': 35.961
-          - x: 24.409
-            'y': 33.725
-          - x: 27.391
-            'y': 31.059
-          - x: 29.391
-            'y': 33.295
-        label: generator
       - shape: polygon
         x: 0
         'y': 0
@@ -8183,6 +7867,42 @@ layout:
         height: 2
         rotation: 48.59
         color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 45.96
+        'y': 16.3
+        width: 2
+        height: 2
+        rotation: 25.84
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 12.04
+        'y': 25.7
+        width: 2
+        height: 2
+        rotation: 205.84
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 31.6
+        'y': 8.49
+        width: 3
+        height: 4
+        rotation: 48.19
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 25.4
+        'y': 31.51
+        width: 3
+        height: 4
+        rotation: 228.19
+        color: gunmetal
         mirror: false
     icons:
       - type: skull
