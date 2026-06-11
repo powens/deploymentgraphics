@@ -98,10 +98,51 @@ const lRuinRoof: FeatureDraw = (w, h) => {
   };
 };
 
+// Horizontal mirror of `lRuin` (reflected across x = w/2): the outer corner
+// sits bottom-right with walls along the right and bottom edges. Needed for the
+// opposite-chirality 40kdc corner ruins (balanced-right, corner-right), which a
+// rotation of `lRuin` alone can never reproduce — the same reason `shoe` has a
+// `shoe-mirror` building template.
+const lRuinMirror: FeatureDraw = (w, h) => {
+  const wall = Math.min(0.5, w, h);
+  const d = `M${w} 0 H${w - wall} V${h - wall} H0 V${h} H${w} Z`;
+  const r = Math.max(0.15, wall * 0.4);
+  return {
+    body: [{ tag: "path", d }],
+    accent: [
+      { tag: "circle", cx: w - wall * 0.5, cy: h * 0.45, r },
+      { tag: "circle", cx: w * 0.55, cy: h - wall * 0.5, r: r * 0.8 },
+      { tag: "circle", cx: w * 0.28, cy: h - wall * 0.5, r: r * 0.6 },
+    ],
+  };
+};
+
+// Horizontal mirror of `lRuinRoof`: the same right+bottom walls as
+// `lRuinMirror` plus the roof slab tucked into the bottom-right inner corner.
+const lRuinRoofMirror: FeatureDraw = (w, h) => {
+  const base = lRuinMirror(w, h);
+  const wall = Math.min(0.5, w, h);
+  const cx = w - wall; // inner corner x (left of the right wall)
+  const cy = h - wall; // inner corner y (top of the bottom wall)
+  const lw = (w - wall) * 0.5;
+  const lh = (h - wall) * 0.5;
+  const roof = `M${cx} ${cy - lh} V${cy} H${cx - lw} Z`;
+  const t = Math.min(0.4, lw * 0.3, lh * 0.3);
+  const beam =
+    `M${cx} ${cy - lh} L${cx - lw} ${cy} ` +
+    `L${cx - lw + t} ${cy} L${cx} ${cy - lh + t} Z`;
+  return {
+    body: [...base.body, { tag: "path", d: roof }],
+    accent: [...base.accent, { tag: "path", d: beam }],
+  };
+};
+
 /** Feature draw registry, keyed by `FeaturePlacement.type`. */
 export const features: Record<string, FeatureDraw> = {
   "l-ruin": lRuin,
+  "l-ruin-mirror": lRuinMirror,
   "l-ruin-roof": lRuinRoof,
+  "l-ruin-roof-mirror": lRuinRoofMirror,
   generator,
   pipe,
 };

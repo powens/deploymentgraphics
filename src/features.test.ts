@@ -4,13 +4,42 @@ import { features, makeFeatures } from "./features.js";
 import { baseTheme } from "./presets/theme.js";
 
 describe("feature draw functions", () => {
-  it("registers the four feature types", () => {
+  it("registers the six feature types", () => {
     expect(Object.keys(features).sort()).toEqual([
       "generator",
       "l-ruin",
+      "l-ruin-mirror",
       "l-ruin-roof",
+      "l-ruin-roof-mirror",
       "pipe",
     ]);
+  });
+
+  it("mirrors l-ruin geometry across x = w/2", () => {
+    const w = 6;
+    const h = 4;
+    const base = features["l-ruin"](w, h).body[0];
+    const mir = features["l-ruin-mirror"](w, h).body[0];
+    if (base.tag !== "path" || mir.tag !== "path") {
+      throw new Error("expected path bodies");
+    }
+    // The base L walls the left+bottom edges (outer corner bottom-left); the
+    // mirror walls the right+bottom edges (outer corner bottom-right). The wall
+    // thickness is the same, so the mirror path mentions w - wall where the base
+    // mentions wall.
+    const wall = Math.min(0.5, w, h);
+    expect(base.d).toContain(`H${wall}`);
+    expect(mir.d).toContain(`H${w - wall}`);
+  });
+
+  it("gives the roof-mirror the same wall outline as l-ruin-mirror", () => {
+    const w = 5;
+    const h = 7;
+    const ruin = features["l-ruin-mirror"](w, h);
+    const roof = features["l-ruin-roof-mirror"](w, h);
+    // The roof variant adds the slab + beam on top of the same two walls.
+    expect(roof.body[0]).toEqual(ruin.body[0]);
+    expect(roof.body.length).toBe(ruin.body.length + 1);
   });
 
   it("returns a non-empty body at canonical and odd sizes", () => {
