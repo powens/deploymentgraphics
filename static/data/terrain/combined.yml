@@ -153,6 +153,7 @@ layout:
         color: rust
         mirror: false
   gw-11e-crucible:
+    deployment_pattern_id: crucible-of-battle
     buildings:
       - type: large-area
         corners:
@@ -567,6 +568,7 @@ layout:
         color: gunmetal
         mirror: false
   gw-11e-hammer-anvil:
+    deployment_pattern_id: hammer-and-anvil
     buildings:
       - type: large-area
         corners:
@@ -1101,6 +1103,10 @@ layout:
         color: gunmetal
         mirror: false
   take-and-hold-vs-purge-the-foe-2:
+    deployment_pattern_id: search-and-destroy
+    dispositions:
+      - Take and Hold
+      - Purge the Foe
     buildings:
       - type: shoe-mirror
         corners:
@@ -1564,6 +1570,10 @@ layout:
           x: 49.5
           'y': 34.25
   take-and-hold-mirror-1:
+    deployment_pattern_id: tipping-point
+    dispositions:
+      - Take and Hold
+      - Take and Hold
     buildings:
       - type: large-area
         corners:
@@ -2027,6 +2037,10 @@ layout:
           x: 27.8
           'y': 23.15
   take-and-hold-mirror-2:
+    deployment_pattern_id: dawn-of-war
+    dispositions:
+      - Take and Hold
+      - Take and Hold
     buildings:
       - type: large-area
         corners:
@@ -2490,6 +2504,10 @@ layout:
           x: 30.25
           'y': 36.5
   take-and-hold-vs-purge-the-foe-3:
+    deployment_pattern_id: hammer-and-anvil
+    dispositions:
+      - Take and Hold
+      - Purge the Foe
     buildings:
       - type: large-area
         corners:
@@ -2953,6 +2971,10 @@ layout:
           x: 22.5
           'y': 7.75
   take-and-hold-mirror-3:
+    deployment_pattern_id: search-and-destroy
+    dispositions:
+      - Take and Hold
+      - Take and Hold
     buildings:
       - type: shoe
         corners:
@@ -3416,6 +3438,10 @@ layout:
           x: 9.57
           'y': 33.49
   take-and-hold-vs-reconnaissance-3:
+    deployment_pattern_id: search-and-destroy
+    dispositions:
+      - Take and Hold
+      - Reconnaissance
     buildings:
       - type: shoe
         corners:
@@ -3879,6 +3905,10 @@ layout:
           x: 11.75
           'y': 9.5
   take-and-hold-vs-disruption-1:
+    deployment_pattern_id: sweeping-engagement
+    dispositions:
+      - Take and Hold
+      - Disruption
     buildings:
       - type: shoe
         corners:
@@ -4342,6 +4372,10 @@ layout:
           x: 10.75
           'y': 36.5
   take-and-hold-vs-disruption-2:
+    deployment_pattern_id: crucible-of-battle
+    dispositions:
+      - Take and Hold
+      - Disruption
     buildings:
       - type: shoe
         corners:
@@ -4769,6 +4803,10 @@ layout:
           x: 12.16
           'y': 10.72
   take-and-hold-vs-disruption-3:
+    deployment_pattern_id: hammer-and-anvil
+    dispositions:
+      - Take and Hold
+      - Disruption
     buildings:
       - type: shoe
         corners:
@@ -5232,6 +5270,7 @@ layout:
           x: 13.5
           'y': 22.25
   sweeping-engagement-1:
+    deployment_pattern_id: sweeping-engagement
     buildings:
       - type: shoe
         corners:
@@ -5651,6 +5690,10 @@ layout:
           x: 10.75
           'y': 13.5
   take-and-hold-vs-priority-assets-1:
+    deployment_pattern_id: crucible-of-battle
+    dispositions:
+      - Take and Hold
+      - Priority Assets
     buildings:
       - type: large-area
         corners:
@@ -6114,6 +6157,10 @@ layout:
           x: 24.2
           'y': 22.6
   take-and-hold-vs-priority-assets-2:
+    deployment_pattern_id: hammer-and-anvil
+    dispositions:
+      - Take and Hold
+      - Priority Assets
     buildings:
       - type: shoe
         corners:
@@ -6541,6 +6588,10 @@ layout:
           x: 24.75
           'y': 6.5
   take-and-hold-vs-priority-assets-3:
+    deployment_pattern_id: dawn-of-war
+    dispositions:
+      - Take and Hold
+      - Priority Assets
     buildings:
       - type: large-area
         corners:
@@ -7004,6 +7055,10 @@ layout:
           x: 51.25
           'y': 26.5
   take-and-hold-vs-reconnaissance-1:
+    deployment_pattern_id: tipping-point
+    dispositions:
+      - Take and Hold
+      - Reconnaissance
     buildings:
       - type: shoe
         corners:
@@ -7467,6 +7522,10 @@ layout:
           x: 16.5
           'y': 9.75
   take-and-hold-vs-reconnaissance-2:
+    deployment_pattern_id: dawn-of-war
+    dispositions:
+      - Take and Hold
+      - Reconnaissance
     buildings:
       - type: shoe
         corners:

@@ -104,6 +104,7 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "gw-11e-crucible": {
+      deployment_pattern_id: "crucible-of-battle",
       buildings: [
         {
           type: "large-area",
@@ -498,6 +499,7 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "gw-11e-hammer-anvil": {
+      deployment_pattern_id: "hammer-and-anvil",
       buildings: [
         {
           type: "large-area",
@@ -980,6 +982,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-purge-the-foe-2": {
+      deployment_pattern_id: "search-and-destroy",
+      dispositions: ["Take and Hold", "Purge the Foe"],
       buildings: [
         {
           type: "shoe-mirror",
@@ -1384,6 +1388,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-mirror-1": {
+      deployment_pattern_id: "tipping-point",
+      dispositions: ["Take and Hold", "Take and Hold"],
       buildings: [
         {
           type: "large-area",
@@ -1788,6 +1794,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-mirror-2": {
+      deployment_pattern_id: "dawn-of-war",
+      dispositions: ["Take and Hold", "Take and Hold"],
       buildings: [
         {
           type: "large-area",
@@ -2210,6 +2218,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-purge-the-foe-3": {
+      deployment_pattern_id: "hammer-and-anvil",
+      dispositions: ["Take and Hold", "Purge the Foe"],
       buildings: [
         {
           type: "large-area",
@@ -2623,6 +2633,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-mirror-3": {
+      deployment_pattern_id: "search-and-destroy",
+      dispositions: ["Take and Hold", "Take and Hold"],
       buildings: [
         {
           type: "shoe",
@@ -3030,6 +3042,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-reconnaissance-3": {
+      deployment_pattern_id: "search-and-destroy",
+      dispositions: ["Take and Hold", "Reconnaissance"],
       buildings: [
         {
           type: "shoe",
@@ -3434,6 +3448,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-disruption-1": {
+      deployment_pattern_id: "sweeping-engagement",
+      dispositions: ["Take and Hold", "Disruption"],
       buildings: [
         {
           type: "shoe",
@@ -3850,6 +3866,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-disruption-2": {
+      deployment_pattern_id: "crucible-of-battle",
+      dispositions: ["Take and Hold", "Disruption"],
       buildings: [
         {
           type: "shoe",
@@ -4225,6 +4243,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-disruption-3": {
+      deployment_pattern_id: "hammer-and-anvil",
+      dispositions: ["Take and Hold", "Disruption"],
       buildings: [
         {
           type: "shoe",
@@ -4629,6 +4649,7 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "sweeping-engagement-1": {
+      deployment_pattern_id: "sweeping-engagement",
       buildings: [
         {
           type: "shoe",
@@ -4999,6 +5020,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-priority-assets-1": {
+      deployment_pattern_id: "crucible-of-battle",
+      dispositions: ["Take and Hold", "Priority Assets"],
       buildings: [
         {
           type: "large-area",
@@ -5415,6 +5438,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-priority-assets-2": {
+      deployment_pattern_id: "hammer-and-anvil",
+      dispositions: ["Take and Hold", "Priority Assets"],
       buildings: [
         {
           type: "shoe",
@@ -5781,6 +5806,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-priority-assets-3": {
+      deployment_pattern_id: "dawn-of-war",
+      dispositions: ["Take and Hold", "Priority Assets"],
       buildings: [
         {
           type: "large-area",
@@ -6209,6 +6236,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-reconnaissance-1": {
+      deployment_pattern_id: "tipping-point",
+      dispositions: ["Take and Hold", "Reconnaissance"],
       buildings: [
         {
           type: "shoe",
@@ -6613,6 +6642,8 @@ export const gwTerrain: TerrainConfig = {
       ],
     },
     "take-and-hold-vs-reconnaissance-2": {
+      deployment_pattern_id: "dawn-of-war",
+      dispositions: ["Take and Hold", "Reconnaissance"],
       buildings: [
         {
           type: "shoe",

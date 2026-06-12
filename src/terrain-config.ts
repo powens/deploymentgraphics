@@ -62,6 +62,13 @@ export type TerrainLayout = {
   icons?: IconPlacement[];
   features?: FeaturePlacement[];
   area_terrain?: AreaTerrain[];
+  // The two mission dispositions this layout's matchup pairs (e.g.
+  // ["Take and Hold", "Purge the Foe"]), ported from the 40kdc
+  // `mission_matchup_id`. Absent on layouts with no matchup.
+  dispositions?: string[];
+  // The 40kdc `deployment_pattern_id` (e.g. "hammer-and-anvil"). Carried for
+  // downstream use; currently unread by the renderer.
+  deployment_pattern_id?: string;
 };
 
 /**

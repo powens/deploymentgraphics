@@ -15,6 +15,7 @@ import { resolvePiece } from "./terrain-resolver.mjs";
 import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 import { ruinFeatures } from "./ruin-to-feature.mjs";
 import { rectFeatures } from "./rect-to-feature.mjs";
+import { matchupToDispositions } from "./matchup-to-dispositions.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
@@ -94,7 +95,16 @@ for (const layout of layouts) {
       });
     }
   }
-  const entry = { buildings, area_terrain };
+  // 40kdc layout metadata: the deployment pattern (kept for downstream use,
+  // currently unrendered) and the mission matchup split into its two
+  // dispositions. Both are absent on the hand-authored demo layout.
+  const dispositions = matchupToDispositions(layout.mission_matchup_id);
+  const entry = {};
+  if (layout.deployment_pattern_id)
+    entry.deployment_pattern_id = layout.deployment_pattern_id;
+  if (dispositions) entry.dispositions = dispositions;
+  entry.buildings = buildings;
+  entry.area_terrain = area_terrain;
   if (features.length > 0) entry.features = features;
   if (icons.length > 0) entry.icons = icons;
   out.layout[layout.id] = entry;
