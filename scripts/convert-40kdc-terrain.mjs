@@ -1,6 +1,7 @@
-// Merges the hand-authored static/data/terrain/gw.yml (building templates +
-// demo layout) with the vendored 40kdc-data terrain JSON into a single
-// static/data/terrain/combined.yml. Each `area` piece becomes a building
+// Merges the hand-authored static/data/terrain/gw.yml (demo layout) with the
+// vendored 40kdc-data terrain JSON into a single static/data/terrain/combined.yml
+// (layouts only — the building templates live in templates-simple.yml, which
+// gen-presets merges back in). Each `area` piece becomes a building
 // placement referencing a gw template; corner-ruin pieces become `l-ruin`
 // features (with `l-ruin-roof` where a catwalk sits on them); catwalk pieces
 // are dropped; every other `feature` piece becomes a polygon area_terrain entry
@@ -19,6 +20,10 @@ import { matchupToDispositions } from "./matchup-to-dispositions.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
+const templatesPath = new URL(
+  "../static/data/terrain/templates-simple.yml",
+  import.meta.url,
+);
 const outPath = new URL("../static/data/terrain/combined.yml", import.meta.url);
 
 const readJson = (name) =>
@@ -43,13 +48,15 @@ const FEATURE_LABELS = {
 
 const labelFor = (piece) => FEATURE_LABELS[piece.template] ?? "feature";
 
-// gw.yml is the hand-authored input: building templates plus the demo
-// layout ("1"). The ported 40kdc layouts are layered on top of it, so the
-// combined file is a superset of the demo with the real layouts added.
+// gw.yml is the hand-authored input: the demo layout ("1"). The ported 40kdc
+// layouts are layered on top of it, so the combined file is a superset of the
+// demo with the real layouts added. Building templates come from
+// templates-simple.yml; they are only read here to size `area` placements and
+// are NOT written to combined.yml (gen-presets merges them into the preset).
 const gw = yaml.load(readFileSync(gwPath, "utf8"));
+const gwTemplates =
+  yaml.load(readFileSync(templatesPath, "utf8")).templates ?? {};
 const out = {
-  ...gw,
-  templates: { ...(gw.templates ?? {}) },
   layout: { ...(gw.layout ?? {}) },
 };
 
@@ -72,7 +79,7 @@ for (const layout of layouts) {
         areaBuildingPlacement(
           piece,
           lookupFootprint(piece.template),
-          out.templates,
+          gwTemplates,
         ),
       );
     } else if (!consumedIds.has(piece.id)) {
@@ -113,9 +120,10 @@ for (const layout of layouts) {
 const header =
   "# GENERATED FILE - do not edit by hand.\n" +
   "# Produced by scripts/convert-40kdc-terrain.mjs by merging the\n" +
-  "# hand-authored static/data/terrain/gw.yml (templates + demo layout)\n" +
-  "# with the vendored 40kdc-data JSON under\n" +
-  "# static/data/terrain/source/40kdc/.\n" +
+  "# hand-authored static/data/terrain/gw.yml (demo layout) with the\n" +
+  "# vendored 40kdc-data JSON under static/data/terrain/source/40kdc/.\n" +
+  "# Contains layouts only; building templates live in\n" +
+  "# static/data/terrain/templates-simple.yml.\n" +
   "# Edit gw.yml or the source JSON, then regenerate with:\n" +
   "#   pnpm convert:40kdc\n\n";
 

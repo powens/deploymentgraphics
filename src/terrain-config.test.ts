@@ -36,12 +36,18 @@ describe("getLayoutBuildings", () => {
 
 // Canvas size taken from static/data/base.yml (`size:`).
 const CANVAS = { width: 60, height: 44 };
-const GW_YML = fileURLToPath(
-  new URL("../static/data/terrain/gw.yml", import.meta.url),
-);
+const terrainUrl = (file: string) =>
+  fileURLToPath(new URL(`../static/data/terrain/${file}`, import.meta.url));
+const loadTerrainYaml = (file: string) =>
+  yaml.load(readFileSync(terrainUrl(file), "utf8")) as Partial<TerrainConfig>;
 
 describe("placeholder gw.yml", () => {
-  const gwTerrain = yaml.load(readFileSync(GW_YML, "utf8")) as TerrainConfig;
+  // gw.yml carries layouts only; templates live in templates-simple.yml. Merge
+  // them as gen-presets does to get a complete TerrainConfig for resolution.
+  const gwTerrain = {
+    ...loadTerrainYaml("templates-simple.yml"),
+    ...loadTerrainYaml("gw.yml"),
+  } as TerrainConfig;
 
   it("defines layout 1", () => {
     expect(Object.keys(gwTerrain.layout).sort()).toEqual(["1"]);

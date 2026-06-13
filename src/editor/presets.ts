@@ -23,8 +23,11 @@ type MissionYaml = {
   defender: { deployment_zone: Point[]; mask_center?: number };
 };
 
-type TerrainYaml = {
+type TemplatesYaml = {
   templates: Record<string, Template>;
+};
+
+type TerrainYaml = {
   layout: Record<string, { buildings: BuildingPlacement[] }>;
 };
 
@@ -33,12 +36,13 @@ export async function loadPreset(
   terrainLayoutId: string,
   fetchYaml: (url: string) => Promise<unknown>,
 ): Promise<{ scene: Partial<Scene>; templates: Record<string, Template> }> {
-  const [missionData, terrainData] = (await Promise.all([
+  const [missionData, templateData, terrainData] = (await Promise.all([
     fetchYaml(`./data/deployment/${missionId}.yml`),
+    fetchYaml("./data/terrain/templates-simple.yml"),
     fetchYaml("./data/terrain/combined.yml"),
-  ])) as [MissionYaml, TerrainYaml];
+  ])) as [MissionYaml, TemplatesYaml, TerrainYaml];
 
-  const templates = terrainData.templates ?? {};
+  const templates = templateData.templates ?? {};
   const canvas = { width: 60, height: 44 };
   const objects: SceneObject[] = [];
 
