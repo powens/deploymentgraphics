@@ -110,7 +110,7 @@ function buildTerrain() {
   );
 }
 
-function buildMissions() {
+function buildDeployments() {
   const ids = readdirSync(new URL("deployment/", dataDir))
     .filter((file) => file.endsWith(".yml"))
     .map((file) => file.replace(/\.yml$/, ""))
@@ -130,10 +130,10 @@ function buildMissions() {
     .map((id) => `  ${renderKey(id)}: ${camelCase(id)},`)
     .join("\n");
   out +=
-    "/** All built-in missions keyed by id (the deployment YAML filename stem). */\n" +
-    `export const missions = {\n${record}\n} satisfies Record<string, DeploymentConfig>;\n\n` +
-    "/** The id of a built-in mission. */\n" +
-    "export type MissionId = keyof typeof missions;\n";
+    "/** All built-in deployments keyed by id (the deployment YAML filename stem). */\n" +
+    `export const deployments = {\n${record}\n} satisfies Record<string, DeploymentConfig>;\n\n` +
+    "/** The id of a built-in deployment. */\n" +
+    "export type DeploymentId = keyof typeof deployments;\n";
 
   return out;
 }
@@ -153,7 +153,7 @@ function buildTheme() {
 
 const targets = [
   ["base.ts", buildBase()],
-  ["missions.ts", buildMissions()],
+  ["deployments.ts", buildDeployments()],
   ["terrain.ts", buildTerrain()],
   ["theme.ts", buildTheme()],
 ];

@@ -2,11 +2,11 @@
 import { describe, expect, it } from "vitest";
 import { makeMissionCard } from "../main.js";
 import { buildConfig } from "./build-config.js";
-import { missions } from "./missions.js";
+import { deployments } from "./deployments.js";
 
 describe("buildConfig", () => {
-  it("renders every built-in mission preset", () => {
-    for (const mission of Object.values(missions)) {
+  it("renders every built-in deployment preset", () => {
+    for (const mission of Object.values(deployments)) {
       const svg = makeMissionCard(buildConfig({ mission }));
       expect(svg.tagName).toBe("svg");
     }
@@ -14,7 +14,7 @@ describe("buildConfig", () => {
 
   it("applies layout and grid overrides", () => {
     const config = buildConfig({
-      mission: missions.dawn_of_war,
+      mission: deployments.dawn_of_war,
       layout: "1",
       grid: false,
     });

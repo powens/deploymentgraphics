@@ -136,8 +136,8 @@ export const tippingPoint: DeploymentConfig = {
   },
 };
 
-/** All built-in missions keyed by id (the deployment YAML filename stem). */
-export const missions = {
+/** All built-in deployments keyed by id (the deployment YAML filename stem). */
+export const deployments = {
   crucible_of_battle: crucibleOfBattle,
   dawn_of_war: dawnOfWar,
   hammer_and_anvil: hammerAndAnvil,
@@ -146,5 +146,5 @@ export const missions = {
   tipping_point: tippingPoint,
 } satisfies Record<string, DeploymentConfig>;
 
-/** The id of a built-in mission. */
-export type MissionId = keyof typeof missions;
+/** The id of a built-in deployment. */
+export type DeploymentId = keyof typeof deployments;

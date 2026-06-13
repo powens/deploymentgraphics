@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
 import { describe, expect, it } from "vitest";
 import { baseConfig } from "./base.js";
-import { missions } from "./missions.js";
+import { deployments } from "./deployments.js";
 import { gwTerrain } from "./terrain.js";
 import { baseTheme } from "./theme.js";
 
@@ -27,8 +27,8 @@ describe("presets match the YAML source", () => {
     expect(gwTerrain).toEqual(loadYaml("terrain/combined.yml"));
   });
 
-  it.each(Object.keys(missions))("mission %s matches its YAML", (id) => {
-    expect(missions[id as keyof typeof missions]).toEqual(
+  it.each(Object.keys(deployments))("deployment %s matches its YAML", (id) => {
+    expect(deployments[id as keyof typeof deployments]).toEqual(
       loadYaml(`deployment/${id}.yml`),
     );
   });

@@ -74,6 +74,36 @@
         color: var(--text-muted);
       }
 
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .control-group .group-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 1.25rem;
+      }
+
+      .group-title {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      /* Push the Deployment + Layout escape-hatch selects to the right edge of
+         the controls row, kept together as a pair. */
+      .control-escape {
+        margin-left: auto;
+        display: flex;
+        align-items: flex-end;
+        gap: 1.25rem;
+      }
+
       select.field {
         appearance: none;
         background-color: var(--field);
@@ -476,16 +506,26 @@
         </button>
       </div>
 
-      <div class="control">
-        <label class="control-label" for="mission">Mission</label>
-        <!-- Options are populated by app.js (see MISSIONS). -->
-        <select id="mission" class="field"></select>
-      </div>
-
-      <div class="control">
-        <label class="control-label" for="terrain">Terrain</label>
-        <!-- Options are populated by app.js (see TERRAINS). -->
-        <select id="terrain" class="field"></select>
+      <!-- Mission: pick the two force dispositions, then a board variant. The
+           selection drives the Deployment + Layout selects below; those remain
+           editable as an escape hatch (and the raw-YAML tab is untouched).
+           Populated by app.js (see the mission index). -->
+      <div class="control-group" id="mission-group">
+        <span class="group-title">Mission</span>
+        <div class="group-row">
+          <div class="control">
+            <label class="control-label" for="disposition-1">Disposition 1</label>
+            <select id="disposition-1" class="field"></select>
+          </div>
+          <div class="control">
+            <label class="control-label" for="disposition-2">Disposition 2</label>
+            <select id="disposition-2" class="field"></select>
+          </div>
+          <div class="control">
+            <label class="control-label" for="board-variant">Board</label>
+            <select id="board-variant" class="field"></select>
+          </div>
+        </div>
       </div>
 
       <div class="control">
@@ -505,6 +545,22 @@
             <span class="track"></span>
             1×1 Grid
           </label>
+        </div>
+      </div>
+
+      <!-- The Deployment + Layout selects are the escape hatch the Mission
+           section drives; flexed to the right, away from the primary controls. -->
+      <div class="control-escape">
+        <div class="control">
+          <label class="control-label" for="mission">Deployment</label>
+          <!-- Options are populated by app.js (see DEPLOYMENTS). -->
+          <select id="mission" class="field"></select>
+        </div>
+
+        <div class="control">
+          <label class="control-label" for="terrain">Layout</label>
+          <!-- Options are populated by app.js (see TERRAINS). -->
+          <select id="terrain" class="field"></select>
         </div>
       </div>
     </section>

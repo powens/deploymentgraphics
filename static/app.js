@@ -1,5 +1,13 @@
 /* global jsyaml */
-import { makeMissionCard, missions, gwTerrain } from "./bundle.js";
+import {
+  makeMissionCard,
+  deployments,
+  gwTerrain,
+  buildMissionIndex,
+  listDispositions,
+  findBoards,
+  deploymentIdForPattern,
+} from "./bundle.js";
 import {
   DEFAULT_CONTROLS,
   clearUrl,
@@ -15,17 +23,38 @@ import {
 // generated from the YAML (see scripts/gen-presets.mjs). The persistence
 // allowlists derive from these in turn, so options, allowlists, and the
 // underlying YAML can never drift apart. Each id is also the YAML filename /
-// layout key. Mission labels are the deployment `name`.
-const MISSIONS = Object.entries(missions).map(([id, m]) => ({
+// layout key. Deployment labels are the deployment `name`.
+const DEPLOYMENTS = Object.entries(deployments).map(([id, d]) => ({
   id,
-  label: m.name,
+  label: d.name,
 }));
 const TERRAINS = Object.keys(gwTerrain.layout).map((id) => ({
   id,
   label: `GW Layout ${id}`,
 }));
-const MISSION_IDS = MISSIONS.map((m) => m.id);
+const DEPLOYMENT_IDS = DEPLOYMENTS.map((d) => d.id);
 const TERRAIN_IDS = TERRAINS.map((t) => t.id);
+
+// The mission layer: a disposition pair + a board variant that together pin
+// both the deployment and the layout. Derived from the terrain (every ported
+// 40kdc layout carries its dispositions + deployment_pattern_id), so it can
+// never drift from the YAML. The mission section just *drives* the Deployment
+// and Layout selects below — those stay the render source of truth and the
+// escape hatch for freeform/demo combinations.
+const DISPOSITIONS = listDispositions(gwTerrain);
+const BOARDS_BY_ID = new Map();
+for (const mission of buildMissionIndex(gwTerrain)) {
+  for (const board of mission.boards) {
+    BOARDS_BY_ID.set(board.layoutId, board);
+  }
+}
+
+// The deployment a board resolves to, by name (each board variant of a pair
+// resolves to a distinct deployment, so the name disambiguates the variants).
+function boardDeploymentName(board) {
+  const id = deploymentIdForPattern(board.deploymentPatternId);
+  return deployments[id]?.name ?? board.deploymentPatternId;
+}
 
 // YAML files never change within a session, so cache by URL. The promise
 // (not the result) is cached, which also dedupes concurrent fetches.
@@ -87,6 +116,14 @@ const controlEls = [
   showGrid,
 ];
 
+// The mission section's selects. Kept out of controlEls: they don't feed the
+// render directly (they drive missionSelector/terrainSelector) and have their
+// own handlers. updateModeUi disables them alongside the controls in yaml mode.
+const dispo1Selector = document.getElementById("disposition-1");
+const dispo2Selector = document.getElementById("disposition-2");
+const boardSelector = document.getElementById("board-variant");
+const missionEls = [dispo1Selector, dispo2Selector, boardSelector];
+
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
 const exportPngButton = document.getElementById("export-png");
@@ -113,8 +150,101 @@ function populateSelect(select, items) {
   }
 }
 
-populateSelect(missionSelector, MISSIONS);
+populateSelect(missionSelector, DEPLOYMENTS);
 populateSelect(terrainSelector, TERRAINS);
+
+// --- Mission section ------------------------------------------------------
+
+// Fill a disposition select with a neutral placeholder plus the dispositions.
+function populateDispositions(select) {
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "—";
+  select.appendChild(placeholder);
+  populateSelect(
+    select,
+    DISPOSITIONS.map((d) => ({ id: d, label: d })),
+  );
+}
+populateDispositions(dispo1Selector);
+populateDispositions(dispo2Selector);
+
+// Rebuild the board-variant options for a list of boards, optionally
+// preselecting one. With no boards (a pairing nothing was designed for) the
+// select shows a single disabled hint and the Deployment/Layout stay put.
+function populateBoards(boards, selectedId) {
+  boardSelector.replaceChildren();
+  if (boards.length === 0) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "No board for this pairing";
+    option.disabled = true;
+    boardSelector.appendChild(option);
+    boardSelector.value = "";
+    return;
+  }
+  boards.forEach((board, i) => {
+    const option = document.createElement("option");
+    option.value = board.layoutId;
+    option.textContent = `${i + 1}. ${boardDeploymentName(board)}`;
+    boardSelector.appendChild(option);
+  });
+  boardSelector.value =
+    selectedId && boards.some((b) => b.layoutId === selectedId)
+      ? selectedId
+      : boards[0].layoutId;
+}
+
+// Apply a board: derive its deployment, point the Deployment + Layout selects
+// at it, and trigger the same render path a manual control change would. The
+// disposition selects are left as the user set them (no programmatic 'change'
+// fires, so they don't jump around).
+function applyBoard(layoutId) {
+  const board = BOARDS_BY_ID.get(layoutId);
+  if (!board) {
+    return;
+  }
+  boardSelector.value = layoutId;
+  missionSelector.value = deploymentIdForPattern(board.deploymentPatternId);
+  terrainSelector.value = board.layoutId;
+  onControlChange();
+}
+
+// Both dispositions chosen → list the pair's boards and apply the first.
+function onDispositionChange() {
+  const a = dispo1Selector.value;
+  const b = dispo2Selector.value;
+  if (!a || !b) {
+    populateBoards([]);
+    return;
+  }
+  const boards = findBoards(gwTerrain, a, b);
+  populateBoards(boards);
+  if (boards.length > 0) {
+    applyBoard(boards[0].layoutId);
+  }
+}
+
+// Reflect the current Layout (`t`) back into the mission section: a known
+// board sets the three selects to match; anything else (a demo layout or a
+// hand-picked mismatched Deployment+Layout) clears them to the neutral state.
+function syncMissionSectionFromControls() {
+  const board = BOARDS_BY_ID.get(terrainSelector.value);
+  // A board only counts as the selected mission when the Deployment select
+  // still matches the one it derives — a hand-picked mismatch is "Custom".
+  if (board && deploymentIdForPattern(board.deploymentPatternId) === missionSelector.value) {
+    dispo1Selector.value = board.dispositions[0];
+    dispo2Selector.value = board.dispositions[1];
+    populateBoards(
+      findBoards(gwTerrain, board.dispositions[0], board.dispositions[1]),
+      board.layoutId,
+    );
+  } else {
+    dispo1Selector.value = "";
+    dispo2Selector.value = "";
+    populateBoards([]);
+  }
+}
 
 function controlState() {
   return {
@@ -239,7 +369,7 @@ function renderFromYaml() {
 
 function updateModeUi() {
   const yamlMode = mode === "yaml";
-  for (const el of controlEls) {
+  for (const el of [...controlEls, ...missionEls]) {
     el.disabled = yamlMode;
   }
   resetBanner.hidden = !yamlMode;
@@ -312,6 +442,20 @@ function onControlChange() {
 for (const el of controlEls) {
   el.addEventListener("change", onControlChange);
 }
+
+// Mission section drives the Deployment + Layout selects.
+dispo1Selector.addEventListener("change", onDispositionChange);
+dispo2Selector.addEventListener("change", onDispositionChange);
+boardSelector.addEventListener("change", () => {
+  if (boardSelector.value) {
+    applyBoard(boardSelector.value);
+  }
+});
+// A manual Deployment/Layout change re-syncs the mission section (to a matching
+// board or the neutral state). Programmatic changes from applyBoard don't fire
+// 'change', so this only runs on real user interaction.
+missionSelector.addEventListener("change", syncMissionSectionFromControls);
+terrainSelector.addEventListener("change", syncMissionSectionFromControls);
 
 let yamlRenderTimer;
 
@@ -461,11 +605,13 @@ function start() {
   const fromUrl = urlHasControls();
   if (fromUrl) {
     // An explicit URL (e.g. a shared link) wins over any saved state.
-    applyControls(readControlsFromUrl(MISSION_IDS, TERRAIN_IDS));
+    applyControls(readControlsFromUrl(DEPLOYMENT_IDS, TERRAIN_IDS));
   } else {
     const saved = loadState();
     if (saved) {
-      applyControls(sanitizeControls(saved.controls, MISSION_IDS, TERRAIN_IDS));
+      applyControls(
+        sanitizeControls(saved.controls, DEPLOYMENT_IDS, TERRAIN_IDS),
+      );
       if (saved.mode === "yaml" && typeof saved.yaml === "string") {
         mode = "yaml";
         yamlEditor.value = saved.yaml;
@@ -475,6 +621,8 @@ function start() {
     }
   }
 
+  // Reflect the restored Layout into the mission section (dispositions + board).
+  syncMissionSectionFromControls();
   updateModeUi();
   syncUrl();
   // A URL-driven load is read-only for persistence: it must not overwrite

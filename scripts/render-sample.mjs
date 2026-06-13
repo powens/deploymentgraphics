@@ -8,13 +8,13 @@ const window = new Window();
 globalThis.document = window.document;
 
 const { makeMissionCard } = await import("../lib/index.js");
-const { buildConfig, missions } = await import("../lib/presets/index.js");
+const { buildConfig, deployments } = await import("../lib/presets/index.js");
 
 const outDir = fileURLToPath(new URL("../assets/", import.meta.url));
 mkdirSync(outDir, { recursive: true });
 
 const samples = [
-  { file: "sample.svg", opts: { mission: missions.tipping_point, layout: "1", grid: false } },
+  { file: "sample.svg", opts: { mission: deployments.tipping_point, layout: "1", grid: false } },
 ];
 
 // Board is 60×44 inches; render at 15px/inch so GitHub shows it at a

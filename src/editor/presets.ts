@@ -1,12 +1,12 @@
 import { resolveBuilding } from "../building-coordinates.js";
 import type { Template, BuildingPlacement, Point } from "../building-coordinates.js";
-import { missions } from "../presets/missions.js";
+import { deployments } from "../presets/deployments.js";
 import { gwTerrain } from "../presets/terrain.js";
 import type { Scene, SceneObject } from "./scene.js";
 
-// Derived from the generated presets so the mission/layout lists can never
+// Derived from the generated presets so the deployment/layout lists can never
 // drift from the YAML they come from (see scripts/gen-presets.mjs).
-export const MISSIONS = Object.entries(missions).map(([id, m]) => ({
+export const MISSIONS = Object.entries(deployments).map(([id, m]) => ({
   id,
   label: m.name,
 }));
