@@ -1,44 +1,12 @@
 # GENERATED FILE - do not edit by hand.
 # Produced by scripts/convert-40kdc-terrain.mjs by merging the
-# hand-authored static/data/terrain/gw.yml (templates + demo layout)
-# with the vendored 40kdc-data JSON under
-# static/data/terrain/source/40kdc/.
+# hand-authored static/data/terrain/gw.yml (demo layout) with the
+# vendored 40kdc-data JSON under static/data/terrain/source/40kdc/.
+# Contains layouts only; building templates live in
+# static/data/terrain/templates-simple.yml.
 # Edit gw.yml or the source JSON, then regenerate with:
 #   pnpm convert:40kdc
 
-templates:
-  large-area:
-    width: 7
-    height: 11.5
-  small-area:
-    width: 4
-    height: 6
-  small-pipes:
-    width: 6
-    height: 2
-  large-pipes:
-    width: 10
-    height: 2.5
-  shoe:
-    points:
-      - x: 0
-        'y': 0
-      - x: 2
-        'y': 0
-      - x: 8
-        'y': 11.5
-      - x: 0
-        'y': 11.5
-  shoe-mirror:
-    points:
-      - x: 0
-        'y': 0
-      - x: 8
-        'y': 0
-      - x: 2
-        'y': 11.5
-      - x: 0
-        'y': 11.5
 layout:
   '1':
     buildings:

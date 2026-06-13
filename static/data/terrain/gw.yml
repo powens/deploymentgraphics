@@ -2,11 +2,9 @@
 # These shapes are illustrative, not official GW layouts — replace them
 # when transcribing real terrain.
 #
-# A template is a rectangle (`width`/`height`), a polygon footprint
-# (`points`: a closed ring of template-local { x, y } inches, bounding box
-# starting at 0,0; width/height derived), or a curved path footprint
-# (`start` plus `segments` of line/quad/cubic Béziers, with a declared
-# `width`/`height` bounding box).
+# Building templates live in templates-simple.yml; layouts here reference
+# them by name (a building's `type:`). convert:40kdc reads that file for the
+# template geometry, and gen:presets merges it with combined.yml.
 #
 # Each building pins one or two of its corners (keyed by the building
 # corner: TL/TR/BL/BR — the template's bounding-box corners) to inward
@@ -31,27 +29,6 @@
 # area_terrain (ruin, pipe, generator, barricade, gantry, catwalk); it is
 # carried for consistency with the ported 40kdc pieces and does not affect
 # styling, which comes from `color`. Features are drawn on top of the buildings.
-
-templates:
-  large-area: { width: 7, height: 11.5 }
-  small-area: { width: 4, height: 6 }
-
-  small-pipes: { width: 6, height: 2 }
-  large-pipes: { width: 10, height: 2.5 }
-
-  shoe:
-    points:
-      - { x: 0, y: 0 }
-      - { x: 2, y: 0 }
-      - { x: 8, y: 11.5 }
-      - { x: 0, y: 11.5 }
-
-  shoe-mirror:
-    points:
-      - { x: 0, y: 0 }
-      - { x: 8, y: 0 }
-      - { x: 2, y: 11.5 }
-      - { x: 0, y: 11.5 }
 
 layout:
   1:

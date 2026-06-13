@@ -72,7 +72,7 @@ const gMap = (kind, mirrored, Wa, Ha) => {
  * @param {object} piece - area piece: template, position, optional
  *   rotation_degrees, optional mirror ("horizontal"|"vertical").
  * @param {object} areaFootprint - the 40kdc template footprint for the piece.
- * @param {Record<string, object>} gwTemplates - gw.yml `templates` section.
+ * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
  * @returns {{type: string, corners: object, mirror: false}}
  */
 export function areaBuildingPlacement(piece, areaFootprint, gwTemplates) {

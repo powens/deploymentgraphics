@@ -1,0 +1,35 @@
+# Building templates for the v2 building-coordinate schema.
+# These shapes are illustrative, not official GW shapes — replace them
+# when transcribing real terrain.
+#
+# A template is a rectangle (`width`/`height`), a polygon footprint
+# (`points`: a closed ring of template-local { x, y } inches, bounding box
+# starting at 0,0; width/height derived), or a curved path footprint
+# (`start` plus `segments` of line/quad/cubic Béziers, with a declared
+# `width`/`height` bounding box).
+#
+# Layouts reference these by name (a building's `type:`) — see gw.yml and the
+# ported 40kdc layouts in combined.yml. This file is the single source of the
+# template definitions: combined.yml carries layouts only, and gen:presets
+# merges this file with combined.yml to build the gwTerrain preset.
+
+templates:
+  large-area: { width: 7, height: 11.5 }
+  small-area: { width: 4, height: 6 }
+
+  small-pipes: { width: 6, height: 2 }
+  large-pipes: { width: 10, height: 2.5 }
+
+  shoe:
+    points:
+      - { x: 0, y: 0 }
+      - { x: 2, y: 0 }
+      - { x: 8, y: 11.5 }
+      - { x: 0, y: 11.5 }
+
+  shoe-mirror:
+    points:
+      - { x: 0, y: 0 }
+      - { x: 8, y: 0 }
+      - { x: 2, y: 11.5 }
+      - { x: 0, y: 11.5 }

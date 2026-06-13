@@ -20,11 +20,14 @@ describe("presets match the YAML source", () => {
     expect(baseConfig).toEqual(loadYaml("base.yml"));
   });
 
-  // gwTerrain is generated straight from combined.yml (the converter already
-  // merged gw.yml + the ported 40kdc layouts), mirroring buildTerrain() in
-  // scripts/gen-presets.mjs.
-  it("gwTerrain matches combined.yml", () => {
-    expect(gwTerrain).toEqual(loadYaml("terrain/combined.yml"));
+  // gwTerrain merges templates-simple.yml (building templates) with
+  // combined.yml (the demo + ported 40kdc layouts), mirroring buildTerrain()
+  // in scripts/gen-presets.mjs.
+  it("gwTerrain matches templates-simple.yml + combined.yml", () => {
+    expect(gwTerrain).toEqual({
+      ...(loadYaml("terrain/templates-simple.yml") as object),
+      ...(loadYaml("terrain/combined.yml") as object),
+    });
   });
 
   it.each(Object.keys(missions))("mission %s matches its YAML", (id) => {

@@ -49,17 +49,20 @@ function fetchYaml(url) {
 }
 
 async function buildConfig(controls) {
-  const [missionConfig, baseConfig, terrainObj] = await Promise.all([
-    fetchYaml(`./data/deployment/${controls.m}.yml`),
-    fetchYaml("./data/base.yml"),
-    fetchYaml("./data/terrain/combined.yml"),
-  ]);
+  const [missionConfig, baseConfig, terrainTemplates, terrainLayouts] =
+    await Promise.all([
+      fetchYaml(`./data/deployment/${controls.m}.yml`),
+      fetchYaml("./data/base.yml"),
+      fetchYaml("./data/terrain/templates-simple.yml"),
+      fetchYaml("./data/terrain/combined.yml"),
+    ]);
   // Spread rather than mutate: the cached objects are shared across redraws.
-  // combined.yml already holds the demo layout + the ported 40kdc layouts.
+  // Templates live in templates-simple.yml; combined.yml holds the demo layout
+  // + the ported 40kdc layouts. Merge them into one terrain config.
   return {
     deployment: missionConfig,
     base: { ...baseConfig, grid: { ...baseConfig.grid, draw: controls.grid } },
-    terrain: { ...terrainObj, layout_name: controls.t },
+    terrain: { ...terrainTemplates, ...terrainLayouts, layout_name: controls.t },
   };
 }
 
