@@ -78,8 +78,14 @@ function downloadBlob(blob, filename) {
 
 const missionSelector = document.getElementById("mission");
 const terrainSelector = document.getElementById("terrain");
+const rotationSelector = document.getElementById("rotation");
 const showGrid = document.getElementById("show-grid");
-const controlEls = [missionSelector, terrainSelector, showGrid];
+const controlEls = [
+  missionSelector,
+  terrainSelector,
+  rotationSelector,
+  showGrid,
+];
 
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
@@ -115,6 +121,7 @@ function controlState() {
     m: missionSelector.value,
     t: terrainSelector.value,
     grid: showGrid.checked,
+    rot: rotationSelector.value,
   };
 }
 
@@ -122,6 +129,7 @@ function applyControls(controls) {
   missionSelector.value = controls.m;
   terrainSelector.value = controls.t;
   showGrid.checked = controls.grid;
+  rotationSelector.value = controls.rot;
 }
 
 // "controls" — the dropdowns drive the render. "yaml" — the editor text
@@ -147,6 +155,33 @@ function setYamlError(message) {
   yamlError.hidden = !message;
 }
 
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+// Rotate the rendered card by ±90° in place: swap the viewBox dimensions and
+// wrap the content in a rotated group, mapping the w×h board into the swapped
+// h×w viewport. Doing it inside the SVG (rather than via CSS) keeps the card
+// correctly sized and makes exports — which serialize this same SVG — match
+// what's on screen. The <title> stays a direct child for accessibility.
+function rotateCard(svg, deg) {
+  if (deg !== 90 && deg !== -90) {
+    return svg;
+  }
+  const { width: w, height: h } = svg.viewBox.baseVal;
+  const group = document.createElementNS(SVG_NS, "g");
+  group.setAttribute(
+    "transform",
+    deg === 90 ? `translate(${h} 0) rotate(90)` : `translate(0 ${w}) rotate(-90)`,
+  );
+  for (const child of Array.from(svg.childNodes)) {
+    if (child.nodeName !== "title") {
+      group.appendChild(child);
+    }
+  }
+  svg.appendChild(group);
+  svg.setAttribute("viewBox", `0 0 ${h} ${w}`);
+  return svg;
+}
+
 let renderGeneration = 0;
 
 async function renderFromControls() {
@@ -155,12 +190,13 @@ async function renderFromControls() {
   setExportEnabled(false);
   setStageMessage("Rendering…");
   try {
-    const config = await buildConfig(controlState());
+    const controls = controlState();
+    const config = await buildConfig(controls);
     if (generation !== renderGeneration) {
       return;
     }
     // makeMissionCard builds off-DOM: a throw never blanks the stage.
-    const card = makeMissionCard(config);
+    const card = rotateCard(makeMissionCard(config), Number(controls.rot));
     stage.replaceChildren(card);
     setExportEnabled(true);
   } catch (error) {

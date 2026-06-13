@@ -2,15 +2,19 @@
 //
 // Persisted shape:
 //   { version, mode: "controls" | "yaml",
-//     controls: { m, t, grid }, yaml: string | null }
+//     controls: { m, t, grid, rot }, yaml: string | null }
 
 const STORAGE_KEY = "deploymentgraphics:state";
 const STORAGE_VERSION = 1;
+
+// Canvas rotation in degrees, as strings (the <select> values).
+export const ROTATIONS = ["0", "90", "-90"];
 
 export const DEFAULT_CONTROLS = {
   m: "dawn_of_war",
   t: "1",
   grid: false,
+  rot: "0",
 };
 
 // Coerce an untrusted controls object to a valid one, falling back to
@@ -21,6 +25,7 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
     m: missionIds.includes(c.m) ? c.m : DEFAULT_CONTROLS.m,
     t: terrainIds.includes(c.t) ? c.t : DEFAULT_CONTROLS.t,
     grid: c.grid === true,
+    rot: ROTATIONS.includes(String(c.rot)) ? String(c.rot) : DEFAULT_CONTROLS.rot,
   };
 }
 
@@ -28,7 +33,7 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
 // (a shared link) takes precedence over saved localStorage state.
 export function urlHasControls() {
   const params = new URLSearchParams(window.location.search);
-  return ["m", "t", "grid"].some((key) => params.has(key));
+  return ["m", "t", "grid", "rot"].some((key) => params.has(key));
 }
 
 export function readControlsFromUrl(missionIds, terrainIds) {
@@ -38,6 +43,7 @@ export function readControlsFromUrl(missionIds, terrainIds) {
       m: params.get("m"),
       t: params.get("t"),
       grid: params.get("grid") === "1",
+      rot: params.get("rot"),
     },
     missionIds,
     terrainIds,
@@ -56,6 +62,9 @@ export function writeControlsToUrl(controls) {
   }
   if (controls.grid) {
     params.set("grid", "1");
+  }
+  if (controls.rot !== DEFAULT_CONTROLS.rot) {
+    params.set("rot", controls.rot);
   }
   const query = params.toString();
   const url = query ? `?${query}` : window.location.pathname;
