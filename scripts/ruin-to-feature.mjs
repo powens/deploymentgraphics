@@ -91,7 +91,7 @@ const ROOF = {
  * `l-ruin-mirror` (-1). The rotation maps the chosen variant's local wall
  * vectors onto the arms, and the outer corner is pinned to place it.
  *
- * @returns {{type, x, y, width, height, rotation, color, label, mirror: false}}
+ * @returns {{type, x, y, width, height, rotation, color, mirror: false}}
  */
 export function featureFromRefs(Oa, A1, A2, roofed) {
   const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
@@ -128,7 +128,6 @@ export function featureFromRefs(Oa, A1, A2, roofed) {
   const type = roofed ? ROOF[base] : base;
   return {
     type,
-    label: "ruin",
     x: round(x),
     y: round(y),
     width: round(w),

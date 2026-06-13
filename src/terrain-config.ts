@@ -9,12 +9,11 @@ import type { BuildingPlacement, Point, Template } from "./building-coordinates.
 export const DEFAULT_AREA_TERRAIN_SIZE = 6;
 
 export type AreaTerrain = {
-  shape: "circle" | "polygon";
   x: number;
   y: number;
-  width?: number;   // diameter for circles; bounding-box width for polygons
+  width?: number;   // bounding-box width (used as the rotation-centre fallback)
   height?: number;
-  points?: Point[];  // polygon-only: template-local closed ring
+  points?: Point[];  // template-local closed ring
   label?: string;
   rotation?: number;
 };
@@ -46,10 +45,6 @@ export type FeaturePlacement = {
   rotation?: number;
   color: string;
   mirror?: boolean; // default true
-  // Material category, shared with area_terrain labels (ruin, pipe, generator,
-  // barricade, gantry, catwalk). Currently styling comes from `color`; the
-  // label is carried for consistency with the ported 40kdc pieces.
-  label?: string;
 };
 
 /**

@@ -81,7 +81,6 @@ for (const layout of layouts) {
         y: round(p.y),
       }));
       area_terrain.push({
-        shape: "polygon",
         x: 0,
         y: 0,
         points,

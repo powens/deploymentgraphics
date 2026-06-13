@@ -1,5 +1,5 @@
 import { templateBounds, type BuildingPlacement, type Point } from "../building-coordinates.js";
-import type { AreaTerrain, FeaturePlacement, IconPlacement } from "../terrain-config.js";
+import type { FeaturePlacement, IconPlacement } from "../terrain-config.js";
 import { ICON_SIZE } from "../icons.js";
 import type {
   Annotation,
@@ -20,15 +20,6 @@ export type BuildingObject = SceneObjectBase & {
   type: "building";
   templateKey: string;
   mirror: boolean;
-};
-
-export type AreaTerrainObject = SceneObjectBase & {
-  type: "area-terrain";
-  shape: "circle" | "polygon";
-  width?: number;
-  height?: number;
-  points?: Point[];
-  label: string;
 };
 
 export type ObjectiveObject = SceneObjectBase & {
@@ -67,7 +58,6 @@ export type FeatureObject = SceneObjectBase & {
 
 export type SceneObject =
   | BuildingObject
-  | AreaTerrainObject
   | ObjectiveObject
   | DeploymentZoneObject
   | AnnotationObject
@@ -135,19 +125,6 @@ export function sceneToConfig(
     .filter((o): o is BuildingObject => o.type === "building")
     .map((o) => buildingToPlacement(o, templates));
 
-  const areaTerrainItems: AreaTerrain[] = scene.objects
-    .filter((o): o is AreaTerrainObject => o.type === "area-terrain")
-    .map((o) => ({
-      shape: o.shape,
-      x: o.x,
-      y: o.y,
-      ...(o.width !== undefined && { width: o.width }),
-      ...(o.height !== undefined && { height: o.height }),
-      ...(o.points !== undefined && { points: o.points }),
-      label: o.label,
-      rotation: o.rotation,
-    }));
-
   const annotationItems: Annotation[] = scene.objects
     .filter((o): o is AnnotationObject => o.type === "annotation")
     .map((o) => ({
@@ -201,7 +178,6 @@ export function sceneToConfig(
     base: {
       size: { width: scene.boardWidth, height: scene.boardHeight },
       half_way_lines: { draw: true },
-      building: { draw: false },
       grid: { draw: false },
     },
     deployment,
@@ -214,7 +190,6 @@ export function sceneToConfig(
         },
       },
       layout_name: "editor",
-      ...(areaTerrainItems.length > 0 && { area_terrain: areaTerrainItems }),
     },
     ...(objectiveItems.length > 0 && { objectives: objectiveItems }),
     ...(annotationItems.length > 0 && { annotations: annotationItems }),

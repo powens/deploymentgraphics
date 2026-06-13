@@ -90,25 +90,11 @@ describe("sceneToConfig", () => {
     ]);
   });
 
-  it("includes area terrain in terrain config", () => {
-    const scene: Scene = {
-      ...emptyScene(),
-      objects: [{
-        id: "at1", type: "area-terrain", shape: "circle",
-        x: 15, y: 15, width: 6, rotation: 0, label: "Forest",
-      }],
-    };
-    const config = sceneToConfig(scene, RECT_TEMPLATES);
-    expect(config.terrain.area_terrain).toHaveLength(1);
-    expect(config.terrain.area_terrain![0].label).toBe("Forest");
-  });
-
   it("emits a structure-only base (no styling keys)", () => {
     const config = sceneToConfig(emptyScene(), RECT_TEMPLATES);
     expect(config.base).toEqual({
       size: { width: 60, height: 44 },
       half_way_lines: { draw: true },
-      building: { draw: false },
       grid: { draw: false },
     });
   });

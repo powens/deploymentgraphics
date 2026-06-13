@@ -9,7 +9,6 @@ function buildMinimalConfig(): FullConfig {
     base: {
       size: { width: 60, height: 44 },
       half_way_lines: { draw: true },
-      building: { draw: true },
       grid: { draw: false },
     },
     terrain: {
@@ -120,28 +119,14 @@ describe("makeDeploymentZone styling", () => {
 
 
 describe("makeAreaTerrain", () => {
-  it("renders area terrain circle when config has area_terrain", () => {
-    const cfg = buildMinimalConfig();
-    cfg.terrain.area_terrain = [
-      { shape: "circle", x: 10, y: 10, width: 6, label: "Forest" },
-    ];
-    const svg = makeMissionCard(cfg);
-    const circles = svg.querySelectorAll("#area-terrain circle");
-    expect(circles.length).toBe(1);
-    expect(circles[0].getAttribute("cx")).toBe("13"); // x + r = 10 + 3
-    expect(circles[0].getAttribute("cy")).toBe("13");
-    expect(circles[0].getAttribute("r")).toBe("3");
-  });
-
   it("renders area terrain polygon when config has area_terrain polygon", () => {
     const cfg = buildMinimalConfig();
     cfg.terrain.area_terrain = [
       {
-        shape: "polygon",
         x: 5,
         y: 5,
         points: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 3 }, { x: 0, y: 3 }],
-        label: "Rubble",
+        label: "feature",
       },
     ];
     const svg = makeMissionCard(cfg);
@@ -160,11 +145,16 @@ describe("makeAreaTerrain", () => {
   it("falls back to area_terrain.default for an unknown label", () => {
     const cfg = buildMinimalConfig();
     cfg.terrain.area_terrain = [
-      { shape: "circle", x: 0, y: 0, width: 6, label: "Nonexistent" },
+      {
+        x: 0,
+        y: 0,
+        points: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 3 }],
+        label: "Nonexistent",
+      },
     ];
     const svg = makeMissionCard(cfg);
     expect(
-      svg.querySelector("#area-terrain circle")?.getAttribute("fill"),
+      svg.querySelector("#area-terrain polygon")?.getAttribute("fill"),
     ).toBe("rgba(140,130,120,0.2)");
   });
 });
@@ -243,7 +233,6 @@ describe("makeFeatures integration", () => {
     const config = buildMinimalConfig();
     (config.terrain.layout["1"] as { area_terrain?: unknown }).area_terrain = [
       {
-        shape: "polygon",
         x: 0,
         y: 0,
         points: [

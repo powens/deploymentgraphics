@@ -8,7 +8,6 @@ function configWithLayout(): FullConfig {
     base: {
       size: { width: 60, height: 44 },
       half_way_lines: { draw: false },
-      building: { draw: true },
       grid: { draw: false },
     },
     terrain: {
@@ -19,7 +18,6 @@ function configWithLayout(): FullConfig {
           buildings: [],
           area_terrain: [
             {
-              shape: "polygon",
               x: 0,
               y: 0,
               label: "feature",

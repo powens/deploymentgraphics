@@ -6,8 +6,5 @@ size:
 half_way_lines:
   draw: true
 
-building:
-  draw: false
-
 grid:
   draw: true

@@ -1,6 +1,5 @@
 import { templateBounds } from "../building-coordinates.js";
 import type { Template } from "../building-coordinates.js";
-import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
 import { ICON_SIZE } from "../icons.js";
 import type { Scene, SceneObject, DeploymentZoneObject } from "./scene.js";
 
@@ -17,14 +16,6 @@ export function objectBounds(
     const t = templates[obj.templateKey];
     const size = t ? templateBounds(t, obj.templateKey) : { width: 4, height: 4 };
     return { x: obj.x, y: obj.y, w: size.width, h: size.height };
-  }
-  if (obj.type === "area-terrain") {
-    return {
-      x: obj.x,
-      y: obj.y,
-      w: obj.width ?? DEFAULT_AREA_TERRAIN_SIZE,
-      h: obj.height ?? obj.width ?? DEFAULT_AREA_TERRAIN_SIZE,
-    };
   }
   if (obj.type === "objective") {
     return { x: obj.x - 1.5, y: obj.y - 1.5, w: 3, h: 3 };

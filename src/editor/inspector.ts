@@ -7,7 +7,6 @@ function round2(n: number): number {
 
 const CHIP_LABELS: Record<string, string> = {
   building: "BUILDING",
-  "area-terrain": "TERRAIN",
   objective: "OBJECTIVE",
   "deployment-zone": "DEPLOY ZONE",
   annotation: "ANNOTATION",
@@ -240,7 +239,7 @@ export function renderInspector(
     const sel = document.createElement("select");
     sel.className = "field-input field-select";
     // Mirrors the palette keys in static/data/theme.yml
-    const colours = ["stone", "rust", "sand", "green", "gunmetal", "bone"];
+    const colours = ["stone", "rust", "green", "gunmetal"];
     for (const c of colours) {
       const opt = document.createElement("option");
       opt.value = c;

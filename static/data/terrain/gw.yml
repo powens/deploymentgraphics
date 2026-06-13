@@ -26,11 +26,8 @@
 # terrain pieces — `type` is one of l-ruin, l-ruin-roof, generator, pipe. Each is
 # `{ type, x, y, width, height, color }` in inches (`x`/`y` = top-left of the
 # unrotated bounding box), with an optional `rotation` (degrees about the box
-# centre). `color` is a theme.yml palette key: stone, rust, sand, green,
-# gunmetal, bone. An optional `label` records the material category shared with
-# area_terrain (ruin, pipe, generator, barricade, gantry, catwalk); it is
-# carried for consistency with the ported 40kdc pieces and does not affect
-# styling, which comes from `color`. Features are drawn on top of the buildings.
+# centre). `color` is a theme.yml palette key: stone, rust, green, gunmetal.
+# Features are drawn on top of the buildings.
 
 # Footprints traced from the official GW terrain templates (40k_docs/templates.pdf):
 # each piece's organic rubble edge is captured as a polygon. The shapes are scaled
@@ -244,7 +241,6 @@ layout:
       # freely. They set `mirror: false` so each shows once; omit that (or set
       # it true) to also get a copy point-reflected through the board centre.
       - type: l-ruin
-        label: ruin
         x: 10.5
         y: 24.5
         width: 7
@@ -254,7 +250,6 @@ layout:
         mirror: true
 
       - type: l-ruin-roof
-        label: ruin
         x: 43
         y: 3
         width: 5
@@ -263,7 +258,6 @@ layout:
         mirror: false
 
       - type: generator
-        label: generator
         x: 28
         y: 21.5
         width: 5
@@ -272,7 +266,6 @@ layout:
         color: gunmetal
         mirror: false
       - type: pipe
-        label: pipe
         x: 33
         y: 15
         width: 6

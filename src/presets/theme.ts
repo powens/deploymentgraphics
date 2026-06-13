@@ -47,21 +47,6 @@ export const baseTheme: Theme = {
       stroke: "#808080",
       stroke_width: 0.3,
     },
-    Forest: {
-      fill: "rgba(60,120,60,0.3)",
-      stroke: "#3a6b3a",
-      stroke_width: 0.3,
-    },
-    Crater: {
-      fill: "rgba(100,80,60,0.3)",
-      stroke: "#6b5030",
-      stroke_width: 0.3,
-    },
-    Rubble: {
-      fill: "rgba(140,130,120,0.3)",
-      stroke: "#807060",
-      stroke_width: 0.3,
-    },
     feature: {
       fill: "rgba(120,120,120,0.55)",
       stroke: "#555555",
@@ -79,10 +64,8 @@ export const baseTheme: Theme = {
     palette: {
       stone: { fill: "#9aa0a6", accent: "#5b6068" },
       rust: { fill: "#b9772e", accent: "#6e451a" },
-      sand: { fill: "#c9a86a", accent: "#7d6233" },
       green: { fill: "#5a7d4a", accent: "#34502c" },
       gunmetal: { fill: "#7f868d", accent: "#3f444a" },
-      bone: { fill: "#e8dcc0", accent: "#9a8f76" },
     },
   },
 };

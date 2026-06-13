@@ -9,7 +9,6 @@ export type Size = { width: number; height: number };
 export type BaseConfig = {
   size: Size;
   half_way_lines: { draw?: boolean };
-  building: { draw?: boolean };
   grid: { draw?: boolean };
 };
 

@@ -167,21 +167,12 @@ function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
   for (const item of items) {
     const style =
       theme.area_terrain[item.label ?? ""] ?? theme.area_terrain.default;
-    let shape: SVGElement;
-    if (item.shape === "circle") {
-      const r = (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
-      shape = makeElement("circle");
-      shape.setAttribute("cx", `${item.x + r}`);
-      shape.setAttribute("cy", `${item.y + r}`);
-      shape.setAttribute("r", `${r}`);
-    } else {
-      const pts = (item.points ?? [])
-        .map((raw) => toPoint(raw, "area_terrain points"))
-        .map((p) => `${item.x + p.x},${item.y + p.y}`)
-        .join(" ");
-      shape = makeElement("polygon");
-      shape.setAttribute("points", pts);
-    }
+    const pts = (item.points ?? [])
+      .map((raw) => toPoint(raw, "area_terrain points"))
+      .map((p) => `${item.x + p.x},${item.y + p.y}`)
+      .join(" ");
+    const shape = makeElement("polygon");
+    shape.setAttribute("points", pts);
     applyAttributes(shape, style);
     if (item.rotation) {
       const cx = item.x + (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;

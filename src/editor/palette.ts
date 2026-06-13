@@ -1,10 +1,8 @@
 import type { Template, Point } from "../building-coordinates.js";
-import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
 import type { Scene, SceneObject, ObjectiveObject } from "./scene.js";
 
 export type PaletteItem =
   | { category: "building"; templateKey: string; label: string }
-  | { category: "area-terrain"; shape: "circle" | "polygon"; label: string }
   | { category: "objective" }
   | { category: "deployment-zone"; player: "attacker" | "defender" }
   | { category: "annotation"; kind: "text" | "arrow" }
@@ -19,9 +17,6 @@ export type PaletteItem =
     };
 
 const FIXED_ITEMS: PaletteItem[] = [
-  { category: "area-terrain", shape: "circle", label: "Forest" },
-  { category: "area-terrain", shape: "circle", label: "Crater" },
-  { category: "area-terrain", shape: "circle", label: "Rubble" },
   { category: "icon", iconType: "skull", label: "Skull" },
   { category: "icon", iconType: "fortress", label: "Fortress" },
   { category: "objective" },
@@ -40,7 +35,6 @@ const FIXED_ITEMS: PaletteItem[] = [
 
 const SECTION_LABELS: Record<string, string> = {
   building: "Buildings",
-  "area-terrain": "Area Terrain",
   objective: "Objectives",
   "deployment-zone": "Deployment",
   annotation: "Annotations",
@@ -50,11 +44,6 @@ const SECTION_LABELS: Record<string, string> = {
 
 function itemIcon(item: PaletteItem): string {
   if (item.category === "building") return "▬";
-  if (item.category === "area-terrain") {
-    if (item.label === "Forest") return "🌲";
-    if (item.label === "Crater") return "◎";
-    return "⬡";
-  }
   if (item.category === "objective") return "①";
   if (item.category === "deployment-zone") return item.player === "attacker" ? "🔴" : "🔵";
   if (item.category === "icon") return item.iconType === "skull" ? "💀" : "🏰";
@@ -64,7 +53,6 @@ function itemIcon(item: PaletteItem): string {
 
 function itemLabel(item: PaletteItem): string {
   if (item.category === "building") return item.label;
-  if (item.category === "area-terrain") return item.label;
   if (item.category === "objective") return "Objective";
   if (item.category === "deployment-zone") return item.player === "attacker" ? "Attacker Zone" : "Defender Zone";
   if (item.category === "icon") return item.label;
@@ -121,13 +109,6 @@ export function createObjectFromPalette(
   const id = Math.random().toString(36).slice(2);
   if (item.category === "building") {
     return { id, type: "building", templateKey: item.templateKey, x, y, rotation: 0, mirror: true };
-  }
-  if (item.category === "area-terrain") {
-    return {
-      id, type: "area-terrain", shape: item.shape, x, y, rotation: 0,
-      width: DEFAULT_AREA_TERRAIN_SIZE, height: DEFAULT_AREA_TERRAIN_SIZE,
-      label: item.label,
-    };
   }
   if (item.category === "objective") {
     const used = new Set(

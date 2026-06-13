@@ -71,7 +71,7 @@ describe("placeholder gw.yml", () => {
     const features = gwTerrain.layout["1"].features ?? [];
     const types = features.map((f) => f.type).sort();
     expect(types).toEqual(["generator", "l-ruin", "l-ruin-roof", "pipe"]);
-    const palette = ["stone", "rust", "sand", "green", "gunmetal", "bone"];
+    const palette = ["stone", "rust", "green", "gunmetal"];
     for (const f of features) {
       expect(palette, `feature ${f.type} colour`).toContain(f.color);
     }
@@ -148,7 +148,7 @@ const terrainWithExtras = {
     a: {
       buildings: [],
       area_terrain: [
-        { shape: "polygon", x: 0, y: 0, points: [{ x: 1, y: 1 }], label: "feature" },
+        { x: 0, y: 0, points: [{ x: 1, y: 1 }], label: "feature" },
       ],
     },
     bare: { buildings: [] },
