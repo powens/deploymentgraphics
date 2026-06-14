@@ -9,7 +9,7 @@
 
 layout:
   '1':
-    buildings:
+    templates:
       - type: large-pipes
         corners:
           BL:
@@ -122,7 +122,7 @@ layout:
         mirror: false
   gw-11e-crucible:
     deployment_pattern_id: crucible-of-battle
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -504,7 +504,7 @@ layout:
         mirror: false
   gw-11e-hammer-anvil:
     deployment_pattern_id: hammer-and-anvil
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -961,7 +961,7 @@ layout:
     dispositions:
       - Take and Hold
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe-mirror
         corners:
           TL:
@@ -1371,7 +1371,7 @@ layout:
     dispositions:
       - Take and Hold
       - Take and Hold
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -1781,7 +1781,7 @@ layout:
     dispositions:
       - Take and Hold
       - Take and Hold
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -2191,7 +2191,7 @@ layout:
     dispositions:
       - Take and Hold
       - Purge the Foe
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -2601,7 +2601,7 @@ layout:
     dispositions:
       - Take and Hold
       - Take and Hold
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -3011,7 +3011,7 @@ layout:
     dispositions:
       - Take and Hold
       - Reconnaissance
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -3421,7 +3421,7 @@ layout:
     dispositions:
       - Take and Hold
       - Disruption
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -3831,7 +3831,7 @@ layout:
     dispositions:
       - Take and Hold
       - Disruption
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -4205,7 +4205,7 @@ layout:
     dispositions:
       - Take and Hold
       - Disruption
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -4612,7 +4612,7 @@ layout:
           'y': 22.25
   sweeping-engagement-1:
     deployment_pattern_id: sweeping-engagement
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -4986,7 +4986,7 @@ layout:
     dispositions:
       - Take and Hold
       - Priority Assets
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -5396,7 +5396,7 @@ layout:
     dispositions:
       - Take and Hold
       - Priority Assets
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -5770,7 +5770,7 @@ layout:
     dispositions:
       - Take and Hold
       - Priority Assets
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -6180,7 +6180,7 @@ layout:
     dispositions:
       - Take and Hold
       - Reconnaissance
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -6590,7 +6590,7 @@ layout:
     dispositions:
       - Take and Hold
       - Reconnaissance
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -7000,7 +7000,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -7410,7 +7410,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -7820,7 +7820,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -8230,7 +8230,7 @@ layout:
     dispositions:
       - Take and Hold
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -8640,7 +8640,7 @@ layout:
     dispositions:
       - Disruption
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -9050,7 +9050,7 @@ layout:
     dispositions:
       - Disruption
       - Purge the Foe
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -9460,7 +9460,7 @@ layout:
     dispositions:
       - Disruption
       - Purge the Foe
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -9834,7 +9834,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Reconnaissance
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -10244,7 +10244,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Reconnaissance
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -10654,7 +10654,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Reconnaissance
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -11064,7 +11064,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Priority Assets
-    buildings:
+    templates:
       - type: large-pipes
         corners:
           TL:
@@ -11474,7 +11474,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Priority Assets
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -11884,7 +11884,7 @@ layout:
     dispositions:
       - Purge the Foe
       - Priority Assets
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -12294,7 +12294,7 @@ layout:
     dispositions:
       - Disruption
       - Disruption
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -12704,7 +12704,7 @@ layout:
     dispositions:
       - Disruption
       - Disruption
-    buildings:
+    templates:
       - type: small-area
         corners:
           TL:
@@ -13114,7 +13114,7 @@ layout:
     dispositions:
       - Disruption
       - Reconnaissance
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -13524,7 +13524,7 @@ layout:
     dispositions:
       - Disruption
       - Priority Assets
-    buildings:
+    templates:
       - type: small-area
         corners:
           TL:
@@ -13934,7 +13934,7 @@ layout:
     dispositions:
       - Disruption
       - Priority Assets
-    buildings:
+    templates:
       - type: small-area
         corners:
           TL:
@@ -14344,7 +14344,7 @@ layout:
     dispositions:
       - Disruption
       - Priority Assets
-    buildings:
+    templates:
       - type: small-area
         corners:
           TL:
@@ -14754,7 +14754,7 @@ layout:
     dispositions:
       - Reconnaissance
       - Reconnaissance
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -15164,7 +15164,7 @@ layout:
     dispositions:
       - Reconnaissance
       - Reconnaissance
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -15574,7 +15574,7 @@ layout:
     dispositions:
       - Priority Assets
       - Reconnaissance
-    buildings:
+    templates:
       - type: shoe
         corners:
           TL:
@@ -15984,7 +15984,7 @@ layout:
     dispositions:
       - Priority Assets
       - Reconnaissance
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:
@@ -16394,7 +16394,7 @@ layout:
     dispositions:
       - Priority Assets
       - Priority Assets
-    buildings:
+    templates:
       - type: large-area
         corners:
           TL:

@@ -14,13 +14,13 @@
 # selects a different canvas corner. Buildings are mirrored 180 degrees
 # through the canvas centre unless `mirror: false`.
 #
-# A layout may also list `icons` (sibling to `buildings`): predefined marker
+# A layout may also list `icons` (sibling to `templates`): predefined marker
 # graphics placed by their circle centre. Each is `{ type: <skull|fortress>,
 # pos: { x, y } }` in inches, with an optional `player: <attacker|defender>`
 # that tints the icon's disk with that player's deployment colour. Icons are
 # styled by theme.yml and drawn on top.
 #
-# A layout may also list `features` (sibling to `buildings`): abstract top-down
+# A layout may also list `features` (sibling to `templates`): abstract top-down
 # terrain pieces — `type` is one of l-ruin, l-ruin-roof, generator, pipe. Each is
 # `{ type, x, y, width, height, color }` in inches (`x`/`y` = top-left of the
 # unrotated bounding box), with an optional `rotation` (degrees about the box
@@ -32,7 +32,7 @@
 
 layout:
   1:
-    buildings:
+    templates:
       - type: large-pipes
         corners: { BL: { x: 12, y: 6 }, TL: { x: 14.5, y: 6 } }
 

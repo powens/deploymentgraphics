@@ -16,7 +16,7 @@ function configWithLayout(): FullConfig {
       templates: {},
       layout: {
         dc: {
-          buildings: [],
+          templates: [],
           area_terrain: [
             {
               shape: "polygon",

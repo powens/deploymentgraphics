@@ -209,7 +209,7 @@ export function sceneToConfig(
       templates,
       layout: {
         editor: {
-          buildings,
+          templates: buildings,
           ...(iconItems.length > 0 && { icons: iconItems }),
         },
       },

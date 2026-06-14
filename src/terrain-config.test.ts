@@ -15,7 +15,7 @@ const terrain: TerrainConfig = {
   templates: { "4x6": { width: 4, height: 6 } },
   layout: {
     "1": {
-      buildings: [{ type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } } }],
+      templates: [{ type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } } }],
     },
   },
 };
@@ -55,7 +55,7 @@ describe("placeholder gw.yml", () => {
 
   it("every building in every layout resolves without throwing", () => {
     for (const [name, layout] of Object.entries(gwTerrain.layout)) {
-      for (const placement of layout.buildings) {
+      for (const placement of layout.templates) {
         expect(
           () => resolveBuilding(placement, gwTerrain.templates, CANVAS),
           `layout ${name}, building type ${placement.type}`,
@@ -88,8 +88,8 @@ describe("getLayoutIcons", () => {
   const t: TerrainConfig = {
     templates: {},
     layout: {
-      "1": { buildings: [], icons: [{ type: "skull", pos: { x: 5, y: 10 } }] },
-      "2": { buildings: [] },
+      "1": { templates: [], icons: [{ type: "skull", pos: { x: 5, y: 10 } }] },
+      "2": { templates: [] },
     },
   };
 
@@ -109,7 +109,7 @@ describe("getLayoutIcons", () => {
     const tp: TerrainConfig = {
       templates: {},
       layout: {
-        "1": { buildings: [], icons: [{ type: "fortress", pos: { x: 5, y: 10 }, player: "attacker" }] },
+        "1": { templates: [], icons: [{ type: "fortress", pos: { x: 5, y: 10 }, player: "attacker" }] },
       },
     };
     expect(getLayoutIcons(tp, "1")).toEqual([
@@ -130,8 +130,8 @@ describe("getLayoutFeatures", () => {
   const t: TerrainConfig = {
     templates: {},
     layout: {
-      "1": { buildings: [], features: [feature] },
-      "2": { buildings: [] },
+      "1": { templates: [], features: [feature] },
+      "2": { templates: [] },
     },
   };
 
@@ -152,12 +152,12 @@ const terrainWithExtras = {
   templates: {},
   layout: {
     a: {
-      buildings: [],
+      templates: [],
       area_terrain: [
         { shape: "polygon", x: 0, y: 0, points: [{ x: 1, y: 1 }], label: "feature" },
       ],
     },
-    bare: { buildings: [] },
+    bare: { templates: [] },
   },
 } as unknown as TerrainConfig;
 

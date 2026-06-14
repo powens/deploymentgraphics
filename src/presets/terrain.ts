@@ -45,7 +45,7 @@ export const gwTerrain: TerrainConfig = {
   },
   layout: {
     "1": {
-      buildings: [
+      templates: [
         {
           type: "large-pipes",
           corners: { BL: { x: 12, y: 6 }, TL: { x: 14.5, y: 6 } },
@@ -121,7 +121,7 @@ export const gwTerrain: TerrainConfig = {
     },
     "gw-11e-crucible": {
       deployment_pattern_id: "crucible-of-battle",
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 54, y: 5 }, TR: { x: 54, y: 12 } },
@@ -470,7 +470,7 @@ export const gwTerrain: TerrainConfig = {
     },
     "gw-11e-hammer-anvil": {
       deployment_pattern_id: "hammer-and-anvil",
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 50, y: 24.5 }, TR: { x: 43, y: 24.5 } },
@@ -860,7 +860,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-purge-the-foe-2": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Take and Hold", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe-mirror",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -1215,7 +1215,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-mirror-1": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Take and Hold", "Take and Hold"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 47, y: 34 }, TR: { x: 47, y: 41 } },
@@ -1561,7 +1561,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-mirror-2": {
       deployment_pattern_id: "dawn-of-war",
       dispositions: ["Take and Hold", "Take and Hold"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 14, y: 24.5 }, TR: { x: 7, y: 24.5 } },
@@ -1937,7 +1937,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-purge-the-foe-3": {
       deployment_pattern_id: "hammer-and-anvil",
       dispositions: ["Take and Hold", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 53, y: 16.5 }, TR: { x: 46, y: 16.5 } },
@@ -2292,7 +2292,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-mirror-3": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Take and Hold", "Take and Hold"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
@@ -2653,7 +2653,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-reconnaissance-3": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Take and Hold", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -3008,7 +3008,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-disruption-1": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Take and Hold", "Disruption"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -3375,7 +3375,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-disruption-2": {
       deployment_pattern_id: "crucible-of-battle",
       dispositions: ["Take and Hold", "Disruption"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -3701,7 +3701,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-disruption-3": {
       deployment_pattern_id: "hammer-and-anvil",
       dispositions: ["Take and Hold", "Disruption"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -4046,7 +4046,7 @@ export const gwTerrain: TerrainConfig = {
     },
     "sweeping-engagement-1": {
       deployment_pattern_id: "sweeping-engagement",
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -4381,7 +4381,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-priority-assets-1": {
       deployment_pattern_id: "crucible-of-battle",
       dispositions: ["Take and Hold", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 55, y: 16.5 }, TR: { x: 48, y: 16.5 } },
@@ -4751,7 +4751,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-priority-assets-2": {
       deployment_pattern_id: "hammer-and-anvil",
       dispositions: ["Take and Hold", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: {
@@ -5059,7 +5059,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-priority-assets-3": {
       deployment_pattern_id: "dawn-of-war",
       dispositions: ["Take and Hold", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 44, y: 3 }, TR: { x: 44, y: 10 } },
@@ -5441,7 +5441,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-reconnaissance-1": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Take and Hold", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -5787,7 +5787,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-reconnaissance-2": {
       deployment_pattern_id: "dawn-of-war",
       dispositions: ["Take and Hold", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -6172,7 +6172,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-purge-the-foe-1": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Purge the Foe", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: {
@@ -6539,7 +6539,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-purge-the-foe-2": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Purge the Foe", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 47.066, y: 4.894 }, TR: { x: 54.822, y: 6.854 } },
@@ -6900,7 +6900,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-purge-the-foe-3": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Purge the Foe", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 7.044, y: 6.175 }, TR: { x: 11.044, y: -0.753 } },
@@ -7276,7 +7276,7 @@ export const gwTerrain: TerrainConfig = {
     "take-and-hold-vs-purge-the-foe-1": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Take and Hold", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -7643,7 +7643,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-purge-the-foe-1": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Disruption", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -7989,7 +7989,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-purge-the-foe-2": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Disruption", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
@@ -8335,7 +8335,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-purge-the-foe-3": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Disruption", "Purge the Foe"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 55, y: 5 }, TR: { x: 55, y: 12 } },
@@ -8670,7 +8670,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-reconnaissance-1": {
       deployment_pattern_id: "hammer-and-anvil",
       dispositions: ["Purge the Foe", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 52, y: 24.5 }, TR: { x: 45, y: 24.5 } },
@@ -9025,7 +9025,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-reconnaissance-2": {
       deployment_pattern_id: "dawn-of-war",
       dispositions: ["Purge the Foe", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 45, y: 3 }, TR: { x: 45, y: 10 } },
@@ -9401,7 +9401,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-reconnaissance-3": {
       deployment_pattern_id: "crucible-of-battle",
       dispositions: ["Purge the Foe", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 55, y: 18.5 }, TR: { x: 48, y: 18.5 } },
@@ -9771,7 +9771,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-priority-assets-1": {
       deployment_pattern_id: "dawn-of-war",
       dispositions: ["Purge the Foe", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "large-pipes",
           corners: { TL: { x: 6, y: 6 }, TR: { x: 16, y: 6 } },
@@ -10141,7 +10141,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-priority-assets-2": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Purge the Foe", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 56, y: 5 }, TR: { x: 56, y: 12 } },
@@ -10493,7 +10493,7 @@ export const gwTerrain: TerrainConfig = {
     "purge-the-foe-vs-priority-assets-3": {
       deployment_pattern_id: "hammer-and-anvil",
       dispositions: ["Purge the Foe", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 51, y: 29 }, TR: { x: 44, y: 29 } },
@@ -10845,7 +10845,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-disruption-2": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Disruption", "Disruption"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35, y: 27.75 }, TR: { x: 27, y: 27.75 } },
@@ -11221,7 +11221,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-disruption-3": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Disruption", "Disruption"],
-      buildings: [
+      templates: [
         {
           type: "small-area",
           corners: { TL: { x: 14, y: 4 }, TR: { x: 14, y: 8 } },
@@ -11597,7 +11597,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-reconnaissance-3": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Disruption", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 32, y: 14 }, TR: { x: 40, y: 14 } },
@@ -11952,7 +11952,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-priority-assets-1": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Disruption", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "small-area",
           corners: { TL: { x: 34, y: 25 }, TR: { x: 30, y: 25 } },
@@ -12304,7 +12304,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-priority-assets-2": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Disruption", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "small-area",
           corners: { TL: { x: 33, y: 22 }, TR: { x: 33, y: 26 } },
@@ -12665,7 +12665,7 @@ export const gwTerrain: TerrainConfig = {
     "disruption-vs-priority-assets-3": {
       deployment_pattern_id: "search-and-destroy",
       dispositions: ["Disruption", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "small-area",
           corners: { TL: { x: 33, y: 18 }, TR: { x: 33, y: 22 } },
@@ -13017,7 +13017,7 @@ export const gwTerrain: TerrainConfig = {
     "reconnaissance-vs-reconnaissance-1": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Reconnaissance", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -13399,7 +13399,7 @@ export const gwTerrain: TerrainConfig = {
     "reconnaissance-vs-reconnaissance-3": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Reconnaissance", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 55, y: 17.5 }, TR: { x: 48, y: 17.5 } },
@@ -13775,7 +13775,7 @@ export const gwTerrain: TerrainConfig = {
     "priority-assets-vs-reconnaissance-1": {
       deployment_pattern_id: "crucible-of-battle",
       dispositions: ["Priority Assets", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "shoe",
           corners: { TL: { x: 35.75, y: 17 }, TR: { x: 35.75, y: 25 } },
@@ -14130,7 +14130,7 @@ export const gwTerrain: TerrainConfig = {
     "priority-assets-vs-reconnaissance-2": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Priority Assets", "Reconnaissance"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 53, y: 16.5 }, TR: { x: 46, y: 16.5 } },
@@ -14485,7 +14485,7 @@ export const gwTerrain: TerrainConfig = {
     "priority-assets-vs-priority-assets-3": {
       deployment_pattern_id: "tipping-point",
       dispositions: ["Priority Assets", "Priority Assets"],
-      buildings: [
+      templates: [
         {
           type: "large-area",
           corners: { TL: { x: 53, y: 15.5 }, TR: { x: 46, y: 15.5 } },

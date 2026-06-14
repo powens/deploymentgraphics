@@ -58,7 +58,9 @@ export type FeaturePlacement = {
  * external data may instead carry `area_terrain` polygons.
  */
 export type TerrainLayout = {
-  buildings: BuildingPlacement[];
+  // Building placements for this layout. Named `templates` in the YAML
+  // because each placement references a building template by `type:`.
+  templates: BuildingPlacement[];
   icons?: IconPlacement[];
   features?: FeaturePlacement[];
   area_terrain?: AreaTerrain[];
@@ -96,7 +98,7 @@ export function getLayoutBuildings(
   if (!layout) {
     throw new Error(`terrain has no layout named: ${layoutName}`);
   }
-  return layout.buildings;
+  return layout.templates;
 }
 
 /**

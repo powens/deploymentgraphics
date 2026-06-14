@@ -59,7 +59,7 @@ describe("sceneToConfig", () => {
     expect(config.base.size).toEqual({ width: 60, height: 44 });
     expect(config.deployment.name).toBe("Custom");
     expect(config.terrain.layout_name).toBe("editor");
-    expect(config.terrain.layout["editor"].buildings).toHaveLength(0);
+    expect(config.terrain.layout["editor"].templates).toHaveLength(0);
   });
 
   it("includes buildings from scene", () => {
@@ -71,8 +71,8 @@ describe("sceneToConfig", () => {
       }],
     };
     const config = sceneToConfig(scene, RECT_TEMPLATES);
-    expect(config.terrain.layout["editor"].buildings).toHaveLength(1);
-    expect(config.terrain.layout["editor"].buildings[0].type).toBe("4x6");
+    expect(config.terrain.layout["editor"].templates).toHaveLength(1);
+    expect(config.terrain.layout["editor"].templates[0].type).toBe("4x6");
   });
 
   it("uses attacker deployment zone vertices from scene", () => {

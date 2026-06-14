@@ -109,7 +109,7 @@ for (const layout of layouts) {
   if (layout.deployment_pattern_id)
     entry.deployment_pattern_id = layout.deployment_pattern_id;
   if (dispositions) entry.dispositions = dispositions;
-  entry.buildings = [...buildings, ...feat.buildings];
+  entry.templates = [...buildings, ...feat.buildings];
   if (area_terrain.length > 0) entry.area_terrain = area_terrain;
   if (features.length > 0) entry.features = features;
   if (icons.length > 0) entry.icons = icons;
