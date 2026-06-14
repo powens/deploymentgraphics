@@ -46,8 +46,14 @@ export function resolveCorner(
 
 export type RectTemplate = { width: number; height: number };
 
-/** A polygon footprint: a closed ring of template-local points. */
-export type PolygonTemplate = { points: Point[] };
+/**
+ * A polygon footprint: a closed ring of template-local points. The bounding
+ * box (used for placement) is normally derived from the points and must start
+ * at 0,0. An optional declared `width`/`height` overrides that derivation, so
+ * the geometry may extend beyond the box — e.g. small nubbins that poke past
+ * the body's edge while the body fills the declared box.
+ */
+export type PolygonTemplate = { points: Point[]; width?: number; height?: number };
 
 /** One segment of a path footprint: a line, quadratic, or cubic Bézier. */
 export type PathSegment =
@@ -80,14 +86,6 @@ export function templateBounds(
   template: Template,
   name: string,
 ): { width: number; height: number } {
-  if (
-    "points" in template &&
-    ("width" in template || "height" in template)
-  ) {
-    throw new Error(
-      `template ${name}: defines both polygon points and width/height`,
-    );
-  }
   if ("segments" in template) {
     const { width, height, start, segments } = template;
     if (
@@ -110,6 +108,24 @@ export function templateBounds(
     const { points } = template;
     if (!Array.isArray(points) || points.length < 3) {
       throw new Error(`template ${name}: polygon needs at least 3 points`);
+    }
+    // A declared width/height is the placement box; the geometry may then
+    // extend past it (protruding nubbins). Without one, the box is derived
+    // from the points and is required to start at 0,0.
+    if ("width" in template || "height" in template) {
+      const { width, height } = template;
+      if (
+        typeof width !== "number" ||
+        width <= 0 ||
+        typeof height !== "number" ||
+        height <= 0
+      ) {
+        throw new Error(
+          `template ${name}: polygon with a declared bounding box needs a ` +
+            `positive width and height`,
+        );
+      }
+      return { width, height };
     }
     const xs = points.map((p) => p.x);
     const ys = points.map((p) => p.y);
