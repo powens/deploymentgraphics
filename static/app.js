@@ -6,6 +6,7 @@ import {
   eventMatrix,
   dispositions,
   resolveMission,
+  resolveTerrainLayout,
 } from "./bundle.js";
 import {
   DEFAULT_CONTROLS,
@@ -357,9 +358,17 @@ function onControlChange() {
   renderFromControls();
 }
 
-// A disposition/layout change re-derives the deployment dropdown, then renders.
+// A disposition/layout change re-derives the deployment and terrain dropdowns,
+// then renders. The terrain layout is matched from combined.yml on the
+// disposition pair + deployment; cells the 40kdc source does not cover fall
+// back to the demo layout "1". Both dropdowns remain overridable directly.
 function onDerivedControlChange() {
-  deploymentSelector.value = resolvedMissionId(controlState());
+  const controls = controlState();
+  const missionId = resolvedMissionId(controls);
+  deploymentSelector.value = missionId;
+  terrainSelector.value =
+    resolveTerrainLayout(gwTerrain.layout, controls.da, controls.db, missionId) ??
+    "1";
   onControlChange();
 }
 

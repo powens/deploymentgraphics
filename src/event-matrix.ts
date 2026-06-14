@@ -61,3 +61,39 @@ export function dispositions(matrix: EventMatrix): string[] {
   }
   return [...set].sort();
 }
+
+/** A terrain layout's matchup metadata (ported from the 40kdc source). */
+export interface TerrainLayoutMeta {
+  dispositions?: string[];
+  deployment_pattern_id?: string;
+}
+
+/**
+ * Finds the terrain layout whose disposition pair *and* deployment match this
+ * pairing, joining on the metadata each ported 40kdc layout already carries.
+ * Returns the layout id, or `undefined` when no layout matches (the 40kdc
+ * source does not cover every matrix cell).
+ *
+ * `deployment` may use either `-` or `_`: the matrix uses `_`
+ * (`sweeping_engagement`) while the layouts use `-` (`sweeping-engagement`).
+ */
+export function resolveTerrainLayout(
+  layouts: Record<string, TerrainLayoutMeta>,
+  a: string,
+  b: string,
+  deployment: string,
+): string | undefined {
+  const wantPair = eventMatrixKey(a, b);
+  const wantDeployment = deployment.replace(/-/g, "_");
+  for (const [id, meta] of Object.entries(layouts)) {
+    if (!meta.dispositions || !meta.deployment_pattern_id) {
+      continue;
+    }
+    const pair = [...meta.dispositions].sort().join(" | ");
+    const dep = meta.deployment_pattern_id.replace(/-/g, "_");
+    if (pair === wantPair && dep === wantDeployment) {
+      return id;
+    }
+  }
+  return undefined;
+}
