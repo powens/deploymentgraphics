@@ -69,36 +69,33 @@ describe("makeBuildings", () => {
   });
 });
 
-describe("svg property styling", () => {
-  it("injectTemplateDefs applies svg properties to template rects", () => {
-    const defs = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "defs",
-    );
-    injectTemplateDefs({ "4x6": { width: 4, height: 6 } }, defs, {
-      fill: "#808080",
-      stroke_width: 1.2,
-    });
-    const rect = defs.querySelector("#template-4x6")!;
-    expect(rect.getAttribute("fill")).toBe("#808080");
-    expect(rect.getAttribute("stroke-width")).toBe("1.2");
+describe("per-template styling", () => {
+  // styleFor maps a template name -> its SVG props (group base merged in by
+  // the caller in real usage; here we pass props directly).
+  const styleFor = (name: string) =>
+    name === "pipe"
+      ? { fill: "#b9772e", stroke_width: 0.3 }
+      : { fill: "#808080", stroke_width: 1.2 };
+
+  it("injectTemplateDefs styles each template def by name", () => {
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    injectTemplateDefs({ pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styleFor);
+    expect(defs.querySelector("#template-pipe")!.getAttribute("fill")).toBe("#b9772e");
+    expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBe("#808080");
   });
 
-  it("makeBuildings applies svg properties to building uses", () => {
+  it("makeBuildings styles each use by its template name", () => {
     const group = makeBuildings(
-      [{ type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } }, mirror: false }],
-      { "4x6": { width: 4, height: 6 } },
+      [{ type: "pipe", mirror: false, corners: { TL: { x: 0, y: 0 }, TR: { x: 5.5, y: 0 } } }],
+      { pipe: { width: 5.5, height: 1 } },
       { width: 60, height: 44 },
-      { opacity: 1 },
+      styleFor,
     );
-    expect(group.querySelector("use")!.getAttribute("opacity")).toBe("1");
+    expect(group.querySelector("use")!.getAttribute("fill")).toBe("#b9772e");
   });
 
-  it("injectTemplateDefs does not set fill when svgProperties is omitted", () => {
-    const defs = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "defs",
-    );
+  it("injectTemplateDefs sets no fill when styleFor is omitted", () => {
+    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     injectTemplateDefs({ "4x6": { width: 4, height: 6 } }, defs);
     expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBeNull();
   });
@@ -145,7 +142,7 @@ describe("polygon templates", () => {
         },
       },
       defs,
-      { fill: "#808080" },
+      () => ({ fill: "#808080" }),
     );
     expect(defs.querySelector("#template-ruins")!.getAttribute("fill")).toBe(
       "#808080",
@@ -226,7 +223,7 @@ describe("path templates", () => {
     const templates: Record<string, PathTemplate> = {
       bastion: { width: 4, height: 4, start, segments },
     };
-    injectTemplateDefs(templates, defs, { fill: "#808080" });
+    injectTemplateDefs(templates, defs, () => ({ fill: "#808080" }));
     expect(defs.querySelector("#template-bastion")!.getAttribute("fill")).toBe(
       "#808080",
     );

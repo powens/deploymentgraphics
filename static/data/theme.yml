@@ -26,11 +26,20 @@ building:
   group:
     opacity: 1
   template:
-    vector-effect: non-scaling-stroke
-    stroke: black
-    stroke_width: 1.2
-    fill: "#808080"
-    opacity: 1
+    default:
+      vector-effect: non-scaling-stroke
+      stroke: black
+      stroke_width: 1.2
+      fill: "#808080"
+      opacity: 1
+    # Ported 40kdc pipes (rust) and barricades (sand). The rust/sand hues are
+    # anchored here and aliased by area_terrain + feature.palette below so each
+    # colour is defined once.
+    pipe:             { vector-effect: non-scaling-stroke, fill: &rust-fill "#b9772e", stroke: &rust-accent "#6e451a", stroke_width: 0.3 }
+    pipe-short:       { vector-effect: non-scaling-stroke, fill: *rust-fill, stroke: *rust-accent, stroke_width: 0.3 }
+    barricade:        { vector-effect: non-scaling-stroke, fill: &sand-fill "#c9a86a", stroke: &sand-accent "#7d6233", stroke_width: 0.3 }
+    barricade-rail-5: { vector-effect: non-scaling-stroke, fill: *sand-fill, stroke: *sand-accent, stroke_width: 0.3 }
+    barricade-rail-3: { vector-effect: non-scaling-stroke, fill: *sand-fill, stroke: *sand-accent, stroke_width: 0.3 }
 
 grid:
   opacity: 0.3
@@ -76,21 +85,21 @@ area_terrain:
     fill: "rgba(140,130,120,0.3)"
     stroke: "#807060"
     stroke_width: 0.3
-  # Ported 40kdc material zones. `feature` is the fallback for any area piece;
-  # `pipe`/`barricade` are the only material labels the converter emits. Their
-  # rust/sand hues are anchored here and aliased by `feature.palette` below so
-  # each colour is defined once.
+  # `feature` is the fallback for any unconsumed area piece. Pipes/barricades
+  # are now building placements (see building.template above), but these
+  # pipe/barricade labels remain as harmless fallbacks for any hand-authored
+  # layout still using them, re-pointed to the rust/sand anchors.
   feature:
     fill: "rgba(120,120,120,0.55)"
     stroke: "#555555"
     stroke_width: 0.3
   pipe:
-    fill: &rust-fill "#b9772e"
-    stroke: &rust-accent "#6e451a"
+    fill: *rust-fill
+    stroke: *rust-accent
     stroke_width: 0.3
   barricade:
-    fill: &sand-fill "#c9a86a"
-    stroke: &sand-accent "#7d6233"
+    fill: *sand-fill
+    stroke: *sand-accent
     stroke_width: 0.3
 
 icon:

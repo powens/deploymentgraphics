@@ -23,6 +23,24 @@
 # 180° copy interlock into a clean rectangle).
 
 templates:
+  # Feature pipes/barricades (ported 40kdc terrain). Distinct from the
+  # large-/small-pipes *area* zones below. The GW dimensions are already the
+  # real ones, so these match templates-simple.yml exactly.
+  pipe:             { width: 5.5, height: 1 }
+  pipe-short:       { width: 5, height: 1 }
+  barricade-rail-5: { width: 5, height: 0.25 }
+  barricade-rail-3: { width: 3, height: 0.25 }
+  barricade:
+    points:
+      - { x: 0,   y: 0 }
+      - { x: 3.5, y: 0 }
+      - { x: 3.5, y: 1 }
+      - { x: 3,   y: 1 }
+      - { x: 3,   y: 0.5 }
+      - { x: 0.5, y: 0.5 }
+      - { x: 0.5, y: 1 }
+      - { x: 0,   y: 1 }
+
   # long line plate (10 x 2.5) — area-long-line
   # body fills the box; a bump on the top edge and one on the bottom poke past it.
   large-pipes:

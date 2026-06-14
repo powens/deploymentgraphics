@@ -10,7 +10,11 @@ export type Theme = {
   background: SVGProperties;
   half_way_lines: SVGProperties;
   deployment: { attacker: SVGProperties; defender: SVGProperties };
-  building: { group: SVGProperties; template: SVGProperties };
+  building: {
+    group: SVGProperties;
+    /** Keyed by building template name; `default` is the fallback. */
+    template: { default: SVGProperties } & Record<string, SVGProperties>;
+  };
   grid: SVGProperties;
   objective: { marker: SVGProperties; label: SVGProperties };
   annotation: {

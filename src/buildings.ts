@@ -51,7 +51,7 @@ export function segmentsToPathData(
 export function injectTemplateDefs(
   templates: Record<string, Template>,
   defs: SVGElement,
-  svgProperties?: SVGProperties,
+  styleFor?: (name: string) => SVGProperties | undefined,
 ): void {
   for (const [name, template] of Object.entries(templates)) {
     let shape: SVGElement;
@@ -78,8 +78,9 @@ export function injectTemplateDefs(
       shape.setAttribute("height", `${template.height}`);
     }
     shape.setAttribute("id", `template-${name}`);
-    if (svgProperties) {
-      applyAttributes(shape, svgProperties);
+    const props = styleFor?.(name);
+    if (props) {
+      applyAttributes(shape, props);
     }
     defs.appendChild(shape);
   }
@@ -90,7 +91,7 @@ export function makeBuildings(
   placements: BuildingPlacement[],
   templates: Record<string, Template>,
   canvas: CanvasSize,
-  svgProperties?: SVGProperties,
+  styleFor?: (name: string) => SVGProperties | undefined,
 ): SVGElement {
   const group = makeElement("g");
   group.setAttribute("id", "buildings");
@@ -106,8 +107,9 @@ export function makeBuildings(
           `rotate(${resolved.rotation})`,
       );
       use.setAttribute("id", `building-${counter}`);
-      if (svgProperties) {
-        applyAttributes(use, svgProperties);
+      const props = styleFor?.(resolved.templateName);
+      if (props) {
+        applyAttributes(use, props);
       }
       group.appendChild(use);
       counter++;
