@@ -89,6 +89,11 @@
         background-position: right 0.6rem center;
       }
 
+      /* Pushes this control and everything after it to the right of the row. */
+      .push-right {
+        margin-left: auto;
+      }
+
       .toggles {
         display: flex;
         gap: 1rem;
@@ -477,9 +482,28 @@
       </div>
 
       <div class="control">
-        <label class="control-label" for="mission">Mission</label>
-        <!-- Options are populated by app.js (see MISSIONS). -->
-        <select id="mission" class="field"></select>
+        <label class="control-label" for="disposition-a">Disposition A</label>
+        <!-- Options are populated by app.js (see DISPOSITIONS). -->
+        <select id="disposition-a" class="field"></select>
+      </div>
+
+      <div class="control">
+        <label class="control-label" for="disposition-b">Disposition B</label>
+        <!-- Options are populated by app.js (see DISPOSITIONS). -->
+        <select id="disposition-b" class="field"></select>
+      </div>
+
+      <div class="control">
+        <label class="control-label" for="layout">Layout</label>
+        <!-- Options are populated by app.js (see LAYOUT_OPTIONS). -->
+        <select id="layout" class="field"></select>
+      </div>
+
+      <div class="control push-right">
+        <label class="control-label" for="deployment">Deployment</label>
+        <!-- Options are populated by app.js (see MISSIONS). Changing the
+             dispositions/layout sets this; it can also be overridden directly. -->
+        <select id="deployment" class="field"></select>
       </div>
 
       <div class="control">

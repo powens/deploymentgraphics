@@ -16,5 +16,6 @@ export * from "./theme.js";
 export * from "./building-coordinates.js";
 export * from "./buildings.js";
 export * from "./terrain-config.js";
+export * from "./event-matrix.js";
 export * from "./dom-helpers.js";
 export * from "./presets/index.js";

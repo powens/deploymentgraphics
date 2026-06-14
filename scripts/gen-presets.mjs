@@ -144,6 +144,22 @@ function buildMissions() {
   return out;
 }
 
+function buildEventMatrix() {
+  // The YAML wraps the pairings under a top-level `matrix:` key; the preset
+  // exports just that map (see static/data/event_companion_matrix.yml).
+  const { matrix } = loadYaml("event_companion_matrix.yml");
+  return (
+    header("static/data/event_companion_matrix.yml") +
+    'import type { EventMatrix } from "../event-matrix.js";\n\n' +
+    declaration(
+      "eventMatrix",
+      "EventMatrix",
+      matrix,
+      "/** Force-disposition pairings -> layout -> deployment (event companion). */",
+    )
+  );
+}
+
 function buildTheme() {
   return (
     header("static/data/theme.yml") +
@@ -161,6 +177,7 @@ const targets = [
   ["base.ts", buildBase()],
   ["missions.ts", buildMissions()],
   ["terrain.ts", buildTerrain()],
+  ["event-matrix.ts", buildEventMatrix()],
   ["theme.ts", buildTheme()],
 ];
 

@@ -1,7 +1,16 @@
 /* global jsyaml */
-import { makeMissionCard, missions, gwTerrain } from "./bundle.js";
+import {
+  makeMissionCard,
+  missions,
+  gwTerrain,
+  eventMatrix,
+  dispositions,
+  resolveMission,
+  resolveTerrainLayout,
+} from "./bundle.js";
 import {
   DEFAULT_CONTROLS,
+  LAYOUTS,
   clearUrl,
   loadState,
   readControlsFromUrl,
@@ -14,8 +23,11 @@ import {
 // Dropdown options derive from the generated presets in the bundle, which are
 // generated from the YAML (see scripts/gen-presets.mjs). The persistence
 // allowlists derive from these in turn, so options, allowlists, and the
-// underlying YAML can never drift apart. Each id is also the YAML filename /
-// layout key. Mission labels are the deployment `name`.
+// underlying YAML can never drift apart. The two dispositions + layout resolve
+// to a deployment via the event matrix, which selects the Deployment dropdown;
+// that dropdown can also be set directly.
+const DISPOSITIONS = dispositions(eventMatrix).map((id) => ({ id, label: id }));
+const LAYOUT_OPTIONS = LAYOUTS.map((id) => ({ id, label: id }));
 const MISSIONS = Object.entries(missions).map(([id, m]) => ({
   id,
   label: m.name,
@@ -24,6 +36,7 @@ const TERRAINS = Object.keys(gwTerrain.layout).map((id) => ({
   id,
   label: `GW Layout ${id}`,
 }));
+const DISPOSITION_IDS = DISPOSITIONS.map((d) => d.id);
 const MISSION_IDS = MISSIONS.map((m) => m.id);
 const TERRAIN_IDS = TERRAINS.map((t) => t.id);
 
@@ -46,6 +59,12 @@ function fetchYaml(url) {
     yamlCache.set(url, pending);
   }
   return pending;
+}
+
+// The deployment a disposition pairing + layout maps to, used to drive the
+// Deployment dropdown (which the user may then override directly).
+function resolvedMissionId(controls) {
+  return resolveMission(eventMatrix, controls.da, controls.db, controls.lay);
 }
 
 async function buildConfig(controls) {
@@ -82,13 +101,24 @@ function downloadBlob(blob, filename) {
 
 // --- DOM references -------------------------------------------------------
 
-const missionSelector = document.getElementById("mission");
+const dispositionASelector = document.getElementById("disposition-a");
+const dispositionBSelector = document.getElementById("disposition-b");
+const layoutSelector = document.getElementById("layout");
+const deploymentSelector = document.getElementById("deployment");
 const terrainSelector = document.getElementById("terrain");
 const templatesSelector = document.getElementById("templates");
 const rotationSelector = document.getElementById("rotation");
 const showGrid = document.getElementById("show-grid");
+// Changing a disposition or the layout re-derives the deployment; the other
+// controls (the deployment dropdown included) just re-render.
+const derivedFromControls = [
+  dispositionASelector,
+  dispositionBSelector,
+  layoutSelector,
+];
 const controlEls = [
-  missionSelector,
+  ...derivedFromControls,
+  deploymentSelector,
   terrainSelector,
   templatesSelector,
   rotationSelector,
@@ -121,12 +151,18 @@ function populateSelect(select, items) {
   }
 }
 
-populateSelect(missionSelector, MISSIONS);
+populateSelect(dispositionASelector, DISPOSITIONS);
+populateSelect(dispositionBSelector, DISPOSITIONS);
+populateSelect(layoutSelector, LAYOUT_OPTIONS);
+populateSelect(deploymentSelector, MISSIONS);
 populateSelect(terrainSelector, TERRAINS);
 
 function controlState() {
   return {
-    m: missionSelector.value,
+    da: dispositionASelector.value,
+    db: dispositionBSelector.value,
+    lay: layoutSelector.value,
+    m: deploymentSelector.value,
     t: terrainSelector.value,
     tpl: templatesSelector.value,
     grid: showGrid.checked,
@@ -135,7 +171,10 @@ function controlState() {
 }
 
 function applyControls(controls) {
-  missionSelector.value = controls.m;
+  dispositionASelector.value = controls.da;
+  dispositionBSelector.value = controls.db;
+  layoutSelector.value = controls.lay;
+  deploymentSelector.value = controls.m;
   terrainSelector.value = controls.t;
   templatesSelector.value = controls.tpl;
   showGrid.checked = controls.grid;
@@ -319,8 +358,25 @@ function onControlChange() {
   renderFromControls();
 }
 
+// A disposition/layout change re-derives the deployment and terrain dropdowns,
+// then renders. The terrain layout is matched from combined.yml on the
+// disposition pair + deployment; cells the 40kdc source does not cover fall
+// back to the demo layout "1". Both dropdowns remain overridable directly.
+function onDerivedControlChange() {
+  const controls = controlState();
+  const missionId = resolvedMissionId(controls);
+  deploymentSelector.value = missionId;
+  terrainSelector.value =
+    resolveTerrainLayout(gwTerrain.layout, controls.da, controls.db, missionId) ??
+    "1";
+  onControlChange();
+}
+
 for (const el of controlEls) {
-  el.addEventListener("change", onControlChange);
+  el.addEventListener(
+    "change",
+    derivedFromControls.includes(el) ? onDerivedControlChange : onControlChange,
+  );
 }
 
 let yamlRenderTimer;
@@ -361,7 +417,7 @@ function filenameStem() {
     return "deployment-graphics";
   }
   const controls = controlState();
-  return `${controls.m.replace(/_/g, "-")}-layout-${controls.t}`;
+  return `${controls.m.replace(/_/g, "-")}-layout-${controls.lay}`;
 }
 
 function exportSvg() {
@@ -471,11 +527,18 @@ function start() {
   const fromUrl = urlHasControls();
   if (fromUrl) {
     // An explicit URL (e.g. a shared link) wins over any saved state.
-    applyControls(readControlsFromUrl(MISSION_IDS, TERRAIN_IDS));
+    applyControls(readControlsFromUrl(DISPOSITION_IDS, MISSION_IDS, TERRAIN_IDS));
   } else {
     const saved = loadState();
     if (saved) {
-      applyControls(sanitizeControls(saved.controls, MISSION_IDS, TERRAIN_IDS));
+      applyControls(
+        sanitizeControls(
+          saved.controls,
+          DISPOSITION_IDS,
+          MISSION_IDS,
+          TERRAIN_IDS,
+        ),
+      );
       if (saved.mode === "yaml" && typeof saved.yaml === "string") {
         mode = "yaml";
         yamlEditor.value = saved.yaml;

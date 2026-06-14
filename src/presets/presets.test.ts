@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import yaml from "js-yaml";
 import { describe, expect, it } from "vitest";
 import { baseConfig } from "./base.js";
+import { eventMatrix } from "./event-matrix.js";
 import { missions } from "./missions.js";
 import { gwTerrain } from "./terrain.js";
 import { baseTheme } from "./theme.js";
@@ -38,5 +39,12 @@ describe("presets match the YAML source", () => {
 
   it("baseTheme matches theme.yml", () => {
     expect(baseTheme).toEqual(loadYaml("theme.yml"));
+  });
+
+  // The preset exports just the `matrix:` map from the YAML.
+  it("eventMatrix matches event_companion_matrix.yml", () => {
+    expect(eventMatrix).toEqual(
+      (loadYaml("event_companion_matrix.yml") as { matrix: unknown }).matrix,
+    );
   });
 });

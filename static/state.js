@@ -2,10 +2,17 @@
 //
 // Persisted shape:
 //   { version, mode: "controls" | "yaml",
-//     controls: { m, t, tpl, grid, rot }, yaml: string | null }
+//     controls: { da, db, lay, m, t, tpl, grid, rot }, yaml: string | null }
+//
+// `da`/`db` are the two force dispositions and `lay` the layout (A/B/C);
+// changing any of them sets the deployment `m` via the event matrix, but `m`
+// is also a control in its own right and can be overridden directly (see
+// app.js). It is persisted so a manual override survives a reload.
 
 const STORAGE_KEY = "deploymentgraphics:state";
-const STORAGE_VERSION = 1;
+// Bumped to 2 when the controls switched from a direct mission (`m`) to
+// disposition/layout (`da`/`db`/`lay`); older saved state is dropped.
+const STORAGE_VERSION = 2;
 
 // Canvas rotation in degrees, as strings (the <select> values).
 export const ROTATIONS = ["0", "90", "-90"];
@@ -14,7 +21,15 @@ export const ROTATIONS = ["0", "90", "-90"];
 // Each value is the templates-<value>.yml filename stem.
 export const TEMPLATE_SETS = ["simple", "real"];
 
+// Layout variants within a disposition pairing.
+export const LAYOUTS = ["A", "B", "C"];
+
 export const DEFAULT_CONTROLS = {
+  // Take and Hold vs Take and Hold, layout B -> dawn_of_war (the previous
+  // default mission), so the initial render is unchanged.
+  da: "Take and Hold",
+  db: "Take and Hold",
+  lay: "B",
   m: "dawn_of_war",
   t: "1",
   tpl: "simple",
@@ -23,10 +38,14 @@ export const DEFAULT_CONTROLS = {
 };
 
 // Coerce an untrusted controls object to a valid one, falling back to
-// defaults for any unknown mission/terrain id or non-boolean flag.
-export function sanitizeControls(controls, missionIds, terrainIds) {
+// defaults for any unknown disposition/layout/mission/terrain id or non-boolean
+// flag.
+export function sanitizeControls(controls, dispositionIds, missionIds, terrainIds) {
   const c = controls ?? {};
   return {
+    da: dispositionIds.includes(c.da) ? c.da : DEFAULT_CONTROLS.da,
+    db: dispositionIds.includes(c.db) ? c.db : DEFAULT_CONTROLS.db,
+    lay: LAYOUTS.includes(c.lay) ? c.lay : DEFAULT_CONTROLS.lay,
     m: missionIds.includes(c.m) ? c.m : DEFAULT_CONTROLS.m,
     t: terrainIds.includes(c.t) ? c.t : DEFAULT_CONTROLS.t,
     tpl: TEMPLATE_SETS.includes(c.tpl) ? c.tpl : DEFAULT_CONTROLS.tpl,
@@ -39,19 +58,25 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
 // (a shared link) takes precedence over saved localStorage state.
 export function urlHasControls() {
   const params = new URLSearchParams(window.location.search);
-  return ["m", "t", "tpl", "grid", "rot"].some((key) => params.has(key));
+  return ["da", "db", "lay", "m", "t", "tpl", "grid", "rot"].some((key) =>
+    params.has(key),
+  );
 }
 
-export function readControlsFromUrl(missionIds, terrainIds) {
+export function readControlsFromUrl(dispositionIds, missionIds, terrainIds) {
   const params = new URLSearchParams(window.location.search);
   return sanitizeControls(
     {
+      da: params.get("da"),
+      db: params.get("db"),
+      lay: params.get("lay"),
       m: params.get("m"),
       t: params.get("t"),
       tpl: params.get("tpl"),
       grid: params.get("grid") === "1",
       rot: params.get("rot"),
     },
+    dispositionIds,
     missionIds,
     terrainIds,
   );
@@ -61,6 +86,15 @@ export function readControlsFromUrl(missionIds, terrainIds) {
 // readControlsFromUrl restores any absent param to its default.
 export function writeControlsToUrl(controls) {
   const params = new URLSearchParams();
+  if (controls.da !== DEFAULT_CONTROLS.da) {
+    params.set("da", controls.da);
+  }
+  if (controls.db !== DEFAULT_CONTROLS.db) {
+    params.set("db", controls.db);
+  }
+  if (controls.lay !== DEFAULT_CONTROLS.lay) {
+    params.set("lay", controls.lay);
+  }
   if (controls.m !== DEFAULT_CONTROLS.m) {
     params.set("m", controls.m);
   }
