@@ -4,9 +4,10 @@
 // gen-presets merges back in). Each `area` piece becomes a building
 // placement referencing a gw template; corner-ruin pieces become `l-ruin`
 // features (with `l-ruin-roof` where a catwalk sits on them); catwalk pieces
-// are dropped; every other `feature` piece becomes a polygon area_terrain entry
-// (absolute points); each is_objective piece becomes a skull icon at its
-// centre. Deterministic + re-runnable.
+// are dropped; pipe/barricade pieces become building placements (via
+// feature-to-building.mjs); every other `feature` piece becomes a polygon
+// area_terrain entry (absolute points); each is_objective piece becomes a
+// skull icon at its centre. Deterministic + re-runnable.
 //
 // Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
 
@@ -16,6 +17,7 @@ import { resolvePiece } from "./terrain-resolver.mjs";
 import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 import { ruinFeatures } from "./ruin-to-feature.mjs";
 import { rectFeatures } from "./rect-to-feature.mjs";
+import { featureBuildings } from "./feature-to-building.mjs";
 import { matchupToDispositions } from "./matchup-to-dispositions.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
@@ -35,18 +37,10 @@ const templates = readJson("terrain-templates.json");
 const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => footprintById.get(id);
 
-// Theme label per area_terrain feature piece, coloured by material category,
-// mirroring the demo layout's palette (rust pipes, sand barricades). Unknown
-// feature templates fall back to the generic `feature` style. Categories
-// resolve to colours in static/data/theme.yml. (Area pieces become buildings,
-// corner-ruins become l-ruin features, and generators/gantries become rectangle
-// features; none is labelled here. Catwalks are dropped.)
-const FEATURE_LABELS = {
-  pipe: "pipe",
-  barricade: "barricade",
-};
-
-const labelFor = (piece) => FEATURE_LABELS[piece.template] ?? "feature";
+// Pipes and barricades become building placements (see feature-to-building.mjs).
+// Any other unconsumed, non-area feature piece falls back to a generic
+// `feature` area_terrain zone (coloured by theme.area_terrain.feature).
+const labelFor = () => "feature";
 
 // gw.yml is the hand-authored input: the demo layout ("1"). The ported 40kdc
 // layouts are layered on top of it, so the combined file is a superset of the
@@ -68,8 +62,13 @@ for (const layout of layouts) {
   // `consumedIds` are the pieces the area_terrain pass must skip.
   const ruin = ruinFeatures(layout, lookupFootprint, getParent);
   const rect = rectFeatures(layout, lookupFootprint, getParent);
+  const feat = featureBuildings(layout, lookupFootprint, getParent);
   const features = [...ruin.features, ...rect.features];
-  const consumedIds = new Set([...ruin.consumedIds, ...rect.consumedIds]);
+  const consumedIds = new Set([
+    ...ruin.consumedIds,
+    ...rect.consumedIds,
+    ...feat.consumedIds,
+  ]);
   const buildings = [];
   const area_terrain = [];
   const icons = [];
@@ -110,8 +109,8 @@ for (const layout of layouts) {
   if (layout.deployment_pattern_id)
     entry.deployment_pattern_id = layout.deployment_pattern_id;
   if (dispositions) entry.dispositions = dispositions;
-  entry.buildings = buildings;
-  entry.area_terrain = area_terrain;
+  entry.buildings = [...buildings, ...feat.buildings];
+  if (area_terrain.length > 0) entry.area_terrain = area_terrain;
   if (features.length > 0) entry.features = features;
   if (icons.length > 0) entry.icons = icons;
   out.layout[layout.id] = entry;
