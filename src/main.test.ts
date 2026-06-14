@@ -17,7 +17,7 @@ function buildMinimalConfig(): FullConfig {
       templates: { "4x6": { width: 4, height: 6 } },
       layout: {
         "1": {
-          buildings: [{ type: "4x6", corners: { TL: { x: 10, y: 0 }, TR: { x: 14, y: 0 } } }],
+          templates: [{ type: "4x6", corners: { TL: { x: 10, y: 0 }, TR: { x: 14, y: 0 } } }],
         },
       },
     },

@@ -28,7 +28,7 @@ type TemplatesYaml = {
 };
 
 type TerrainYaml = {
-  layout: Record<string, { buildings: BuildingPlacement[] }>;
+  layout: Record<string, { templates: BuildingPlacement[] }>;
 };
 
 export async function loadPreset(
@@ -62,8 +62,8 @@ export async function loadPreset(
   });
 
   const layout = terrainData.layout?.[terrainLayoutId];
-  if (layout?.buildings) {
-    for (const bld of layout.buildings) {
+  if (layout?.templates) {
+    for (const bld of layout.templates) {
       const template = templates[bld.type];
       if (!template) continue;
       const resolved = resolveBuilding({ ...bld, mirror: false }, templates, canvas);
