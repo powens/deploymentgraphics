@@ -1,0 +1,128 @@
+# Force-disposition pairings -> layout -> deployment, keyed for O(1) lookup.
+# Parsed from 40k_docs/event_companion.pdf (pages 9-53) by scripts (not hand-authored).
+#
+# KEY: the two force dispositions sorted alphabetically and joined with " | "
+# (an unordered pair). Build the same key in code to look up either matchup
+# regardless of side, e.g.:
+#   const entry = matrix[[dispA, dispB].sort().join(" | ")];
+#
+# `missions` maps each force disposition to its primary mission for this pairing
+# (mirror matchups share one mission, so the map has a single entry).
+# `deployment` values reference static/data/deployment/<key>.yml; `page` is the
+# source page for provenance.
+matrix:
+  "Disruption | Disruption":
+    missions:
+      Disruption: Outmanoeuvre
+    layouts:
+      A: { deployment: crucible_of_battle, page: 36 }
+      B: { deployment: tipping_point, page: 37 }
+      C: { deployment: sweeping_engagement, page: 38 }
+  "Disruption | Priority Assets":
+    missions:
+      Disruption: Locate and Deny
+      Priority Assets: Extract Relic
+    layouts:
+      A: { deployment: sweeping_engagement, page: 42 }
+      B: { deployment: tipping_point, page: 43 }
+      C: { deployment: search_and_destroy, page: 44 }
+  "Disruption | Purge the Foe":
+    missions:
+      Purge the Foe: Punishment
+      Disruption: Delaying Action
+    layouts:
+      A: { deployment: search_and_destroy, page: 27 }
+      B: { deployment: tipping_point, page: 28 }
+      C: { deployment: sweeping_engagement, page: 29 }
+  "Disruption | Reconnaissance":
+    missions:
+      Disruption: Smoke and Mirrors
+      Reconnaissance: Surveil the Foe
+    layouts:
+      A: { deployment: tipping_point, page: 39 }
+      B: { deployment: dawn_of_war, page: 40 }
+      C: { deployment: search_and_destroy, page: 41 }
+  "Disruption | Take and Hold":
+    missions:
+      Take and Hold: Determined Acquisition
+      Disruption: Death Trap
+    layouts:
+      A: { deployment: sweeping_engagement, page: 15 }
+      B: { deployment: crucible_of_battle, page: 16 }
+      C: { deployment: hammer_and_anvil, page: 17 }
+  "Priority Assets | Priority Assets":
+    missions:
+      Priority Assets: Sabotage
+    layouts:
+      A: { deployment: sweeping_engagement, page: 51 }
+      B: { deployment: crucible_of_battle, page: 52 }
+      C: { deployment: tipping_point, page: 53 }
+  "Priority Assets | Purge the Foe":
+    missions:
+      Purge the Foe: Destroyer's Wrath
+      Priority Assets: Vital Link
+    layouts:
+      A: { deployment: dawn_of_war, page: 33 }
+      B: { deployment: search_and_destroy, page: 34 }
+      C: { deployment: hammer_and_anvil, page: 35 }
+  "Priority Assets | Reconnaissance":
+    missions:
+      Reconnaissance: Search and Scour
+      Priority Assets: Vanguard Operation
+    layouts:
+      A: { deployment: crucible_of_battle, page: 48 }
+      B: { deployment: tipping_point, page: 49 }
+      C: { deployment: sweeping_engagement, page: 50 }
+  "Priority Assets | Take and Hold":
+    missions:
+      Take and Hold: Inescapable Dominion
+      Priority Assets: Secure Asset
+    layouts:
+      A: { deployment: crucible_of_battle, page: 21 }
+      B: { deployment: hammer_and_anvil, page: 22 }
+      C: { deployment: dawn_of_war, page: 23 }
+  "Purge the Foe | Purge the Foe":
+    missions:
+      Purge the Foe: Meatgrinder
+    layouts:
+      A: { deployment: search_and_destroy, page: 24 }
+      B: { deployment: tipping_point, page: 25 }
+      C: { deployment: sweeping_engagement, page: 26 }
+  "Purge the Foe | Reconnaissance":
+    missions:
+      Purge the Foe: Consecrate
+      Reconnaissance: Triangulation
+    layouts:
+      A: { deployment: hammer_and_anvil, page: 30 }
+      B: { deployment: dawn_of_war, page: 31 }
+      C: { deployment: crucible_of_battle, page: 32 }
+  "Purge the Foe | Take and Hold":
+    missions:
+      Take and Hold: Immovable Object
+      Purge the Foe: Unstoppable Force
+    layouts:
+      A: { deployment: sweeping_engagement, page: 12 }
+      B: { deployment: search_and_destroy, page: 13 }
+      C: { deployment: hammer_and_anvil, page: 14 }
+  "Reconnaissance | Reconnaissance":
+    missions:
+      Reconnaissance: Gather Intel
+    layouts:
+      A: { deployment: sweeping_engagement, page: 45 }
+      B: { deployment: crucible_of_battle, page: 46 }
+      C: { deployment: tipping_point, page: 47 }
+  "Reconnaissance | Take and Hold":
+    missions:
+      Take and Hold: Purge and Secure
+      Reconnaissance: Reconnaissance Sweep
+    layouts:
+      A: { deployment: tipping_point, page: 18 }
+      B: { deployment: dawn_of_war, page: 19 }
+      C: { deployment: search_and_destroy, page: 20 }
+  "Take and Hold | Take and Hold":
+    missions:
+      Take and Hold: Battlefield Dominance
+    layouts:
+      A: { deployment: tipping_point, page: 9 }
+      B: { deployment: dawn_of_war, page: 10 }
+      C: { deployment: search_and_destroy, page: 11 }
