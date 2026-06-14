@@ -12,7 +12,17 @@ import {
   getLayoutIcons,
 } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
-import type { FullConfig } from "./types.js";
+import type { FullConfig, SVGProperties } from "./types.js";
+
+// Resolve a building's SVG props: the shared group props as a base, then the
+// template's own entry (or `default`). Used for both the template defs and the
+// `<use>` placements so a pipe def and its uses share one style.
+const buildingStyle =
+  (theme: Theme) =>
+  (name: string): SVGProperties => ({
+    ...theme.building.group,
+    ...(theme.building.template[name] ?? theme.building.template.default),
+  });
 
 /** True when a usable layout is selected in the terrain config. */
 function hasSelectedLayout(config: FullConfig): boolean {
@@ -23,13 +33,9 @@ function injectDefs(svg: SVGElement, config: FullConfig, theme: Theme) {
   const defs = makeElement("defs");
   svg.appendChild(defs);
 
-  // Template rects carry both the generic building props and the
-  // template-specific stroke/fill overrides.
-  const templateProps = {
-    ...theme.building.group,
-    ...theme.building.template,
-  };
-  injectTemplateDefs(config.terrain.templates, defs, templateProps);
+  // Each template def carries the generic building props plus its own
+  // template-specific stroke/fill overrides (keyed by name, with a default).
+  injectTemplateDefs(config.terrain.templates, defs, buildingStyle(theme));
 
   if (hasSelectedLayout(config)) {
     const iconPlacements = getLayoutIcons(
@@ -306,7 +312,7 @@ export function makeMissionCard(
         placements,
         config.terrain.templates,
         canvas,
-        theme.building.group,
+        buildingStyle(theme),
       ),
     );
   } else {

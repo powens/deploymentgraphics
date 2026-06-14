@@ -19,11 +19,26 @@ export const baseTheme: Theme = {
   building: {
     group: { opacity: 1 },
     template: {
-      "vector-effect": "non-scaling-stroke",
-      stroke: "black",
-      stroke_width: 1.2,
-      fill: "#808080",
-      opacity: 1,
+      default: {
+        "vector-effect": "non-scaling-stroke",
+        stroke: "black",
+        stroke_width: 1.2,
+        fill: "#808080",
+        opacity: 1,
+      },
+      pipe: { fill: "#b9772e", stroke: "#6e451a", stroke_width: 0.3 },
+      "pipe-short": { fill: "#b9772e", stroke: "#6e451a", stroke_width: 0.3 },
+      barricade: { fill: "#c9a86a", stroke: "#7d6233", stroke_width: 0.3 },
+      "barricade-rail-5": {
+        fill: "#c9a86a",
+        stroke: "#7d6233",
+        stroke_width: 0.3,
+      },
+      "barricade-rail-3": {
+        fill: "#c9a86a",
+        stroke: "#7d6233",
+        stroke_width: 0.3,
+      },
     },
   },
   grid: {
