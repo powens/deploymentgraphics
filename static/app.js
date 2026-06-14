@@ -53,12 +53,15 @@ async function buildConfig(controls) {
     await Promise.all([
       fetchYaml(`./data/deployment/${controls.m}.yml`),
       fetchYaml("./data/base.yml"),
-      fetchYaml("./data/terrain/templates-simple.yml"),
+      fetchYaml(`./data/terrain/templates-${controls.tpl}.yml`),
       fetchYaml("./data/terrain/combined.yml"),
     ]);
   // Spread rather than mutate: the cached objects are shared across redraws.
-  // Templates live in templates-simple.yml; combined.yml holds the demo layout
-  // + the ported 40kdc layouts. Merge them into one terrain config.
+  // Templates live in templates-simple.yml (illustrative) or templates-real.yml
+  // (detailed GW footprints), selected by the Templates control; combined.yml
+  // holds the demo layout + the ported 40kdc layouts. Merge into one terrain
+  // config — both template files share the same names, so any layout renders
+  // against either set.
   return {
     deployment: missionConfig,
     base: { ...baseConfig, grid: { ...baseConfig.grid, draw: controls.grid } },
@@ -81,11 +84,13 @@ function downloadBlob(blob, filename) {
 
 const missionSelector = document.getElementById("mission");
 const terrainSelector = document.getElementById("terrain");
+const templatesSelector = document.getElementById("templates");
 const rotationSelector = document.getElementById("rotation");
 const showGrid = document.getElementById("show-grid");
 const controlEls = [
   missionSelector,
   terrainSelector,
+  templatesSelector,
   rotationSelector,
   showGrid,
 ];
@@ -123,6 +128,7 @@ function controlState() {
   return {
     m: missionSelector.value,
     t: terrainSelector.value,
+    tpl: templatesSelector.value,
     grid: showGrid.checked,
     rot: rotationSelector.value,
   };
@@ -131,6 +137,7 @@ function controlState() {
 function applyControls(controls) {
   missionSelector.value = controls.m;
   terrainSelector.value = controls.t;
+  templatesSelector.value = controls.tpl;
   showGrid.checked = controls.grid;
   rotationSelector.value = controls.rot;
 }

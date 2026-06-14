@@ -2,7 +2,7 @@
 //
 // Persisted shape:
 //   { version, mode: "controls" | "yaml",
-//     controls: { m, t, grid, rot }, yaml: string | null }
+//     controls: { m, t, tpl, grid, rot }, yaml: string | null }
 
 const STORAGE_KEY = "deploymentgraphics:state";
 const STORAGE_VERSION = 1;
@@ -10,9 +10,14 @@ const STORAGE_VERSION = 1;
 // Canvas rotation in degrees, as strings (the <select> values).
 export const ROTATIONS = ["0", "90", "-90"];
 
+// Building-template set: the illustrative shapes or the detailed GW footprints.
+// Each value is the templates-<value>.yml filename stem.
+export const TEMPLATE_SETS = ["simple", "real"];
+
 export const DEFAULT_CONTROLS = {
   m: "dawn_of_war",
   t: "1",
+  tpl: "simple",
   grid: false,
   rot: "0",
 };
@@ -24,6 +29,7 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
   return {
     m: missionIds.includes(c.m) ? c.m : DEFAULT_CONTROLS.m,
     t: terrainIds.includes(c.t) ? c.t : DEFAULT_CONTROLS.t,
+    tpl: TEMPLATE_SETS.includes(c.tpl) ? c.tpl : DEFAULT_CONTROLS.tpl,
     grid: c.grid === true,
     rot: ROTATIONS.includes(String(c.rot)) ? String(c.rot) : DEFAULT_CONTROLS.rot,
   };
@@ -33,7 +39,7 @@ export function sanitizeControls(controls, missionIds, terrainIds) {
 // (a shared link) takes precedence over saved localStorage state.
 export function urlHasControls() {
   const params = new URLSearchParams(window.location.search);
-  return ["m", "t", "grid", "rot"].some((key) => params.has(key));
+  return ["m", "t", "tpl", "grid", "rot"].some((key) => params.has(key));
 }
 
 export function readControlsFromUrl(missionIds, terrainIds) {
@@ -42,6 +48,7 @@ export function readControlsFromUrl(missionIds, terrainIds) {
     {
       m: params.get("m"),
       t: params.get("t"),
+      tpl: params.get("tpl"),
       grid: params.get("grid") === "1",
       rot: params.get("rot"),
     },
@@ -59,6 +66,9 @@ export function writeControlsToUrl(controls) {
   }
   if (controls.t !== DEFAULT_CONTROLS.t) {
     params.set("t", controls.t);
+  }
+  if (controls.tpl !== DEFAULT_CONTROLS.tpl) {
+    params.set("tpl", controls.tpl);
   }
   if (controls.grid) {
     params.set("grid", "1");
