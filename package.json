@@ -82,7 +82,7 @@
     "happy-dom": "^20.10.2",
     "js-yaml": "^4.2.0",
     "rimraf": "^6.1.3",
-    "rollup": "^4.61.1",
+    "rollup": "^4.62.0",
     "rollup-plugin-auto-reload": "^2.0.0",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-serve": "^3.0.0",
