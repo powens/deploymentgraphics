@@ -155,14 +155,8 @@ export type BuildingPlacement = {
   mirror?: boolean; // default true
 };
 
-export type ResolvedBuilding = {
-  templateName: string;
-  translate: Point;
-  rotation: number; // degrees, [0, 360)
-};
-
 /** Template-local position of a named bounding-box corner. */
-function localCorner(
+export function localCorner(
   corner: Anchor,
   size: { width: number; height: number },
 ): Point {
@@ -179,80 +173,12 @@ function localCorner(
 }
 
 /** Rotates a point about the origin by `rad` radians. */
-function rotate(p: Point, rad: number): Point {
+export function rotate(p: Point, rad: number): Point {
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
   return { x: p.x * cos - p.y * sin, y: p.x * sin + p.y * cos };
 }
 
-/**
- * Resolves a building placement to one or two ResolvedBuildings (the
- * primary placement, plus a 180-degree point-reflected copy unless
- * `mirror: false`). Throws on an unknown template, a corner count other
- * than 2, or a corner distance that disagrees with the template edge.
- */
-export function resolveBuilding(
-  placement: BuildingPlacement,
-  templates: Record<string, Template>,
-  canvas: CanvasSize,
-): ResolvedBuilding[] {
-  const template = templates[placement.type];
-  if (!template) {
-    throw new Error(
-      `building references unknown template: ${placement.type}`,
-    );
-  }
-  const entries = Object.entries(placement.corners) as [Anchor, CornerSpec][];
-  if (entries.length < 1 || entries.length > 2) {
-    throw new Error(
-      `building ${placement.type}: expected 1 or 2 corners, got ${entries.length}`,
-    );
-  }
-  const defaultFrom: Anchor = placement.from ?? "TL";
-  const size = templateBounds(template, placement.type);
-
-  const [[cornerA, specA]] = entries;
-  const pA = resolveCorner(specA, defaultFrom, canvas);
-  const lA = localCorner(cornerA, size);
-
-  // A single corner pins position with no rotation; a second corner derives
-  // the rotation (and is checked against the template's edge length).
-  let theta = 0;
-  if (entries.length === 2) {
-    const [, [cornerB, specB]] = entries;
-    const pB = resolveCorner(specB, defaultFrom, canvas);
-    const lB = localCorner(cornerB, size);
-
-    const targetLength = Math.hypot(pB.x - pA.x, pB.y - pA.y);
-    const templateLength = Math.hypot(lB.x - lA.x, lB.y - lA.y);
-    if (Math.abs(targetLength - templateLength) > 0.1) {
-      throw new Error(
-        `building ${placement.type}: corners ${cornerA}->${cornerB} measure ` +
-          `${targetLength.toFixed(1)}" apart but template edge is ` +
-          `${templateLength.toFixed(1)}"`,
-      );
-    }
-
-    theta =
-      Math.atan2(pB.y - pA.y, pB.x - pA.x) -
-      Math.atan2(lB.y - lA.y, lB.x - lA.x);
-  }
-  const rotatedLA = rotate(lA, theta);
-  const translate: Point = { x: pA.x - rotatedLA.x, y: pA.y - rotatedLA.y };
-  const rotation = (((theta * 180) / Math.PI) % 360 + 360) % 360;
-
-  const primary: ResolvedBuilding = {
-    templateName: placement.type,
-    translate,
-    rotation,
-  };
-  if (placement.mirror === false) {
-    return [primary];
-  }
-  const mirrored: ResolvedBuilding = {
-    templateName: placement.type,
-    translate: { x: canvas.width - translate.x, y: canvas.height - translate.y },
-    rotation: (rotation + 180) % 360,
-  };
-  return [primary, mirrored];
-}
+// Building placement resolution (corner-pin -> resolved geometry) and the
+// canonical `Placed` form live in `placement.ts`, which builds on these
+// primitives (`resolveCorner`, `templateBounds`, `localCorner`, `rotate`).

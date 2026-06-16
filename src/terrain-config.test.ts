@@ -9,7 +9,7 @@ import {
   getLayoutAreaTerrain,
   type TerrainConfig,
 } from "./terrain-config";
-import { resolveBuilding } from "./building-coordinates";
+import { resolveBuilding } from "./placement";
 
 const terrain: TerrainConfig = {
   templates: { "4x6": { width: 4, height: 6 } },
