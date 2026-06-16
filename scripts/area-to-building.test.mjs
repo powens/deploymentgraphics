@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
-import { resolveBuilding } from "../src/building-coordinates.ts";
+import { resolveBuilding } from "../src/placement.ts";
 
 // gw.yml templates referenced by the converter (subset, incl. shoe-mirror).
 const GW_TEMPLATES = {

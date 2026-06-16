@@ -14,6 +14,7 @@ export * from "./main.js";
 export * from "./types.js";
 export * from "./theme.js";
 export * from "./building-coordinates.js";
+export * from "./placement.js";
 export * from "./buildings.js";
 export * from "./terrain-config.js";
 export * from "./event-matrix.js";

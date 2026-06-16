@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { featureBuildingPlacement } from "./feature-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
-import { resolveBuilding } from "../src/building-coordinates.ts";
+import { resolveBuilding } from "../src/placement.ts";
 
 const CANVAS = { width: 60, height: 44 };
 

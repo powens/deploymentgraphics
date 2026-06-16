@@ -1,6 +1,5 @@
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import {
-  resolveBuilding,
   toPoint,
   type BuildingPlacement,
   type CanvasSize,
@@ -8,6 +7,7 @@ import {
   type Point,
   type Template,
 } from "./building-coordinates.js";
+import { placeBuildings } from "./placement.js";
 import type { SVGProperties } from "./types.js";
 
 /**
@@ -97,23 +97,24 @@ export function makeBuildings(
   group.setAttribute("id", "buildings");
 
   let counter = 0;
-  for (const placement of placements) {
-    for (const resolved of resolveBuilding(placement, templates, canvas)) {
-      const use = makeElement("use");
-      use.setAttribute("href", `#template-${resolved.templateName}`);
-      use.setAttribute(
-        "transform",
-        `translate(${resolved.translate.x} ${resolved.translate.y}) ` +
-          `rotate(${resolved.rotation})`,
-      );
-      use.setAttribute("id", `building-${counter}`);
-      const props = styleFor?.(resolved.templateName);
-      if (props) {
-        applyAttributes(use, props);
-      }
-      group.appendChild(use);
-      counter++;
+  for (const placed of placeBuildings(placements, templates, canvas)) {
+    const use = makeElement("use");
+    use.setAttribute("href", `#template-${placed.name}`);
+    // rotate's pivot is in the element's local space (applied before
+    // translate), so the box centre is (width/2, height/2) — same convention
+    // features use.
+    use.setAttribute(
+      "transform",
+      `translate(${placed.box.x} ${placed.box.y}) ` +
+        `rotate(${placed.rotation} ${placed.box.width / 2} ${placed.box.height / 2})`,
+    );
+    use.setAttribute("id", `building-${counter}`);
+    const props = styleFor?.(placed.name);
+    if (props) {
+      applyAttributes(use, props);
     }
+    group.appendChild(use);
+    counter++;
   }
   return group;
 }

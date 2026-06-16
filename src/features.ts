@@ -1,6 +1,7 @@
 import type { CanvasSize } from "./building-coordinates.js";
 import { makeElement } from "./dom-helpers.js";
 import { makeShape, type IconShape } from "./icons.js";
+import { resolveFeature } from "./placement.js";
 import type { FeaturePlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 
@@ -181,19 +182,6 @@ export const features: Record<string, FeatureDraw> = {
   pipe,
 };
 
-/** Point-reflects a placement through the canvas centre (rotation += 180). */
-function mirrorPlacement(
-  placement: FeaturePlacement,
-  canvas: CanvasSize,
-): FeaturePlacement {
-  return {
-    ...placement,
-    x: canvas.width - placement.x - placement.width,
-    y: canvas.height - placement.y - placement.height,
-    rotation: ((placement.rotation ?? 0) + 180) % 360,
-  };
-}
-
 /**
  * Builds `<g id="features">`, one inner `<g>` per placement (translated to its
  * position and rotated about its box center). Body shapes take the palette fill
@@ -217,18 +205,13 @@ export function makeFeatures(
     if (!palette) throw new Error(`unknown feature colour: ${placement.color}`);
 
     const { body, accent } = draw(placement.width, placement.height);
-    const copies =
-      placement.mirror === false
-        ? [placement]
-        : [placement, mirrorPlacement(placement, canvas)];
 
-    for (const copy of copies) {
+    for (const placed of resolveFeature(placement, canvas)) {
       const g = makeElement("g");
-      const rotation = copy.rotation ?? 0;
       g.setAttribute(
         "transform",
-        `translate(${copy.x} ${copy.y}) ` +
-          `rotate(${rotation} ${copy.width / 2} ${copy.height / 2})`,
+        `translate(${placed.box.x} ${placed.box.y}) ` +
+          `rotate(${placed.rotation} ${placed.box.width / 2} ${placed.box.height / 2})`,
       );
       g.setAttribute("id", `feature-${counter}`);
 

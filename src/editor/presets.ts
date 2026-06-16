@@ -1,4 +1,4 @@
-import { resolveBuilding } from "../building-coordinates.js";
+import { resolveBuilding } from "../placement.js";
 import type { Template, BuildingPlacement, Point } from "../building-coordinates.js";
 import { missions } from "../presets/missions.js";
 import { gwTerrain } from "../presets/terrain.js";

@@ -1,10 +1,6 @@
 import { describe, it, expect } from "vitest";
-import {
-  resolveCorner,
-  resolveBuilding,
-  templateBounds,
-  toPoint,
-} from "./building-coordinates";
+import { resolveCorner, templateBounds, toPoint } from "./building-coordinates";
+import { resolveBuilding } from "./placement";
 import type {
   PolygonTemplate,
   PathTemplate,
