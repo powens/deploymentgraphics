@@ -1,11 +1,14 @@
 import { describe, it, expect } from "vitest";
 import {
   decompose,
+  decomposeBuilding,
   mirror,
   placeBuildings,
+  resolveBuilding,
   resolveFeature,
   resolvePlacement,
   type Placed,
+  type ResolvedBuilding,
 } from "./placement";
 import type { Template } from "./building-coordinates";
 
@@ -124,6 +127,41 @@ describe("placeBuildings", () => {
     );
     expect(result).toHaveLength(3);
   });
+});
+
+describe("decomposeBuilding (origin-pivot → corner-pin)", () => {
+  it("pins TL at the translate and TR along the rotated top edge", () => {
+    const r: ResolvedBuilding = {
+      templateName: "4x6",
+      translate: { x: 10, y: 8 },
+      rotation: 90,
+    };
+    const p = decomposeBuilding(r, templates);
+    expect(p.type).toBe("4x6");
+    expect(p.corners.TL).toEqual({ x: 10, y: 8 });
+    // TR = translate + width * (cos θ, sin θ); width of 4x6 is 4, θ = 90°
+    expect((p.corners.TR as { x: number; y: number }).x).toBeCloseTo(10, 5);
+    expect((p.corners.TR as { x: number; y: number }).y).toBeCloseTo(12, 5);
+  });
+});
+
+describe("resolveBuilding ∘ decomposeBuilding round-trip", () => {
+  // The inverse locks the editor's origin-pivot decomposition to the renderer's
+  // forward resolveBuilding — a property that could not be tested while the
+  // inverse lived in the editor's scene module.
+  for (const [label, r] of [
+    ["axis-aligned", { templateName: "4x6", translate: { x: 10, y: 8 }, rotation: 0 }],
+    ["rotated 90", { templateName: "4x6", translate: { x: 10, y: 8 }, rotation: 90 }],
+    ["rotated 37", { templateName: "3x4", translate: { x: 20, y: 6 }, rotation: 37 }],
+  ] as const) {
+    it(`recovers the same origin-pivot building (${label})`, () => {
+      const [back] = resolveBuilding(decomposeBuilding(r, templates), templates, canvas);
+      expect(back.templateName).toBe(r.templateName);
+      expect(back.translate.x).toBeCloseTo(r.translate.x, 6);
+      expect(back.translate.y).toBeCloseTo(r.translate.y, 6);
+      expect(back.rotation).toBeCloseTo(r.rotation, 6);
+    });
+  }
 });
 
 describe("decompose ∘ resolvePlacement round-trip", () => {
