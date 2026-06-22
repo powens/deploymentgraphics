@@ -33,6 +33,7 @@
     "build": "rollup --config rollup.config.mjs",
     "build-gh": "pnpm run build",
     "build:lib": "rimraf lib && tsc -p tsconfig.build.json",
+    "prepare": "tsc -p tsconfig.build.json",
     "gen:presets": "node scripts/gen-presets.mjs",
     "gen:presets:check": "node scripts/gen-presets.mjs --check",
     "convert:40kdc": "node scripts/convert-40kdc-terrain.mjs",
