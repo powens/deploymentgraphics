@@ -1,6 +1,8 @@
 /* global jsyaml */
 import {
   makeMissionCard,
+  buildConfig,
+  mergeTerrain,
   missions,
   gwTerrain,
   eventMatrix,
@@ -67,25 +69,28 @@ function resolvedMissionId(controls) {
   return resolveMission(eventMatrix, controls.da, controls.db, controls.lay);
 }
 
-async function buildConfig(controls) {
-  const [missionConfig, baseConfig, terrainTemplates, terrainLayouts] =
-    await Promise.all([
-      fetchYaml(`./data/deployment/${controls.m}.yml`),
-      fetchYaml("./data/base.yml"),
-      fetchYaml(`./data/terrain/templates-${controls.tpl}.yml`),
-      fetchYaml("./data/terrain/combined.yml"),
-    ]);
-  // Spread rather than mutate: the cached objects are shared across redraws.
-  // Templates live in templates-simple.yml (illustrative) or templates-real.yml
-  // (detailed GW footprints), selected by the Templates control; combined.yml
-  // holds the demo layout + the ported 40kdc layouts. Merge into one terrain
-  // config — both template files share the same names, so any layout renders
-  // against either set.
-  return {
-    deployment: missionConfig,
-    base: { ...baseConfig, grid: { ...baseConfig.grid, draw: controls.grid } },
-    terrain: { ...terrainTemplates, ...terrainLayouts, layout_name: controls.t },
-  };
+// Fetch the four YAML slices for the current controls and assemble them with
+// the renderer's own `buildConfig` — the same seam the bundled presets use, so
+// the app and the library can never drift on assembly. Templates live in
+// templates-simple.yml (illustrative) or templates-real.yml (detailed GW
+// footprints), selected by the Templates control; combined.yml holds the demo
+// layout + the ported 40kdc layouts. `mergeTerrain` is the one place the two
+// terrain files reunite — both template files share the same names, so any
+// layout renders against either set.
+async function configFromControls(controls) {
+  const [mission, base, terrainTemplates, terrainLayouts] = await Promise.all([
+    fetchYaml(`./data/deployment/${controls.m}.yml`),
+    fetchYaml("./data/base.yml"),
+    fetchYaml(`./data/terrain/templates-${controls.tpl}.yml`),
+    fetchYaml("./data/terrain/combined.yml"),
+  ]);
+  return buildConfig({
+    mission,
+    base,
+    terrain: mergeTerrain(terrainTemplates, terrainLayouts),
+    layout: controls.t,
+    grid: controls.grid,
+  });
 }
 
 function downloadBlob(blob, filename) {
@@ -240,7 +245,7 @@ async function renderFromControls() {
   setStageMessage("Rendering…");
   try {
     const controls = controlState();
-    const config = await buildConfig(controls);
+    const config = await configFromControls(controls);
     if (generation !== renderGeneration) {
       return;
     }
@@ -306,7 +311,7 @@ async function openYamlTab() {
   }
   // In controls mode, refill the editor with the current merged config.
   try {
-    const config = await buildConfig(controlState());
+    const config = await configFromControls(controlState());
     // The user may have started editing during the fetch, promoting the
     // mode to yaml — in that case keep their edits, do not overwrite them.
     if (mode === "yaml") {

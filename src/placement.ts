@@ -216,6 +216,42 @@ function placedToOrigin(placed: Placed): ResolvedBuilding {
   };
 }
 
+/** Inverse of `placedToOrigin`: origin-pivot building → centre-pivot `Placed`. */
+function originToPlaced(
+  resolved: ResolvedBuilding,
+  templates: Record<string, Template>,
+): Placed {
+  const { width, height } = templateBounds(
+    templates[resolved.templateName],
+    resolved.templateName,
+  );
+  const c: Point = { x: width / 2, y: height / 2 };
+  const rc = rotate(c, (resolved.rotation * Math.PI) / 180);
+  return {
+    name: resolved.templateName,
+    box: {
+      x: resolved.translate.x - c.x + rc.x,
+      y: resolved.translate.y - c.y + rc.y,
+      width,
+      height,
+    },
+    rotation: resolved.rotation,
+  };
+}
+
+/**
+ * Inverse of `resolveBuilding`: encodes an origin-pivot building (the editor's
+ * coordinate model) as a two-corner corner-pin placement. Routes through
+ * `Placed` and `decompose` so the corner math has a single home. `mirror: false`
+ * — the caller owns the mirror-flag policy.
+ */
+export function decomposeBuilding(
+  resolved: ResolvedBuilding,
+  templates: Record<string, Template>,
+): BuildingPlacement {
+  return decompose(originToPlaced(resolved, templates));
+}
+
 /**
  * Resolves a building to origin-pivot `ResolvedBuilding`s (template origin
  * lands at `translate`, rotation about that origin). Used by the editor, whose

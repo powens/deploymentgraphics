@@ -21,9 +21,20 @@ cx cy)`. The single representation behind the placement module's seam.
 **Resolve** — map an authoring placement to one or more `Placed` (corner-pin → box
 for buildings; identity for already-box features). The forward direction.
 
-**Decompose** — the inverse of resolve: map a `Placed` back to a corner-pin
-`Placement` so the editor can emit building YAML. Lives beside resolve so the
-forward and inverse maps share one convention.
+**Decompose** — the inverse of resolve: map a resolved piece back to a corner-pin
+`Placement` so the editor can emit building YAML. `decompose` takes a `Placed`;
+`decomposeBuilding` takes an *origin-pivot* building and routes through `decompose`,
+so the corner math has one home. Lives beside resolve so the forward and inverse
+maps share one convention.
+
+**Centre-pivot** — the `Placed` convention: rotation is taken about the box centre.
+Every renderer draws this way (`rotate(rot cx cy)`); features are authored this way too.
+
+**Origin-pivot** — the editor's building convention: a `{x, y}` translate (the
+unrotated box top-left) plus a rotation taken *about that top-left corner*. The
+scene stores buildings this way and the overlay rotates them about the top-left to
+match. `resolveBuilding` maps corner-pin → origin-pivot; `decomposeBuilding` maps
+origin-pivot → corner-pin.
 
 **Mirror** — point-reflect a `Placed` through the canvas centre (`rotation += 180`).
 A piece emits a mirrored copy unless its placement says `mirror: false`; the default

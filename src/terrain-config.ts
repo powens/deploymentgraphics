@@ -86,6 +86,21 @@ export type TerrainConfig = {
 };
 
 /**
+ * Reunites the two halves of a terrain config into one `TerrainConfig`: a
+ * templates file (`templates-simple.yml` or `templates-real.yml`) and a layouts
+ * file (`combined.yml`). The two are authored separately — both template files
+ * define the same template names, so any layout renders against either set —
+ * and this is the single place they come together. Used by the browser app and
+ * mirrored by `gen:presets` for the bundled `gwTerrain`.
+ */
+export function mergeTerrain(
+  templates: Pick<TerrainConfig, "templates">,
+  layouts: Omit<TerrainConfig, "templates">,
+): TerrainConfig {
+  return { ...templates, ...layouts };
+}
+
+/**
  * Returns the building placements for a named layout. Throws when the
  * layout does not exist — callers that may be given an unbuilt layout
  * (e.g. a UI selector) must check `terrain.layout[name]` first.

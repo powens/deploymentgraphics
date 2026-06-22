@@ -2,8 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   emptyScene,
   sceneToConfig,
-  buildingToPlacement,
-  type BuildingObject,
   type Scene,
 } from "./scene.js";
 
@@ -11,47 +9,6 @@ const RECT_TEMPLATES = {
   "4x6": { width: 4, height: 6 },
   "6x12": { width: 6, height: 12 },
 };
-
-describe("buildingToPlacement", () => {
-  it("produces axis-aligned corners for rotation 0", () => {
-    const obj: BuildingObject = {
-      id: "a", type: "building", templateKey: "4x6",
-      x: 10, y: 8, rotation: 0, mirror: true,
-    };
-    const p = buildingToPlacement(obj, RECT_TEMPLATES);
-    expect(p.type).toBe("4x6");
-    expect(p.corners.TL).toEqual({ x: 10, y: 8 });
-    expect((p.corners.TR as { x: number; y: number }).x).toBeCloseTo(14, 5);
-    expect((p.corners.TR as { x: number; y: number }).y).toBeCloseTo(8, 5);
-  });
-
-  it("rotates TR corner 90 degrees", () => {
-    const obj: BuildingObject = {
-      id: "b", type: "building", templateKey: "4x6",
-      x: 10, y: 8, rotation: 90, mirror: false,
-    };
-    const p = buildingToPlacement(obj, RECT_TEMPLATES);
-    // TR = {x: x + w*cos(90°), y: y + w*sin(90°)} = {x: 10, y: 12}
-    expect((p.corners.TR as { x: number; y: number }).x).toBeCloseTo(10, 5);
-    expect((p.corners.TR as { x: number; y: number }).y).toBeCloseTo(12, 5);
-  });
-
-  it("sets mirror: false when obj.mirror is false", () => {
-    const obj: BuildingObject = {
-      id: "c", type: "building", templateKey: "4x6",
-      x: 5, y: 5, rotation: 0, mirror: false,
-    };
-    expect(buildingToPlacement(obj, RECT_TEMPLATES).mirror).toBe(false);
-  });
-
-  it("omits mirror key when obj.mirror is true", () => {
-    const obj: BuildingObject = {
-      id: "d", type: "building", templateKey: "4x6",
-      x: 5, y: 5, rotation: 0, mirror: true,
-    };
-    expect(buildingToPlacement(obj, RECT_TEMPLATES).mirror).toBeUndefined();
-  });
-});
 
 describe("sceneToConfig", () => {
   it("returns a valid FullConfig from an empty scene", () => {
@@ -73,6 +30,30 @@ describe("sceneToConfig", () => {
     const config = sceneToConfig(scene, RECT_TEMPLATES);
     expect(config.terrain.layout["editor"].templates).toHaveLength(1);
     expect(config.terrain.layout["editor"].templates[0].type).toBe("4x6");
+  });
+
+  it("omits the mirror key for a mirrored building (renderer default)", () => {
+    const scene: Scene = {
+      ...emptyScene(),
+      objects: [{
+        id: "1", type: "building", templateKey: "4x6",
+        x: 8, y: 6, rotation: 0, mirror: true,
+      }],
+    };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].templates[0].mirror).toBeUndefined();
+  });
+
+  it("emits mirror:false for a non-mirrored building", () => {
+    const scene: Scene = {
+      ...emptyScene(),
+      objects: [{
+        id: "1", type: "building", templateKey: "4x6",
+        x: 8, y: 6, rotation: 0, mirror: false,
+      }],
+    };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].templates[0].mirror).toBe(false);
   });
 
   it("uses attacker deployment zone vertices from scene", () => {

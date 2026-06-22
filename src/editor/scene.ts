@@ -1,4 +1,5 @@
-import { templateBounds, type BuildingPlacement, type Point } from "../building-coordinates.js";
+import type { Point } from "../building-coordinates.js";
+import { decomposeBuilding, type ResolvedBuilding } from "../placement.js";
 import type { AreaTerrain, FeaturePlacement, IconPlacement } from "../terrain-config.js";
 import { ICON_SIZE } from "../icons.js";
 import type {
@@ -13,7 +14,9 @@ export type SceneObjectBase = {
   id: string;
   x: number;   // inches, top-left of unrotated bounding box
   y: number;
-  rotation: number;  // degrees 0–359, applied around geometric center
+  // degrees 0–359. Buildings rotate about their top-left (origin-pivot, see
+  // CONTEXT.md); features rotate about their box centre, matching the renderer.
+  rotation: number;
 };
 
 export type BuildingObject = SceneObjectBase & {
@@ -93,31 +96,6 @@ export function emptyScene(): Scene {
   };
 }
 
-/**
- * Converts a BuildingObject to a BuildingPlacement for the renderer.
- * The corner-pin system encodes rotation as the angle between TL and TR
- * canvas positions — no explicit rotation field is needed in the schema.
- */
-export function buildingToPlacement(
-  obj: BuildingObject,
-  templates: Record<string, Template>,
-): BuildingPlacement {
-  const template = templates[obj.templateKey];
-  if (!template) throw new Error(`unknown template: ${obj.templateKey}`);
-  const { width } = templateBounds(template, obj.templateKey);
-  const rad = (obj.rotation * Math.PI) / 180;
-  const trX = obj.x + width * Math.cos(rad);
-  const trY = obj.y + width * Math.sin(rad);
-  return {
-    type: obj.templateKey,
-    corners: {
-      TL: { x: obj.x, y: obj.y },
-      TR: { x: trX, y: trY },
-    },
-    mirror: obj.mirror ? undefined : false,  // mirror defaults to true in renderer
-  };
-}
-
 export function sceneToConfig(
   scene: Scene,
   templates: Record<string, Template>,
@@ -133,7 +111,18 @@ export function sceneToConfig(
 
   const buildings = scene.objects
     .filter((o): o is BuildingObject => o.type === "building")
-    .map((o) => buildingToPlacement(o, templates));
+    .map((o) => {
+      const resolved: ResolvedBuilding = {
+        templateName: o.templateKey,
+        translate: { x: o.x, y: o.y },
+        rotation: o.rotation,
+      };
+      return {
+        ...decomposeBuilding(resolved, templates),
+        // mirror defaults to true in the renderer; only suppress when off.
+        mirror: o.mirror ? undefined : false,
+      };
+    });
 
   const areaTerrainItems: AreaTerrain[] = scene.objects
     .filter((o): o is AreaTerrainObject => o.type === "area-terrain")
