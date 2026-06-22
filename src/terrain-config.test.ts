@@ -7,6 +7,7 @@ import {
   getLayoutFeatures,
   getLayoutIcons,
   getLayoutAreaTerrain,
+  mergeTerrain,
   type TerrainConfig,
 } from "./terrain-config";
 import { resolveBuilding } from "./placement";
@@ -19,6 +20,33 @@ const terrain: TerrainConfig = {
     },
   },
 };
+
+describe("mergeTerrain", () => {
+  it("reunites a templates file and a layouts file into one TerrainConfig", () => {
+    const templates = { templates: { "4x6": { width: 4, height: 6 } } };
+    const layouts = {
+      layout: {
+        "1": { templates: [{ type: "4x6", corners: { TL: { x: 0, y: 0 } } }] },
+      },
+    };
+    expect(mergeTerrain(templates, layouts)).toEqual({
+      templates: { "4x6": { width: 4, height: 6 } },
+      layout: {
+        "1": { templates: [{ type: "4x6", corners: { TL: { x: 0, y: 0 } } }] },
+      },
+    });
+  });
+
+  it("carries top-level area_terrain from the layouts file", () => {
+    const merged = mergeTerrain(
+      { templates: {} },
+      { layout: {}, area_terrain: [{ shape: "circle", x: 1, y: 2, width: 6 }] },
+    );
+    expect(merged.area_terrain).toEqual([
+      { shape: "circle", x: 1, y: 2, width: 6 },
+    ]);
+  });
+});
 
 describe("getLayoutBuildings", () => {
   it("returns the building placements for an existing layout", () => {
