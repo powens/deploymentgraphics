@@ -1344,12 +1344,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 31.15
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 28.85
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 49.25
@@ -1770,12 +1766,8 @@ layout:
           'y': 26.5
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
   take-and-hold-mirror-2:
     deployment_pattern_id: dawn-of-war
     dispositions:
@@ -2172,12 +2164,8 @@ layout:
           'y': 25.25
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 29.75
@@ -2582,12 +2570,8 @@ layout:
           'y': 33.25
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 37.5
@@ -2984,12 +2968,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 49.25
@@ -3394,12 +3374,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 47.25
@@ -3804,12 +3780,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 10.75
@@ -4178,12 +4150,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 51.25
@@ -4588,12 +4556,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 37.5
@@ -4959,12 +4923,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 48.25
@@ -6563,12 +6523,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 51.5
@@ -6973,12 +6929,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 47.25
@@ -8613,12 +8565,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 10.75
@@ -9023,12 +8971,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 49.25
@@ -9433,12 +9377,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 47.25
@@ -9815,12 +9755,8 @@ layout:
           'y': 35.5
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 50.04
@@ -12685,12 +12621,8 @@ layout:
           'y': 32.27
       - type: skull
         pos:
-          x: 27.75
-          'y': 21.2
-      - type: skull
-        pos:
-          x: 32.25
-          'y': 22.8
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 46.84
@@ -13087,12 +13019,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 51.5
@@ -13505,12 +13433,8 @@ layout:
           'y': 27.75
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 49.25
@@ -15119,11 +15043,7 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 32
-          'y': 22
-      - type: skull
-        pos:
-          x: 28
+          x: 30
           'y': 22
       - type: skull
         pos:
@@ -15530,11 +15450,7 @@ layout:
       - type: skull
         pos:
           x: 30
-          'y': 24
-      - type: skull
-        pos:
-          x: 30
-          'y': 20
+          'y': 22
       - type: skull
         pos:
           x: 47.25
@@ -15940,11 +15856,7 @@ layout:
       - type: skull
         pos:
           x: 30
-          'y': 20
-      - type: skull
-        pos:
-          x: 30
-          'y': 24
+          'y': 22
       - type: skull
         pos:
           x: 50.25
@@ -16349,12 +16261,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 8.5
@@ -16767,12 +16675,8 @@ layout:
           'y': 32.25
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 42.5
@@ -17169,12 +17073,8 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 28.85
-          'y': 19.8
-      - type: skull
-        pos:
-          x: 31.15
-          'y': 24.2
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 50.25
@@ -17587,12 +17487,8 @@ layout:
           'y': 33.25
       - type: skull
         pos:
-          x: 32.2
-          'y': 20.85
-      - type: skull
-        pos:
-          x: 27.8
-          'y': 23.15
+          x: 30
+          'y': 22
       - type: skull
         pos:
           x: 43.5
@@ -17989,11 +17885,7 @@ layout:
     icons:
       - type: skull
         pos:
-          x: 32
-          'y': 22
-      - type: skull
-        pos:
-          x: 28
+          x: 30
           'y': 22
       - type: skull
         pos:
@@ -18400,11 +18292,7 @@ layout:
       - type: skull
         pos:
           x: 30
-          'y': 24
-      - type: skull
-        pos:
-          x: 30
-          'y': 20
+          'y': 22
       - type: skull
         pos:
           x: 50.5
@@ -18826,8 +18714,4 @@ layout:
       - type: skull
         pos:
           x: 30
-          'y': 24
-      - type: skull
-        pos:
-          x: 30
-          'y': 20
+          'y': 22

@@ -6,8 +6,9 @@
 // features (with `l-ruin-roof` where a catwalk sits on them); catwalk pieces
 // are dropped; pipe/barricade pieces become building placements (via
 // feature-to-building.mjs); every other `feature` piece becomes a polygon
-// area_terrain entry (absolute points); each is_objective piece becomes a
-// skull icon at its centre. Deterministic + re-runnable.
+// area_terrain entry (absolute points); is_objective pieces become skull icons
+// (a touching pair of objective pieces collapses to one marker — see
+// objective-icons.mjs). Deterministic + re-runnable.
 //
 // Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
 
@@ -19,6 +20,7 @@ import { ruinFeatures } from "./ruin-to-feature.mjs";
 import { rectFeatures } from "./rect-to-feature.mjs";
 import { featureBuildings } from "./feature-to-building.mjs";
 import { matchupToDispositions } from "./matchup-to-dispositions.mjs";
+import { objectiveIcons } from "./objective-icons.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
@@ -71,7 +73,6 @@ for (const layout of layouts) {
   ]);
   const buildings = [];
   const area_terrain = [];
-  const icons = [];
   for (const piece of layout.pieces) {
     if (piece.piece_type === "area") {
       buildings.push(
@@ -94,13 +95,8 @@ for (const layout of layouts) {
         label: labelFor(piece),
       });
     }
-    if (piece.is_objective) {
-      icons.push({
-        type: "skull",
-        pos: { x: round(piece.position.x), y: round(piece.position.y) },
-      });
-    }
   }
+  const icons = objectiveIcons(layout, lookupFootprint, getParent);
   // 40kdc layout metadata: the deployment pattern (kept for downstream use,
   // currently unrendered) and the mission matchup split into its two
   // dispositions. Both are absent on the hand-authored demo layout.
