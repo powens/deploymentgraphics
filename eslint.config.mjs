@@ -5,7 +5,7 @@ import tseslint from "@typescript-eslint/eslint-plugin";
 
 export default [
   {
-    ignores: ["dist/**", "node_modules/**", ".corepack/**"],
+    ignores: ["dist/**", "lib/**", "node_modules/**", ".corepack/**"],
   },
   js.configs.recommended,
   {
