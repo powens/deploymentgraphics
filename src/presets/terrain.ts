@@ -1204,11 +1204,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 49.25, y: 8.5 } },
-        { type: "skull", pos: { x: 10.75, y: 35.5 } },
-        { type: "skull", pos: { x: 10.5, y: 9.75 } },
-        { type: "skull", pos: { x: 49.5, y: 34.25 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 49.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.75, y: 35.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 10.5, y: 9.75 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.5, y: 34.25 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-mirror-1": {
@@ -1549,11 +1561,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 41.25, y: 37.5 } },
-        { type: "skull", pos: { x: 18.75, y: 6.5 } },
-        { type: "skull", pos: { x: 48.24, y: 17.5 } },
-        { type: "skull", pos: { x: 11.76, y: 26.5 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
+        {
+          type: "skull",
+          pos: { x: 41.25, y: 37.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 18.75, y: 6.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "fortress",
+          pos: { x: 48.24, y: 17.5 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 11.76, y: 26.5 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
       ],
     },
     "take-and-hold-mirror-2": {
@@ -1924,11 +1952,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 10.5, y: 18.75 } },
-        { type: "skull", pos: { x: 49.5, y: 25.25 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 29.75, y: 7.5 } },
-        { type: "skull", pos: { x: 30.25, y: 36.5 } },
+        {
+          type: "skull",
+          pos: { x: 10.5, y: 18.75 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.5, y: 25.25 },
+          objective_role: "expansion",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 29.75, y: 7.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 30.25, y: 36.5 },
+          objective_role: "home",
+        },
       ],
     },
     "take-and-hold-vs-purge-the-foe-3": {
@@ -2278,11 +2318,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 49.5, y: 10.75 } },
-        { type: "skull", pos: { x: 10.5, y: 33.25 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 37.5, y: 36.25 } },
-        { type: "skull", pos: { x: 22.5, y: 7.75 } },
+        {
+          type: "fortress",
+          pos: { x: 49.5, y: 10.75 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 10.5, y: 33.25 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 37.5, y: 36.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 22.5, y: 7.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-mirror-3": {
@@ -2638,11 +2694,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 49.25, y: 34.5 } },
-        { type: "skull", pos: { x: 10.75, y: 9.5 } },
-        { type: "skull", pos: { x: 50.43, y: 10.51 } },
-        { type: "skull", pos: { x: 9.57, y: 33.49 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 49.25, y: 34.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 10.75, y: 9.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "fortress",
+          pos: { x: 50.43, y: 10.51 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 9.57, y: 33.49 },
+          objective_role: "home",
+        },
       ],
     },
     "take-and-hold-vs-reconnaissance-3": {
@@ -2992,11 +3064,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 47.25, y: 8.5 } },
-        { type: "skull", pos: { x: 12.75, y: 35.5 } },
-        { type: "skull", pos: { x: 48.25, y: 34.5 } },
-        { type: "skull", pos: { x: 11.75, y: 9.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 47.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 12.75, y: 35.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 48.25, y: 34.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 11.75, y: 9.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-vs-disruption-1": {
@@ -3358,11 +3442,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 10.75, y: 13.5 } },
-        { type: "skull", pos: { x: 49.25, y: 30.5 } },
-        { type: "skull", pos: { x: 49.25, y: 7.5 } },
-        { type: "skull", pos: { x: 10.75, y: 36.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 10.75, y: 13.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.25, y: 30.5 },
+          objective_role: "expansion",
+        },
+        { type: "fortress", pos: { x: 49.25, y: 7.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.75, y: 36.5 },
+          objective_role: "home",
+        },
       ],
     },
     "take-and-hold-vs-disruption-2": {
@@ -3683,11 +3779,19 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 51.25, y: 8.5 } },
-        { type: "skull", pos: { x: 8.75, y: 35.5 } },
-        { type: "skull", pos: { x: 47.84, y: 33.28 } },
-        { type: "skull", pos: { x: 12.16, y: 10.72 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 51.25, y: 8.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 8.75, y: 35.5 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 47.84, y: 33.28 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 12.16, y: 10.72 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-vs-disruption-3": {
@@ -4028,11 +4132,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 37.5, y: 36.25 } },
-        { type: "skull", pos: { x: 22.5, y: 7.75 } },
-        { type: "skull", pos: { x: 46.5, y: 21.75 } },
-        { type: "skull", pos: { x: 13.5, y: 22.25 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 37.5, y: 36.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 22.5, y: 7.75 },
+          objective_role: "expansion",
+        },
+        {
+          type: "fortress",
+          pos: { x: 46.5, y: 21.75 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 13.5, y: 22.25 },
+          objective_role: "home",
+        },
       ],
     },
     "sweeping-engagement-1": {
@@ -4361,11 +4481,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 48.25, y: 8.5 } },
-        { type: "skull", pos: { x: 11.75, y: 35.5 } },
-        { type: "skull", pos: { x: 49.25, y: 30.5 } },
-        { type: "skull", pos: { x: 10.75, y: 13.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 48.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 11.75, y: 35.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.25, y: 30.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 10.75, y: 13.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-vs-priority-assets-1": {
@@ -4730,12 +4862,24 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 51.5, y: 10.75 } },
-        { type: "skull", pos: { x: 8.5, y: 33.25 } },
-        { type: "skull", pos: { x: 44.84, y: 34.28 } },
-        { type: "skull", pos: { x: 15.16, y: 9.72 } },
-        { type: "skull", pos: { x: 35.8, y: 21.4 } },
-        { type: "skull", pos: { x: 24.2, y: 22.6 } },
+        {
+          type: "fortress",
+          pos: { x: 51.5, y: 10.75 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 8.5, y: 33.25 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 44.84, y: 34.28 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 15.16, y: 9.72 },
+          objective_role: "expansion",
+        },
+        { type: "skull", pos: { x: 35.8, y: 21.4 }, objective_role: "center" },
+        { type: "skull", pos: { x: 24.2, y: 22.6 }, objective_role: "center" },
       ],
     },
     "take-and-hold-vs-priority-assets-2": {
@@ -5038,12 +5182,36 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 35.97, y: 18.27 } },
-        { type: "skull", pos: { x: 24.03, y: 25.73 } },
-        { type: "skull", pos: { x: 10.5, y: 32.25 } },
-        { type: "skull", pos: { x: 49.5, y: 11.75 } },
-        { type: "skull", pos: { x: 35.25, y: 37.5 } },
-        { type: "skull", pos: { x: 24.75, y: 6.5 } },
+        {
+          type: "skull",
+          pos: { x: 35.97, y: 18.27 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 24.03, y: 25.73 },
+          objective_role: "center",
+        },
+        {
+          type: "fortress",
+          pos: { x: 10.5, y: 32.25 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 49.5, y: 11.75 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 35.25, y: 37.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 24.75, y: 6.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-vs-priority-assets-3": {
@@ -5420,12 +5588,32 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 38.25, y: 6.5 } },
-        { type: "skull", pos: { x: 21.75, y: 37.5 } },
-        { type: "skull", pos: { x: 23.62, y: 21.68 } },
-        { type: "skull", pos: { x: 36.38, y: 22.32 } },
-        { type: "skull", pos: { x: 8.75, y: 17.5 } },
-        { type: "skull", pos: { x: 51.25, y: 26.5 } },
+        { type: "fortress", pos: { x: 38.25, y: 6.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 21.75, y: 37.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 23.62, y: 21.68 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 36.38, y: 22.32 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 8.75, y: 17.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 51.25, y: 26.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-vs-reconnaissance-1": {
@@ -5766,11 +5954,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 51.5, y: 12.75 } },
-        { type: "skull", pos: { x: 8.5, y: 31.25 } },
-        { type: "skull", pos: { x: 43.5, y: 34.25 } },
-        { type: "skull", pos: { x: 16.5, y: 9.75 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "fortress",
+          pos: { x: 51.5, y: 12.75 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 8.5, y: 31.25 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 43.5, y: 34.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 16.5, y: 9.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "take-and-hold-vs-reconnaissance-2": {
@@ -6150,11 +6350,19 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 47.25, y: 8 } },
-        { type: "skull", pos: { x: 12.75, y: 36 } },
-        { type: "skull", pos: { x: 10.75, y: 16.5 } },
-        { type: "skull", pos: { x: 49.25, y: 27.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 47.25, y: 8 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 12.75, y: 36 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 10.75, y: 16.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.25, y: 27.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "purge-the-foe-vs-purge-the-foe-1": {
@@ -6516,12 +6724,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 50.25, y: 8.5 } },
-        { type: "skull", pos: { x: 9.75, y: 35.5 } },
-        { type: "skull", pos: { x: 53, y: 34 } },
-        { type: "skull", pos: { x: 7, y: 10 } },
-        { type: "skull", pos: { x: 36.75, y: 26.5 } },
-        { type: "skull", pos: { x: 23.25, y: 17.5 } },
+        { type: "fortress", pos: { x: 50.25, y: 8.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 9.75, y: 35.5 }, objective_role: "home" },
+        { type: "skull", pos: { x: 53, y: 34 }, objective_role: "expansion" },
+        { type: "skull", pos: { x: 7, y: 10 }, objective_role: "expansion" },
+        { type: "skull", pos: { x: 36.75, y: 26.5 }, objective_role: "center" },
+        { type: "skull", pos: { x: 23.25, y: 17.5 }, objective_role: "center" },
       ],
     },
     "purge-the-foe-vs-purge-the-foe-2": {
@@ -6877,12 +7085,28 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 48.09, y: 12.27 } },
-        { type: "skull", pos: { x: 11.91, y: 31.73 } },
-        { type: "skull", pos: { x: 42.5, y: 36.25 } },
-        { type: "skull", pos: { x: 17.5, y: 7.75 } },
-        { type: "skull", pos: { x: 29.6, y: 12.31 } },
-        { type: "skull", pos: { x: 30.4, y: 31.69 } },
+        {
+          type: "fortress",
+          pos: { x: 48.09, y: 12.27 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 11.91, y: 31.73 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 42.5, y: 36.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 17.5, y: 7.75 },
+          objective_role: "expansion",
+        },
+        { type: "skull", pos: { x: 29.6, y: 12.31 }, objective_role: "center" },
+        { type: "skull", pos: { x: 30.4, y: 31.69 }, objective_role: "center" },
       ],
     },
     "purge-the-foe-vs-purge-the-foe-3": {
@@ -7253,12 +7477,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 50.25, y: 8.5 } },
-        { type: "skull", pos: { x: 9.75, y: 35.5 } },
-        { type: "skull", pos: { x: 36.5, y: 22.75 } },
-        { type: "skull", pos: { x: 23.5, y: 21.25 } },
-        { type: "skull", pos: { x: 53, y: 30 } },
-        { type: "skull", pos: { x: 7, y: 14 } },
+        { type: "fortress", pos: { x: 50.25, y: 8.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 9.75, y: 35.5 }, objective_role: "home" },
+        { type: "skull", pos: { x: 36.5, y: 22.75 }, objective_role: "center" },
+        { type: "skull", pos: { x: 23.5, y: 21.25 }, objective_role: "center" },
+        { type: "skull", pos: { x: 53, y: 30 }, objective_role: "expansion" },
+        { type: "skull", pos: { x: 7, y: 14 }, objective_role: "expansion" },
       ],
     },
     "take-and-hold-vs-purge-the-foe-1": {
@@ -7620,11 +7844,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 10.75, y: 13.5 } },
-        { type: "skull", pos: { x: 49.25, y: 30.5 } },
-        { type: "skull", pos: { x: 48.25, y: 8.5 } },
-        { type: "skull", pos: { x: 11.75, y: 35.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 10.75, y: 13.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.25, y: 30.5 },
+          objective_role: "expansion",
+        },
+        { type: "fortress", pos: { x: 48.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 11.75, y: 35.5 },
+          objective_role: "home",
+        },
       ],
     },
     "disruption-vs-purge-the-foe-1": {
@@ -7965,11 +8201,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 49.25, y: 9.5 } },
-        { type: "skull", pos: { x: 10.75, y: 34.5 } },
-        { type: "skull", pos: { x: 46.49, y: 34.29 } },
-        { type: "skull", pos: { x: 13.51, y: 9.71 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 49.25, y: 9.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.75, y: 34.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 46.49, y: 34.29 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 13.51, y: 9.71 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-purge-the-foe-2": {
@@ -8310,11 +8558,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 47.25, y: 17.5 } },
-        { type: "skull", pos: { x: 12.75, y: 26.5 } },
-        { type: "skull", pos: { x: 42.5, y: 34.25 } },
-        { type: "skull", pos: { x: 17.5, y: 9.75 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "fortress",
+          pos: { x: 47.25, y: 17.5 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 12.75, y: 26.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 42.5, y: 34.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 17.5, y: 9.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-purge-the-foe-3": {
@@ -8644,11 +8908,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 49.25, y: 8.5 } },
-        { type: "skull", pos: { x: 10.75, y: 35.5 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 50.04, y: 25.14 } },
-        { type: "skull", pos: { x: 9.96, y: 18.86 } },
+        { type: "fortress", pos: { x: 49.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.75, y: 35.5 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 50.04, y: 25.14 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 9.96, y: 18.86 },
+          objective_role: "expansion",
+        },
       ],
     },
     "purge-the-foe-vs-reconnaissance-1": {
@@ -8998,12 +9274,28 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 48.5, y: 18.75 } },
-        { type: "skull", pos: { x: 11.5, y: 25.25 } },
-        { type: "skull", pos: { x: 36.2, y: 22.6 } },
-        { type: "skull", pos: { x: 23.8, y: 21.4 } },
-        { type: "skull", pos: { x: 35.25, y: 37.5 } },
-        { type: "skull", pos: { x: 24.75, y: 6.5 } },
+        {
+          type: "fortress",
+          pos: { x: 48.5, y: 18.75 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 11.5, y: 25.25 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 36.2, y: 22.6 }, objective_role: "center" },
+        { type: "skull", pos: { x: 23.8, y: 21.4 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 35.25, y: 37.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 24.75, y: 6.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "purge-the-foe-vs-reconnaissance-2": {
@@ -9374,12 +9666,24 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 39.25, y: 6.5 } },
-        { type: "skull", pos: { x: 20.75, y: 37.5 } },
-        { type: "skull", pos: { x: 9.75, y: 17.5 } },
-        { type: "skull", pos: { x: 50.25, y: 26.5 } },
-        { type: "skull", pos: { x: 23.79, y: 22.9 } },
-        { type: "skull", pos: { x: 36.21, y: 21.1 } },
+        { type: "fortress", pos: { x: 39.25, y: 6.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 20.75, y: 37.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 9.75, y: 17.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 50.25, y: 26.5 },
+          objective_role: "expansion",
+        },
+        { type: "skull", pos: { x: 23.79, y: 22.9 }, objective_role: "center" },
+        { type: "skull", pos: { x: 36.21, y: 21.1 }, objective_role: "center" },
       ],
     },
     "purge-the-foe-vs-reconnaissance-3": {
@@ -9744,12 +10048,32 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 51.5, y: 12.75 } },
-        { type: "skull", pos: { x: 8.5, y: 31.25 } },
-        { type: "skull", pos: { x: 35.01, y: 22.87 } },
-        { type: "skull", pos: { x: 24.99, y: 21.13 } },
-        { type: "skull", pos: { x: 44.84, y: 34.28 } },
-        { type: "skull", pos: { x: 15.16, y: 9.72 } },
+        {
+          type: "fortress",
+          pos: { x: 51.5, y: 12.75 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 8.5, y: 31.25 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 35.01, y: 22.87 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 24.99, y: 21.13 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 44.84, y: 34.28 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 15.16, y: 9.72 },
+          objective_role: "expansion",
+        },
       ],
     },
     "purge-the-foe-vs-priority-assets-1": {
@@ -10114,12 +10438,28 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 43.25, y: 8 } },
-        { type: "skull", pos: { x: 16.75, y: 36 } },
-        { type: "skull", pos: { x: 9.75, y: 16.5 } },
-        { type: "skull", pos: { x: 50.25, y: 27.5 } },
-        { type: "skull", pos: { x: 26.34, y: 19.33 } },
-        { type: "skull", pos: { x: 33.66, y: 24.67 } },
+        { type: "fortress", pos: { x: 43.25, y: 8 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 16.75, y: 36 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 9.75, y: 16.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 50.25, y: 27.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 26.34, y: 19.33 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 33.66, y: 24.67 },
+          objective_role: "center",
+        },
       ],
     },
     "purge-the-foe-vs-priority-assets-2": {
@@ -10466,12 +10806,28 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 50.25, y: 8.5 } },
-        { type: "skull", pos: { x: 9.75, y: 35.5 } },
-        { type: "skull", pos: { x: 28.33, y: 18.34 } },
-        { type: "skull", pos: { x: 31.67, y: 25.66 } },
-        { type: "skull", pos: { x: 42.5, y: 35.25 } },
-        { type: "skull", pos: { x: 17.5, y: 8.75 } },
+        { type: "fortress", pos: { x: 50.25, y: 8.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 9.75, y: 35.5 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 28.33, y: 18.34 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 31.67, y: 25.66 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 42.5, y: 35.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 17.5, y: 8.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "purge-the-foe-vs-priority-assets-3": {
@@ -10818,12 +11174,36 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 47.5, y: 23.25 } },
-        { type: "skull", pos: { x: 12.5, y: 20.75 } },
-        { type: "skull", pos: { x: 31.54, y: 17.79 } },
-        { type: "skull", pos: { x: 28.46, y: 26.21 } },
-        { type: "skull", pos: { x: 37.5, y: 36.25 } },
-        { type: "skull", pos: { x: 22.5, y: 7.75 } },
+        {
+          type: "fortress",
+          pos: { x: 47.5, y: 23.25 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 12.5, y: 20.75 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 31.54, y: 17.79 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 28.46, y: 26.21 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 37.5, y: 36.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 22.5, y: 7.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-disruption-1": {
@@ -11179,11 +11559,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 49.96, y: 11.73 } },
-        { type: "skull", pos: { x: 10.04, y: 32.27 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 46.84, y: 33.28 } },
-        { type: "skull", pos: { x: 13.16, y: 10.72 } },
+        {
+          type: "fortress",
+          pos: { x: 49.96, y: 11.73 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 10.04, y: 32.27 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 46.84, y: 33.28 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 13.16, y: 10.72 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-disruption-2": {
@@ -11554,11 +11950,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 51.5, y: 11.75 } },
-        { type: "skull", pos: { x: 8.5, y: 32.25 } },
-        { type: "skull", pos: { x: 42.5, y: 34.25 } },
-        { type: "skull", pos: { x: 17.5, y: 9.75 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "fortress",
+          pos: { x: 51.5, y: 11.75 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 8.5, y: 32.25 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 42.5, y: 34.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 17.5, y: 9.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-disruption-3": {
@@ -11929,11 +12337,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 8.5, y: 16.25 } },
-        { type: "skull", pos: { x: 51.5, y: 27.75 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 49.25, y: 8.5 } },
-        { type: "skull", pos: { x: 10.75, y: 35.5 } },
+        {
+          type: "skull",
+          pos: { x: 8.5, y: 16.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 51.5, y: 27.75 },
+          objective_role: "expansion",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 49.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.75, y: 35.5 },
+          objective_role: "home",
+        },
       ],
     },
     "disruption-vs-reconnaissance-1": {
@@ -12270,12 +12690,36 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 41.25, y: 37.5 } },
-        { type: "skull", pos: { x: 18.75, y: 6.5 } },
-        { type: "skull", pos: { x: 34.81, y: 22.57 } },
-        { type: "skull", pos: { x: 25.19, y: 21.43 } },
-        { type: "skull", pos: { x: 48.75, y: 17.5 } },
-        { type: "skull", pos: { x: 11.25, y: 26.5 } },
+        {
+          type: "skull",
+          pos: { x: 41.25, y: 37.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 18.75, y: 6.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 34.81, y: 22.57 },
+          objective_role: "center",
+        },
+        {
+          type: "skull",
+          pos: { x: 25.19, y: 21.43 },
+          objective_role: "center",
+        },
+        {
+          type: "fortress",
+          pos: { x: 48.75, y: 17.5 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 11.25, y: 26.5 },
+          objective_role: "home",
+        },
       ],
     },
     "disruption-vs-reconnaissance-2": {
@@ -12649,12 +13093,24 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 42.25, y: 7.5 } },
-        { type: "skull", pos: { x: 17.75, y: 36.5 } },
-        { type: "skull", pos: { x: 25.6, y: 15.8 } },
-        { type: "skull", pos: { x: 34.4, y: 28.2 } },
-        { type: "skull", pos: { x: 50.32, y: 24.68 } },
-        { type: "skull", pos: { x: 9.68, y: 19.32 } },
+        { type: "fortress", pos: { x: 42.25, y: 7.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 17.75, y: 36.5 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 25.6, y: 15.8 }, objective_role: "center" },
+        { type: "skull", pos: { x: 34.4, y: 28.2 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 50.32, y: 24.68 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 9.68, y: 19.32 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-reconnaissance-3": {
@@ -13004,12 +13460,24 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 34.8, y: 20.9 } },
-        { type: "skull", pos: { x: 25.2, y: 23.1 } },
-        { type: "skull", pos: { x: 44.25, y: 6.5 } },
-        { type: "skull", pos: { x: 15.75, y: 37.5 } },
-        { type: "skull", pos: { x: 50.44, y: 35.48 } },
-        { type: "skull", pos: { x: 9.56, y: 8.52 } },
+        { type: "skull", pos: { x: 34.8, y: 20.9 }, objective_role: "center" },
+        { type: "skull", pos: { x: 25.2, y: 23.1 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 44.25, y: 6.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 15.75, y: 37.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 50.44, y: 35.48 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 9.56, y: 8.52 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-priority-assets-1": {
@@ -13356,11 +13824,19 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 51.25, y: 7.5 } },
-        { type: "skull", pos: { x: 8.75, y: 36.5 } },
-        { type: "skull", pos: { x: 10.75, y: 13.5 } },
-        { type: "skull", pos: { x: 49.25, y: 30.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 51.25, y: 7.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 8.75, y: 36.5 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 10.75, y: 13.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 49.25, y: 30.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-priority-assets-2": {
@@ -13716,11 +14192,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 47.25, y: 16.5 } },
-        { type: "skull", pos: { x: 12.75, y: 27.5 } },
-        { type: "skull", pos: { x: 40.25, y: 36.5 } },
-        { type: "skull", pos: { x: 19.75, y: 7.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "fortress",
+          pos: { x: 47.25, y: 16.5 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 12.75, y: 27.5 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 40.25, y: 36.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 19.75, y: 7.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "disruption-vs-priority-assets-3": {
@@ -14067,11 +14559,19 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 50.25, y: 7.5 } },
-        { type: "skull", pos: { x: 9.75, y: 36.5 } },
-        { type: "skull", pos: { x: 49.5, y: 34.25 } },
-        { type: "skull", pos: { x: 10.5, y: 9.75 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 50.25, y: 7.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 9.75, y: 36.5 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 49.5, y: 34.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 10.5, y: 9.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "reconnaissance-vs-reconnaissance-1": {
@@ -14448,11 +14948,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 8.5, y: 16.25 } },
-        { type: "skull", pos: { x: 51.5, y: 27.75 } },
-        { type: "skull", pos: { x: 49.25, y: 8.5 } },
-        { type: "skull", pos: { x: 10.75, y: 35.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 8.5, y: 16.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 51.5, y: 27.75 },
+          objective_role: "expansion",
+        },
+        { type: "fortress", pos: { x: 49.25, y: 8.5 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.75, y: 35.5 },
+          objective_role: "home",
+        },
       ],
     },
     "reconnaissance-vs-reconnaissance-3": {
@@ -14823,11 +15335,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 51.5, y: 11.75 } },
-        { type: "skull", pos: { x: 8.5, y: 32.25 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 42.5, y: 34.25 } },
-        { type: "skull", pos: { x: 17.5, y: 9.75 } },
+        {
+          type: "fortress",
+          pos: { x: 51.5, y: 11.75 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 8.5, y: 32.25 }, objective_role: "home" },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 42.5, y: 34.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 17.5, y: 9.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "priority-assets-vs-reconnaissance-1": {
@@ -15177,11 +15701,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 50.25, y: 10.5 } },
-        { type: "skull", pos: { x: 9.75, y: 33.5 } },
-        { type: "skull", pos: { x: 47.59, y: 33.28 } },
-        { type: "skull", pos: { x: 12.41, y: 10.72 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "fortress",
+          pos: { x: 50.25, y: 10.5 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 9.75, y: 33.5 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 47.59, y: 33.28 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 12.41, y: 10.72 },
+          objective_role: "expansion",
+        },
       ],
     },
     "priority-assets-vs-reconnaissance-2": {
@@ -15531,11 +16067,27 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 49.5, y: 10.75 } },
-        { type: "skull", pos: { x: 10.5, y: 33.25 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 43.5, y: 33.25 } },
-        { type: "skull", pos: { x: 16.5, y: 10.75 } },
+        {
+          type: "fortress",
+          pos: { x: 49.5, y: 10.75 },
+          objective_role: "home",
+        },
+        {
+          type: "fortress",
+          pos: { x: 10.5, y: 33.25 },
+          objective_role: "home",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 43.5, y: 33.25 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 16.5, y: 10.75 },
+          objective_role: "expansion",
+        },
       ],
     },
     "priority-assets-vs-priority-assets-1": {
@@ -15897,11 +16449,19 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 50.25, y: 7.5 } },
-        { type: "skull", pos: { x: 9.75, y: 36.5 } },
-        { type: "skull", pos: { x: 9.75, y: 14.5 } },
-        { type: "skull", pos: { x: 50.25, y: 29.5 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        { type: "fortress", pos: { x: 50.25, y: 7.5 }, objective_role: "home" },
+        { type: "fortress", pos: { x: 9.75, y: 36.5 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 9.75, y: 14.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 50.25, y: 29.5 },
+          objective_role: "expansion",
+        },
       ],
     },
     "priority-assets-vs-priority-assets-2": {
@@ -16266,11 +16826,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "skull", pos: { x: 50.5, y: 10.75 } },
-        { type: "skull", pos: { x: 9.5, y: 33.25 } },
-        { type: "skull", pos: { x: 45.59, y: 34.28 } },
-        { type: "skull", pos: { x: 14.41, y: 9.72 } },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "fortress",
+          pos: { x: 50.5, y: 10.75 },
+          objective_role: "home",
+        },
+        { type: "fortress", pos: { x: 9.5, y: 33.25 }, objective_role: "home" },
+        {
+          type: "skull",
+          pos: { x: 45.59, y: 34.28 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 14.41, y: 9.72 },
+          objective_role: "expansion",
+        },
       ],
     },
     "priority-assets-vs-priority-assets-3": {
@@ -16635,11 +17207,23 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 49.5, y: 9.75 } },
-        { type: "skull", pos: { x: 10.5, y: 34.25 } },
-        { type: "skull", pos: { x: 40.25, y: 36.5 } },
-        { type: "skull", pos: { x: 19.75, y: 7.5 } },
-        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 49.5, y: 9.75 }, objective_role: "home" },
+        {
+          type: "fortress",
+          pos: { x: 10.5, y: 34.25 },
+          objective_role: "home",
+        },
+        {
+          type: "skull",
+          pos: { x: 40.25, y: 36.5 },
+          objective_role: "expansion",
+        },
+        {
+          type: "skull",
+          pos: { x: 19.75, y: 7.5 },
+          objective_role: "expansion",
+        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
       ],
     },
   },

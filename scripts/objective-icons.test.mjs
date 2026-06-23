@@ -31,7 +31,6 @@ describe("objectiveIcons", () => {
     expect(icons).toHaveLength(5);
     const centre = icons.filter((i) => i.pos.x === 30 && i.pos.y === 22);
     expect(centre).toHaveLength(1);
-    expect(icons.every((i) => i.type === "skull")).toBe(true);
   });
 
   it("keeps a non-touching central objective pair as two markers", () => {
@@ -40,6 +39,24 @@ describe("objectiveIcons", () => {
     // remain distinct markers.
     const icons = iconsFor("take-and-hold-vs-priority-assets-1");
     expect(icons).toHaveLength(6);
+  });
+
+  it("carries each piece's objective_role through to its marker", () => {
+    // Every objective in this layout is a `center`/`home`/`expansion` pair;
+    // after the touching `center` pair collapses, the five markers expose the
+    // roles 1×center + 2×home + 2×expansion.
+    const icons = iconsFor("take-and-hold-mirror-1");
+    const roles = icons.map((i) => i.objective_role).sort();
+    expect(roles).toEqual(["center", "expansion", "expansion", "home", "home"]);
+  });
+
+  it("renders home objectives with the fortress (home) icon, others with skull", () => {
+    const icons = iconsFor("take-and-hold-mirror-1");
+    for (const icon of icons) {
+      const expected = icon.objective_role === "home" ? "fortress" : "skull";
+      expect(icon.type).toBe(expected);
+    }
+    expect(icons.filter((i) => i.type === "fortress")).toHaveLength(2);
   });
 
   it("returns no icons for a layout without objectives", () => {

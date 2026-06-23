@@ -1,4 +1,4 @@
-// Turns a 40kdc layout's `is_objective` pieces into skull objective markers.
+// Turns a 40kdc layout's `is_objective` pieces into objective markers.
 //
 // Most layouts mark each objective with a single piece, but the central
 // objective is often built from TWO pieces whose footprints touch (a pair of
@@ -7,6 +7,10 @@
 // the pair's midpoint (which lands on the board centre). Pieces whose
 // footprints sit clearly apart each keep their own marker — even when, by
 // symmetry, their midpoint is also the board centre.
+//
+// Each source objective carries an `objective_role` (center / home /
+// expansion); it rides along on the marker. The `home` role renders as the
+// keep/fortress icon, every other role as the neutral skull.
 //
 // Touching is measured as the gap between the two resolved footprint polygons:
 // across the vendored layouts the touching central pairs gap by ~0 (max 0.03in
@@ -88,19 +92,29 @@ export function objectiveIcons(layout, lookupFootprint, getParent) {
     }
   }
 
-  // Group member positions by cluster root, preserving first-seen order.
+  // Group member positions by cluster root, preserving first-seen order. The
+  // members of a cluster share an objective_role (only the touching `center`
+  // pair ever clusters), so the root's role labels the whole marker.
   const clusters = new Map();
   objectives.forEach((p, i) => {
     const root = find(i);
     let group = clusters.get(root);
-    if (!group) clusters.set(root, (group = []));
-    group.push(p.position);
+    if (!group) clusters.set(root, (group = { positions: [], role: p.objective_role }));
+    group.positions.push(p.position);
   });
 
-  return [...clusters.values()].map((positions) => {
+  return [...clusters.values()].map(({ positions, role }) => {
     const n = positions.length;
     const x = positions.reduce((s, p) => s + p.x, 0) / n;
     const y = positions.reduce((s, p) => s + p.y, 0) / n;
-    return { type: "skull", pos: { x: round(x), y: round(y) } };
+    // The "home" objective renders as the keep/fortress icon; every other role
+    // keeps the neutral skull. The role rides along on the marker for any
+    // downstream (e.g. theme) use.
+    const marker = {
+      type: role === "home" ? "fortress" : "skull",
+      pos: { x: round(x), y: round(y) },
+    };
+    if (role) marker.objective_role = role;
+    return marker;
   });
 }
