@@ -11,9 +11,6 @@ export const gwTerrain: TerrainConfig = {
     "small-pipes": { width: 6, height: 2 },
     "large-pipes": { width: 10, height: 2.5 },
     pipe: { width: 5.5, height: 1 },
-    "pipe-short": { width: 5, height: 1 },
-    "barricade-rail-5": { width: 5, height: 0.25 },
-    "barricade-rail-3": { width: 3, height: 0.25 },
     barricade: {
       points: [
         { x: 0, y: 0 },

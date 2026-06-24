@@ -32,25 +32,7 @@ export const baseTheme: Theme = {
         stroke: "#6e451a",
         stroke_width: 0.3,
       },
-      "pipe-short": {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#b9772e",
-        stroke: "#6e451a",
-        stroke_width: 0.3,
-      },
       barricade: {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#c9a86a",
-        stroke: "#7d6233",
-        stroke_width: 0.3,
-      },
-      "barricade-rail-5": {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#c9a86a",
-        stroke: "#7d6233",
-        stroke_width: 0.3,
-      },
-      "barricade-rail-3": {
         "vector-effect": "non-scaling-stroke",
         fill: "#c9a86a",
         stroke: "#7d6233",

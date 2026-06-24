@@ -36,10 +36,7 @@ building:
     # anchored here and aliased by area_terrain + feature.palette below so each
     # colour is defined once.
     pipe:             { vector-effect: non-scaling-stroke, fill: &rust-fill "#b9772e", stroke: &rust-accent "#6e451a", stroke_width: 0.3 }
-    pipe-short:       { vector-effect: non-scaling-stroke, fill: *rust-fill, stroke: *rust-accent, stroke_width: 0.3 }
     barricade:        { vector-effect: non-scaling-stroke, fill: &sand-fill "#c9a86a", stroke: &sand-accent "#7d6233", stroke_width: 0.3 }
-    barricade-rail-5: { vector-effect: non-scaling-stroke, fill: *sand-fill, stroke: *sand-accent, stroke_width: 0.3 }
-    barricade-rail-3: { vector-effect: non-scaling-stroke, fill: *sand-fill, stroke: *sand-accent, stroke_width: 0.3 }
 
 grid:
   opacity: 0.3

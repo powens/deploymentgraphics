@@ -1,15 +1,14 @@
 // Converts 40kdc `pipe` and `barricade` feature pieces into building-template
 // placements. Parallels scripts/area-to-building.mjs and scripts/rect-to-feature.mjs.
 //
-// Pipes/barricades come in five fixed shapes; each maps to a building template
-// (pipe, pipe-short, barricade, barricade-rail-5, barricade-rail-3). A piece
-// resolves (via resolvePiece, which composes any parent-area transform, the
-// piece's own rotation, and rotation baked into an inline footprint) to an
-// absolute polygon in footprint-vertex order. None of these pieces is mirrored,
-// and every shape is reflection-symmetric or a rectangle, so a single
-// non-mirrored template per shape reproduces the outline. We pin the template's
-// TL/TR bounding-box corners to the resolved edge whose length matches the
-// template width.
+// A pipe piece (5.5" rectangle) maps to the `pipe` template; a barricade piece
+// (an 8-vertex polygon) maps to `barricade`. A piece resolves (via resolvePiece,
+// which composes any parent-area transform and the piece's own rotation) to an
+// absolute polygon in footprint-vertex order. Neither piece is mirrored, and
+// each shape is reflection-symmetric or a rectangle, so a single non-mirrored
+// template per shape reproduces the outline. We pin the template's TL/TR
+// bounding-box corners to the resolved edge whose length matches the template
+// width.
 
 import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
@@ -28,14 +27,9 @@ function classifyFeature(template, footprint) {
       return Math.hypot(q.x - p.x, q.y - p.y);
     }),
   );
-  if (template === "pipe") {
-    if (near(long, 5.5)) return { name: "pipe", width: 5.5 };
-    if (near(long, 5)) return { name: "pipe-short", width: 5 };
-  }
-  if (template === "barricade") {
-    if (ring.length === 8) return { name: "barricade", width: 3.5 };
-    if (near(long, 5)) return { name: "barricade-rail-5", width: 5 };
-    if (near(long, 3)) return { name: "barricade-rail-3", width: 3 };
+  if (template === "pipe" && near(long, 5.5)) return { name: "pipe", width: 5.5 };
+  if (template === "barricade" && ring.length === 8) {
+    return { name: "barricade", width: 3.5 };
   }
   throw new Error(
     `no building template for ${template} footprint ` +

@@ -5,11 +5,10 @@ import { resolveBuilding } from "../src/placement.ts";
 
 const CANVAS = { width: 60, height: 44 };
 
-// The five building templates this converter targets (plus a parent area
+// The two building templates this converter targets (plus a parent area
 // footprint used by the parented-piece test).
 const TEMPLATES = {
   pipe: { width: 5.5, height: 1 },
-  "pipe-short": { width: 5, height: 1 },
   barricade: {
     points: [
       { x: 0, y: 0 },
@@ -22,8 +21,6 @@ const TEMPLATES = {
       { x: 0, y: 1 },
     ],
   },
-  "barricade-rail-5": { width: 5, height: 0.25 },
-  "barricade-rail-3": { width: 3, height: 0.25 },
   "area-large": { width: 11.5, height: 7 },
 };
 
@@ -99,75 +96,6 @@ describe("featureBuildingPlacement", () => {
       rotation_degrees: 35,
     });
     expect(p.type).toBe("barricade");
-  });
-
-  it("places an inline 5x1 pipe-short (axis-aligned)", () => {
-    const p = roundTrip({
-      template: "pipe",
-      position: { x: 30, y: 20 },
-      footprint: {
-        type: "polygon",
-        points: [
-          { x: -2.5, y: -0.5 },
-          { x: 2.5, y: -0.5 },
-          { x: 2.5, y: 0.5 },
-          { x: -2.5, y: 0.5 },
-        ],
-      },
-    });
-    expect(p.type).toBe("pipe-short");
-  });
-
-  it("places an inline 5x1 pipe-short with rotation baked into the footprint", () => {
-    // Real gw-11e-crucible footprint: a 5x1 rectangle, points already rotated.
-    const p = roundTrip({
-      template: "pipe",
-      position: { x: 18, y: 22 },
-      footprint: {
-        type: "polygon",
-        points: [
-          { x: -1.0244, y: -2.3347 },
-          { x: 1.8435, y: 1.7611 },
-          { x: 1.0244, y: 2.3347 },
-          { x: -1.8435, y: -1.7611 },
-        ],
-      },
-    });
-    expect(p.type).toBe("pipe-short");
-  });
-
-  it("places an inline 5x0.25 barricade rail", () => {
-    const p = roundTrip({
-      template: "barricade",
-      position: { x: 25, y: 15 },
-      footprint: {
-        type: "polygon",
-        points: [
-          { x: -2.5, y: -0.125 },
-          { x: 2.5, y: -0.125 },
-          { x: 2.5, y: 0.125 },
-          { x: -2.5, y: 0.125 },
-        ],
-      },
-    });
-    expect(p.type).toBe("barricade-rail-5");
-  });
-
-  it("places an inline 3x0.25 barricade rail in 90-degree orientation", () => {
-    const p = roundTrip({
-      template: "barricade",
-      position: { x: 25, y: 15 },
-      footprint: {
-        type: "polygon",
-        points: [
-          { x: 0.125, y: -1.5 },
-          { x: 0.125, y: 1.5 },
-          { x: -0.125, y: 1.5 },
-          { x: -0.125, y: -1.5 },
-        ],
-      },
-    });
-    expect(p.type).toBe("barricade-rail-3");
   });
 
   it("places a parented barricade (composes the parent-area transform)", () => {
