@@ -10,9 +10,7 @@
 //
 // Each ruin reduces to three absolute reference points — the outer corner and
 // the two arm ends — which a single fit (`featureFromRefs`) turns into a
-// placement. Most layouts give a whole L footprint per piece; the crucible and
-// hammer-anvil layouts instead split each ruin into two thin wall-segment bars,
-// which are reassembled into the same three reference points.
+// placement. Every corner-ruin piece carries a whole L footprint.
 
 import { footprintPolygon, centroid, resolvePiece } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
@@ -156,59 +154,17 @@ export function ruinFeaturePlacement(piece, lookupFootprint, getParent, roofed) 
   return featureFromRefs(Oa, A1, A2, roofed);
 }
 
-/** Midpoints of a thin rectangle's two short edges (its centre-line ends). */
-function barEnds(rect) {
-  const mids = [];
-  const lens = [];
-  for (let i = 0; i < rect.length; i++) {
-    const a = rect[i];
-    const b = rect[(i + 1) % rect.length];
-    lens.push(Math.hypot(b.x - a.x, b.y - a.y));
-    mids.push({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
-  }
-  let mi = 0;
-  for (let i = 1; i < lens.length; i++) if (lens[i] < lens[mi]) mi = i;
-  return [mids[mi], mids[(mi + 2) % rect.length]];
-}
-
-/**
- * Reassemble two perpendicular wall-segment bars into L reference points: the
- * shared corner (where the two centre-lines meet) is the outer corner, and the
- * far end of each bar is an arm end.
- */
-function barGroupRefs(rectA, rectB) {
-  const ea = barEnds(rectA);
-  const eb = barEnds(rectB);
-  let best = [0, 0];
-  let bd = Infinity;
-  for (let i = 0; i < 2; i++) {
-    for (let j = 0; j < 2; j++) {
-      const d = Math.hypot(ea[i].x - eb[j].x, ea[i].y - eb[j].y);
-      if (d < bd) {
-        bd = d;
-        best = [i, j];
-      }
-    }
-  }
-  const Oa = {
-    x: (ea[best[0]].x + eb[best[1]].x) / 2,
-    y: (ea[best[0]].y + eb[best[1]].y) / 2,
-  };
-  return { Oa, A1: ea[1 - best[0]], A2: eb[1 - best[1]] };
-}
-
 // A catwalk roofs the ruin whose centre it lands nearest, within this distance
 // (inches). The roofed pairs sit ~1.5-2.2in apart; the nearest free-standing
 // catwalk is ~4in away, so the threshold separates them cleanly.
 const ROOF_DISTANCE = 3;
 
 /**
- * Resolve every corner-ruin in a layout to an `l-ruin` feature placement,
- * applying the `-roof` variant where a catwalk sits on the ruin. Whole-L pieces
- * convert directly; split wall-segment bars are grouped by id stem (e.g.
- * `piece-25-1` + `piece-25-2`) and reassembled. Catwalk pieces are consumed
- * (dropped). Returns the placements plus the set of piece ids the caller should
- * not also emit as area_terrain (ruin pieces and catwalks).
+ * Resolve every whole-L corner-ruin in a layout to an `l-ruin` feature
+ * placement, applying the `-roof` variant where a catwalk sits on the ruin.
+ * Catwalk pieces are consumed (dropped). Returns the placements plus the set of
+ * piece ids the caller should not also emit as area_terrain (ruin pieces and
+ * catwalks).
  *
  * @param {object} layout - a 40kdc layout ({ pieces }).
  * @param {(id: string) => object} lookupFootprint
@@ -219,33 +175,17 @@ export function ruinFeatures(layout, lookupFootprint, getParent) {
   const consumedIds = new Set();
   const ruins = []; // { ids, anchor, make(roofed) }
 
-  const barGroups = new Map();
   for (const p of layout.pieces) {
     if (!isRuinTemplate(p.template)) continue;
     const footprint = p.footprint ?? lookupFootprint(p.template);
-    if (isLFootprint(footprint)) {
-      const resolved = resolvePiece(p, lookupFootprint, getParent);
-      const { Oa, A1, A2 } = lPieceRefs(p, lookupFootprint, getParent);
-      ruins.push({
-        ids: [p.id],
-        anchor: centroid(resolved),
-        make: (roofed) => featureFromRefs(Oa, A1, A2, roofed),
-      });
-    } else {
-      const stem = p.id.replace(/-\d+$/, "");
-      let group = barGroups.get(stem);
-      if (!group) barGroups.set(stem, (group = []));
-      group.push(p);
-    }
-  }
-
-  for (const bars of barGroups.values()) {
-    if (bars.length !== 2) continue; // not a reassemblable arm pair; skip
-    const rects = bars.map((b) => resolvePiece(b, lookupFootprint, getParent));
-    const { Oa, A1, A2 } = barGroupRefs(rects[0], rects[1]);
+    // Only whole-L corner footprints become ruins; any other corner piece
+    // falls through to area_terrain.
+    if (!isLFootprint(footprint)) continue;
+    const resolved = resolvePiece(p, lookupFootprint, getParent);
+    const { Oa, A1, A2 } = lPieceRefs(p, lookupFootprint, getParent);
     ruins.push({
-      ids: bars.map((b) => b.id),
-      anchor: centroid([...rects[0], ...rects[1]]),
+      ids: [p.id],
+      anchor: centroid(resolved),
       make: (roofed) => featureFromRefs(Oa, A1, A2, roofed),
     });
   }
