@@ -95,7 +95,7 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
 
 describe("rectFeatures", () => {
   it("converts every generator and gantry piece and consumes their ids", () => {
-    const L = layouts.find((l) => l.id === "gw-11e-crucible");
+    const L = layouts.find((l) => l.id === "take-and-hold-vs-disruption-1");
     const { features, consumedIds } = rectFeatures(L, lookupFootprint, getParentFor(L));
     const rectPieces = L.pieces.filter((p) => isRectFeatureTemplate(p.template));
     expect(features.length).toBe(rectPieces.length);

@@ -120,842 +120,6 @@ layout:
         height: 2
         color: rust
         mirror: false
-  gw-11e-crucible:
-    deployment_pattern_id: crucible-of-battle
-    templates:
-      - type: large-area
-        corners:
-          TL:
-            x: 54
-            'y': 5
-          TR:
-            x: 54
-            'y': 12
-        mirror: false
-      - type: large-pipes
-        corners:
-          TL:
-            x: 33.75
-            'y': 4.75
-          TR:
-            x: 39.486
-            'y': 12.941
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 30
-            'y': 0
-          TR:
-            x: 33.441
-            'y': 4.915
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 48.441
-            'y': 26.915
-          TR:
-            x: 45.165
-            'y': 29.209
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 43.75
-            'y': 20.25
-          TR:
-            x: 48.665
-            'y': 16.809
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 53.596
-            'y': 39.92
-          TR:
-            x: 47.862
-            'y': 43.935
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 39.191
-            'y': 35.665
-          TR:
-            x: 35.915
-            'y': 37.959
-        mirror: false
-      - type: shoe
-        corners:
-          TL:
-            x: 24.25
-            'y': 27
-          TR:
-            x: 24.25
-            'y': 19
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 6
-            'y': 39
-          TR:
-            x: 6
-            'y': 32
-        mirror: false
-      - type: large-pipes
-        corners:
-          TL:
-            x: 26.25
-            'y': 39.25
-          TR:
-            x: 20.514
-            'y': 31.059
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 30
-            'y': 44
-          TR:
-            x: 26.559
-            'y': 39.085
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 11.559
-            'y': 17.085
-          TR:
-            x: 14.835
-            'y': 14.791
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 16.25
-            'y': 23.75
-          TR:
-            x: 11.335
-            'y': 27.191
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 6.404
-            'y': 4.08
-          TR:
-            x: 12.138
-            'y': 0.065
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 20.802
-            'y': 8.335
-          TR:
-            x: 24.079
-            'y': 6.041
-        mirror: false
-      - type: shoe
-        corners:
-          TL:
-            x: 35.75
-            'y': 17
-          TR:
-            x: 35.75
-            'y': 25
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 30
-            'y': 0.75
-          TR:
-            x: 32.868
-            'y': 4.846
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 33.5
-            'y': 5.25
-          TR:
-            x: 36.368
-            'y': 9.346
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 36
-            'y': 8.75
-          TR:
-            x: 38.868
-            'y': 12.846
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 30
-            'y': 43.25
-          TR:
-            x: 27.132
-            'y': 39.154
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 26.538
-            'y': 38.711
-          TR:
-            x: 23.67
-            'y': 34.615
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 24.158
-            'y': 35.137
-          TR:
-            x: 21.29
-            'y': 31.042
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 44.495
-            'y': 20.34
-          TR:
-            x: 48.591
-            'y': 17.472
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 15.639
-            'y': 23.558
-          TR:
-            x: 11.543
-            'y': 26.426
-        mirror: false
-    features:
-      - type: l-ruin
-        label: ruin
-        x: 33.25
-        'y': 24.5
-        width: 2
-        height: 2
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 24.75
-        'y': 17.5
-        width: 2
-        height: 2
-        rotation: 90
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 30
-        'y': 17.5
-        width: 5
-        height: 5
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 43
-        'y': 8.5
-        width: 6
-        height: 3
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 51.53
-        'y': 5.593
-        width: 2
-        height: 2
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 25
-        'y': 21.5
-        width: 5
-        height: 5
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 11
-        'y': 32.5
-        width: 6
-        height: 3
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 6.505
-        'y': 36.52
-        width: 2
-        height: 2
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 44.86
-        'y': 35.621
-        width: 7
-        height: 6
-        rotation: 235
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 43.009
-        'y': 32.815
-        width: 5
-        height: 5
-        rotation: 55.001
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 8.14
-        'y': 2.379
-        width: 7
-        height: 6
-        rotation: 55
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 11.991
-        'y': 6.185
-        width: 5
-        height: 5
-        rotation: 235.001
-        color: green
-        mirror: false
-      - type: gantry
-        label: gantry
-        x: 34.754
-        'y': 8.393
-        width: 2
-        height: 2
-        rotation: 55.001
-        color: gunmetal
-        mirror: false
-      - type: gantry
-        label: gantry
-        x: 23.382
-        'y': 33.468
-        width: 2
-        height: 2
-        rotation: 235.001
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 43.594
-        'y': 23.089
-        width: 3
-        height: 5
-        rotation: 325.001
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 13.351
-        'y': 15.928
-        width: 3
-        height: 5
-        rotation: 145.001
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 22.69
-        'y': 7.154
-        width: 3
-        height: 5
-        rotation: 325.001
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 34.31
-        'y': 31.846
-        width: 3
-        height: 5
-        rotation: 145.001
-        color: gunmetal
-        mirror: false
-  gw-11e-hammer-anvil:
-    deployment_pattern_id: hammer-and-anvil
-    templates:
-      - type: large-area
-        corners:
-          TL:
-            x: 50
-            'y': 24.5
-          TR:
-            x: 43
-            'y': 24.5
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 40.5
-            'y': 6
-          TR:
-            x: 36.5
-            'y': 6
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 36.5
-            'y': 6
-          TR:
-            x: 36.5
-            'y': 10
-        mirror: false
-      - type: shoe
-        corners:
-          TL:
-            x: 35
-            'y': 27.75
-          TR:
-            x: 27
-            'y': 27.75
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 43
-            'y': 5
-          TR:
-            x: 49
-            'y': 5
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 43
-            'y': 6.931
-          TR:
-            x: 43
-            'y': 12.931
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 41.5
-            'y': 44
-          TR:
-            x: 34.5
-            'y': 44
-        mirror: false
-      - type: large-pipes
-        corners:
-          TL:
-            x: 48
-            'y': 28
-          TR:
-            x: 48
-            'y': 38
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 10
-            'y': 19.5
-          TR:
-            x: 17
-            'y': 19.5
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 19.5
-            'y': 38
-          TR:
-            x: 23.5
-            'y': 38
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 23.5
-            'y': 38
-          TR:
-            x: 23.5
-            'y': 34
-        mirror: false
-      - type: shoe
-        corners:
-          TL:
-            x: 25
-            'y': 16.25
-          TR:
-            x: 33
-            'y': 16.25
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 17
-            'y': 39
-          TR:
-            x: 11
-            'y': 39
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 17
-            'y': 37.069
-          TR:
-            x: 17
-            'y': 31.069
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 18.5
-            'y': 0
-          TR:
-            x: 25.5
-            'y': 0
-        mirror: false
-      - type: large-pipes
-        corners:
-          TL:
-            x: 12
-            'y': 16
-          TR:
-            x: 12
-            'y': 6
-        mirror: false
-      - type: barricade-rail-5
-        corners:
-          TL:
-            x: 29.731
-            'y': 16.557
-          TR:
-            x: 34.731
-            'y': 16.557
-        mirror: false
-      - type: barricade-rail-3
-        corners:
-          TL:
-            x: 34.792
-            'y': 16.682
-          TR:
-            x: 34.792
-            'y': 19.682
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 43.495
-            'y': 5.424
-          TR:
-            x: 48.495
-            'y': 5.424
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 42.506
-            'y': 7.638
-          TR:
-            x: 42.506
-            'y': 12.638
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 47.364
-            'y': 28.424
-          TR:
-            x: 47.364
-            'y': 33.424
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 47.364
-            'y': 32.592
-          TR:
-            x: 47.364
-            'y': 37.592
-        mirror: false
-      - type: barricade-rail-5
-        corners:
-          TL:
-            x: 36.131
-            'y': 32.87
-          TR:
-            x: 41.131
-            'y': 32.87
-        mirror: false
-      - type: barricade-rail-3
-        corners:
-          TL:
-            x: 41.201
-            'y': 32.995
-          TR:
-            x: 41.201
-            'y': 35.995
-        mirror: false
-      - type: barricade-rail-5
-        corners:
-          TL:
-            x: 35.196
-            'y': 38.576
-          TR:
-            x: 35.196
-            'y': 43.576
-        mirror: false
-      - type: barricade-rail-3
-        corners:
-          TL:
-            x: 35.071
-            'y': 43.396
-          TR:
-            x: 38.071
-            'y': 43.396
-        mirror: false
-      - type: barricade-rail-5
-        corners:
-          TL:
-            x: 30.269
-            'y': 27.443
-          TR:
-            x: 25.269
-            'y': 27.443
-        mirror: false
-      - type: barricade-rail-3
-        corners:
-          TL:
-            x: 25.208
-            'y': 27.318
-          TR:
-            x: 25.208
-            'y': 24.318
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 16.505
-            'y': 38.576
-          TR:
-            x: 11.506
-            'y': 38.576
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 17.495
-            'y': 36.362
-          TR:
-            x: 17.495
-            'y': 31.362
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 12.636
-            'y': 15.576
-          TR:
-            x: 12.636
-            'y': 10.576
-        mirror: false
-      - type: pipe-short
-        corners:
-          TL:
-            x: 12.636
-            'y': 11.408
-          TR:
-            x: 12.636
-            'y': 6.408
-        mirror: false
-      - type: barricade-rail-5
-        corners:
-          TL:
-            x: 23.869
-            'y': 11.131
-          TR:
-            x: 18.869
-            'y': 11.131
-        mirror: false
-      - type: barricade-rail-3
-        corners:
-          TL:
-            x: 18.799
-            'y': 11.006
-          TR:
-            x: 18.799
-            'y': 8.006
-        mirror: false
-      - type: barricade-rail-5
-        corners:
-          TL:
-            x: 24.804
-            'y': 5.425
-          TR:
-            x: 24.804
-            'y': 0.425
-        mirror: false
-      - type: barricade-rail-3
-        corners:
-          TL:
-            x: 24.929
-            'y': 0.604
-          TR:
-            x: 21.929
-            'y': 0.604
-        mirror: false
-    features:
-      - type: l-ruin
-        label: ruin
-        x: 38.035
-        'y': 0.465
-        width: 2
-        height: 2
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 36.938
-        'y': 3.653
-        width: 2
-        height: 2
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 32.541
-        'y': 25.44
-        width: 2
-        height: 2
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 42.001
-        'y': 14.924
-        width: 6
-        height: 3
-        rotation: 90
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 47.576
-        'y': 21.95
-        width: 2
-        height: 2
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 19.965
-        'y': 41.535
-        width: 2
-        height: 2
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 21.062
-        'y': 38.347
-        width: 2
-        height: 2
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 25.46
-        'y': 16.56
-        width: 2
-        height: 2
-        rotation: 90
-        color: green
-        mirror: false
-      - type: l-ruin-roof
-        label: ruin
-        x: 11.999
-        'y': 26.076
-        width: 6
-        height: 3
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 10.424
-        'y': 20.05
-        width: 2
-        height: 2
-        rotation: 90
-        color: green
-        mirror: false
-      - type: generator
-        label: generator
-        x: 32.074
-        'y': 5.488
-        width: 3
-        height: 5
-        rotation: 90
-        color: gunmetal
-        mirror: false
-      - type: gantry
-        label: gantry
-        x: 45.81
-        'y': 32.027
-        width: 2
-        height: 2
-        rotation: 0
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 24.926
-        'y': 33.512
-        width: 3
-        height: 5
-        rotation: 270
-        color: gunmetal
-        mirror: false
-      - type: gantry
-        label: gantry
-        x: 12.19
-        'y': 9.973
-        width: 2
-        height: 2
-        rotation: 180
-        color: gunmetal
-        mirror: false
   take-and-hold-vs-purge-the-foe-2:
     deployment_pattern_id: search-and-destroy
     dispositions:
@@ -4619,378 +3783,6 @@ layout:
           x: 13.5
           'y': 22.25
         objective_role: home
-  sweeping-engagement-1:
-    deployment_pattern_id: sweeping-engagement
-    templates:
-      - type: shoe
-        corners:
-          TL:
-            x: 35.75
-            'y': 17
-          TR:
-            x: 35.75
-            'y': 25
-        mirror: false
-      - type: shoe
-        corners:
-          TL:
-            x: 24.25
-            'y': 27
-          TR:
-            x: 24.25
-            'y': 19
-        mirror: false
-      - type: large-pipes
-        corners:
-          TL:
-            x: 24.69
-            'y': 3.173
-          TR:
-            x: 31.997
-            'y': 10
-        mirror: false
-      - type: large-pipes
-        corners:
-          TL:
-            x: 35.31
-            'y': 40.827
-          TR:
-            x: 28.003
-            'y': 34
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 36.482
-            'y': 6.012
-          TR:
-            x: 39.141
-            'y': 9
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 23.518
-            'y': 37.988
-          TR:
-            x: 20.859
-            'y': 35
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 54
-            'y': 5
-          TR:
-            x: 54
-            'y': 12
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 6
-            'y': 39
-          TR:
-            x: 6
-            'y': 32
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 46.988
-            'y': 20.482
-          TR:
-            x: 44
-            'y': 23.141
-        mirror: false
-      - type: small-area
-        corners:
-          TL:
-            x: 13.012
-            'y': 23.518
-          TR:
-            x: 16
-            'y': 20.859
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 55
-            'y': 27
-          TR:
-            x: 55
-            'y': 34
-        mirror: false
-      - type: large-area
-        corners:
-          TL:
-            x: 5
-            'y': 17
-          TR:
-            x: 5
-            'y': 10
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 18.5
-            'y': 4
-          TR:
-            x: 18.5
-            'y': 10
-        mirror: false
-      - type: small-pipes
-        corners:
-          TL:
-            x: 41.5
-            'y': 40
-          TR:
-            x: 41.5
-            'y': 34
-        mirror: false
-      - type: barricade
-        corners:
-          TL:
-            x: 30.663
-            'y': 10.959
-          TR:
-            x: 28.106
-            'y': 8.569
-        mirror: false
-      - type: barricade
-        corners:
-          TL:
-            x: 29.337
-            'y': 33.041
-          TR:
-            x: 31.894
-            'y': 35.431
-        mirror: false
-      - type: barricade
-        corners:
-          TL:
-            x: 26.381
-            'y': 6.958
-          TR:
-            x: 23.824
-            'y': 4.569
-        mirror: false
-      - type: barricade
-        corners:
-          TL:
-            x: 33.619
-            'y': 37.042
-          TR:
-            x: 36.176
-            'y': 39.431
-        mirror: false
-    features:
-      - type: l-ruin-mirror
-        label: ruin
-        x: 24.75
-        'y': 17.46
-        width: 4.5
-        height: 5
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 30.75
-        'y': 21.54
-        width: 4.5
-        height: 5
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 24.601
-        'y': 24.509
-        width: 2
-        height: 2
-        rotation: 90
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 33.399
-        'y': 17.491
-        width: 2
-        height: 2
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 32.728
-        'y': 9.449
-        width: 3
-        height: 2
-        rotation: 48.34
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 24.272
-        'y': 32.551
-        width: 3
-        height: 2
-        rotation: 228.34
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 35.412
-        'y': 7.551
-        width: 3
-        height: 2
-        rotation: 228.34
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 21.588
-        'y': 34.449
-        width: 3
-        height: 2
-        rotation: 48.34
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 51.053
-        'y': 5.947
-        width: 3
-        height: 2
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 5.947
-        'y': 36.053
-        width: 3
-        height: 2
-        rotation: 90
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 12.38
-        'y': 32.09
-        width: 4.5
-        height: 5
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 43.12
-        'y': 6.91
-        width: 4.5
-        height: 5
-        rotation: 90
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 5.473
-        'y': 13.527
-        width: 6.5
-        height: 3
-        rotation: 360
-        color: green
-        mirror: false
-      - type: l-ruin
-        label: ruin
-        x: 48.027
-        'y': 27.473
-        width: 6.5
-        height: 3
-        rotation: 180
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 11.387
-        'y': 11.993
-        width: 6.5
-        height: 3
-        rotation: 270
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 42.113
-        'y': 29.007
-        width: 6.5
-        height: 3
-        rotation: 90
-        color: green
-        mirror: false
-      - type: gantry
-        label: gantry
-        x: 26.49
-        'y': 6.5
-        width: 2
-        height: 2
-        rotation: 43.05
-        color: gunmetal
-        mirror: false
-      - type: gantry
-        label: gantry
-        x: 31.51
-        'y': 35.5
-        width: 2
-        height: 2
-        rotation: 223.05
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 42
-        'y': 17.57
-        width: 3
-        height: 4
-        rotation: 138.34
-        color: gunmetal
-        mirror: false
-      - type: generator
-        label: generator
-        x: 15
-        'y': 22.43
-        width: 3
-        height: 4
-        rotation: 318.34
-        color: gunmetal
-        mirror: false
-    icons:
-      - type: skull
-        pos:
-          x: 30
-          'y': 22
-        objective_role: center
-      - type: fortress
-        pos:
-          x: 48.25
-          'y': 8.5
-        objective_role: home
-      - type: fortress
-        pos:
-          x: 11.75
-          'y': 35.5
-        objective_role: home
-      - type: skull
-        pos:
-          x: 49.25
-          'y': 30.5
-        objective_role: expansion
-      - type: skull
-        pos:
-          x: 10.75
-          'y': 13.5
-        objective_role: expansion
   take-and-hold-vs-priority-assets-1:
     deployment_pattern_id: crucible-of-battle
     dispositions:
@@ -18950,3 +17742,825 @@ layout:
           x: 30
           'y': 22
         objective_role: center
+  priority-assets-vs-reconnaissance-3:
+    deployment_pattern_id: sweeping-engagement
+    dispositions:
+      - Priority Assets
+      - Reconnaissance
+    templates:
+      - type: shoe
+        corners:
+          TL:
+            x: 35.75
+            'y': 17
+          TR:
+            x: 35.75
+            'y': 25
+        mirror: false
+      - type: shoe
+        corners:
+          TL:
+            x: 24.25
+            'y': 27
+          TR:
+            x: 24.25
+            'y': 19
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 15.5
+            'y': 9
+          TR:
+            x: 15.5
+            'y': 16
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 44.5
+            'y': 35
+          TR:
+            x: 44.5
+            'y': 28
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 54
+            'y': 5
+          TR:
+            x: 54
+            'y': 12
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 6
+            'y': 39
+          TR:
+            x: 6
+            'y': 32
+        mirror: false
+      - type: large-pipes
+        corners:
+          TL:
+            x: 27.818
+            'y': 4
+          TR:
+            x: 34.664
+            'y': 11.288
+        mirror: false
+      - type: large-pipes
+        corners:
+          TL:
+            x: 32.182
+            'y': 40
+          TR:
+            x: 25.336
+            'y': 32.712
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 21.5
+            'y': 5
+          TR:
+            x: 21.5
+            'y': 9
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 38.5
+            'y': 39
+          TR:
+            x: 38.5
+            'y': 35
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 33.129
+            'y': 9.655
+          TR:
+            x: 37.502
+            'y': 5.547
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 26.871
+            'y': 34.345
+          TR:
+            x: 22.498
+            'y': 38.453
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 46.264
+            'y': 22.998
+          TR:
+            x: 49.264
+            'y': 17.802
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 13.736
+            'y': 21.002
+          TR:
+            x: 10.736
+            'y': 26.198
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 48.198
+            'y': 19.648
+          TR:
+            x: 46.198
+            'y': 23.112
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 11.802
+            'y': 24.352
+          TR:
+            x: 13.802
+            'y': 20.888
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 33.271
+            'y': 12.158
+          TR:
+            x: 30.875
+            'y': 9.607
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 26.729
+            'y': 31.842
+          TR:
+            x: 29.125
+            'y': 34.393
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 29.259
+            'y': 7.887
+          TR:
+            x: 26.863
+            'y': 5.336
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 30.741
+            'y': 36.113
+          TR:
+            x: 33.137
+            'y': 38.664
+        mirror: false
+      - type: pipe
+        corners:
+          TL:
+            x: 33.653
+            'y': 9.848
+          TR:
+            x: 37.662
+            'y': 6.083
+        mirror: false
+      - type: pipe
+        corners:
+          TL:
+            x: 26.347
+            'y': 34.152
+          TR:
+            x: 22.338
+            'y': 37.917
+        mirror: false
+    features:
+      - type: l-ruin-mirror
+        label: ruin
+        x: 24.54
+        'y': 17.25
+        width: 4.5
+        height: 5
+        rotation: 180
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 30.96
+        'y': 21.75
+        width: 4.5
+        height: 5
+        rotation: 0
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 33.539
+        'y': 17.251
+        width: 2
+        height: 2
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 24.461
+        'y': 24.749
+        width: 2
+        height: 2
+        rotation: 90
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 4.203
+        'y': 12.867
+        width: 6.5
+        height: 3
+        rotation: 0
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 49.297
+        'y': 28.133
+        width: 6.5
+        height: 3
+        rotation: 180
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 10.517
+        'y': 10.923
+        width: 6.5
+        height: 3
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 42.983
+        'y': 30.077
+        width: 6.5
+        height: 3
+        rotation: 90
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 42.9
+        'y': 7.13
+        width: 4.5
+        height: 5
+        rotation: 90
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 12.6
+        'y': 31.87
+        width: 4.5
+        height: 5
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 50.723
+        'y': 9.713
+        width: 3
+        height: 2
+        rotation: 0
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 6.277
+        'y': 32.287
+        width: 3
+        height: 2
+        rotation: 180
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 15.367
+        'y': 5.817
+        width: 3
+        height: 2
+        rotation: 90
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 41.633
+        'y': 36.183
+        width: 3
+        height: 2
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 18.633
+        'y': 6.183
+        width: 3
+        height: 2
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 38.367
+        'y': 35.817
+        width: 3
+        height: 2
+        rotation: 90
+        color: green
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 29.33
+        'y': 7.5
+        width: 2
+        height: 2
+        rotation: 46.79
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 28.67
+        'y': 34.5
+        width: 2
+        height: 2
+        rotation: 226.79
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 43.1
+        'y': 17.88
+        width: 3
+        height: 4
+        rotation: 120
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 13.9
+        'y': 22.12
+        width: 3
+        height: 4
+        rotation: 300
+        color: gunmetal
+        mirror: false
+    icons:
+      - type: skull
+        pos:
+          x: 30
+          'y': 22
+        objective_role: center
+      - type: skull
+        pos:
+          x: 9.75
+          'y': 12.5
+        objective_role: expansion
+      - type: skull
+        pos:
+          x: 50.25
+          'y': 31.5
+        objective_role: expansion
+      - type: fortress
+        pos:
+          x: 48.25
+          'y': 8.5
+        objective_role: home
+      - type: fortress
+        pos:
+          x: 11.75
+          'y': 35.5
+        objective_role: home
+  reconnaissance-vs-reconnaissance-2:
+    deployment_pattern_id: crucible-of-battle
+    dispositions:
+      - Reconnaissance
+      - Reconnaissance
+    templates:
+      - type: shoe
+        corners:
+          TL:
+            x: 31.804
+            'y': 14.597
+          TR:
+            x: 36.395
+            'y': 21.149
+        mirror: false
+      - type: shoe
+        corners:
+          TL:
+            x: 28.196
+            'y': 29.403
+          TR:
+            x: 23.605
+            'y': 22.851
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 55.922
+            'y': 14.856
+          TR:
+            x: 49.921
+            'y': 18.461
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 4.078
+            'y': 29.144
+          TR:
+            x: 10.079
+            'y': 25.539
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 52.998
+            'y': 35.999
+          TR:
+            x: 47.253
+            'y': 39.999
+        mirror: false
+      - type: large-area
+        corners:
+          TL:
+            x: 7.002
+            'y': 8.001
+          TR:
+            x: 12.747
+            'y': 4.001
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 50.413
+            'y': 26.284
+          TR:
+            x: 46.423
+            'y': 26.562
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 9.587
+            'y': 17.716
+          TR:
+            x: 13.577
+            'y': 17.438
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 25
+            'y': 5
+          TR:
+            x: 25
+            'y': 11
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 35
+            'y': 39
+          TR:
+            x: 35
+            'y': 33
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 31
+            'y': 9
+          TR:
+            x: 31
+            'y': 13
+        mirror: false
+      - type: small-area
+        corners:
+          TL:
+            x: 29
+            'y': 35
+          TR:
+            x: 29
+            'y': 31
+        mirror: false
+      - type: large-pipes
+        corners:
+          TL:
+            x: 40
+            'y': 4
+          TR:
+            x: 40
+            'y': 14
+        mirror: false
+      - type: large-pipes
+        corners:
+          TL:
+            x: 20
+            'y': 40
+          TR:
+            x: 20
+            'y': 30
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 37.5
+            'y': 14
+          TR:
+            x: 43.5
+            'y': 14
+        mirror: false
+      - type: small-pipes
+        corners:
+          TL:
+            x: 22.5
+            'y': 30
+          TR:
+            x: 16.5
+            'y': 30
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 38.389
+            'y': 13.68
+          TR:
+            x: 38.389
+            'y': 10.18
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 21.611
+            'y': 30.32
+          TR:
+            x: 21.611
+            'y': 33.82
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 38.389
+            'y': 7.82
+          TR:
+            x: 38.389
+            'y': 4.32
+        mirror: false
+      - type: barricade
+        corners:
+          TL:
+            x: 21.611
+            'y': 36.18
+          TR:
+            x: 21.611
+            'y': 39.68
+        mirror: false
+      - type: pipe
+        corners:
+          TL:
+            x: 37.75
+            'y': 14.5
+          TR:
+            x: 43.25
+            'y': 14.5
+        mirror: false
+      - type: pipe
+        corners:
+          TL:
+            x: 22.25
+            'y': 29.5
+          TR:
+            x: 16.75
+            'y': 29.5
+        mirror: false
+    features:
+      - type: l-ruin-mirror
+        label: ruin
+        x: 28.665
+        'y': 15.573
+        width: 4.5
+        height: 5
+        rotation: 234.98
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 26.835
+        'y': 23.427
+        width: 4.5
+        height: 5
+        rotation: 54.98
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 23.118
+        'y': 20.419
+        width: 2
+        height: 2
+        rotation: 144.98
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 34.882
+        'y': 21.581
+        width: 2
+        height: 2
+        rotation: 324.98
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 43.944
+        'y': 9.185
+        width: 6.5
+        height: 3
+        rotation: 59
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 9.556
+        'y': 31.815
+        width: 6.5
+        height: 3
+        rotation: 239
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 48.493
+        'y': 15.438
+        width: 3
+        height: 2
+        rotation: 59
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 8.507
+        'y': 26.562
+        width: 3
+        height: 2
+        rotation: 239
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 41.992
+        'y': 28.949
+        width: 4.5
+        height: 5
+        rotation: 145.15
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 13.508
+        'y': 10.051
+        width: 4.5
+        height: 5
+        rotation: 325.15
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 46.07
+        'y': 35.032
+        width: 6.5
+        height: 3
+        rotation: 325.15
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 7.43
+        'y': 5.968
+        width: 6.5
+        height: 3
+        rotation: 145.15
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 24.867
+        'y': 9.817
+        width: 3
+        height: 2
+        rotation: 90
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 32.133
+        'y': 32.183
+        width: 3
+        height: 2
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 28.133
+        'y': 10.183
+        width: 3
+        height: 2
+        rotation: 270
+        color: green
+        mirror: false
+      - type: l-ruin
+        label: ruin
+        x: 28.867
+        'y': 31.817
+        width: 3
+        height: 2
+        rotation: 90
+        color: green
+        mirror: false
+      - type: generator
+        label: generator
+        x: 46.71
+        'y': 21.43
+        width: 3
+        height: 4
+        rotation: 176.02
+        color: gunmetal
+        mirror: false
+      - type: generator
+        label: generator
+        x: 10.29
+        'y': 18.57
+        width: 3
+        height: 4
+        rotation: 356.02
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 37.75
+        'y': 8
+        width: 2
+        height: 2
+        rotation: 90
+        color: gunmetal
+        mirror: false
+      - type: gantry
+        label: gantry
+        x: 20.25
+        'y': 34
+        width: 2
+        height: 2
+        rotation: 270
+        color: gunmetal
+        mirror: false
+    icons:
+      - type: skull
+        pos:
+          x: 30
+          'y': 22
+        objective_role: center
+      - type: fortress
+        pos:
+          x: 49.96
+          'y': 11.73
+        objective_role: home
+      - type: fortress
+        pos:
+          x: 10.04
+          'y': 32.27
+        objective_role: home
+      - type: skull
+        pos:
+          x: 46.84
+          'y': 33.28
+        objective_role: expansion
+      - type: skull
+        pos:
+          x: 13.16
+          'y': 10.72
+        objective_role: expansion

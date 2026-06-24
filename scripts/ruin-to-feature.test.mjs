@@ -147,20 +147,23 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 });
 
 describe("ruinFeatures", () => {
-  it("reassembles crucible bar-pairs and roofs the ones under catwalks", () => {
-    const L = layouts.find((l) => l.id === "gw-11e-crucible");
+  it("roofs the whole-L ruins that sit under catwalks", () => {
+    // purge-the-foe-vs-purge-the-foe-2 has 16 whole-L corner ruins and two
+    // catwalks, each catwalk sitting on one ruin. (No vendored layout still
+    // uses the split wall-segment bar-pair encoding the crucible relied on.)
+    const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
     const { features, consumedIds } = ruinFeatures(L, lookupFootprint, getParentFor(L));
     const catwalks = L.pieces.filter((p) => p.template === "catwalk");
     const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
-    // 24 bar pieces -> 12 reassembled L-ruins.
-    expect(features.length).toBe(12);
+    // Each whole-L ruin piece -> one feature.
+    expect(features.length).toBe(ruinPieces.length);
     // Every catwalk and ruin piece is consumed (not re-emitted as area_terrain).
     for (const p of [...catwalks, ...ruinPieces]) {
       expect(consumedIds.has(p.id)).toBe(true);
     }
-    // Some ruins are roofed (catwalks sit on them); roofs use the -roof variant.
+    // The two ruins under catwalks are roofed; roofs use the -roof variant.
     const roofs = features.filter((f) => f.type.includes("roof"));
-    expect(roofs.length).toBeGreaterThan(0);
+    expect(roofs.length).toBe(2);
     for (const f of features) {
       expect(["l-ruin", "l-ruin-mirror", "l-ruin-roof", "l-ruin-roof-mirror"]).toContain(
         f.type,

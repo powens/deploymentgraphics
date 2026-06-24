@@ -60,6 +60,17 @@ describe("objectiveIcons", () => {
   });
 
   it("returns no icons for a layout without objectives", () => {
-    expect(iconsFor("gw-11e-crucible")).toEqual([]);
+    // No vendored layout is objective-free, so strip the objective pieces from
+    // take-and-hold-mirror-1: the remaining terrain carries no objective_role,
+    // and objectiveIcons emits nothing.
+    const layout = layoutById("take-and-hold-mirror-1");
+    const pieces = layout.pieces.filter((p) => !p.is_objective && !p.objective_role);
+    const byId = new Map(pieces.map((p) => [p.id, p]));
+    const icons = objectiveIcons(
+      { ...layout, pieces },
+      lookupFootprint,
+      (pid) => byId.get(pid),
+    );
+    expect(icons).toEqual([]);
   });
 });
