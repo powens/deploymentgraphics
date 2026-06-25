@@ -13,7 +13,7 @@
 // Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
 
 import { readFileSync, writeFileSync } from "node:fs";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { resolvePiece } from "./terrain-resolver.mjs";
 import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 import { ruinFeatures } from "./ruin-to-feature.mjs";

@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { describe, expect, it } from "vitest";
 import { baseConfig } from "./base.js";
 import { eventMatrix } from "./event-matrix.js";

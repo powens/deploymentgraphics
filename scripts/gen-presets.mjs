@@ -4,7 +4,7 @@
 // when the committed presets are stale (used by CI).
 
 import { readFileSync, writeFileSync, readdirSync } from "node:fs";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 
 const dataDir = new URL("../static/data/", import.meta.url);
 const presetsDir = new URL("../src/presets/", import.meta.url);
