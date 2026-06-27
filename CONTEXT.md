@@ -28,7 +28,8 @@ so the corner math has one home. Lives beside resolve so the forward and inverse
 maps share one convention.
 
 **Centre-pivot** — the `Placed` convention: rotation is taken about the box centre.
-Every renderer draws this way (`rotate(rot cx cy)`); features are authored this way too.
+Every renderer draws this way via `placedTransform` (the single owner of the
+`translate(x y) rotate(rot cx cy)` string); features are authored this way too.
 
 **Origin-pivot** — the editor's building convention: a `{x, y}` translate (the
 unrotated box top-left) plus a rotation taken *about that top-left corner*. The

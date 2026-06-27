@@ -29,6 +29,21 @@ export type Placed = {
 };
 
 /**
+ * The transform that draws a `Placed`: translate to the box top-left, then
+ * rotate about the box centre `(width/2, height/2)`. The single owner of the
+ * centre-pivot convention — every renderer of a `Placed` (buildings, features)
+ * crosses this seam instead of re-spelling the pivot. Note: the editor overlay
+ * rotates buildings about their *top-left* (origin-pivot), a different
+ * convention, and must NOT use this.
+ */
+export function placedTransform(placed: Placed): string {
+  return (
+    `translate(${placed.box.x} ${placed.box.y}) ` +
+    `rotate(${placed.rotation} ${placed.box.width / 2} ${placed.box.height / 2})`
+  );
+}
+
+/**
  * Point-reflects a `Placed` through the canvas centre (rotation += 180). The
  * one mirror formula shared by buildings and features — point reflection is a
  * rotation by 180 about the centre, so the box's top-left maps to its

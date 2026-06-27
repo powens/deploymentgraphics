@@ -7,7 +7,7 @@ import {
   type Point,
   type Template,
 } from "./building-coordinates.js";
-import { placeBuildings } from "./placement.js";
+import { placeBuildings, placedTransform } from "./placement.js";
 import type { SVGProperties } from "./types.js";
 
 /**
@@ -100,14 +100,7 @@ export function makeBuildings(
   for (const placed of placeBuildings(placements, templates, canvas)) {
     const use = makeElement("use");
     use.setAttribute("href", `#template-${placed.name}`);
-    // rotate's pivot is in the element's local space (applied before
-    // translate), so the box centre is (width/2, height/2) — same convention
-    // features use.
-    use.setAttribute(
-      "transform",
-      `translate(${placed.box.x} ${placed.box.y}) ` +
-        `rotate(${placed.rotation} ${placed.box.width / 2} ${placed.box.height / 2})`,
-    );
+    use.setAttribute("transform", placedTransform(placed));
     use.setAttribute("id", `building-${counter}`);
     const props = styleFor?.(placed.name);
     if (props) {
