@@ -1,4 +1,4 @@
-import { resolveBuilding } from "../placement.js";
+import { fromMirrorFlag, resolveBuilding } from "../placement.js";
 import type { Template, BuildingPlacement, Point } from "../building-coordinates.js";
 import { missions } from "../presets/missions.js";
 import { gwTerrain } from "../presets/terrain.js";
@@ -76,7 +76,7 @@ export async function loadPreset(
         x: r.translate.x,
         y: r.translate.y,
         rotation: r.rotation,
-        mirror: bld.mirror !== false,
+        mirror: fromMirrorFlag(bld.mirror),
       });
     }
   }

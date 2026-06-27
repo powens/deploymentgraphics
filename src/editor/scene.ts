@@ -1,5 +1,9 @@
 import type { Point } from "../building-coordinates.js";
-import { decomposeBuilding, type ResolvedBuilding } from "../placement.js";
+import {
+  decomposeBuilding,
+  toMirrorFlag,
+  type ResolvedBuilding,
+} from "../placement.js";
 import type { AreaTerrain, FeaturePlacement, IconPlacement } from "../terrain-config.js";
 import { ICON_SIZE } from "../icons.js";
 import type {
@@ -119,8 +123,7 @@ export function sceneToConfig(
       };
       return {
         ...decomposeBuilding(resolved, templates),
-        // mirror defaults to true in the renderer; only suppress when off.
-        mirror: o.mirror ? undefined : false,
+        mirror: toMirrorFlag(o.mirror),
       };
     });
 
@@ -170,7 +173,7 @@ export function sceneToConfig(
       height: o.height,
       rotation: o.rotation,
       color: o.color,
-      mirror: o.mirror ? undefined : false, // mirror defaults to true in renderer
+      mirror: toMirrorFlag(o.mirror),
     }));
 
   const deployment: DeploymentConfig = {

@@ -1,4 +1,5 @@
 import type { Template, Point } from "../building-coordinates.js";
+import { MIRROR_DEFAULT } from "../placement.js";
 import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
 import type { Scene, SceneObject, ObjectiveObject } from "./scene.js";
 
@@ -120,7 +121,7 @@ export function createObjectFromPalette(
 ): SceneObject {
   const id = Math.random().toString(36).slice(2);
   if (item.category === "building") {
-    return { id, type: "building", templateKey: item.templateKey, x, y, rotation: 0, mirror: true };
+    return { id, type: "building", templateKey: item.templateKey, x, y, rotation: 0, mirror: MIRROR_DEFAULT };
   }
   if (item.category === "area-terrain") {
     return {
@@ -169,7 +170,7 @@ export function createObjectFromPalette(
       width: item.width,
       height: item.height,
       color: item.color,
-      mirror: true,
+      mirror: MIRROR_DEFAULT,
     };
   }
   const _exhaustive: never = item;

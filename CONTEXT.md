@@ -39,7 +39,10 @@ origin-pivot → corner-pin.
 
 **Mirror** — point-reflect a `Placed` through the canvas centre (`rotation += 180`).
 A piece emits a mirrored copy unless its placement says `mirror: false`; the default
-is *mirror on*. One formula, owned by the placement module.
+is *mirror on*. One formula, owned by the placement module — which also owns the
+authoring protocol for the rule (`MIRROR_DEFAULT`, and `toMirrorFlag` /
+`fromMirrorFlag` to encode/decode the editor's scene boolean against the
+omit-when-default `mirror` field).
 
 **Canvas** — the board, `{width, height}` in inches (standard 60×44). Anchors
 (TL/TR/BL/BR) and mirroring are all measured against it.
