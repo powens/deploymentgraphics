@@ -1,16 +1,45 @@
 import { describe, it, expect } from "vitest";
 import {
+  MIRROR_DEFAULT,
   decompose,
   decomposeBuilding,
+  fromMirrorFlag,
   mirror,
   placeBuildings,
   resolveBuilding,
   resolveFeature,
   resolvePlacement,
+  toMirrorFlag,
   type Placed,
   type ResolvedBuilding,
 } from "./placement";
 import type { Template } from "./building-coordinates";
+
+describe("mirror authoring protocol", () => {
+  it("defaults a new piece to mirror on", () => {
+    expect(MIRROR_DEFAULT).toBe(true);
+  });
+
+  it("omits the field when mirroring is on (the renderer default)", () => {
+    expect(toMirrorFlag(true)).toBeUndefined();
+  });
+
+  it("emits an explicit false to suppress mirroring", () => {
+    expect(toMirrorFlag(false)).toBe(false);
+  });
+
+  it("decodes a present field: only an explicit false reads as off", () => {
+    expect(fromMirrorFlag(undefined)).toBe(true);
+    expect(fromMirrorFlag(true)).toBe(true);
+    expect(fromMirrorFlag(false)).toBe(false);
+  });
+
+  it("round-trips a scene boolean through the renderer field", () => {
+    for (const on of [true, false]) {
+      expect(fromMirrorFlag(toMirrorFlag(on))).toBe(on);
+    }
+  });
+});
 
 const canvas = { width: 60, height: 44 };
 const templates: Record<string, Template> = {

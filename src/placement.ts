@@ -47,6 +47,32 @@ export function mirror(placed: Placed, canvas: CanvasSize): Placed {
   };
 }
 
+// --- The mirror authoring protocol ---------------------------------------
+// "Mirror is on unless `mirror: false`." `withMirror` below applies it at
+// render time; these three encode the same rule for authoring tools (editor
+// scene <-> placement YAML), so the convention has one home.
+
+/** A piece authored fresh mirrors by default. */
+export const MIRROR_DEFAULT = true;
+
+/**
+ * Encodes an editor scene's mirror boolean as a placement's `mirror` field:
+ * the on default is omitted (`undefined`), only off is written explicitly,
+ * so emitted YAML stays minimal.
+ */
+export function toMirrorFlag(on: boolean): boolean | undefined {
+  return on ? undefined : false;
+}
+
+/**
+ * Decodes a placement's `mirror` field back to a scene boolean — the inverse
+ * of {@link toMirrorFlag}. A missing or `true` field is on; only an explicit
+ * `false` is off.
+ */
+export function fromMirrorFlag(flag: boolean | undefined): boolean {
+  return flag !== false;
+}
+
 /**
  * Applies the mirror default — on unless `mirror: false` — yielding the
  * primary plus an optional point-reflected copy. The single owner of the
