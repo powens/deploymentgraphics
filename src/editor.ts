@@ -1,5 +1,12 @@
 import { makeMissionCard } from "./main.js";
-import { emptyScene, sceneToConfig, type Scene } from "./editor/scene.js";
+import {
+  addObject,
+  emptyScene,
+  removeObject,
+  sceneToConfig,
+  updateObject,
+  type Scene,
+} from "./editor/scene.js";
 import type { Template } from "./building-coordinates.js";
 import { buildPaletteItems, renderPalette, createObjectFromPalette, type PaletteItem } from "./editor/palette.js";
 import {
@@ -89,17 +96,14 @@ export function updateInspector(): void {
     sel.selectedId,
     loadedTemplates,
     (id) => {
-      scene.objects = scene.objects.filter((o) => o.id !== id);
+      scene = removeObject(scene, id);
       sel.selectedId = null;
       scheduleRender();
       updateInspector();
     },
     (id, patch) => {
-      const idx = scene.objects.findIndex((o) => o.id === id);
-      if (idx >= 0) {
-        scene.objects[idx] = { ...scene.objects[idx], ...patch } as typeof scene.objects[number];
-        scheduleRender();
-      }
+      scene = updateObject(scene, id, patch);
+      scheduleRender();
     },
     (patch) => {
       Object.assign(scene, patch);
@@ -177,11 +181,11 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
     if (dataType === "edge-midpoint" && objectId) {
       const edgeIdx = parseInt(target.dataset.edgeIndex ?? "", 10);
       if (isNaN(edgeIdx)) return;
-      const idx = scene.objects.findIndex((o) => o.id === objectId);
-      if (idx < 0) return;
-      const obj = scene.objects[idx];
-      if (obj.type !== "deployment-zone") return;
-      scene.objects[idx] = { ...obj, vertices: insertVertexAtEdge(obj.vertices, edgeIdx) };
+      const obj = scene.objects.find((o) => o.id === objectId);
+      if (!obj || obj.type !== "deployment-zone") return;
+      scene = updateObject(scene, objectId, {
+        vertices: insertVertexAtEdge(obj.vertices, edgeIdx),
+      });
       scheduleRender();
       startVertexDrag(e, objectId, edgeIdx + 1);
       return;
@@ -205,13 +209,11 @@ function attachOverlayEvents(svg: SVGSVGElement): void {
     const vi = parseInt(target.dataset.vertexIndex ?? "", 10);
     const objectId = target.dataset.objectId;
     if (isNaN(vi) || !objectId) return;
-    const idx = scene.objects.findIndex((o) => o.id === objectId);
-    if (idx < 0) return;
-    const obj = scene.objects[idx];
-    if (obj.type !== "deployment-zone") return;
+    const obj = scene.objects.find((o) => o.id === objectId);
+    if (!obj || obj.type !== "deployment-zone") return;
     const newVerts = deleteVertex(obj.vertices, vi);
     if (newVerts === obj.vertices) return;
-    scene.objects[idx] = { ...obj, vertices: newVerts };
+    scene = updateObject(scene, objectId, { vertices: newVerts });
     scheduleRender();
   });
 }
@@ -253,15 +255,11 @@ function startDrag(e: PointerEvent, id: string): void {
     e,
     (ev) => {
       const pos = mapCoords(ev.clientX, ev.clientY);
-      const idx = scene.objects.findIndex((o) => o.id === id);
-      if (idx >= 0) {
-        scene.objects[idx] = {
-          ...scene.objects[idx],
-          x: snap(origX + pos.x - start.x),
-          y: snap(origY + pos.y - start.y),
-        } as typeof scene.objects[number];
-        scheduleRender();
-      }
+      scene = updateObject(scene, id, {
+        x: snap(origX + pos.x - start.x),
+        y: snap(origY + pos.y - start.y),
+      });
+      scheduleRender();
     },
     updateInspector,
   );
@@ -271,14 +269,11 @@ function startVertexDrag(e: PointerEvent, id: string, vi: number): void {
     const { x: px, y: py } = mapCoords(ev.clientX, ev.clientY);
     const snappedX = snap(px);
     const snappedY = snap(py);
-    const idx = scene.objects.findIndex((o) => o.id === id);
-    if (idx < 0) return;
-    const obj = scene.objects[idx];
-    if (obj.type !== "deployment-zone") return;
-    scene.objects[idx] = {
-      ...obj,
+    const obj = scene.objects.find((o) => o.id === id);
+    if (!obj || obj.type !== "deployment-zone") return;
+    scene = updateObject(scene, id, {
       vertices: obj.vertices.map((v, i) => (i === vi ? { x: snappedX, y: snappedY } : v)),
-    };
+    });
     scheduleRender();
   });
 }
@@ -296,11 +291,8 @@ function startRotateDrag(e: PointerEvent, id: string): void {
   startDragLoop(
     e,
     (ev) => {
-      const idx = scene.objects.findIndex((o) => o.id === id);
-      if (idx >= 0) {
-        scene.objects[idx] = { ...scene.objects[idx], rotation: getAngle(ev) } as typeof scene.objects[number];
-        scheduleRender();
-      }
+      scene = updateObject(scene, id, { rotation: getAngle(ev) });
+      scheduleRender();
     },
     updateInspector,
   );
@@ -329,7 +321,7 @@ function initPalette(): void {
     const item = JSON.parse(raw) as PaletteItem;
     if (!canvasWrap.querySelector("svg.map-svg")) return;
     const { x: svgX, y: svgY } = mapCoords(e.clientX, e.clientY);
-    scene.objects.push(createObjectFromPalette(item, svgX, svgY, scene));
+    scene = addObject(scene, createObjectFromPalette(item, svgX, svgY, scene));
     scheduleRender();
   });
 }
@@ -374,7 +366,7 @@ async function start(): Promise<void> {
     }
 
     if ((e.key === "Delete" || e.key === "Backspace") && sel.selectedId && !inInput) {
-      scene.objects = scene.objects.filter((o) => o.id !== sel.selectedId);
+      scene = removeObject(scene, sel.selectedId);
       sel.selectedId = null;
       sel.vertexEditId = null;
       scheduleRender();
@@ -383,13 +375,11 @@ async function start(): Promise<void> {
     }
 
     if ((e.key === "r" || e.key === "R") && sel.selectedId && !inInput) {
-      const idx = scene.objects.findIndex((o) => o.id === sel.selectedId);
-      if (idx >= 0) {
-        const cur = scene.objects[idx].rotation;
-        scene.objects[idx] = {
-          ...scene.objects[idx],
-          rotation: (Math.round(cur / 90) * 90 + 90) % 360,
-        } as typeof scene.objects[number];
+      const cur = scene.objects.find((o) => o.id === sel.selectedId);
+      if (cur) {
+        scene = updateObject(scene, sel.selectedId, {
+          rotation: (Math.round(cur.rotation / 90) * 90 + 90) % 360,
+        });
         scheduleRender();
         updateInspector();
       }

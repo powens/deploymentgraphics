@@ -1,9 +1,54 @@
 import { describe, it, expect } from "vitest";
 import {
+  addObject,
   emptyScene,
+  removeObject,
   sceneToConfig,
+  updateObject,
+  type ObjectiveObject,
   type Scene,
+  type SceneObject,
 } from "./scene.js";
+
+const obj = (id: string, x = 0): ObjectiveObject => ({
+  id,
+  type: "objective",
+  number: 1,
+  x,
+  y: 0,
+  rotation: 0,
+});
+
+describe("scene transforms", () => {
+  it("updateObject merges the patch into the matching object only", () => {
+    const scene: Scene = { ...emptyScene(), objects: [obj("a", 1), obj("b", 2)] };
+    const next = updateObject(scene, "b", { x: 9 });
+    expect(next.objects.find((o) => o.id === "b")!.x).toBe(9);
+    expect(next.objects.find((o) => o.id === "a")!.x).toBe(1); // untouched
+  });
+
+  it("updateObject does not mutate the input scene", () => {
+    const scene: Scene = { ...emptyScene(), objects: [obj("a", 1)] };
+    updateObject(scene, "a", { x: 5 });
+    expect(scene.objects[0].x).toBe(1);
+  });
+
+  it("updateObject is a no-op when the id is absent", () => {
+    const scene: Scene = { ...emptyScene(), objects: [obj("a", 1)] };
+    const next = updateObject(scene, "missing", { x: 5 } as Partial<SceneObject>);
+    expect(next.objects).toEqual(scene.objects);
+  });
+
+  it("removeObject drops the object with the given id", () => {
+    const scene: Scene = { ...emptyScene(), objects: [obj("a"), obj("b")] };
+    expect(removeObject(scene, "a").objects.map((o) => o.id)).toEqual(["b"]);
+  });
+
+  it("addObject appends to the end (preserving draw order)", () => {
+    const scene: Scene = { ...emptyScene(), objects: [obj("a")] };
+    expect(addObject(scene, obj("b")).objects.map((o) => o.id)).toEqual(["a", "b"]);
+  });
+});
 
 const RECT_TEMPLATES = {
   "4x6": { width: 4, height: 6 },

@@ -96,6 +96,39 @@ export function emptyScene(): Scene {
   };
 }
 
+// --- Scene transforms ------------------------------------------------------
+// Pure, immutable edits to a scene's object list. The editor's event handlers
+// own *when* to apply and re-render; these own *what changes*, so the logic is
+// unit-testable instead of trapped in the controller.
+
+/**
+ * Returns a scene with `patch` merged into the object whose id matches; a no-op
+ * (structurally equal) when no object matches. The one place the discriminated
+ * union is widened by a patch merge, so call sites stay cast-free.
+ */
+export function updateObject(
+  scene: Scene,
+  id: string,
+  patch: Partial<SceneObject>,
+): Scene {
+  return {
+    ...scene,
+    objects: scene.objects.map((o) =>
+      o.id === id ? ({ ...o, ...patch } as SceneObject) : o,
+    ),
+  };
+}
+
+/** Returns a scene without the object whose id matches. */
+export function removeObject(scene: Scene, id: string): Scene {
+  return { ...scene, objects: scene.objects.filter((o) => o.id !== id) };
+}
+
+/** Returns a scene with `obj` appended (last = drawn on top). */
+export function addObject(scene: Scene, obj: SceneObject): Scene {
+  return { ...scene, objects: [...scene.objects, obj] };
+}
+
 export function sceneToConfig(
   scene: Scene,
   templates: Record<string, Template>,
