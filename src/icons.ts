@@ -108,7 +108,7 @@ function iconDefId(type: string, player?: "attacker" | "defender"): string {
  * and the cutouts take the resolved disk fill so they read as the disk showing
  * through. Throws on an unknown type.
  */
-export function injectIconDefs(
+function injectIconDefs(
   placements: IconPlacement[],
   defs: SVGElement,
   theme: Theme,
@@ -158,7 +158,7 @@ export function injectIconDefs(
  * referencing its `#icon-<type>` def and translated so the 4×4" design box is
  * recentered on `pos`. Throws on an unknown type.
  */
-export function makeIcons(placements: IconPlacement[]): SVGElement {
+function makeIconUses(placements: IconPlacement[]): SVGElement {
   const group = makeElement("g");
   group.setAttribute("id", "icons");
   let counter = 0;
@@ -178,4 +178,21 @@ export function makeIcons(placements: IconPlacement[]): SVGElement {
     counter++;
   }
   return group;
+}
+
+/**
+ * Renders icon markers in one call: writes the per-`(type, player)` defs into
+ * `defs` and returns the `<g id="icons">` of `<use>` placements. Both phases —
+ * the `<defs>` and the `<use>` refs joined by the `iconDefId` href — live here,
+ * so a caller can't run one without the other and leave dangling references.
+ * `defs` must already be attached to the document so the refs resolve. Throws
+ * on an unknown icon type.
+ */
+export function renderIcons(
+  placements: IconPlacement[],
+  defs: SVGElement,
+  theme: Theme,
+): SVGElement {
+  injectIconDefs(placements, defs, theme);
+  return makeIconUses(placements);
 }

@@ -1,6 +1,6 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { makeFeatures } from "./features.js";
-import { injectIconDefs, makeIcons } from "./icons.js";
+import { renderIcons } from "./icons.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
@@ -8,7 +8,7 @@ import {
   DEFAULT_AREA_TERRAIN_SIZE,
   type AreaTerrain,
 } from "./terrain-config.js";
-import { resolveLayout, type ResolvedLayout } from "./layout.js";
+import { resolveLayout } from "./layout.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig, SVGProperties } from "./types.js";
 
@@ -26,16 +26,13 @@ function injectDefs(
   svg: SVGElement,
   config: FullConfig,
   theme: Theme,
-  layout: ResolvedLayout,
-) {
+): SVGElement {
   const defs = makeElement("defs");
   svg.appendChild(defs);
 
   // Each template def carries the generic building props plus its own
   // template-specific stroke/fill overrides (keyed by name, with a default).
   injectTemplateDefs(config.terrain.templates, defs, buildingStyle(theme));
-
-  if (layout.icons.length > 0) injectIconDefs(layout.icons, defs, theme);
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
   if (hasArrow) {
@@ -53,6 +50,8 @@ function injectDefs(
     marker.appendChild(path);
     defs.appendChild(marker);
   }
+
+  return defs;
 }
 
 function makeHalfwayLines(config: FullConfig, theme: Theme): SVGElement | null {
@@ -282,7 +281,7 @@ export function makeMissionCard(
     height: config.base.size.height,
   };
 
-  injectDefs(svg, config, theme, layout);
+  const defs = injectDefs(svg, config, theme);
 
   svg.appendChild(makeDeploymentZone(config, "attacker", theme));
   svg.appendChild(makeDeploymentZone(config, "defender", theme));
@@ -331,7 +330,11 @@ export function makeMissionCard(
     svg.appendChild(annotations);
   }
 
-  if (layout.icons.length > 0) svg.appendChild(makeIcons(layout.icons));
+  // Icons last: one call writes the per-(type, player) defs into `defs` and
+  // returns the <use> group, so the def/ref contract stays in one place.
+  if (layout.icons.length > 0) {
+    svg.appendChild(renderIcons(layout.icons, defs, theme));
+  }
 
   return svg;
 }
