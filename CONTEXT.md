@@ -42,3 +42,11 @@ is *mirror on*. One formula, owned by the placement module.
 
 **Canvas** — the board, `{width, height}` in inches (standard 60×44). Anchors
 (TL/TR/BL/BR) and mirroring are all measured against it.
+
+**Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
+pass draws into a `ResolvedLayout` (buildings, icons, features, area-terrain).
+Buildings and icons come from the selected layout alone (empty arrays when none
+is selected); features and area-terrain are unioned with the board's top-level
+arrays. Distinct from **Resolve** above: that maps one placement to a `Placed`;
+this assembles placement *arrays* and applies the "is a layout selected / union
+with top-level" rules in one place.

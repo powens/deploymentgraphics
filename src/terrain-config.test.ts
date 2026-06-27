@@ -2,24 +2,8 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
-import {
-  getLayoutBuildings,
-  getLayoutFeatures,
-  getLayoutIcons,
-  getLayoutAreaTerrain,
-  mergeTerrain,
-  type TerrainConfig,
-} from "./terrain-config";
+import { mergeTerrain, type TerrainConfig } from "./terrain-config";
 import { resolveBuilding } from "./placement";
-
-const terrain: TerrainConfig = {
-  templates: { "4x6": { width: 4, height: 6 } },
-  layout: {
-    "1": {
-      templates: [{ type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } } }],
-    },
-  },
-};
 
 describe("mergeTerrain", () => {
   it("reunites a templates file and a layouts file into one TerrainConfig", () => {
@@ -45,20 +29,6 @@ describe("mergeTerrain", () => {
     expect(merged.area_terrain).toEqual([
       { shape: "circle", x: 1, y: 2, width: 6 },
     ]);
-  });
-});
-
-describe("getLayoutBuildings", () => {
-  it("returns the building placements for an existing layout", () => {
-    expect(getLayoutBuildings(terrain, "1")).toEqual([
-      { type: "4x6", corners: { TL: { x: 0, y: 0 }, TR: { x: 4, y: 0 } } },
-    ]);
-  });
-
-  it("throws a descriptive error for a missing layout", () => {
-    expect(() => getLayoutBuildings(terrain, "9")).toThrow(
-      /no layout named: 9/,
-    );
   });
 });
 
@@ -112,91 +82,3 @@ describe("placeholder gw.yml", () => {
   });
 });
 
-describe("getLayoutIcons", () => {
-  const t: TerrainConfig = {
-    templates: {},
-    layout: {
-      "1": { templates: [], icons: [{ type: "skull", pos: { x: 5, y: 10 } }] },
-      "2": { templates: [] },
-    },
-  };
-
-  it("returns the icon placements for a layout that has them", () => {
-    expect(getLayoutIcons(t, "1")).toEqual([{ type: "skull", pos: { x: 5, y: 10 } }]);
-  });
-
-  it("returns [] for a layout with no icons", () => {
-    expect(getLayoutIcons(t, "2")).toEqual([]);
-  });
-
-  it("returns [] for a missing layout", () => {
-    expect(getLayoutIcons(t, "9")).toEqual([]);
-  });
-
-  it("preserves a player tag on an icon placement", () => {
-    const tp: TerrainConfig = {
-      templates: {},
-      layout: {
-        "1": { templates: [], icons: [{ type: "fortress", pos: { x: 5, y: 10 }, player: "attacker" }] },
-      },
-    };
-    expect(getLayoutIcons(tp, "1")).toEqual([
-      { type: "fortress", pos: { x: 5, y: 10 }, player: "attacker" },
-    ]);
-  });
-});
-
-describe("getLayoutFeatures", () => {
-  const feature = {
-    type: "pipe",
-    x: 5,
-    y: 10,
-    width: 6,
-    height: 2,
-    color: "rust",
-  };
-  const t: TerrainConfig = {
-    templates: {},
-    layout: {
-      "1": { templates: [], features: [feature] },
-      "2": { templates: [] },
-    },
-  };
-
-  it("returns the feature placements for a layout that has them", () => {
-    expect(getLayoutFeatures(t, "1")).toEqual([feature]);
-  });
-
-  it("returns [] for a layout with no features", () => {
-    expect(getLayoutFeatures(t, "2")).toEqual([]);
-  });
-
-  it("returns [] for a missing layout", () => {
-    expect(getLayoutFeatures(t, "9")).toEqual([]);
-  });
-});
-
-const terrainWithExtras = {
-  templates: {},
-  layout: {
-    a: {
-      templates: [],
-      area_terrain: [
-        { shape: "polygon", x: 0, y: 0, points: [{ x: 1, y: 1 }], label: "feature" },
-      ],
-    },
-    bare: { templates: [] },
-  },
-} as unknown as TerrainConfig;
-
-describe("getLayoutAreaTerrain", () => {
-  it("returns a layout's area terrain", () => {
-    expect(getLayoutAreaTerrain(terrainWithExtras, "a")).toHaveLength(1);
-  });
-  it("returns [] for a layout without area terrain", () => {
-    expect(getLayoutAreaTerrain(terrainWithExtras, "bare")).toEqual([]);
-  });
-  it("returns [] for a missing layout", () => {
-    expect(getLayoutAreaTerrain(terrainWithExtras, "nope")).toEqual([]);
-  });
-});

@@ -6,11 +6,9 @@ import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
 import {
   DEFAULT_AREA_TERRAIN_SIZE,
-  getLayoutAreaTerrain,
-  getLayoutBuildings,
-  getLayoutFeatures,
-  getLayoutIcons,
+  type AreaTerrain,
 } from "./terrain-config.js";
+import { resolveLayout, type ResolvedLayout } from "./layout.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig, SVGProperties } from "./types.js";
 
@@ -24,12 +22,12 @@ const buildingStyle =
     ...(theme.building.template[name] ?? theme.building.template.default),
   });
 
-/** True when a usable layout is selected in the terrain config. */
-function hasSelectedLayout(config: FullConfig): boolean {
-  return !!config.terrain.layout[config.terrain.layout_name];
-}
-
-function injectDefs(svg: SVGElement, config: FullConfig, theme: Theme) {
+function injectDefs(
+  svg: SVGElement,
+  config: FullConfig,
+  theme: Theme,
+  layout: ResolvedLayout,
+) {
   const defs = makeElement("defs");
   svg.appendChild(defs);
 
@@ -37,13 +35,7 @@ function injectDefs(svg: SVGElement, config: FullConfig, theme: Theme) {
   // template-specific stroke/fill overrides (keyed by name, with a default).
   injectTemplateDefs(config.terrain.templates, defs, buildingStyle(theme));
 
-  if (hasSelectedLayout(config)) {
-    const iconPlacements = getLayoutIcons(
-      config.terrain,
-      config.terrain.layout_name,
-    );
-    if (iconPlacements.length > 0) injectIconDefs(iconPlacements, defs, theme);
-  }
+  if (layout.icons.length > 0) injectIconDefs(layout.icons, defs, theme);
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
   if (hasArrow) {
@@ -162,11 +154,10 @@ function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
   return group;
 }
 
-function makeAreaTerrain(config: FullConfig, theme: Theme): SVGElement | null {
-  const items = [
-    ...(config.terrain.area_terrain ?? []),
-    ...getLayoutAreaTerrain(config.terrain, config.terrain.layout_name),
-  ];
+function makeAreaTerrain(
+  items: AreaTerrain[],
+  theme: Theme,
+): SVGElement | null {
   if (items.length === 0) return null;
   const group = makeElement("g");
   group.setAttribute("id", "area-terrain");
@@ -282,7 +273,16 @@ export function makeMissionCard(
     svg.appendChild(background);
   }
 
-  injectDefs(svg, config, theme);
+  // Resolve the selected layout once: its buildings/icons (empty when no
+  // layout is selected) plus features/area-terrain unioned with the board's
+  // top-level arrays. Every layout-dependent pass below reads from it.
+  const layout = resolveLayout(config);
+  const canvas = {
+    width: config.base.size.width,
+    height: config.base.size.height,
+  };
+
+  injectDefs(svg, config, theme, layout);
 
   svg.appendChild(makeDeploymentZone(config, "attacker", theme));
   svg.appendChild(makeDeploymentZone(config, "defender", theme));
@@ -298,52 +298,27 @@ export function makeMissionCard(
     svg.appendChild(halfwayLines);
   }
 
-  if (hasSelectedLayout(config)) {
-    const placements = getLayoutBuildings(
-      config.terrain,
-      config.terrain.layout_name,
-    );
-    const canvas = {
-      width: config.base.size.width,
-      height: config.base.size.height,
-    };
-    svg.appendChild(
-      makeBuildings(
-        placements,
-        config.terrain.templates,
-        canvas,
-        buildingStyle(theme),
-      ),
-    );
-  } else {
-    // No buildings group when the layout is unbuilt — mirrors the
-    // legacy renderer's warn-and-skip behaviour.
-    const empty = makeElement("g");
-    empty.setAttribute("id", "buildings");
-    svg.appendChild(empty);
-  }
+  // An unbuilt layout yields empty placements, so this is an empty
+  // `<g id="buildings">` — matching the legacy renderer's warn-and-skip.
+  svg.appendChild(
+    makeBuildings(
+      layout.buildings,
+      config.terrain.templates,
+      canvas,
+      buildingStyle(theme),
+    ),
+  );
 
   // Area terrain draws after buildings: imported 40kdc area pieces render as
   // opaque buildings, and the smaller feature pieces (l-ruins, pipes, ...) are
   // emitted as area_terrain that sits on top of them.
-  const areaTerrain = makeAreaTerrain(config, theme);
+  const areaTerrain = makeAreaTerrain(layout.areaTerrain, theme);
   if (areaTerrain) {
     svg.appendChild(areaTerrain);
   }
 
-  // Features come from two sources: a top-level array (the editor / a
-  // hand-written full config) and the selected layout (built-in terrain files).
-  const layoutFeatures = hasSelectedLayout(config)
-    ? getLayoutFeatures(config.terrain, config.terrain.layout_name)
-    : [];
-  const features = [...(config.features ?? []), ...layoutFeatures];
-  if (features.length > 0) {
-    svg.appendChild(
-      makeFeatures(features, theme, {
-        width: config.base.size.width,
-        height: config.base.size.height,
-      }),
-    );
+  if (layout.features.length > 0) {
+    svg.appendChild(makeFeatures(layout.features, theme, canvas));
   }
 
   const objectives = makeObjectives(config, theme);
@@ -356,13 +331,7 @@ export function makeMissionCard(
     svg.appendChild(annotations);
   }
 
-  if (hasSelectedLayout(config)) {
-    const iconPlacements = getLayoutIcons(
-      config.terrain,
-      config.terrain.layout_name,
-    );
-    if (iconPlacements.length > 0) svg.appendChild(makeIcons(iconPlacements));
-  }
+  if (layout.icons.length > 0) svg.appendChild(makeIcons(layout.icons));
 
   return svg;
 }
