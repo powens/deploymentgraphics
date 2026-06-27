@@ -4,6 +4,7 @@ import {
   decomposeBuilding,
   mirror,
   placeBuildings,
+  placedTransform,
   resolveBuilding,
   resolveFeature,
   resolvePlacement,
@@ -182,4 +183,27 @@ describe("decompose ∘ resolvePlacement round-trip", () => {
       expect(roundTripped.rotation).toBeCloseTo(primary.rotation, 6);
     });
   }
+});
+
+describe("placedTransform (centre-pivot draw string)", () => {
+  // The single owner of the centre-pivot convention every Placed renderer
+  // (buildings, features) draws with: translate to the box top-left, then
+  // rotate about the box centre (width/2, height/2).
+  it("translates to the box top-left and rotates about the box centre", () => {
+    const placed: Placed = {
+      name: "x",
+      box: { x: 10, y: 8, width: 5, height: 3 },
+      rotation: 30,
+    };
+    expect(placedTransform(placed)).toBe("translate(10 8) rotate(30 2.5 1.5)");
+  });
+
+  it("emits rotation 0 about the centre for an unrotated piece at the origin", () => {
+    const placed: Placed = {
+      name: "x",
+      box: { x: 0, y: 0, width: 4, height: 6 },
+      rotation: 0,
+    };
+    expect(placedTransform(placed)).toBe("translate(0 0) rotate(0 2 3)");
+  });
 });

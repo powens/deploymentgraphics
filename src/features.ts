@@ -1,7 +1,7 @@
 import type { CanvasSize } from "./building-coordinates.js";
 import { makeElement } from "./dom-helpers.js";
 import { makeShape, type IconShape } from "./icons.js";
-import { resolveFeature } from "./placement.js";
+import { placedTransform, resolveFeature } from "./placement.js";
 import type { FeaturePlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 
@@ -208,11 +208,7 @@ export function makeFeatures(
 
     for (const placed of resolveFeature(placement, canvas)) {
       const g = makeElement("g");
-      g.setAttribute(
-        "transform",
-        `translate(${placed.box.x} ${placed.box.y}) ` +
-          `rotate(${placed.rotation} ${placed.box.width / 2} ${placed.box.height / 2})`,
-      );
+      g.setAttribute("transform", placedTransform(placed));
       g.setAttribute("id", `feature-${counter}`);
 
       for (const shape of body) {
