@@ -104,53 +104,6 @@ export function mergeTerrain(
   return { ...templates, ...layouts };
 }
 
-/**
- * Returns the building placements for a named layout. Throws when the
- * layout does not exist — callers that may be given an unbuilt layout
- * (e.g. a UI selector) must check `terrain.layout[name]` first.
- */
-export function getLayoutBuildings(
-  terrain: TerrainConfig,
-  layoutName: string,
-): BuildingPlacement[] {
-  const layout = terrain.layout[layoutName];
-  if (!layout) {
-    throw new Error(`terrain has no layout named: ${layoutName}`);
-  }
-  return layout.templates;
-}
-
-/**
- * Returns the icon placements for a named layout, or `[]` when the layout is
- * missing or has no icons. Unlike `getLayoutBuildings`, never throws — icons
- * are optional everywhere.
- */
-export function getLayoutIcons(
-  terrain: TerrainConfig,
-  layoutName: string,
-): IconPlacement[] {
-  return terrain.layout[layoutName]?.icons ?? [];
-}
-
-/**
- * Returns the feature placements for a named layout, or `[]` when the layout is
- * missing or has no features. Like `getLayoutIcons`, never throws — features
- * are optional everywhere.
- */
-export function getLayoutFeatures(
-  terrain: TerrainConfig,
-  layoutName: string,
-): FeaturePlacement[] {
-  return terrain.layout[layoutName]?.features ?? [];
-}
-
-/**
- * Returns the area-terrain polygons for a named layout, or `[]` when the
- * layout is missing or carries none. Never throws.
- */
-export function getLayoutAreaTerrain(
-  terrain: TerrainConfig,
-  layoutName: string,
-): AreaTerrain[] {
-  return terrain.layout[layoutName]?.area_terrain ?? [];
-}
+// The pieces of a selected layout are assembled by `resolveLayout` in
+// `layout.ts` (which unions them with the board's top-level arrays), not by
+// per-piece accessors here.
