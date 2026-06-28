@@ -207,6 +207,33 @@ export function renderInspector(
     );
     pField.appendChild(sel);
     bodyEl.appendChild(pField);
+
+    const { wrap: roleField } = makeField("Objective role");
+    const roleSel = document.createElement("select");
+    roleSel.className = "field-input field-select";
+    const roleOptions: { value: string; label: string }[] = [
+      { value: "", label: "None" },
+      { value: "center", label: "Center" },
+      { value: "home", label: "Home" },
+      { value: "expansion", label: "Expansion" },
+    ];
+    for (const o of roleOptions) {
+      const opt = document.createElement("option");
+      opt.value = o.value;
+      opt.textContent = o.label;
+      if ((obj.objective_role ?? "") === o.value) opt.selected = true;
+      roleSel.appendChild(opt);
+    }
+    roleSel.addEventListener("change", () =>
+      onChange(obj.id, {
+        objective_role:
+          roleSel.value === ""
+            ? undefined
+            : (roleSel.value as "center" | "home" | "expansion"),
+      } as Partial<SceneObject>),
+    );
+    roleField.appendChild(roleSel);
+    bodyEl.appendChild(roleField);
   }
 
   if (obj.type === "feature") {

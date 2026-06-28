@@ -61,11 +61,23 @@ export type IconObject = SceneObjectBase & {
   type: "icon";
   iconType: "skull" | "fortress";
   player?: "attacker" | "defender";
+  // Ported 40kdc objective role; carried for round-trip fidelity (see
+  // IconPlacement in terrain-config.ts).
+  objective_role?: "center" | "home" | "expansion";
 };
+
+export type FeatureType =
+  | "l-ruin"
+  | "l-ruin-mirror"
+  | "l-ruin-roof"
+  | "l-ruin-roof-mirror"
+  | "generator"
+  | "gantry"
+  | "pipe";
 
 export type FeatureObject = SceneObjectBase & {
   type: "feature";
-  featureType: "l-ruin" | "l-ruin-roof" | "generator" | "gantry" | "pipe";
+  featureType: FeatureType;
   width: number;
   height: number;
   color: string;
@@ -194,6 +206,7 @@ export function sceneToConfig(
       type: o.iconType,
       pos: { x: o.x + ICON_SIZE / 2, y: o.y + ICON_SIZE / 2 },
       ...(o.player && { player: o.player }),
+      ...(o.objective_role && { objective_role: o.objective_role }),
     }));
 
   const featureItems: FeaturePlacement[] = scene.objects

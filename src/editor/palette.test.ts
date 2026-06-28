@@ -11,6 +11,14 @@ describe("feature palette items", () => {
     expect(labels).toContain("Generator 5×3");
   });
 
+  it("includes the mirrored L-ruin variants the renderer supports", () => {
+    const featureTypes = buildPaletteItems({})
+      .filter((i) => i.category === "feature")
+      .map((i) => (i.category === "feature" ? i.featureType : null));
+    expect(featureTypes).toContain("l-ruin-mirror");
+    expect(featureTypes).toContain("l-ruin-roof-mirror");
+  });
+
   it("creates a feature scene object with size and colour from the item", () => {
     const item = {
       category: "feature" as const,

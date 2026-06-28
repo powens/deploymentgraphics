@@ -1,7 +1,7 @@
 import type { Template, Point } from "../building-coordinates.js";
 import { MIRROR_DEFAULT } from "../placement.js";
 import { DEFAULT_AREA_TERRAIN_SIZE } from "../terrain-config.js";
-import type { Scene, SceneObject, ObjectiveObject } from "./scene.js";
+import type { Scene, SceneObject, ObjectiveObject, FeatureType } from "./scene.js";
 
 export type PaletteItem =
   | { category: "building"; templateKey: string; label: string }
@@ -12,7 +12,7 @@ export type PaletteItem =
   | { category: "icon"; iconType: "skull" | "fortress"; label: string }
   | {
       category: "feature";
-      featureType: "l-ruin" | "l-ruin-roof" | "generator" | "gantry" | "pipe";
+      featureType: FeatureType;
       width: number;
       height: number;
       color: string;
@@ -32,7 +32,9 @@ const FIXED_ITEMS: PaletteItem[] = [
   { category: "annotation", kind: "arrow" },
   { category: "feature", featureType: "l-ruin", width: 3, height: 7, color: "stone", label: "L-ruin 3×7" },
   { category: "feature", featureType: "l-ruin", width: 5, height: 7, color: "stone", label: "L-ruin 5×7" },
+  { category: "feature", featureType: "l-ruin-mirror", width: 5, height: 7, color: "stone", label: "L-ruin mirror" },
   { category: "feature", featureType: "l-ruin-roof", width: 5, height: 7, color: "green", label: "L-ruin roof" },
+  { category: "feature", featureType: "l-ruin-roof-mirror", width: 5, height: 7, color: "green", label: "L-ruin roof mirror" },
   { category: "feature", featureType: "generator", width: 5, height: 3, color: "gunmetal", label: "Generator 5×3" },
   { category: "feature", featureType: "gantry", width: 5, height: 5, color: "gunmetal", label: "Gantry 5×5" },
   { category: "feature", featureType: "pipe", width: 6, height: 2, color: "rust", label: "Pipe (small)" },

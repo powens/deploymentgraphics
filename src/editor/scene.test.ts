@@ -200,6 +200,20 @@ describe("sceneToConfig with icons", () => {
       { type: "skull", pos: { x: 10, y: 12 } },
     ]);
   });
+
+  it("includes objective_role when set", () => {
+    const scene: Scene = {
+      ...emptyScene(),
+      objects: [{
+        id: "ic1", type: "icon", iconType: "fortress",
+        x: 8, y: 10, rotation: 0, objective_role: "home",
+      }],
+    };
+    const config = sceneToConfig(scene, RECT_TEMPLATES);
+    expect(config.terrain.layout["editor"].icons).toEqual([
+      { type: "fortress", pos: { x: 10, y: 12 }, objective_role: "home" },
+    ]);
+  });
 });
 
 describe("sceneToConfig with features", () => {

@@ -16,7 +16,13 @@ import {
   type SelectionState,
 } from "./editor/overlay.js";
 import { renderInspector } from "./editor/inspector.js";
-import { MISSIONS, TERRAIN_LAYOUTS, loadPreset } from "./editor/presets.js";
+import {
+  MISSIONS,
+  TERRAIN_LAYOUTS,
+  loadPreset,
+  templatesUrl,
+  type TemplateSet,
+} from "./editor/presets.js";
 import { insertVertexAtEdge, deleteVertex } from "./editor/vertex-ops.js";
 
 declare const jsyaml: { load(s: string): unknown; dump(v: unknown): string };
@@ -26,6 +32,7 @@ let loadedTemplates: Record<string, Template> = {};
 let rafId: number | null = null;
 let snapEnabled = false;
 let gridEnabled = false;
+let templateSet: TemplateSet = "simple";
 
 const canvasWrap = document.getElementById("canvas-wrap")!;
 const statusBoard = document.getElementById("status-board")!;
@@ -304,6 +311,22 @@ async function fetchYaml(url: string): Promise<unknown> {
   return jsyaml.load(await res.text());
 }
 
+/**
+ * Loads the active building-template set (`simple` or `real`) into
+ * `loadedTemplates`. Both files define the same template names, so a layout
+ * placed against one renders against the other — only the footprints differ.
+ */
+async function loadTemplates(): Promise<void> {
+  try {
+    const data = (await fetchYaml(templatesUrl(templateSet))) as {
+      templates?: Record<string, Template>;
+    };
+    loadedTemplates = data.templates ?? {};
+  } catch (e) {
+    console.error("Failed to load terrain templates:", e);
+  }
+}
+
 let overlaySvg: SVGSVGElement | null = null;
 const sel: SelectionState = { selectedId: null, vertexEditId: null };
 
@@ -327,14 +350,7 @@ function initPalette(): void {
 }
 
 async function start(): Promise<void> {
-  try {
-    const terrainData = (await fetchYaml("./data/terrain/combined.yml")) as {
-      templates: Record<string, Template>;
-    };
-    loadedTemplates = terrainData.templates ?? {};
-  } catch (e) {
-    console.error("Failed to load terrain templates:", e);
-  }
+  await loadTemplates();
 
   document.getElementById("btn-snap")!.addEventListener("click", (e) => {
     snapEnabled = !snapEnabled;
@@ -345,6 +361,21 @@ async function start(): Promise<void> {
     gridEnabled = !gridEnabled;
     (e.currentTarget as HTMLElement).classList.toggle("active", gridEnabled);
     scheduleRender();
+  });
+
+  const btnTemplates = document.getElementById("btn-templates")!;
+  const syncTemplatesLabel = () => {
+    btnTemplates.textContent = templateSet === "simple" ? "▢ Simple" : "▣ Real";
+    btnTemplates.classList.toggle("active", templateSet === "real");
+  };
+  syncTemplatesLabel();
+  btnTemplates.addEventListener("click", async () => {
+    templateSet = templateSet === "simple" ? "real" : "simple";
+    syncTemplatesLabel();
+    await loadTemplates();
+    initPalette();
+    scheduleRender();
+    updateInspector();
   });
 
   window.addEventListener("keydown", (e) => {
@@ -412,6 +443,7 @@ async function start(): Promise<void> {
         modalMission.value,
         modalTerrain.value,
         fetchYaml,
+        templateSet,
       );
       loadedTemplates = templates;
       scene = { boardWidth: 60, boardHeight: 44, ...partial, objects: partial.objects ?? [] } as Scene;
