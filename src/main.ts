@@ -110,27 +110,6 @@ function makeDeploymentZone(
   const colorConfig = theme.deployment[attackerDefender];
   const maskRadius = playerConfig.mask_center ?? 0;
 
-  if (maskRadius > 0) {
-    const cx = config.base.size.width / 2;
-    const cy = config.base.size.height / 2;
-    const r = maskRadius;
-    const polyPath = playerConfig.deployment_zone
-      .map((raw, i) => {
-        const p = toPoint(raw, `${attackerDefender} deployment_zone`);
-        return `${i === 0 ? "M" : "L"}${p.x},${p.y}`;
-      })
-      .join(" ") + " Z";
-    const circlePath =
-      `M${cx + r},${cy} A${r},${r} 0 1 0 ${cx - r},${cy}` +
-      ` A${r},${r} 0 1 0 ${cx + r},${cy} Z`;
-    const dz = makeElement("path");
-    dz.setAttribute("id", attackerDefender);
-    dz.setAttribute("fill-rule", "evenodd");
-    dz.setAttribute("d", `${polyPath} ${circlePath}`);
-    applyAttributes(dz, colorConfig);
-    return dz;
-  }
-
   const dz = makeElement("polygon");
   dz.setAttribute("id", attackerDefender);
   dz.setAttribute(
@@ -141,7 +120,36 @@ function makeDeploymentZone(
       .join(" "),
   );
   applyAttributes(dz, colorConfig);
-  return dz;
+
+  if (maskRadius <= 0) {
+    return dz;
+  }
+
+  // Punch a circular hole at the board centre. A mask subtracts the circle
+  // only where the zone actually is, so nothing bleeds outside the polygon
+  // when the circle is centred on a zone corner (Search and Destroy).
+  const maskId = `center-hole-${attackerDefender}`;
+  const mask = makeElement("mask");
+  mask.setAttribute("id", maskId);
+  const visible = makeElement("rect");
+  visible.setAttribute("x", "0");
+  visible.setAttribute("y", "0");
+  visible.setAttribute("width", `${config.base.size.width}`);
+  visible.setAttribute("height", `${config.base.size.height}`);
+  visible.setAttribute("fill", "white");
+  const hole = makeElement("circle");
+  hole.setAttribute("cx", `${config.base.size.width / 2}`);
+  hole.setAttribute("cy", `${config.base.size.height / 2}`);
+  hole.setAttribute("r", `${maskRadius}`);
+  hole.setAttribute("fill", "black");
+  mask.appendChild(visible);
+  mask.appendChild(hole);
+  dz.setAttribute("mask", `url(#${maskId})`);
+
+  const group = makeElement("g");
+  group.appendChild(mask);
+  group.appendChild(dz);
+  return group;
 }
 
 function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {

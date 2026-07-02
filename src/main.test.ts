@@ -343,7 +343,7 @@ describe("makeDeploymentZone rendering", () => {
     expect(attacker?.tagName).toBe("polygon");
   });
 
-  it("renders an evenodd path when mask_center is set", () => {
+  it("masks the polygon with a centred circular hole when mask_center is set", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
@@ -352,21 +352,32 @@ describe("makeDeploymentZone rendering", () => {
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }], mask_center: 9 },
     };
     const svg = makeMissionCard(config);
+    // The zone stays a plain polygon (no evenodd path that would bleed the
+    // fill outside the polygon when the circle sits on a zone corner).
     const attacker = svg.querySelector("#attacker");
-    expect(attacker?.tagName).toBe("path");
-    expect(attacker?.getAttribute("fill-rule")).toBe("evenodd");
+    expect(attacker?.tagName).toBe("polygon");
+    expect(attacker?.getAttribute("mask")).toBe("url(#center-hole-attacker)");
+
+    const mask = svg.querySelector("#center-hole-attacker");
+    expect(mask?.tagName).toBe("mask");
+    const hole = mask?.querySelector("circle");
+    expect(hole?.getAttribute("cx")).toBe(`${config.base.size.width / 2}`);
+    expect(hole?.getAttribute("cy")).toBe(`${config.base.size.height / 2}`);
+    expect(hole?.getAttribute("r")).toBe("9");
+    expect(hole?.getAttribute("fill")).toBe("black");
   });
 
-  it("does not create a centerMask element when mask_center is set", () => {
+  it("does not mask the polygon when mask_center is absent", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
       home_edge: "long",
-      attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }], mask_center: 9 },
-      defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }], mask_center: 9 },
+      attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }] },
+      defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }] },
     };
     const svg = makeMissionCard(config);
-    expect(svg.querySelector("#centerMask")).toBeNull();
+    expect(svg.querySelector("#attacker")?.getAttribute("mask")).toBeNull();
+    expect(svg.querySelector("mask")).toBeNull();
   });
 });
 
