@@ -47,13 +47,17 @@ describe("placeholder gw.yml", () => {
     ...loadTerrainYaml("gw.yml"),
   } as TerrainConfig;
 
-  it("defines layout 1", () => {
-    expect(Object.keys(gwTerrain.layout).sort()).toEqual(["1"]);
+  it("defines the demo layout 1 (plus any 40kdc patch overlays)", () => {
+    // gw.yml carries the standalone demo layout "1"; it may also carry
+    // additive patch entries whose ids match a ported 40kdc layout (see
+    // convert-40kdc-terrain.mjs), so "1" is present but need not be the only key.
+    expect(Object.keys(gwTerrain.layout)).toContain("1");
   });
 
   it("every building in every layout resolves without throwing", () => {
     for (const [name, layout] of Object.entries(gwTerrain.layout)) {
-      for (const placement of layout.templates) {
+      // Patch overlays may carry only `features`, so guard the templates list.
+      for (const placement of layout.templates ?? []) {
         expect(
           () => resolveBuilding(placement, gwTerrain.templates, CANVAS),
           `layout ${name}, building type ${placement.type}`,

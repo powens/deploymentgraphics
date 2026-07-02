@@ -109,6 +109,24 @@ for (const layout of layouts) {
   if (area_terrain.length > 0) entry.area_terrain = area_terrain;
   if (features.length > 0) entry.features = features;
   if (icons.length > 0) entry.icons = icons;
+  // A gw.yml layout whose id matches this 40kdc layout is a hand-authored
+  // *patch*, not a standalone demo layout: its array fields (typically
+  // `features`) are appended to the generated entry. This is how we correct
+  // upstream data gaps (e.g. ruins the 40kdc source omits on a variant's home
+  // objectives) durably — the fix lives in gw.yml, so it survives
+  // `make update-terrain` re-pulling the source. gw ids with no 40kdc match
+  // (like the demo "1") remain standalone layouts, spread in above.
+  const patch = gw.layout?.[layout.id];
+  if (patch) {
+    for (const key of ["templates", "features", "area_terrain", "icons"]) {
+      if (Array.isArray(patch[key])) {
+        entry[key] = [...(entry[key] ?? []), ...patch[key]];
+      }
+    }
+  }
+  // Drop any spread-in patch key first so the generated entry keeps its
+  // natural 40kdc source order rather than the position the gw spread gave it.
+  delete out.layout[layout.id];
   out.layout[layout.id] = entry;
 }
 

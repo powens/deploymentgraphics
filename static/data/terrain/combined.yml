@@ -8647,6 +8647,22 @@ layout:
         rotation: 300
         color: gunmetal
         mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 43.92
+        'y': 5.48
+        width: 4.5
+        height: 5
+        rotation: 180
+        color: green
+      - type: l-ruin-mirror
+        label: ruin
+        x: 51.603
+        'y': 9.533
+        width: 3
+        height: 2
+        rotation: 0
+        color: green
     icons:
       - type: fortress
         pos:
