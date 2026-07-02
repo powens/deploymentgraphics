@@ -91,7 +91,7 @@ export const searchAndDestroy: DeploymentConfig = {
 export const sweepingEngagement: DeploymentConfig = {
   name: "Sweeping Engagement",
   home_edge: "long",
-  territory: { start: { x: 0, y: 22 }, end: { x: 60, y: 22 } },
+  territory: { start: { x: 0, y: 19 }, end: { x: 60, y: 25 } },
   attacker: {
     deployment_zone: [
       { x: 60, y: 44 },
@@ -118,7 +118,7 @@ export const sweepingEngagement: DeploymentConfig = {
 export const tippingPoint: DeploymentConfig = {
   name: "Tipping Point",
   home_edge: "short",
-  territory: { start: { x: 30, y: 0 }, end: { x: 30, y: 44 } },
+  territory: { start: { x: 26, y: 0 }, end: { x: 34, y: 44 } },
   attacker: {
     deployment_zone: [
       { x: 0, y: 44 },
