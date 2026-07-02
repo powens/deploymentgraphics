@@ -33,6 +33,7 @@ describe("buildConfig", () => {
     const base = {
       size: { width: 60, height: 44 },
       half_way_lines: { draw: true },
+      territory: { draw: true },
       building: { draw: true },
       grid: { draw: false },
     };
@@ -48,6 +49,7 @@ describe("buildConfig", () => {
       base: {
         size: { width: 60, height: 44 },
         half_way_lines: { draw: true },
+        territory: { draw: true },
         building: { draw: true },
         grid: { draw: true },
       },

@@ -239,6 +239,7 @@ export function sceneToConfig(
     base: {
       size: { width: scene.boardWidth, height: scene.boardHeight },
       half_way_lines: { draw: true },
+      territory: { draw: true },
       building: { draw: false },
       grid: { draw: false },
     },

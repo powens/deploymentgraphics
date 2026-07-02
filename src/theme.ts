@@ -9,6 +9,7 @@ import type { SVGProperties } from "./types.js";
 export type Theme = {
   background: SVGProperties;
   half_way_lines: SVGProperties;
+  territory: SVGProperties;
   deployment: { attacker: SVGProperties; defender: SVGProperties };
   building: {
     group: SVGProperties;

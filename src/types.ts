@@ -9,6 +9,7 @@ export type Size = { width: number; height: number };
 export type BaseConfig = {
   size: Size;
   half_way_lines: { draw?: boolean };
+  territory: { draw?: boolean };
   building: { draw?: boolean };
   grid: { draw?: boolean };
 };
@@ -21,6 +22,7 @@ export type AttackerDefender = {
 export type DeploymentConfig = {
   name: string;
   home_edge: "short" | "long";
+  territory?: { start: Coordinate; end: Coordinate };
   attacker: AttackerDefender;
   defender: AttackerDefender;
 };

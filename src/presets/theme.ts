@@ -12,6 +12,7 @@ export const baseTheme: Theme = {
     stroke_width: 0.2,
     opacity: 0.5,
   },
+  territory: { stroke: "black", stroke_width: 0.3, opacity: 0.6 },
   deployment: {
     attacker: { fill: "#cf4b33", stroke: "none", stroke_width: 0.4 },
     defender: { fill: "#7d8b7f", stroke: "none", stroke_width: 0.4 },

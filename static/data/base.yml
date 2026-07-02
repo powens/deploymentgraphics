@@ -6,6 +6,9 @@ size:
 half_way_lines:
   draw: true
 
+territory:
+  draw: true
+
 building:
   draw: false
 
