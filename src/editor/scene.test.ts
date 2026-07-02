@@ -134,6 +134,7 @@ describe("sceneToConfig", () => {
     expect(config.base).toEqual({
       size: { width: 60, height: 44 },
       half_way_lines: { draw: true },
+      territory: { draw: true },
       building: { draw: false },
       grid: { draw: false },
     });

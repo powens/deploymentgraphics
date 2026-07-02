@@ -82,6 +82,25 @@ function makeHalfwayLines(config: FullConfig, theme: Theme): SVGElement | null {
   return group;
 }
 
+function makeTerritoryLine(config: FullConfig, theme: Theme): SVGElement | null {
+  // Absent `draw` defaults to on; only an explicit `false` suppresses. A
+  // mission with no `territory` draws nothing regardless of the toggle.
+  const territory = config.deployment.territory;
+  if (!territory || config.base.territory.draw === false) {
+    return null;
+  }
+  const start = toPoint(territory.start, "territory start");
+  const end = toPoint(territory.end, "territory end");
+  const line = makeElement("line");
+  line.setAttribute("id", "territory");
+  line.setAttribute("x1", `${start.x}`);
+  line.setAttribute("y1", `${start.y}`);
+  line.setAttribute("x2", `${end.x}`);
+  line.setAttribute("y2", `${end.y}`);
+  applyAttributes(line, theme.territory);
+  return line;
+}
+
 function makeDeploymentZone(
   config: FullConfig,
   attackerDefender: "attacker" | "defender",
@@ -296,6 +315,11 @@ export function makeMissionCard(
   const halfwayLines = makeHalfwayLines(config, theme);
   if (halfwayLines) {
     svg.appendChild(halfwayLines);
+  }
+
+  const territory = makeTerritoryLine(config, theme);
+  if (territory) {
+    svg.appendChild(territory);
   }
 
   // An unbuilt layout yields empty placements, so this is an empty

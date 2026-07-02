@@ -369,3 +369,55 @@ describe("makeDeploymentZone rendering", () => {
     expect(svg.querySelector("#centerMask")).toBeNull();
   });
 });
+
+describe("territory divider", () => {
+  function withTerritory(
+    territory: { start: { x: number; y: number }; end: { x: number; y: number } } | undefined,
+    draw?: boolean,
+  ): FullConfig {
+    return {
+      base: {
+        size: { width: 60, height: 44 },
+        half_way_lines: { draw: false },
+        territory: { draw },
+        building: { draw: false },
+        grid: { draw: false },
+      },
+      terrain: { layout_name: "1", templates: {}, layout: { "1": { templates: [] } } },
+      deployment: {
+        name: "Test",
+        home_edge: "long",
+        ...(territory ? { territory } : {}),
+        attacker: { deployment_zone: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 10 }] },
+        defender: { deployment_zone: [{ x: 0, y: 44 }, { x: 60, y: 44 }, { x: 60, y: 34 }] },
+      },
+    } as unknown as FullConfig;
+  }
+
+  const line = { start: { x: 0, y: 0 }, end: { x: 60, y: 44 } };
+
+  it("draws the divider at the given endpoints when defined", () => {
+    const svg = makeMissionCard(withTerritory(line, true));
+    const el = svg.querySelector("#territory");
+    expect(el).not.toBeNull();
+    expect(el!.getAttribute("x1")).toBe("0");
+    expect(el!.getAttribute("y1")).toBe("0");
+    expect(el!.getAttribute("x2")).toBe("60");
+    expect(el!.getAttribute("y2")).toBe("44");
+  });
+
+  it("defaults to drawing when the base toggle is absent", () => {
+    const svg = makeMissionCard(withTerritory(line, undefined));
+    expect(svg.querySelector("#territory")).not.toBeNull();
+  });
+
+  it("omits the divider when base.territory.draw is false", () => {
+    const svg = makeMissionCard(withTerritory(line, false));
+    expect(svg.querySelector("#territory")).toBeNull();
+  });
+
+  it("omits the divider when the mission has no territory", () => {
+    const svg = makeMissionCard(withTerritory(undefined, true));
+    expect(svg.querySelector("#territory")).toBeNull();
+  });
+});
