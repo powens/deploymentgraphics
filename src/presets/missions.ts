@@ -7,6 +7,7 @@ import type { DeploymentConfig } from "../types.js";
 export const crucibleOfBattle: DeploymentConfig = {
   name: "Crucible of Battle",
   home_edge: "short",
+  territory: { start: { x: 15, y: 0 }, end: { x: 45, y: 44 } },
   attacker: {
     deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 44 }, { x: 30, y: 0 }],
   },
@@ -19,6 +20,7 @@ export const crucibleOfBattle: DeploymentConfig = {
 export const dawnOfWar: DeploymentConfig = {
   name: "Dawn of War",
   home_edge: "long",
+  territory: { start: { x: 0, y: 22 }, end: { x: 60, y: 22 } },
   attacker: {
     deployment_zone: [
       { x: 0, y: 0 },
@@ -41,6 +43,7 @@ export const dawnOfWar: DeploymentConfig = {
 export const hammerAndAnvil: DeploymentConfig = {
   name: "Hammer and Anvil",
   home_edge: "short",
+  territory: { start: { x: 30, y: 0 }, end: { x: 30, y: 44 } },
   attacker: {
     deployment_zone: [
       { x: 60, y: 0 },
@@ -63,6 +66,7 @@ export const hammerAndAnvil: DeploymentConfig = {
 export const searchAndDestroy: DeploymentConfig = {
   name: "Search and Destroy",
   home_edge: "long",
+  territory: { start: { x: 0, y: 0 }, end: { x: 60, y: 44 } },
   attacker: {
     mask_center: 9,
     deployment_zone: [
@@ -87,6 +91,7 @@ export const searchAndDestroy: DeploymentConfig = {
 export const sweepingEngagement: DeploymentConfig = {
   name: "Sweeping Engagement",
   home_edge: "long",
+  territory: { start: { x: 0, y: 22 }, end: { x: 60, y: 22 } },
   attacker: {
     deployment_zone: [
       { x: 60, y: 44 },
@@ -113,6 +118,7 @@ export const sweepingEngagement: DeploymentConfig = {
 export const tippingPoint: DeploymentConfig = {
   name: "Tipping Point",
   home_edge: "short",
+  territory: { start: { x: 30, y: 0 }, end: { x: 30, y: 44 } },
   attacker: {
     deployment_zone: [
       { x: 0, y: 44 },
