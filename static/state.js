@@ -32,7 +32,8 @@ export const DEFAULT_CONTROLS = {
   lay: "B",
   m: "dawn_of_war",
   t: "1",
-  tpl: "simple",
+  // Default to the detailed GW footprints; the illustrative "simple" set is opt-in.
+  tpl: "real",
   grid: false,
   rot: "0",
 };
