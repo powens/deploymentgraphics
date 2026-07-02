@@ -2,8 +2,8 @@ name: Sweeping Engagement
 home_edge: long
 
 territory:
-  start: { x: 0, y: 22 }
-  end:   { x: 60, y: 22 }
+  start: { x: 0, y: 19 }
+  end: { x: 60, y: 25 }
 
 attacker:
   deployment_zone:
