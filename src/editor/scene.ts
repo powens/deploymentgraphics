@@ -100,6 +100,7 @@ export type Scene = {
   homeEdge: "short" | "long";
   objects: SceneObject[];
   centerHoleRadius?: number;
+  territory?: { start: Point; end: Point };
 };
 
 export function emptyScene(): Scene {
@@ -225,6 +226,7 @@ export function sceneToConfig(
   const deployment: DeploymentConfig = {
     name: scene.missionName,
     home_edge: scene.homeEdge,
+    ...(scene.territory ? { territory: scene.territory } : {}),
     attacker: {
       deployment_zone: attackerZone?.vertices ?? [],
       ...(scene.centerHoleRadius ? { mask_center: scene.centerHoleRadius } : {}),

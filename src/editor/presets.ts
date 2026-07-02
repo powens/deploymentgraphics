@@ -21,6 +21,7 @@ export const TERRAIN_LAYOUTS = Object.keys(gwTerrain.layout).map((id) => ({
 type MissionYaml = {
   name: string;
   home_edge: "short" | "long";
+  territory?: { start: Point; end: Point };
   attacker: { deployment_zone: Point[]; mask_center?: number };
   defender: { deployment_zone: Point[]; mask_center?: number };
 };
@@ -156,6 +157,7 @@ export async function loadPreset(
       objects,
       centerHoleRadius:
         missionData.attacker.mask_center ?? missionData.defender.mask_center,
+      ...(missionData.territory ? { territory: missionData.territory } : {}),
     },
     templates,
   };

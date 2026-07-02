@@ -277,3 +277,22 @@ describe("sceneToConfig with centerHoleRadius", () => {
     expect(config.deployment.defender.mask_center).toBeUndefined();
   });
 });
+
+describe("sceneToConfig territory", () => {
+  it("round-trips the territory divider into the deployment config", () => {
+    const scene = {
+      ...emptyScene(),
+      territory: { start: { x: 0, y: 0 }, end: { x: 60, y: 44 } },
+    };
+    const config = sceneToConfig(scene, {});
+    expect(config.deployment.territory).toEqual({
+      start: { x: 0, y: 0 },
+      end: { x: 60, y: 44 },
+    });
+  });
+
+  it("omits territory when the scene has none", () => {
+    const config = sceneToConfig(emptyScene(), {});
+    expect(config.deployment.territory).toBeUndefined();
+  });
+});
