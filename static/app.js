@@ -90,6 +90,7 @@ async function configFromControls(controls) {
     terrain: mergeTerrain(terrainTemplates, terrainLayouts),
     layout: controls.t,
     grid: controls.grid,
+    territory: controls.territory,
   });
 }
 
@@ -114,6 +115,7 @@ const terrainSelector = document.getElementById("terrain");
 const templatesSelector = document.getElementById("templates");
 const rotationSelector = document.getElementById("rotation");
 const showGrid = document.getElementById("show-grid");
+const showTerritory = document.getElementById("show-territory");
 // Changing a disposition or the layout re-derives the deployment; the other
 // controls (the deployment dropdown included) just re-render.
 const derivedFromControls = [
@@ -128,6 +130,7 @@ const controlEls = [
   templatesSelector,
   rotationSelector,
   showGrid,
+  showTerritory,
 ];
 
 const stage = document.getElementById("stage");
@@ -171,6 +174,7 @@ function controlState() {
     t: terrainSelector.value,
     tpl: templatesSelector.value,
     grid: showGrid.checked,
+    territory: showTerritory.checked,
     rot: rotationSelector.value,
   };
 }
@@ -183,6 +187,7 @@ function applyControls(controls) {
   terrainSelector.value = controls.t;
   templatesSelector.value = controls.tpl;
   showGrid.checked = controls.grid;
+  showTerritory.checked = controls.territory;
   rotationSelector.value = controls.rot;
 }
 

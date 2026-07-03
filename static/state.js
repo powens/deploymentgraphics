@@ -2,7 +2,8 @@
 //
 // Persisted shape:
 //   { version, mode: "controls" | "yaml",
-//     controls: { da, db, lay, m, t, tpl, grid, rot }, yaml: string | null }
+//     controls: { da, db, lay, m, t, tpl, grid, territory, rot },
+//     yaml: string | null }
 //
 // `da`/`db` are the two force dispositions and `lay` the layout (A/B/C);
 // changing any of them sets the deployment `m` via the event matrix, but `m`
@@ -35,6 +36,8 @@ export const DEFAULT_CONTROLS = {
   // Default to the detailed GW footprints; the illustrative "simple" set is opt-in.
   tpl: "real",
   grid: false,
+  // The territory (halfway divider) line draws by default; the toggle opts out.
+  territory: true,
   rot: "0",
 };
 
@@ -51,6 +54,7 @@ export function sanitizeControls(controls, dispositionIds, missionIds, terrainId
     t: terrainIds.includes(c.t) ? c.t : DEFAULT_CONTROLS.t,
     tpl: TEMPLATE_SETS.includes(c.tpl) ? c.tpl : DEFAULT_CONTROLS.tpl,
     grid: c.grid === true,
+    territory: c.territory !== false,
     rot: ROTATIONS.includes(String(c.rot)) ? String(c.rot) : DEFAULT_CONTROLS.rot,
   };
 }
@@ -59,7 +63,7 @@ export function sanitizeControls(controls, dispositionIds, missionIds, terrainId
 // (a shared link) takes precedence over saved localStorage state.
 export function urlHasControls() {
   const params = new URLSearchParams(window.location.search);
-  return ["da", "db", "lay", "m", "t", "tpl", "grid", "rot"].some((key) =>
+  return ["da", "db", "lay", "m", "t", "tpl", "grid", "territory", "rot"].some((key) =>
     params.has(key),
   );
 }
@@ -75,6 +79,8 @@ export function readControlsFromUrl(dispositionIds, missionIds, terrainIds) {
       t: params.get("t"),
       tpl: params.get("tpl"),
       grid: params.get("grid") === "1",
+      // Defaults on; an explicit territory=0 opts out.
+      territory: params.get("territory") !== "0",
       rot: params.get("rot"),
     },
     dispositionIds,
@@ -107,6 +113,9 @@ export function writeControlsToUrl(controls) {
   }
   if (controls.grid) {
     params.set("grid", "1");
+  }
+  if (!controls.territory) {
+    params.set("territory", "0");
   }
   if (controls.rot !== DEFAULT_CONTROLS.rot) {
     params.set("rot", controls.rot);

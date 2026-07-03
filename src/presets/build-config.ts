@@ -18,6 +18,8 @@ export interface BuildConfigOptions {
   base?: BaseConfig;
   /** Override the grid's `draw` flag without mutating `base`. */
   grid?: boolean;
+  /** Override the territory line's `draw` flag without mutating `base`. */
+  territory?: boolean;
 }
 
 /**
@@ -33,13 +35,21 @@ export function buildConfig({
   layout = "",
   base = baseConfig,
   grid,
+  territory,
 }: BuildConfigOptions): FullConfig {
+  let resolvedBase = base;
+  if (grid !== undefined) {
+    resolvedBase = { ...resolvedBase, grid: { ...resolvedBase.grid, draw: grid } };
+  }
+  if (territory !== undefined) {
+    resolvedBase = {
+      ...resolvedBase,
+      territory: { ...resolvedBase.territory, draw: territory },
+    };
+  }
   return {
     deployment: mission,
-    base:
-      grid === undefined
-        ? base
-        : { ...base, grid: { ...base.grid, draw: grid } },
+    base: resolvedBase,
     terrain: { ...terrain, layout_name: layout },
   };
 }

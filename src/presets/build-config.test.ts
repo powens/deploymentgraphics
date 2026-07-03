@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { makeMissionCard } from "../main.js";
 import { mergeTerrain } from "../terrain-config.js";
+import { baseConfig } from "./base.js";
 import { buildConfig } from "./build-config.js";
 import { missions } from "./missions.js";
 
@@ -13,16 +14,23 @@ describe("buildConfig", () => {
     }
   });
 
-  it("applies layout and grid overrides", () => {
+  it("applies layout, grid, and territory overrides", () => {
     const config = buildConfig({
       mission: missions.dawn_of_war,
       layout: "1",
       grid: false,
+      territory: false,
     });
 
     expect(config.terrain.layout_name).toBe("1");
     expect(config.base.grid.draw).toBe(false);
+    expect(config.base.territory.draw).toBe(false);
     expect(() => makeMissionCard(config)).not.toThrow();
+  });
+
+  it("leaves base untouched when no override is passed", () => {
+    const config = buildConfig({ mission: missions.dawn_of_war });
+    expect(config.base).toBe(baseConfig);
   });
 
   // The browser app assembles its config this way — mergeTerrain feeding
