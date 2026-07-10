@@ -4,8 +4,119 @@
     "name": "Large Area",
     "kind": "area",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 11.5, "height": 7 },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "footprint": {
+      "type": "polygon",
+      "points": [
+        {
+          "x": 0,
+          "y": 7
+        },
+        {
+          "x": 1.4827,
+          "y": 7
+        },
+        {
+          "x": 1.4887,
+          "y": 7.052
+        },
+        {
+          "x": 1.6514,
+          "y": 7.185
+        },
+        {
+          "x": 1.8679,
+          "y": 7.283
+        },
+        {
+          "x": 2.2431,
+          "y": 7.2668
+        },
+        {
+          "x": 2.4017,
+          "y": 7.3677
+        },
+        {
+          "x": 2.7891,
+          "y": 7.4309
+        },
+        {
+          "x": 3.0922,
+          "y": 7.536
+        },
+        {
+          "x": 3.3307,
+          "y": 7.3869
+        },
+        {
+          "x": 3.5594,
+          "y": 7
+        },
+        {
+          "x": 4.689,
+          "y": 7
+        },
+        {
+          "x": 4.7302,
+          "y": 7.0602
+        },
+        {
+          "x": 4.98,
+          "y": 7.144
+        },
+        {
+          "x": 5.242,
+          "y": 7.1396
+        },
+        {
+          "x": 5.875,
+          "y": 7
+        },
+        {
+          "x": 5.9034,
+          "y": 7.0519
+        },
+        {
+          "x": 6.6077,
+          "y": 7.3171
+        },
+        {
+          "x": 7.0147,
+          "y": 7.4122
+        },
+        {
+          "x": 7.5011,
+          "y": 7.2791
+        },
+        {
+          "x": 7.6351,
+          "y": 7.1687
+        },
+        {
+          "x": 7.7724,
+          "y": 7.1636
+        },
+        {
+          "x": 7.946,
+          "y": 7
+        },
+        {
+          "x": 11.5,
+          "y": 7
+        },
+        {
+          "x": 11.5,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    },
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "area-trapezoid",
@@ -15,37 +126,365 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 0, "y": 0 },
-        { "x": 8, "y": 0 },
-        { "x": 2, "y": 11.5 },
-        { "x": 0, "y": 11.5 }
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 8,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 11.5
+        },
+        {
+          "x": 0,
+          "y": 11.5
+        }
       ]
     },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "area-medium",
     "name": "Medium Area",
     "kind": "area",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 6, "height": 4 },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "footprint": {
+      "type": "polygon",
+      "points": [
+        {
+          "x": 0,
+          "y": 4
+        },
+        {
+          "x": 0.0517,
+          "y": 3.9456
+        },
+        {
+          "x": 0,
+          "y": 3.0208
+        },
+        {
+          "x": -0.2893,
+          "y": 2.8481
+        },
+        {
+          "x": -0.2943,
+          "y": 2.6726
+        },
+        {
+          "x": -0.2155,
+          "y": 2.4757
+        },
+        {
+          "x": -0.48,
+          "y": 1.875
+        },
+        {
+          "x": -0.3413,
+          "y": 1.5968
+        },
+        {
+          "x": -0.2935,
+          "y": 1.3654
+        },
+        {
+          "x": 0,
+          "y": 1.1755
+        },
+        {
+          "x": 0,
+          "y": 0.9973
+        },
+        {
+          "x": 0.0537,
+          "y": 0.9806
+        },
+        {
+          "x": 0.0537,
+          "y": 0.0834
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 6,
+          "y": 0
+        },
+        {
+          "x": 6,
+          "y": 4
+        },
+        {
+          "x": 4.74,
+          "y": 4
+        },
+        {
+          "x": 4.708,
+          "y": 4.0903
+        },
+        {
+          "x": 4.5247,
+          "y": 4.2088
+        },
+        {
+          "x": 4,
+          "y": 4.3229
+        },
+        {
+          "x": 3.5463,
+          "y": 4.248
+        },
+        {
+          "x": 3.29,
+          "y": 4.0755
+        },
+        {
+          "x": 2.7256,
+          "y": 4.0955
+        },
+        {
+          "x": 2.668,
+          "y": 4
+        },
+        {
+          "x": 0.0542,
+          "y": 3.9457
+        }
+      ]
+    },
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "area-long-line",
     "name": "Long Line Area",
     "kind": "area",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 10, "height": 2.5 },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "footprint": {
+      "type": "polygon",
+      "points": [
+        {
+          "x": 10,
+          "y": 2.5
+        },
+        {
+          "x": 10,
+          "y": 0
+        },
+        {
+          "x": 9.4616,
+          "y": 0
+        },
+        {
+          "x": 9.3842,
+          "y": -0.1625
+        },
+        {
+          "x": 9.0518,
+          "y": -0.2517
+        },
+        {
+          "x": 8.6688,
+          "y": -0.4939
+        },
+        {
+          "x": 8.1482,
+          "y": -0.6
+        },
+        {
+          "x": 7.8933,
+          "y": -0.5644
+        },
+        {
+          "x": 7.7668,
+          "y": -0.4805
+        },
+        {
+          "x": 7.4037,
+          "y": 0
+        },
+        {
+          "x": 2.5979,
+          "y": 0
+        },
+        {
+          "x": 2.5119,
+          "y": -0.1621
+        },
+        {
+          "x": 2.3849,
+          "y": -0.1913
+        },
+        {
+          "x": 1.7819,
+          "y": -0.1013
+        },
+        {
+          "x": 1.6753,
+          "y": -0.0553
+        },
+        {
+          "x": 1.6544,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 2.5
+        },
+        {
+          "x": 2.8502,
+          "y": 2.5
+        },
+        {
+          "x": 2.8492,
+          "y": 2.6077
+        },
+        {
+          "x": 3.0845,
+          "y": 2.8689
+        },
+        {
+          "x": 3.4159,
+          "y": 3
+        },
+        {
+          "x": 3.7635,
+          "y": 3.0128
+        },
+        {
+          "x": 4.0544,
+          "y": 3.0851
+        },
+        {
+          "x": 4.155,
+          "y": 3.0725
+        },
+        {
+          "x": 4.2334,
+          "y": 3.0029
+        },
+        {
+          "x": 4.4469,
+          "y": 2.6698
+        },
+        {
+          "x": 4.502,
+          "y": 2.5
+        }
+      ]
+    },
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "area-short-line",
     "name": "Short Line Area",
     "kind": "area",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 6, "height": 2 },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "footprint": {
+      "type": "polygon",
+      "points": [
+        {
+          "x": 6,
+          "y": 2
+        },
+        {
+          "x": 6,
+          "y": 0
+        },
+        {
+          "x": 2.0038,
+          "y": 0
+        },
+        {
+          "x": 1.955,
+          "y": -0.1925
+        },
+        {
+          "x": 1.8409,
+          "y": -0.26
+        },
+        {
+          "x": 1.4144,
+          "y": -0.2081
+        },
+        {
+          "x": 1.2091,
+          "y": -0.2338
+        },
+        {
+          "x": 0.9374,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 2
+        },
+        {
+          "x": 3.477,
+          "y": 2
+        },
+        {
+          "x": 3.8062,
+          "y": 2.2976
+        },
+        {
+          "x": 4.3476,
+          "y": 2.4293
+        },
+        {
+          "x": 4.667,
+          "y": 2.3273
+        },
+        {
+          "x": 4.7814,
+          "y": 2.1465
+        },
+        {
+          "x": 4.9434,
+          "y": 2.0519
+        },
+        {
+          "x": 4.9507,
+          "y": 2
+        },
+        {
+          "x": 5.0984,
+          "y": 2
+        },
+        {
+          "x": 5.0992,
+          "y": 1.9472
+        },
+        {
+          "x": 5.8901,
+          "y": 1.9401
+        }
+      ]
+    },
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "corner-tiny",
@@ -55,18 +494,39 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 0, "y": 0 },
-        { "x": 2, "y": 0 },
-        { "x": 2, "y": 0.5 },
-        { "x": 0.5, "y": 0.5 },
-        { "x": 0.5, "y": 2 },
-        { "x": 0, "y": 2 }
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 2
+        },
+        {
+          "x": 0,
+          "y": 2
+        }
       ]
     },
     "default_height_inches": 5,
     "default_blocking": true,
     "terrain_category": "light",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "corner-short",
@@ -76,18 +536,39 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 0, "y": 0 },
-        { "x": 2, "y": 0 },
-        { "x": 2, "y": 0.5 },
-        { "x": 0.5, "y": 0.5 },
-        { "x": 0.5, "y": 3 },
-        { "x": 0, "y": 3 }
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0
+        },
+        {
+          "x": 2,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 3
+        },
+        {
+          "x": 0,
+          "y": 3
+        }
       ]
     },
     "default_height_inches": 5,
     "default_blocking": true,
     "terrain_category": "light",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "barricade",
@@ -97,75 +578,138 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 0, "y": 0 },
-        { "x": 3.5, "y": 0 },
-        { "x": 3.5, "y": 1 },
-        { "x": 3, "y": 1 },
-        { "x": 3, "y": 0.5 },
-        { "x": 0.5, "y": 0.5 },
-        { "x": 0.5, "y": 1 },
-        { "x": 0, "y": 1 }
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 3.5,
+          "y": 0
+        },
+        {
+          "x": 3.5,
+          "y": 1
+        },
+        {
+          "x": 3,
+          "y": 1
+        },
+        {
+          "x": 3,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 1
+        },
+        {
+          "x": 0,
+          "y": 1
+        }
       ]
     },
     "default_height_inches": 2,
     "default_blocking": false,
     "terrain_category": "light",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "pipe",
     "name": "Pipe",
     "kind": "feature",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 5.5, "height": 1 },
+    "footprint": {
+      "type": "rectangle",
+      "width": 5.5,
+      "height": 1
+    },
     "default_height_inches": 2,
     "default_blocking": true,
     "terrain_category": "light",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "gantry",
     "name": "Gantry",
     "kind": "feature",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 2, "height": 2 },
+    "footprint": {
+      "type": "rectangle",
+      "width": 2,
+      "height": 2
+    },
     "default_height_inches": 3,
     "default_blocking": true,
     "ground_accessible": false,
     "terrain_category": "dense",
     "upper_floor": {
-      "footprint": { "type": "rectangle", "width": 2, "height": 2 },
+      "footprint": {
+        "type": "rectangle",
+        "width": 2,
+        "height": 2
+      },
       "floor": 1
     },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "catwalk",
     "name": "Catwalk",
     "kind": "feature",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 7, "height": 2 },
+    "footprint": {
+      "type": "rectangle",
+      "width": 7,
+      "height": 2
+    },
     "default_height_inches": 3,
     "default_blocking": true,
     "ground_accessible": false,
     "terrain_category": "dense",
     "upper_floor": {
-      "footprint": { "type": "rectangle", "width": 7, "height": 2 },
+      "footprint": {
+        "type": "rectangle",
+        "width": 7,
+        "height": 2
+      },
       "floor": 1
     },
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "generator",
     "name": "Generator",
     "kind": "feature",
     "source": "gw-11e",
-    "footprint": { "type": "rectangle", "width": 3, "height": 4 },
+    "footprint": {
+      "type": "rectangle",
+      "width": 3,
+      "height": 4
+    },
     "default_height_inches": 3,
     "default_blocking": true,
     "ground_accessible": false,
     "terrain_category": "dense",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "corner-ruin-balanced-left",
@@ -175,22 +719,47 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 0, "y": 0 },
-        { "x": 5, "y": 0 },
-        { "x": 5, "y": 0.5 },
-        { "x": 0.5, "y": 0.5 },
-        { "x": 0.5, "y": 4.5 },
-        { "x": 0, "y": 4.5 }
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 5,
+          "y": 0
+        },
+        {
+          "x": 5,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 0.5,
+          "y": 4.5
+        },
+        {
+          "x": 0,
+          "y": 4.5
+        }
       ]
     },
     "default_height_inches": 5,
     "default_blocking": true,
     "upper_floor": {
-      "footprint": { "type": "rectangle", "width": 3, "height": 4 },
+      "footprint": {
+        "type": "rectangle",
+        "width": 3,
+        "height": 4
+      },
       "floor": 1
     },
     "terrain_category": "dense",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "corner-ruin-balanced-right",
@@ -200,12 +769,30 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 5, "y": 0 },
-        { "x": 0, "y": 0 },
-        { "x": 0, "y": 0.5 },
-        { "x": 4.5, "y": 0.5 },
-        { "x": 4.5, "y": 4.5 },
-        { "x": 5, "y": 4.5 }
+        {
+          "x": 5,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0.5
+        },
+        {
+          "x": 4.5,
+          "y": 0.5
+        },
+        {
+          "x": 4.5,
+          "y": 4.5
+        },
+        {
+          "x": 5,
+          "y": 4.5
+        }
       ]
     },
     "default_height_inches": 5,
@@ -214,16 +801,31 @@
       "footprint": {
         "type": "polygon",
         "points": [
-          { "x": 2, "y": 0 },
-          { "x": 5, "y": 0 },
-          { "x": 5, "y": 4 },
-          { "x": 2, "y": 4 }
+          {
+            "x": 2,
+            "y": 0
+          },
+          {
+            "x": 5,
+            "y": 0
+          },
+          {
+            "x": 5,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 4
+          }
         ]
       },
       "floor": 1
     },
     "terrain_category": "dense",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "corner-ruin-right",
@@ -233,22 +835,47 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 0, "y": 0 },
-        { "x": 3, "y": 0 },
-        { "x": 3, "y": 6.5 },
-        { "x": 2.5, "y": 6.5 },
-        { "x": 2.5, "y": 0.5 },
-        { "x": 0, "y": 0.5 }
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 3,
+          "y": 0
+        },
+        {
+          "x": 3,
+          "y": 6.5
+        },
+        {
+          "x": 2.5,
+          "y": 6.5
+        },
+        {
+          "x": 2.5,
+          "y": 0.5
+        },
+        {
+          "x": 0,
+          "y": 0.5
+        }
       ]
     },
     "default_height_inches": 5,
     "default_blocking": true,
     "upper_floor": {
-      "footprint": { "type": "rectangle", "width": 3, "height": 5 },
+      "footprint": {
+        "type": "rectangle",
+        "width": 3,
+        "height": 5
+      },
       "floor": 1
     },
     "terrain_category": "dense",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   },
   {
     "id": "corner-ruin-left",
@@ -258,21 +885,99 @@
     "footprint": {
       "type": "polygon",
       "points": [
-        { "x": 3, "y": 0 },
-        { "x": 0, "y": 0 },
-        { "x": 0, "y": 6.5 },
-        { "x": 0.5, "y": 6.5 },
-        { "x": 0.5, "y": 0.5 },
-        { "x": 3, "y": 0.5 }
+        {
+          "x": 3,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 6.5
+        },
+        {
+          "x": 0.5,
+          "y": 6.5
+        },
+        {
+          "x": 0.5,
+          "y": 0.5
+        },
+        {
+          "x": 3,
+          "y": 0.5
+        }
       ]
     },
     "default_height_inches": 5,
     "default_blocking": true,
     "upper_floor": {
-      "footprint": { "type": "rectangle", "width": 3, "height": 5 },
+      "footprint": {
+        "type": "rectangle",
+        "width": 3,
+        "height": 5
+      },
       "floor": 1
     },
     "terrain_category": "dense",
-    "game_version": { "edition": "11th", "dataslate": "pre-launch-provisional" }
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
+  },
+  {
+    "id": "impassable-wall",
+    "name": "Impassable Wall",
+    "kind": "feature",
+    "source": "kotc",
+    "footprint": {
+      "type": "rectangle",
+      "width": 1,
+      "height": 1
+    },
+    "default_height_inches": 4,
+    "default_blocking": true,
+    "ground_accessible": false,
+    "terrain_category": "dense",
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
+  },
+  {
+    "id": "kotc-ruin-inner",
+    "name": "KOTC Inner Ruin",
+    "kind": "area",
+    "source": "kotc",
+    "footprint": {
+      "type": "rectangle",
+      "width": 5.25,
+      "height": 5.25
+    },
+    "default_height_inches": 3,
+    "terrain_category": "dense",
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
+  },
+  {
+    "id": "kotc-ruin-deployment",
+    "name": "KOTC Deployment Ruin",
+    "kind": "area",
+    "source": "kotc",
+    "footprint": {
+      "type": "rectangle",
+      "width": 5.25,
+      "height": 3.25
+    },
+    "default_height_inches": 3,
+    "terrain_category": "dense",
+    "game_version": {
+      "edition": "11th",
+      "dataslate": "pre-launch-provisional"
+    }
   }
 ]

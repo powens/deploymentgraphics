@@ -56,7 +56,19 @@ const out = {
   layout: { ...(gw.layout ?? {}) },
 };
 
+const skipped = [];
 for (const layout of layouts) {
+  // Skip fan-format layouts that fall outside GW's mission system. These carry
+  // no mission_matchup_id and bring their own terrain templates that have no
+  // gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum layout
+  // with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
+  // separate feature; excluding them keeps `make update-terrain` re-runnable
+  // and auto-skips any future fan variant (also matchup-less) rather than
+  // throwing on an unmapped template.
+  if (!layout.mission_matchup_id) {
+    skipped.push(layout.id);
+    continue;
+  }
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
   const getParent = (id) => byId.get(id);
   // Corner-ruins become l-ruin features (roofed where a catwalk sits on them);
@@ -162,4 +174,9 @@ if (process.argv.includes("--check")) {
   console.log(
     `Wrote ${Object.keys(out.layout).length} layouts to static/data/terrain/combined.yml`,
   );
+  if (skipped.length > 0) {
+    console.log(
+      `Skipped ${skipped.length} non-mission layout(s): ${skipped.join(", ")}`,
+    );
+  }
 }
