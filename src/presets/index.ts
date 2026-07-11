@@ -5,6 +5,7 @@
  */
 export { baseConfig } from "./base.js";
 export { gwTerrain } from "./terrain.js";
+export { gwTemplatesReal } from "./templates-real.js";
 export { eventMatrix } from "./event-matrix.js";
 export {
   missions,

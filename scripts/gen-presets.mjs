@@ -116,6 +116,23 @@ function buildTerrain() {
   );
 }
 
+function buildTemplatesReal() {
+  // The detailed GW footprints, the higher-fidelity counterpart to
+  // templates-simple.yml (which buildTerrain bakes into gwTerrain). Exported on
+  // its own so consumers can swap it onto gwTerrain: `{ ...gwTerrain,
+  // ...gwTemplatesReal }` — the real templates win, the layouts stay shared.
+  return (
+    header("static/data/terrain/templates-real.yml") +
+    'import type { TerrainConfig } from "../terrain-config.js";\n\n' +
+    declaration(
+      "gwTemplatesReal",
+      'Pick<TerrainConfig, "templates">',
+      loadYaml("terrain/templates-real.yml"),
+      "/** Detailed GW footprints; swap onto gwTerrain: `{ ...gwTerrain, ...gwTemplatesReal }`. */",
+    )
+  );
+}
+
 function buildMissions() {
   const ids = readdirSync(new URL("deployment/", dataDir))
     .filter((file) => file.endsWith(".yml"))
@@ -177,6 +194,7 @@ const targets = [
   ["base.ts", buildBase()],
   ["missions.ts", buildMissions()],
   ["terrain.ts", buildTerrain()],
+  ["templates-real.ts", buildTemplatesReal()],
   ["event-matrix.ts", buildEventMatrix()],
   ["theme.ts", buildTheme()],
 ];

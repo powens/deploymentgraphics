@@ -6,6 +6,7 @@ import { baseConfig } from "./base.js";
 import { eventMatrix } from "./event-matrix.js";
 import { missions } from "./missions.js";
 import { gwTerrain } from "./terrain.js";
+import { gwTemplatesReal } from "./templates-real.js";
 import { baseTheme } from "./theme.js";
 
 // The presets are generated from the YAML the browser app loads (see
@@ -29,6 +30,12 @@ describe("presets match the YAML source", () => {
       ...(loadYaml("terrain/templates-simple.yml") as object),
       ...(loadYaml("terrain/combined.yml") as object),
     });
+  });
+
+  // gwTemplatesReal is the detailed GW footprints alone (no layouts), swapped
+  // onto gwTerrain by consumers who want the higher-fidelity shapes.
+  it("gwTemplatesReal matches templates-real.yml", () => {
+    expect(gwTemplatesReal).toEqual(loadYaml("terrain/templates-real.yml"));
   });
 
   it.each(Object.keys(missions))("mission %s matches its YAML", (id) => {
