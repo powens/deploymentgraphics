@@ -267,7 +267,7 @@ export function renderInspector(
     const sel = document.createElement("select");
     sel.className = "field-input field-select";
     // Mirrors the palette keys in static/data/theme.yml
-    const colours = ["stone", "rust", "sand", "green", "gunmetal", "bone"];
+    const colours = ["stone", "rust", "sand", "green", "gunmetal", "bone", "teal"];
     for (const c of colours) {
       const opt = document.createElement("option");
       opt.value = c;

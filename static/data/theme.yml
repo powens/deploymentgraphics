@@ -35,13 +35,14 @@ building:
       vector-effect: non-scaling-stroke
       stroke: black
       stroke_width: 1.2
-      fill: "#808080"
+      fill: &stone-grey "#808080"
       opacity: 1
-    # Ported 40kdc pipes (rust) and barricades (sand). The rust/sand hues are
-    # anchored here and aliased by area_terrain + feature.palette below so each
-    # colour is defined once.
-    pipe:             { vector-effect: non-scaling-stroke, fill: &rust-fill "#b9772e", stroke: &rust-accent "#6e451a", stroke_width: 0.3 }
-    barricade:        { vector-effect: non-scaling-stroke, fill: &sand-fill "#c9a86a", stroke: &sand-accent "#7d6233", stroke_width: 0.3 }
+    # Ported 40kdc pipes (rust) and barricades (sand). The rust/sand fills are
+    # anchored here and aliased by area_terrain + feature.palette below; their
+    # darker accents are anchored in area_terrain (Crater, barricade). Both take a
+    # black outline (like the buildings) so they read as defined pieces.
+    pipe:             { vector-effect: non-scaling-stroke, fill: &rust-fill "#b9772e", stroke: black, stroke_width: 1.5 }
+    barricade:        { vector-effect: non-scaling-stroke, fill: &sand-fill "#c9a86a", stroke: black, stroke_width: 1.5 }
 
 grid:
   opacity: 0.3
@@ -51,7 +52,8 @@ grid:
 
 objective:
   marker:
-    fill: "#1a1a1a"
+    # Warm near-black shared with the objective icons (icon.circle/glyph below).
+    fill: &ink "#33312c"
     stroke: white
     stroke_width: 0.3
   label:
@@ -71,29 +73,33 @@ annotation:
     stroke_width: 0.4
 
 area_terrain:
+  # Each material's hue is defined once (as a feature.palette entry or an anchor)
+  # and shared between its feature and its area-terrain footprint: Forest ↔ green,
+  # Rubble ↔ stone, Crater ↔ rust, pipe/barricade ↔ rust/sand. The translucent
+  # fills repeat that hue's rgb with alpha (rgba can't alias a hex literal).
   default:
-    fill: "rgba(140,130,120,0.2)"
-    stroke: "#808080"
+    fill: "rgba(128,128,128,0.2)" # stone-grey #808080
+    stroke: *stone-grey
     stroke_width: 0.3
   Forest:
-    fill: "rgba(60,120,60,0.3)"
-    stroke: "#3a6b3a"
+    fill: "rgba(74,140,60,0.3)" # green-fill #4a8c3c
+    stroke: &green-accent "#2c5822"
     stroke_width: 0.3
   Crater:
-    fill: "rgba(100,80,60,0.3)"
-    stroke: "#6b5030"
+    fill: "rgba(110,69,26,0.3)" # rust-accent #6e451a
+    stroke: &rust-accent "#6e451a"
     stroke_width: 0.3
   Rubble:
-    fill: "rgba(140,130,120,0.3)"
-    stroke: "#807060"
+    fill: "rgba(154,160,166,0.3)" # stone-light #9aa0a6
+    stroke: &stone-dark "#5b6068"
     stroke_width: 0.3
   # `feature` is the fallback for any unconsumed area piece. Pipes/barricades
   # are now building placements (see building.template above), but these
   # pipe/barricade labels remain as harmless fallbacks for any hand-authored
   # layout still using them, re-pointed to the rust/sand anchors.
   feature:
-    fill: "rgba(120,120,120,0.55)"
-    stroke: "#555555"
+    fill: "rgba(128,128,128,0.55)" # stone-grey #808080
+    stroke: *stone-dark
     stroke_width: 0.3
   pipe:
     fill: *rust-fill
@@ -101,23 +107,27 @@ area_terrain:
     stroke_width: 0.3
   barricade:
     fill: *sand-fill
-    stroke: *sand-accent
+    stroke: &sand-accent "#7d6233"
     stroke_width: 0.3
 
 icon:
   circle:
-    fill: "#e8dcc0"
-    stroke: "#33312c"
+    fill: &bone-fill "#e8dcc0"
+    stroke: *ink
     stroke_width: 0.25
   glyph:
-    fill: "#33312c"
+    fill: *ink
 
 feature:
   stroke_width: 0.2
+  # Neutral ramp: stone-light (#9aa0a6) → stone-grey (#808080, building fill) →
+  # stone-dark (#5b6068) → #3f444a. gunmetal is the dark slate so gantries read
+  # against the grey buildings they sit on.
   palette:
-    stone: { fill: "#9aa0a6", accent: "#5b6068" }
+    stone: { fill: &stone-light "#9aa0a6", accent: *stone-dark }
     rust: { fill: *rust-fill, accent: *rust-accent }
     sand: { fill: *sand-fill, accent: *sand-accent }
-    green: { fill: "#5a7d4a", accent: "#34502c" }
-    gunmetal: { fill: "#7f868d", accent: "#3f444a" }
-    bone: { fill: "#e8dcc0", accent: "#9a8f76" }
+    green: { fill: "#4a8c3c", accent: *green-accent }
+    gunmetal: { fill: *stone-dark, accent: "#3f444a" }
+    teal: { fill: "#2f6b73", accent: "#1a3d42" }
+    bone: { fill: *bone-fill, accent: "#9a8f76" }

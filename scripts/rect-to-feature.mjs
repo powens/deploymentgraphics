@@ -20,6 +20,13 @@ const RECT_FEATURES = {
   gantry: "gantry",
 };
 
+// Feature type -> theme.yml palette key. Generators take an industrial teal so
+// they read against the grey buildings they sit on; gantries stay gunmetal.
+const RECT_FEATURE_COLORS = {
+  generator: "teal",
+  gantry: "gunmetal",
+};
+
 /** True for a 40kdc template that maps to a rectangle feature. */
 export const isRectFeatureTemplate = (id) =>
   Object.prototype.hasOwnProperty.call(RECT_FEATURES, id);
@@ -40,7 +47,7 @@ export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
     width: round(width),
     height: round(height),
     rotation: round(((rotDeg % 360) + 360) % 360),
-    color: "gunmetal",
+    color: RECT_FEATURE_COLORS[RECT_FEATURES[piece.template]],
     mirror: false,
   };
 }

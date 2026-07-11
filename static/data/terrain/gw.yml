@@ -99,7 +99,7 @@ layout:
         width: 5
         height: 3
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: pipe
         label: pipe

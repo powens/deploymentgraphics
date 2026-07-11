@@ -165,7 +165,7 @@ describe("makeAreaTerrain", () => {
     const svg = makeMissionCard(cfg);
     expect(
       svg.querySelector("#area-terrain circle")?.getAttribute("fill"),
-    ).toBe("rgba(140,130,120,0.2)");
+    ).toBe("rgba(128,128,128,0.2)");
   });
 });
 
@@ -324,7 +324,7 @@ describe("makeObjectives", () => {
     cfg.objectives = [{ x: 30, y: 22, number: 1 }];
     const svg = makeMissionCard(cfg);
     expect(svg.querySelector("#objectives circle")?.getAttribute("fill")).toBe(
-      "#1a1a1a",
+      "#33312c",
     );
   });
 });

@@ -110,7 +110,7 @@ layout:
         width: 5
         height: 3
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: pipe
         label: pipe
@@ -494,7 +494,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -503,7 +503,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -905,7 +905,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -914,7 +914,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -1298,7 +1298,7 @@ layout:
         width: 3
         height: 4
         rotation: 152.73
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -1307,7 +1307,7 @@ layout:
         width: 3
         height: 4
         rotation: 332.73
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -1709,7 +1709,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -1718,7 +1718,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -2120,7 +2120,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -2129,7 +2129,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -2549,7 +2549,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -2558,7 +2558,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -2960,7 +2960,7 @@ layout:
         width: 3
         height: 4
         rotation: 132.41
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -2969,7 +2969,7 @@ layout:
         width: 3
         height: 4
         rotation: 312.41
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -3353,7 +3353,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -3362,7 +3362,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -3764,7 +3764,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -3773,7 +3773,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -4193,7 +4193,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -4202,7 +4202,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -4573,7 +4573,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -4582,7 +4582,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -4989,7 +4989,7 @@ layout:
         width: 3
         height: 4
         rotation: 139
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -4998,7 +4998,7 @@ layout:
         width: 3
         height: 4
         rotation: 319
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -5387,7 +5387,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -5396,7 +5396,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -5816,7 +5816,7 @@ layout:
         width: 3
         height: 4
         rotation: 48.19
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -5825,7 +5825,7 @@ layout:
         width: 3
         height: 4
         rotation: 228.19
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -6209,7 +6209,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -6218,7 +6218,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -6643,7 +6643,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -6652,7 +6652,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -7041,7 +7041,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -7050,7 +7050,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -7475,7 +7475,7 @@ layout:
         width: 3
         height: 4
         rotation: 138.34
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -7484,7 +7484,7 @@ layout:
         width: 3
         height: 4
         rotation: 318.34
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -7886,7 +7886,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -7895,7 +7895,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -8297,7 +8297,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -8306,7 +8306,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -8672,7 +8672,7 @@ layout:
         width: 3
         height: 4
         rotation: 120
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -8681,7 +8681,7 @@ layout:
         width: 3
         height: 4
         rotation: 300
-        color: gunmetal
+        color: teal
         mirror: false
       - type: l-ruin-mirror
         label: ruin
@@ -9099,7 +9099,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -9108,7 +9108,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -9515,7 +9515,7 @@ layout:
         width: 3
         height: 4
         rotation: 33.56
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -9524,7 +9524,7 @@ layout:
         width: 3
         height: 4
         rotation: 213.56
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -9913,7 +9913,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -9922,7 +9922,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -10347,7 +10347,7 @@ layout:
         width: 3
         height: 4
         rotation: 39.56
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -10356,7 +10356,7 @@ layout:
         width: 3
         height: 4
         rotation: 219.56
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -10745,7 +10745,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -10754,7 +10754,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -11179,7 +11179,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -11188,7 +11188,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -11577,7 +11577,7 @@ layout:
         width: 3
         height: 4
         rotation: 176.02
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -11586,7 +11586,7 @@ layout:
         width: 3
         height: 4
         rotation: 356.02
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -11988,7 +11988,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -11997,7 +11997,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -12399,7 +12399,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -12408,7 +12408,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -12810,7 +12810,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -12819,7 +12819,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -13208,7 +13208,7 @@ layout:
         width: 3
         height: 4
         rotation: 135
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -13217,7 +13217,7 @@ layout:
         width: 3
         height: 4
         rotation: 315
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -13642,7 +13642,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -13651,7 +13651,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -14040,7 +14040,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -14049,7 +14049,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -14451,7 +14451,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -14460,7 +14460,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -14862,7 +14862,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -14871,7 +14871,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -15291,7 +15291,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -15300,7 +15300,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -15684,7 +15684,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -15693,7 +15693,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -16095,7 +16095,7 @@ layout:
         width: 3
         height: 4
         rotation: 140.18
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -16104,7 +16104,7 @@ layout:
         width: 3
         height: 4
         rotation: 320.18
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -16524,7 +16524,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -16533,7 +16533,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: fortress
@@ -16935,7 +16935,7 @@ layout:
         width: 3
         height: 4
         rotation: 180
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -16944,7 +16944,7 @@ layout:
         width: 3
         height: 4
         rotation: 0
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -17328,7 +17328,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -17337,7 +17337,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -17739,7 +17739,7 @@ layout:
         width: 3
         height: 4
         rotation: 90
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -17748,7 +17748,7 @@ layout:
         width: 3
         height: 4
         rotation: 270
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry
@@ -18168,7 +18168,7 @@ layout:
         width: 3
         height: 4
         rotation: 120
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -18177,7 +18177,7 @@ layout:
         width: 3
         height: 4
         rotation: 300
-        color: gunmetal
+        color: teal
         mirror: false
     icons:
       - type: skull
@@ -18561,7 +18561,7 @@ layout:
         width: 3
         height: 4
         rotation: 176.02
-        color: gunmetal
+        color: teal
         mirror: false
       - type: generator
         label: generator
@@ -18570,7 +18570,7 @@ layout:
         width: 3
         height: 4
         rotation: 356.02
-        color: gunmetal
+        color: teal
         mirror: false
       - type: gantry
         label: gantry

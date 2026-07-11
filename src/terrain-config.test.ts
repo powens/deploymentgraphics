@@ -79,7 +79,7 @@ describe("placeholder gw.yml", () => {
     const features = gwTerrain.layout["1"].features ?? [];
     const types = features.map((f) => f.type).sort();
     expect(types).toEqual(["generator", "l-ruin", "l-ruin-roof", "pipe"]);
-    const palette = ["stone", "rust", "sand", "green", "gunmetal", "bone"];
+    const palette = ["stone", "rust", "sand", "green", "gunmetal", "bone", "teal"];
     for (const f of features) {
       expect(palette, `feature ${f.type} colour`).toContain(f.color);
     }
