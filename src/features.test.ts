@@ -80,7 +80,7 @@ describe("makeFeatures", () => {
     ...over,
   });
 
-  it("builds a <g id=features> with one child group per placement", () => {
+  it("builds a <g id=features> with one <use> per placement", () => {
     const g = makeFeatures(
       [place(), place({ type: "pipe", color: "rust" })],
       baseTheme,
