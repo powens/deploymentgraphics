@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
-import { features, makeFeatures } from "./features.js";
+import { features, injectFeatureDefs, makeFeatures } from "./features.js";
 import { baseTheme } from "./presets/theme.js";
 
 describe("feature draw functions", () => {
@@ -137,5 +137,63 @@ describe("makeFeatures", () => {
     expect(() =>
       makeFeatures([place({ color: "chartreuse" })], baseTheme, CANVAS),
     ).toThrow(/unknown feature colour/);
+  });
+});
+
+describe("injectFeatureDefs", () => {
+  const svgDefs = () =>
+    document.createElementNS("http://www.w3.org/2000/svg", "defs");
+  const place = (over: Record<string, unknown> = {}) => ({
+    type: "generator",
+    x: 0,
+    y: 0,
+    width: 3,
+    height: 4,
+    color: "gunmetal",
+    ...over,
+  });
+
+  it("emits one def per distinct (type, width, height)", () => {
+    const defs = svgDefs();
+    injectFeatureDefs(
+      [
+        place(),
+        place({ x: 9, color: "rust" }), // same shape, different colour/pos
+        place({ type: "gantry", width: 2, height: 2 }),
+      ],
+      defs,
+    );
+    expect(defs.childNodes.length).toBe(2);
+    expect(defs.querySelector("#feature-generator-3x4")).not.toBeNull();
+    expect(defs.querySelector("#feature-gantry-2x2")).not.toBeNull();
+  });
+
+  it("sanitizes decimal dimensions in the def id", () => {
+    const defs = svgDefs();
+    injectFeatureDefs(
+      [place({ type: "l-ruin", width: 4.5, height: 5 })],
+      defs,
+    );
+    expect(defs.querySelector("#feature-l-ruin-4_5x5")).not.toBeNull();
+  });
+
+  it("emits colour-free geometry styled with custom-property vars", () => {
+    const defs = svgDefs();
+    injectFeatureDefs([place({ width: 5, height: 3 })], defs);
+    const def = defs.querySelector("#feature-generator-5x3")!;
+    const body = def.firstChild as SVGElement;
+    expect(body.getAttribute("style")).toBe(
+      "fill:var(--body);stroke:var(--accent)",
+    );
+    expect(body.getAttribute("fill")).toBeNull(); // no baked colour
+    const accent = def.lastChild as SVGElement;
+    expect(accent.getAttribute("style")).toBe("fill:var(--accent)");
+  });
+
+  it("throws on an unknown feature type", () => {
+    const defs = svgDefs();
+    expect(() =>
+      injectFeatureDefs([place({ type: "nope" })], defs),
+    ).toThrow(/unknown feature type/);
   });
 });

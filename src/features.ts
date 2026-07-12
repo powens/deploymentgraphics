@@ -182,6 +182,55 @@ export const features: Record<string, FeatureDraw> = {
   pipe,
 };
 
+/** Deterministic def id for a feature shape, keyed by type + bounding box. */
+export function featureDefId(
+  type: string,
+  width: number,
+  height: number,
+): string {
+  const dim = (n: number): string => `${n}`.replace(".", "_");
+  return `feature-${type}-${dim(width)}x${dim(height)}`;
+}
+
+/**
+ * Appends one color-free `<g id="feature-…">` per distinct (type, width, height)
+ * used in `placements` (deduplicated by def id). Body shapes carry
+ * `style="fill:var(--body);stroke:var(--accent)"` and accent shapes
+ * `style="fill:var(--accent)"`; the concrete colours are supplied per placement
+ * by each `<use>` (see `makeFeatures`) as inherited custom properties, and
+ * `stroke-width` is inherited from the `#features` group. Throws on an unknown
+ * feature type.
+ */
+export function injectFeatureDefs(
+  placements: FeaturePlacement[],
+  defs: SVGElement,
+): void {
+  const seen = new Set<string>();
+  for (const placement of placements) {
+    const id = featureDefId(placement.type, placement.width, placement.height);
+    if (seen.has(id)) continue;
+    seen.add(id);
+
+    const draw = features[placement.type];
+    if (!draw) throw new Error(`unknown feature type: ${placement.type}`);
+
+    const { body, accent } = draw(placement.width, placement.height);
+    const group = makeElement("g");
+    group.setAttribute("id", id);
+    for (const shape of body) {
+      const el = makeShape(shape);
+      el.setAttribute("style", "fill:var(--body);stroke:var(--accent)");
+      group.appendChild(el);
+    }
+    for (const shape of accent) {
+      const el = makeShape(shape);
+      el.setAttribute("style", "fill:var(--accent)");
+      group.appendChild(el);
+    }
+    defs.appendChild(group);
+  }
+}
+
 /**
  * Builds `<g id="features">`, one inner `<g>` per placement (translated to its
  * position and rotated about its box center). Body shapes take the palette fill
