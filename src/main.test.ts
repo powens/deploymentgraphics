@@ -236,6 +236,15 @@ describe("makeFeatures integration", () => {
     expect(ids.indexOf("features")).toBeGreaterThan(ids.indexOf("buildings"));
   });
 
+  it("injects a feature def that the feature use references", () => {
+    const config = buildMinimalConfig();
+    config.features = [
+      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal", mirror: false },
+    ];
+    const svg = makeMissionCard(config);
+    expect(svg.querySelector("defs #feature-generator-5x3")).not.toBeNull();
+  });
+
   it("renders area terrain on top of buildings", () => {
     // 40kdc feature pieces (l-ruins, pipes, ...) are emitted as area_terrain
     // and sit on top of the area pieces, which render as opaque buildings.
