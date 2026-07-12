@@ -183,7 +183,7 @@ export const features: Record<string, FeatureDraw> = {
 };
 
 /** Deterministic def id for a feature shape, keyed by type + bounding box. */
-export function featureDefId(
+function featureDefId(
   type: string,
   width: number,
   height: number,
@@ -250,6 +250,8 @@ export function makeFeatures(
   group.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
   let counter = 0;
   for (const placement of placements) {
+    // Re-guarded here (injectFeatureDefs validates the same) so makeFeatures
+    // stays safe when called standalone, e.g. in tests.
     if (!features[placement.type]) {
       throw new Error(`unknown feature type: ${placement.type}`);
     }
