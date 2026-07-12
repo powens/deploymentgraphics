@@ -1,5 +1,5 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
-import { makeFeatures } from "./features.js";
+import { injectFeatureDefs, makeFeatures } from "./features.js";
 import { injectIconDefs, makeIcons } from "./icons.js";
 import { applyAttributes, makeElement } from "./dom-helpers.js";
 import { toPoint } from "./building-coordinates.js";
@@ -36,6 +36,8 @@ function injectDefs(
   injectTemplateDefs(config.terrain.templates, defs, buildingStyle(theme));
 
   if (layout.icons.length > 0) injectIconDefs(layout.icons, defs, theme);
+
+  if (layout.features.length > 0) injectFeatureDefs(layout.features, defs);
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
   if (hasArrow) {
