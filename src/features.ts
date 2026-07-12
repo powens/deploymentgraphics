@@ -232,12 +232,13 @@ export function injectFeatureDefs(
 }
 
 /**
- * Builds `<g id="features">`, one inner `<g>` per placement (translated to its
- * position and rotated about its box center). Body shapes take the palette fill
- * plus a thin accent-coloured outline; accent shapes take the accent fill and
- * draw on top. Like buildings, each placement also emits a copy point-reflected
- * through the canvas centre unless `mirror: false`. Throws on an unknown feature
- * type or palette colour.
+ * Builds `<g id="features">` of `<use>` elements — one per resolved placement
+ * (mirror copies included) — each referencing its `#feature-…` def (see
+ * `injectFeatureDefs`), translated to its position and rotated about its box
+ * centre. The shared `stroke-width` is set once on the group and inherited; each
+ * `<use>` sets the `--body`/`--accent` custom properties from the palette, which
+ * the def's `var()` styles resolve against. Throws on an unknown feature type or
+ * palette colour.
  */
 export function makeFeatures(
   placements: FeaturePlacement[],
@@ -246,34 +247,30 @@ export function makeFeatures(
 ): SVGElement {
   const group = makeElement("g");
   group.setAttribute("id", "features");
+  group.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
   let counter = 0;
   for (const placement of placements) {
-    const draw = features[placement.type];
-    if (!draw) throw new Error(`unknown feature type: ${placement.type}`);
+    if (!features[placement.type]) {
+      throw new Error(`unknown feature type: ${placement.type}`);
+    }
     const palette = theme.feature.palette[placement.color];
     if (!palette) throw new Error(`unknown feature colour: ${placement.color}`);
 
-    const { body, accent } = draw(placement.width, placement.height);
-
+    const href = `#${featureDefId(
+      placement.type,
+      placement.width,
+      placement.height,
+    )}`;
     for (const placed of resolveFeature(placement, canvas)) {
-      const g = makeElement("g");
-      g.setAttribute("transform", placedTransform(placed));
-      g.setAttribute("id", `feature-${counter}`);
-
-      for (const shape of body) {
-        const el = makeShape(shape);
-        el.setAttribute("fill", palette.fill);
-        el.setAttribute("stroke", palette.accent);
-        el.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
-        g.appendChild(el);
-      }
-      for (const shape of accent) {
-        const el = makeShape(shape);
-        el.setAttribute("fill", palette.accent);
-        g.appendChild(el);
-      }
-
-      group.appendChild(g);
+      const use = makeElement("use");
+      use.setAttribute("href", href);
+      use.setAttribute("transform", placedTransform(placed));
+      use.setAttribute("id", `feature-${counter}`);
+      use.setAttribute(
+        "style",
+        `--body:${palette.fill};--accent:${palette.accent}`,
+      );
+      group.appendChild(use);
       counter++;
     }
   }

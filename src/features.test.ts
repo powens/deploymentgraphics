@@ -118,12 +118,21 @@ describe("makeFeatures", () => {
     expect(g.childNodes.length).toBe(2);
   });
 
-  it("fills body shapes with the palette fill and accent stroke", () => {
+  it("references the shape def and sets palette colours as custom properties", () => {
     const g = makeFeatures([place({ color: "rust" })], baseTheme, CANVAS);
-    const shape = (g.firstChild as SVGElement).firstChild as SVGElement;
-    expect(shape.getAttribute("fill")).toBe(baseTheme.feature.palette.rust.fill);
-    expect(shape.getAttribute("stroke")).toBe(
-      baseTheme.feature.palette.rust.accent,
+    const use = g.firstChild as SVGElement;
+    expect(use.tagName.toLowerCase()).toBe("use");
+    expect(use.getAttribute("href")).toBe("#feature-generator-5x3");
+    expect(use.getAttribute("style")).toBe(
+      `--body:${baseTheme.feature.palette.rust.fill};` +
+        `--accent:${baseTheme.feature.palette.rust.accent}`,
+    );
+  });
+
+  it("sets the shared stroke-width once on the group", () => {
+    const g = makeFeatures([place()], baseTheme, CANVAS);
+    expect(g.getAttribute("stroke-width")).toBe(
+      `${baseTheme.feature.stroke_width}`,
     );
   });
 
