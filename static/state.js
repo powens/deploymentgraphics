@@ -15,12 +15,13 @@ const STORAGE_KEY = "deploymentgraphics:state";
 // disposition/layout (`da`/`db`/`lay`); older saved state is dropped.
 const STORAGE_VERSION = 2;
 
-// Canvas rotation in degrees, as strings (the <select> values).
-export const ROTATIONS = ["0", "90", "-90"];
+// Canvas rotation in degrees, as strings (the <select> values). Module-local:
+// the allowlist is only consulted by sanitizeControls below.
+const ROTATIONS = ["0", "90", "-90"];
 
 // Building-template set: the illustrative shapes or the detailed GW footprints.
-// Each value is the templates-<value>.yml filename stem.
-export const TEMPLATE_SETS = ["simple", "real"];
+// Each value is the templates-<value>.yml filename stem. Module-local, as above.
+const TEMPLATE_SETS = ["simple", "real"];
 
 // Layout variants within a disposition pairing.
 export const LAYOUTS = ["A", "B", "C"];

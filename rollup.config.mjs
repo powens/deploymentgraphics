@@ -1,6 +1,5 @@
 import serve from "rollup-plugin-serve";
 import { autoReload } from "rollup-plugin-auto-reload";
-import copy from "rollup-plugin-copy";
 import typescript from "@rollup/plugin-typescript";
 
 const tsPlugin = () => typescript({ tsconfig: "./tsconfig.json" });
@@ -17,12 +16,11 @@ export default [
     treeshake: false,
     plugins: [
       tsPlugin(),
-      copy({ targets: [] }),
       ...(isWatch
         ? // Serve live sources first so a prior `make build-gh-pages` copy of
           // static/* into dist/ can't shadow edits during dev. dist still
           // provides the built bundle.js (absent from static).
-          [serve({ contentBase: ["static", "samples", "dist"], open: true }), autoReload()]
+          [serve({ contentBase: ["static", "dist"], open: true }), autoReload()]
         : []),
     ],
   },
