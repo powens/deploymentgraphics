@@ -32,9 +32,9 @@ export type Placed = {
  * The transform that draws a `Placed`: translate to the box top-left, then
  * rotate about the box centre `(width/2, height/2)`. The single owner of the
  * centre-pivot convention — every renderer of a `Placed` (buildings, features)
- * crosses this seam instead of re-spelling the pivot. Note: the editor overlay
- * rotates buildings about their *top-left* (origin-pivot), a different
- * convention, and must NOT use this.
+ * crosses this seam instead of re-spelling the pivot. Note: `ResolvedBuilding`
+ * below rotates about the *top-left* (origin-pivot), a different convention,
+ * and must NOT use this.
  */
 export function placedTransform(placed: Placed): string {
   return (
@@ -60,32 +60,6 @@ export function mirror(placed: Placed, canvas: CanvasSize): Placed {
     },
     rotation: (placed.rotation + 180) % 360,
   };
-}
-
-// --- The mirror authoring protocol ---------------------------------------
-// "Mirror is on unless `mirror: false`." `withMirror` below applies it at
-// render time; these three encode the same rule for authoring tools (editor
-// scene <-> placement YAML), so the convention has one home.
-
-/** A piece authored fresh mirrors by default. */
-export const MIRROR_DEFAULT = true;
-
-/**
- * Encodes an editor scene's mirror boolean as a placement's `mirror` field:
- * the on default is omitted (`undefined`), only off is written explicitly,
- * so emitted YAML stays minimal.
- */
-export function toMirrorFlag(on: boolean): boolean | undefined {
-  return on ? undefined : false;
-}
-
-/**
- * Decodes a placement's `mirror` field back to a scene boolean — the inverse
- * of {@link toMirrorFlag}. A missing or `true` field is on; only an explicit
- * `false` is off.
- */
-export function fromMirrorFlag(flag: boolean | undefined): boolean {
-  return flag !== false;
 }
 
 /**
@@ -215,38 +189,16 @@ export function resolveFeature(
 }
 
 /**
- * Inverse of `resolvePlacement`'s primary: encodes a `Placed` as a two-corner
- * (TL/TR) corner-pin placement that `resolvePlacement` maps back to the same
- * `Placed`. The corners are the canvas landing points of the template's local
- * TL and TR under the centre-pivot rotation. `mirror: false` so a re-resolve
- * yields just the primary.
+ * Origin-pivot resolved building: an unrotated top-left `translate` plus a
+ * rotation taken *about that top-left*, rather than about the box centre.
  */
-export function decompose(placed: Placed): BuildingPlacement {
-  const { box, rotation, name } = placed;
-  const c: Point = { x: box.width / 2, y: box.height / 2 };
-  const rad = (rotation * Math.PI) / 180;
-  // render(p) = boxTL + c + Rot(theta)(p - c)
-  const render = (p: Point): Point => {
-    const r = rotate({ x: p.x - c.x, y: p.y - c.y }, rad);
-    return { x: box.x + c.x + r.x, y: box.y + c.y + r.y };
-  };
-  const tl = render({ x: 0, y: 0 });
-  const tr = render({ x: box.width, y: 0 });
-  return {
-    type: name,
-    corners: { TL: tl, TR: tr },
-    mirror: false,
-  };
-}
-
-/** Origin-pivot resolved building: the editor's coordinate model. */
 export type ResolvedBuilding = {
   templateName: string;
   translate: Point;
   rotation: number; // degrees, [0, 360)
 };
 
-/** Converts a centre-pivot `Placed` to the editor's origin-pivot form. */
+/** Converts a centre-pivot `Placed` to its origin-pivot form. */
 function placedToOrigin(placed: Placed): ResolvedBuilding {
   const c: Point = { x: placed.box.width / 2, y: placed.box.height / 2 };
   const rc = rotate(c, (placed.rotation * Math.PI) / 180);
@@ -257,47 +209,10 @@ function placedToOrigin(placed: Placed): ResolvedBuilding {
   };
 }
 
-/** Inverse of `placedToOrigin`: origin-pivot building → centre-pivot `Placed`. */
-function originToPlaced(
-  resolved: ResolvedBuilding,
-  templates: Record<string, Template>,
-): Placed {
-  const { width, height } = templateBounds(
-    templates[resolved.templateName],
-    resolved.templateName,
-  );
-  const c: Point = { x: width / 2, y: height / 2 };
-  const rc = rotate(c, (resolved.rotation * Math.PI) / 180);
-  return {
-    name: resolved.templateName,
-    box: {
-      x: resolved.translate.x - c.x + rc.x,
-      y: resolved.translate.y - c.y + rc.y,
-      width,
-      height,
-    },
-    rotation: resolved.rotation,
-  };
-}
-
-/**
- * Inverse of `resolveBuilding`: encodes an origin-pivot building (the editor's
- * coordinate model) as a two-corner corner-pin placement. Routes through
- * `Placed` and `decompose` so the corner math has a single home. `mirror: false`
- * — the caller owns the mirror-flag policy.
- */
-export function decomposeBuilding(
-  resolved: ResolvedBuilding,
-  templates: Record<string, Template>,
-): BuildingPlacement {
-  return decompose(originToPlaced(resolved, templates));
-}
-
 /**
  * Resolves a building to origin-pivot `ResolvedBuilding`s (template origin
- * lands at `translate`, rotation about that origin). Used by the editor, whose
- * scene model rotates buildings about their top-left corner. A thin adapter
- * over the centre-pivot `resolvePlacement` so the corner math has one home.
+ * lands at `translate`, rotation about that origin). A thin adapter over the
+ * centre-pivot `resolvePlacement` so the corner math has one home.
  */
 export function resolveBuilding(
   placement: BuildingPlacement,

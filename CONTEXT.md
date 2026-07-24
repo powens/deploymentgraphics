@@ -6,7 +6,7 @@ interface, seam, depth, adapter) lives in the architecture-review tooling, not h
 ## Terms
 
 **Placement** — an instruction for putting one piece on the board, in the form a
-human or the editor authors it. Two authoring shapes exist:
+human authors it in YAML. Two authoring shapes exist:
 - *corner-pin* (buildings): pin one or two named template corners (TL/TR/BL/BR) to
   inward distances from a canvas corner; rotation is *derived* from two corners.
 - *box* (features, area terrain): a top-left `{x, y}`, a `{width, height}` box, and
@@ -21,28 +21,19 @@ cx cy)`. The single representation behind the placement module's seam.
 **Resolve** — map an authoring placement to one or more `Placed` (corner-pin → box
 for buildings; identity for already-box features). The forward direction.
 
-**Decompose** — the inverse of resolve: map a resolved piece back to a corner-pin
-`Placement` so the editor can emit building YAML. `decompose` takes a `Placed`;
-`decomposeBuilding` takes an *origin-pivot* building and routes through `decompose`,
-so the corner math has one home. Lives beside resolve so the forward and inverse
-maps share one convention.
-
 **Centre-pivot** — the `Placed` convention: rotation is taken about the box centre.
 Every renderer draws this way via `placedTransform` (the single owner of the
 `translate(x y) rotate(rot cx cy)` string); features are authored this way too.
 
-**Origin-pivot** — the editor's building convention: a `{x, y}` translate (the
-unrotated box top-left) plus a rotation taken *about that top-left corner*. The
-scene stores buildings this way and the overlay rotates them about the top-left to
-match. `resolveBuilding` maps corner-pin → origin-pivot; `decomposeBuilding` maps
-origin-pivot → corner-pin.
+**Origin-pivot** — an alternative building convention: a `{x, y}` translate (the
+unrotated box top-left) plus a rotation taken *about that top-left corner*.
+`resolveBuilding` maps corner-pin → origin-pivot; it is an adapter over
+`resolvePlacement` for callers that reason about a top-left pivot (the
+placement tests and the 40kdc converter checks), not a second source of truth.
 
 **Mirror** — point-reflect a `Placed` through the canvas centre (`rotation += 180`).
 A piece emits a mirrored copy unless its placement says `mirror: false`; the default
-is *mirror on*. One formula, owned by the placement module — which also owns the
-authoring protocol for the rule (`MIRROR_DEFAULT`, and `toMirrorFlag` /
-`fromMirrorFlag` to encode/decode the editor's scene boolean against the
-omit-when-default `mirror` field).
+is *mirror on*. One formula, owned by the placement module.
 
 **Canvas** — the board, `{width, height}` in inches (standard 60×44). Anchors
 (TL/TR/BL/BR) and mirroring are all measured against it.

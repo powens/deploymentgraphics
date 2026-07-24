@@ -1,46 +1,13 @@
 import { describe, it, expect } from "vitest";
 import {
-  MIRROR_DEFAULT,
-  decompose,
-  decomposeBuilding,
-  fromMirrorFlag,
   mirror,
   placeBuildings,
   placedTransform,
-  resolveBuilding,
   resolveFeature,
   resolvePlacement,
-  toMirrorFlag,
   type Placed,
-  type ResolvedBuilding,
 } from "./placement";
 import type { Template } from "./building-coordinates";
-
-describe("mirror authoring protocol", () => {
-  it("defaults a new piece to mirror on", () => {
-    expect(MIRROR_DEFAULT).toBe(true);
-  });
-
-  it("omits the field when mirroring is on (the renderer default)", () => {
-    expect(toMirrorFlag(true)).toBeUndefined();
-  });
-
-  it("emits an explicit false to suppress mirroring", () => {
-    expect(toMirrorFlag(false)).toBe(false);
-  });
-
-  it("decodes a present field: only an explicit false reads as off", () => {
-    expect(fromMirrorFlag(undefined)).toBe(true);
-    expect(fromMirrorFlag(true)).toBe(true);
-    expect(fromMirrorFlag(false)).toBe(false);
-  });
-
-  it("round-trips a scene boolean through the renderer field", () => {
-    for (const on of [true, false]) {
-      expect(fromMirrorFlag(toMirrorFlag(on))).toBe(on);
-    }
-  });
-});
 
 const canvas = { width: 60, height: 44 };
 const templates: Record<string, Template> = {
@@ -157,61 +124,6 @@ describe("placeBuildings", () => {
     );
     expect(result).toHaveLength(3);
   });
-});
-
-describe("decomposeBuilding (origin-pivot → corner-pin)", () => {
-  it("pins TL at the translate and TR along the rotated top edge", () => {
-    const r: ResolvedBuilding = {
-      templateName: "4x6",
-      translate: { x: 10, y: 8 },
-      rotation: 90,
-    };
-    const p = decomposeBuilding(r, templates);
-    expect(p.type).toBe("4x6");
-    expect(p.corners.TL).toEqual({ x: 10, y: 8 });
-    // TR = translate + width * (cos θ, sin θ); width of 4x6 is 4, θ = 90°
-    expect((p.corners.TR as { x: number; y: number }).x).toBeCloseTo(10, 5);
-    expect((p.corners.TR as { x: number; y: number }).y).toBeCloseTo(12, 5);
-  });
-});
-
-describe("resolveBuilding ∘ decomposeBuilding round-trip", () => {
-  // The inverse locks the editor's origin-pivot decomposition to the renderer's
-  // forward resolveBuilding — a property that could not be tested while the
-  // inverse lived in the editor's scene module.
-  for (const [label, r] of [
-    ["axis-aligned", { templateName: "4x6", translate: { x: 10, y: 8 }, rotation: 0 }],
-    ["rotated 90", { templateName: "4x6", translate: { x: 10, y: 8 }, rotation: 90 }],
-    ["rotated 37", { templateName: "3x4", translate: { x: 20, y: 6 }, rotation: 37 }],
-  ] as const) {
-    it(`recovers the same origin-pivot building (${label})`, () => {
-      const [back] = resolveBuilding(decomposeBuilding(r, templates), templates, canvas);
-      expect(back.templateName).toBe(r.templateName);
-      expect(back.translate.x).toBeCloseTo(r.translate.x, 6);
-      expect(back.translate.y).toBeCloseTo(r.translate.y, 6);
-      expect(back.rotation).toBeCloseTo(r.rotation, 6);
-    });
-  }
-});
-
-describe("decompose ∘ resolvePlacement round-trip", () => {
-  // The inverse locks the editor's decomposition to the renderer's forward
-  // resolve — a property that could not be tested when the two lived in
-  // different modules.
-  for (const [label, placement] of [
-    ["axis-aligned", { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 } } }],
-    ["rotated 90", { type: "3x4", mirror: false, corners: { TL: { x: 20, y: 10 }, BR: { x: 16, y: 13 } } }],
-  ] as const) {
-    it(`recovers the same Placed (${label})`, () => {
-      const [primary] = resolvePlacement(placement, templates, canvas);
-      const [roundTripped] = resolvePlacement(decompose(primary), templates, canvas);
-      expect(roundTripped.box.x).toBeCloseTo(primary.box.x, 6);
-      expect(roundTripped.box.y).toBeCloseTo(primary.box.y, 6);
-      expect(roundTripped.box.width).toBeCloseTo(primary.box.width, 6);
-      expect(roundTripped.box.height).toBeCloseTo(primary.box.height, 6);
-      expect(roundTripped.rotation).toBeCloseTo(primary.rotation, 6);
-    });
-  }
 });
 
 describe("placedTransform (centre-pivot draw string)", () => {

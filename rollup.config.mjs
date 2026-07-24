@@ -21,15 +21,9 @@ export default [
       ...(isWatch
         ? // Serve live sources first so a prior `make build-gh-pages` copy of
           // static/* into dist/ can't shadow edits during dev. dist still
-          // provides the built bundle.js / editor.bundle.js (absent from static).
+          // provides the built bundle.js (absent from static).
           [serve({ contentBase: ["static", "samples", "dist"], open: true }), autoReload()]
         : []),
     ],
-  },
-  {
-    input: "src/editor.ts",
-    output: { file: "dist/editor.bundle.js", format: "es" },
-    treeshake: false,
-    plugins: [tsPlugin()],
   },
 ];

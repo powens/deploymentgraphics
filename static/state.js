@@ -1,4 +1,4 @@
-// Persistence for the editor: URL query params and localStorage.
+// Persistence for the viewer app: URL query params and localStorage.
 //
 // Persisted shape:
 //   { version, mode: "controls" | "yaml",
