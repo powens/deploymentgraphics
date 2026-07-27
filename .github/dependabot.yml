@@ -20,3 +20,26 @@ updates:
           - "*"
         update-types:
           - "patch"
+
+  - package-ecosystem: "github-actions"
+    directory: "/" # Scans .github/workflows
+    schedule:
+      interval: "weekly"
+    groups:
+      # Actions are pinned to major-only tags (e.g. @v7), so nearly every
+      # update Dependabot sees here is a major bump — hence the major group.
+      major-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "major"
+      minor-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+      patch-updates:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
