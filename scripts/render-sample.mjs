@@ -23,6 +23,11 @@ const SCALE = 15;
 
 for (const { file, opts } of samples) {
   const svg = makeMissionCard(buildConfig(opts));
+  // outerHTML serializes as HTML, which omits the namespace the DOM carries
+  // implicitly. A standalone .svg is parsed as XML, so without an explicit
+  // xmlns every element lands in the null namespace and nothing renders —
+  // that's what breaks the image embedded in the README on GitHub.
+  svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   svg.setAttribute("width", String(60 * SCALE));
   svg.setAttribute("height", String(44 * SCALE));
   writeFileSync(outDir + file, svg.outerHTML + "\n");

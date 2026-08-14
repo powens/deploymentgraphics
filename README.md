@@ -4,7 +4,7 @@ Render Warhammer 40k mission deployment maps as SVG, driven entirely by
 typed config. Ships the renderer plus ready-to-use presets for the six
 standard missions and a built-in terrain set.
 
-![Tipping Point deployment map with terrain, rendered by deploymentgraphics](assets/sample.svg)
+![Search and Destroy deployment map with terrain, rendered by deploymentgraphics](assets/sample.svg)
 
 ## Install
 
