@@ -28,7 +28,8 @@ const svg = makeMissionCard(buildConfig({ mission: missions.dawn_of_war }));
 document.body.appendChild(svg);
 ```
 
-Add terrain, a grid, or hidden supplies via `buildConfig` overrides:
+Add terrain, or toggle the grid and territory line, via `buildConfig`
+overrides:
 
 ```ts
 const svg = makeMissionCard(
@@ -36,7 +37,7 @@ const svg = makeMissionCard(
     mission: missions.search_and_destroy,
     layout: "1", // draw terrain layout 1
     grid: true,
-    hiddenSupplies: true,
+    territory: false,
   }),
 );
 ```
