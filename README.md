@@ -51,20 +51,21 @@ import { makeMissionCard, buildConfig, missions } from "deploymentgraphics";
 
 ### Server-side rendering
 
-Rendering creates SVG nodes with `document.createElementNS`, so a DOM
-must be present. In the browser that is automatic. In Node, provide one
-with [happy-dom](https://github.com/capricorn86/happy-dom) or jsdom:
+`makeMissionCard` creates SVG nodes with `document.createElementNS`, so it
+needs a DOM. In Node, use `renderMissionCardToString` instead — it renders
+the same card to markup with no DOM and no dependencies:
 
 ```ts
-import { Window } from "happy-dom";
-import { makeMissionCard, buildConfig, missions } from "deploymentgraphics";
+import { renderMissionCardToString, buildConfig, missions } from "deploymentgraphics";
 
-const window = new Window();
-globalThis.document = window.document;
-
-const svg = makeMissionCard(buildConfig({ mission: missions.tipping_point }));
-console.log(svg.outerHTML);
+const svg = renderMissionCardToString(
+  buildConfig({ mission: missions.tipping_point }),
+);
+console.log(svg);
 ```
+
+The markup carries an `xmlns`, so it stands alone as a `.svg` file as well
+as inline in an HTML response.
 
 ## Presets
 

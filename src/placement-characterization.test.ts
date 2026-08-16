@@ -13,6 +13,12 @@
 import { describe, it, expect } from "vitest";
 import { makeBuildings } from "./buildings";
 import { templateBounds, type Template } from "./building-coordinates";
+import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
+
+const doc = browserSvgDocument();
+// The renderer builds against the minimal `SvgNode` contract; the browser
+// backend hands back real DOM nodes, which is what the assertions query.
+const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 const canvas = { width: 60, height: 44 };
 
@@ -77,8 +83,8 @@ function evalTransform(transform: string): (p: { x: number; y: number }) => { x:
 }
 
 /** Render placements, return absolute positions of every tracked local point. */
-function absolutePoints(placements: Parameters<typeof makeBuildings>[0]): string[] {
-  const group = makeBuildings(placements, templates, canvas);
+function absolutePoints(placements: Parameters<typeof makeBuildings>[1]): string[] {
+  const group = asElement(makeBuildings(doc, placements, templates, canvas));
   const out: string[] = [];
   for (const use of Array.from(group.querySelectorAll("use"))) {
     const href = use.getAttribute("href") ?? "";
@@ -95,7 +101,7 @@ function absolutePoints(placements: Parameters<typeof makeBuildings>[0]): string
 
 describe("building geometry is pivot-invariant (characterization gate)", () => {
   it("axis-aligned, rotated, nubbin, and mirrored buildings land at fixed canvas points", () => {
-    const placements: Parameters<typeof makeBuildings>[0] = [
+    const placements: Parameters<typeof makeBuildings>[1] = [
       // axis-aligned single corner, mirror on
       { type: "4x6", corners: { TL: { x: 10, y: 5 } } },
       // 90-degree rotation via a diagonal corner pair, mirror on

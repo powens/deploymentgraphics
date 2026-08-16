@@ -1,6 +1,6 @@
 import type { CanvasSize } from "./building-coordinates.js";
-import { makeElement } from "./dom-helpers.js";
 import { makeShape, type IconShape } from "./icons.js";
+import type { SvgDocument, SvgNode } from "./svg-backend.js";
 import { placedTransform, resolveFeature } from "./placement.js";
 import type { FeaturePlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
@@ -202,8 +202,9 @@ function featureDefId(
  * feature type.
  */
 export function injectFeatureDefs(
+  doc: SvgDocument,
   placements: FeaturePlacement[],
-  defs: SVGElement,
+  defs: SvgNode,
 ): void {
   const seen = new Set<string>();
   for (const placement of placements) {
@@ -215,15 +216,15 @@ export function injectFeatureDefs(
     if (!draw) throw new Error(`unknown feature type: ${placement.type}`);
 
     const { body, accent } = draw(placement.width, placement.height);
-    const group = makeElement("g");
+    const group = doc.createElement("g");
     group.setAttribute("id", id);
     for (const shape of body) {
-      const el = makeShape(shape);
+      const el = makeShape(doc, shape);
       el.setAttribute("style", "fill:var(--body);stroke:var(--accent)");
       group.appendChild(el);
     }
     for (const shape of accent) {
-      const el = makeShape(shape);
+      const el = makeShape(doc, shape);
       el.setAttribute("style", "fill:var(--accent)");
       group.appendChild(el);
     }
@@ -241,11 +242,12 @@ export function injectFeatureDefs(
  * palette colour.
  */
 export function makeFeatures(
+  doc: SvgDocument,
   placements: FeaturePlacement[],
   theme: Theme,
   canvas: CanvasSize,
-): SVGElement {
-  const group = makeElement("g");
+): SvgNode {
+  const group = doc.createElement("g");
   group.setAttribute("id", "features");
   group.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
   let counter = 0;
@@ -264,7 +266,7 @@ export function makeFeatures(
       placement.height,
     )}`;
     for (const placed of resolveFeature(placement, canvas)) {
-      const use = makeElement("use");
+      const use = doc.createElement("use");
       use.setAttribute("href", href);
       use.setAttribute("transform", placedTransform(placed));
       use.setAttribute("id", `feature-${counter}`);

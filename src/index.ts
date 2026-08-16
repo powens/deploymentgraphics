@@ -6,9 +6,9 @@
  * re-exported here) and `buildConfig` to render the standard missions
  * with one call.
  *
- * Rendering creates SVG nodes via `document.createElementNS`, so this
- * runs in a browser or any environment with a DOM (e.g. happy-dom or
- * jsdom for server-side rendering).
+ * `makeMissionCard` creates SVG nodes via `document.createElementNS`, so it
+ * needs a browser or another DOM. Server-side, `renderMissionCardToString`
+ * renders the same card to markup with no DOM and no dependencies.
  */
 export * from "./main.js";
 export * from "./types.js";
@@ -20,4 +20,5 @@ export * from "./terrain-config.js";
 export * from "./layout.js";
 export * from "./event-matrix.js";
 export * from "./dom-helpers.js";
+export * from "./svg-backend.js";
 export * from "./presets/index.js";

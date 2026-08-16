@@ -1,4 +1,5 @@
-import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { applyAttributes } from "./dom-helpers.js";
+import type { SvgDocument, SvgNode } from "./svg-backend.js";
 import {
   toPoint,
   type BuildingPlacement,
@@ -49,20 +50,21 @@ export function segmentsToPathData(
  * can reference it.
  */
 export function injectTemplateDefs(
+  doc: SvgDocument,
   templates: Record<string, Template>,
-  defs: SVGElement,
+  defs: SvgNode,
   styleFor?: (name: string) => SVGProperties | undefined,
 ): void {
   for (const [name, template] of Object.entries(templates)) {
-    let shape: SVGElement;
+    let shape: SvgNode;
     if ("segments" in template) {
-      shape = makeElement("path");
+      shape = doc.createElement("path");
       shape.setAttribute(
         "d",
         segmentsToPathData(template.start, template.segments),
       );
     } else if ("points" in template) {
-      shape = makeElement("polygon");
+      shape = doc.createElement("polygon");
       shape.setAttribute(
         "points",
         template.points
@@ -71,7 +73,7 @@ export function injectTemplateDefs(
           .join(" "),
       );
     } else {
-      shape = makeElement("rect");
+      shape = doc.createElement("rect");
       shape.setAttribute("x", "0");
       shape.setAttribute("y", "0");
       shape.setAttribute("width", `${template.width}`);
@@ -88,17 +90,18 @@ export function injectTemplateDefs(
 
 /** Builds a <g> of <use> elements, one per resolved (and mirrored) building. */
 export function makeBuildings(
+  doc: SvgDocument,
   placements: BuildingPlacement[],
   templates: Record<string, Template>,
   canvas: CanvasSize,
   styleFor?: (name: string) => SVGProperties | undefined,
-): SVGElement {
-  const group = makeElement("g");
+): SvgNode {
+  const group = doc.createElement("g");
   group.setAttribute("id", "buildings");
 
   let counter = 0;
   for (const placed of placeBuildings(placements, templates, canvas)) {
-    const use = makeElement("use");
+    const use = doc.createElement("use");
     use.setAttribute("href", `#template-${placed.name}`);
     use.setAttribute("transform", placedTransform(placed));
     use.setAttribute("id", `building-${counter}`);

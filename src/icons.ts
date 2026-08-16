@@ -1,4 +1,5 @@
-import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { applyAttributes } from "./dom-helpers.js";
+import type { SvgDocument, SvgNode } from "./svg-backend.js";
 import { toPoint } from "./building-coordinates.js";
 import type { IconPlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
@@ -63,17 +64,17 @@ const fortress: IconDef = {
 
 export const icons: Record<string, IconDef> = { skull, fortress };
 
-export function makeShape(shape: IconShape): SVGElement {
+export function makeShape(doc: SvgDocument, shape: IconShape): SvgNode {
   switch (shape.tag) {
     case "circle": {
-      const el = makeElement("circle");
+      const el = doc.createElement("circle");
       el.setAttribute("cx", `${shape.cx}`);
       el.setAttribute("cy", `${shape.cy}`);
       el.setAttribute("r", `${shape.r}`);
       return el;
     }
     case "ellipse": {
-      const el = makeElement("ellipse");
+      const el = doc.createElement("ellipse");
       el.setAttribute("cx", `${shape.cx}`);
       el.setAttribute("cy", `${shape.cy}`);
       el.setAttribute("rx", `${shape.rx}`);
@@ -81,7 +82,7 @@ export function makeShape(shape: IconShape): SVGElement {
       return el;
     }
     case "rect": {
-      const el = makeElement("rect");
+      const el = doc.createElement("rect");
       el.setAttribute("x", `${shape.x}`);
       el.setAttribute("y", `${shape.y}`);
       el.setAttribute("width", `${shape.width}`);
@@ -89,7 +90,7 @@ export function makeShape(shape: IconShape): SVGElement {
       return el;
     }
     case "path": {
-      const el = makeElement("path");
+      const el = doc.createElement("path");
       el.setAttribute("d", shape.d);
       return el;
     }
@@ -109,8 +110,9 @@ function iconDefId(type: string, player?: "attacker" | "defender"): string {
  * through. Throws on an unknown type.
  */
 export function injectIconDefs(
+  doc: SvgDocument,
   placements: IconPlacement[],
-  defs: SVGElement,
+  defs: SvgNode,
   theme: Theme,
 ): void {
   const seen = new Set<string>();
@@ -125,10 +127,10 @@ export function injectIconDefs(
       ? `${theme.deployment[player].fill}`
       : `${theme.icon.circle.fill}`;
 
-    const group = makeElement("g");
+    const group = doc.createElement("g");
     group.setAttribute("id", id);
 
-    const circle = makeElement("circle");
+    const circle = doc.createElement("circle");
     circle.setAttribute("cx", `${def.circle.cx}`);
     circle.setAttribute("cy", `${def.circle.cy}`);
     circle.setAttribute("r", `${def.circle.r}`);
@@ -136,15 +138,15 @@ export function injectIconDefs(
     circle.setAttribute("fill", diskFill);
     group.appendChild(circle);
 
-    const glyph = makeElement("g");
+    const glyph = doc.createElement("g");
     if (def.glyph.transform) glyph.setAttribute("transform", def.glyph.transform);
     for (const shape of def.glyph.body) {
-      const el = makeShape(shape);
+      const el = makeShape(doc, shape);
       applyAttributes(el, theme.icon.glyph);
       glyph.appendChild(el);
     }
     for (const shape of def.glyph.cutouts ?? []) {
-      const el = makeShape(shape);
+      const el = makeShape(doc, shape);
       el.setAttribute("fill", diskFill);
       glyph.appendChild(el);
     }
@@ -158,15 +160,18 @@ export function injectIconDefs(
  * referencing its `#icon-<type>` def and translated so the 4×4" design box is
  * recentered on `pos`. Throws on an unknown type.
  */
-export function makeIcons(placements: IconPlacement[]): SVGElement {
-  const group = makeElement("g");
+export function makeIcons(
+  doc: SvgDocument,
+  placements: IconPlacement[],
+): SvgNode {
+  const group = doc.createElement("g");
   group.setAttribute("id", "icons");
   let counter = 0;
   for (const placement of placements) {
     if (!icons[placement.type]) {
       throw new Error(`unknown icon type: ${placement.type}`);
     }
-    const use = makeElement("use");
+    const use = doc.createElement("use");
     use.setAttribute("href", `#${iconDefId(placement.type, placement.player)}`);
     const { x, y } = toPoint(placement.pos, `icon ${placement.type} pos`);
     use.setAttribute(
