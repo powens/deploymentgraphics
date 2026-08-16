@@ -1,7 +1,14 @@
 import { injectTemplateDefs, makeBuildings } from "./buildings.js";
 import { injectFeatureDefs, makeFeatures } from "./features.js";
 import { injectIconDefs, makeIcons } from "./icons.js";
-import { applyAttributes, makeElement } from "./dom-helpers.js";
+import { applyAttributes } from "./dom-helpers.js";
+import {
+  browserSvgDocument,
+  serializeSvg,
+  virtualSvgDocument,
+  type SvgDocument,
+  type SvgNode,
+} from "./svg-backend.js";
 import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
 import {
@@ -23,25 +30,26 @@ const buildingStyle =
   });
 
 function injectDefs(
-  svg: SVGElement,
+  doc: SvgDocument,
+  svg: SvgNode,
   config: FullConfig,
   theme: Theme,
   layout: ResolvedLayout,
 ) {
-  const defs = makeElement("defs");
+  const defs = doc.createElement("defs");
   svg.appendChild(defs);
 
   // Each template def carries the generic building props plus its own
   // template-specific stroke/fill overrides (keyed by name, with a default).
-  injectTemplateDefs(config.terrain.templates, defs, buildingStyle(theme));
+  injectTemplateDefs(doc, config.terrain.templates, defs, buildingStyle(theme));
 
-  if (layout.icons.length > 0) injectIconDefs(layout.icons, defs, theme);
+  if (layout.icons.length > 0) injectIconDefs(doc, layout.icons, defs, theme);
 
-  if (layout.features.length > 0) injectFeatureDefs(layout.features, defs);
+  if (layout.features.length > 0) injectFeatureDefs(doc, layout.features, defs);
 
   const hasArrow = config.annotations?.some((a) => a.kind === "arrow");
   if (hasArrow) {
-    const marker = makeElement("marker");
+    const marker = doc.createElement("marker");
     marker.setAttribute("id", "arrowhead");
     marker.setAttribute("markerUnits", "userSpaceOnUse");
     marker.setAttribute("markerWidth", "4");
@@ -49,7 +57,7 @@ function injectDefs(
     marker.setAttribute("refX", "4");
     marker.setAttribute("refY", "1.5");
     marker.setAttribute("orient", "auto");
-    const path = makeElement("path");
+    const path = doc.createElement("path");
     path.setAttribute("d", "M 0 0 L 4 1.5 L 0 3 Z");
     path.setAttribute("fill", "black");
     marker.appendChild(path);
@@ -57,15 +65,19 @@ function injectDefs(
   }
 }
 
-function makeHalfwayLines(config: FullConfig, theme: Theme): SVGElement | null {
+function makeHalfwayLines(
+  doc: SvgDocument,
+  config: FullConfig,
+  theme: Theme,
+): SvgNode | null {
   // Absent `draw` defaults to on; only an explicit `false` suppresses.
   if (config.base.half_way_lines.draw === false) {
     return null;
   }
-  const group = makeElement("g");
+  const group = doc.createElement("g");
   const guideConfig = theme.half_way_lines;
 
-  const vertHalfLine = makeElement("line");
+  const vertHalfLine = doc.createElement("line");
   vertHalfLine.setAttribute("x1", `${config.base.size.width / 2}`);
   vertHalfLine.setAttribute("y1", "0");
   vertHalfLine.setAttribute("x2", `${config.base.size.width / 2}`);
@@ -73,7 +85,7 @@ function makeHalfwayLines(config: FullConfig, theme: Theme): SVGElement | null {
   applyAttributes(vertHalfLine, guideConfig);
   group.appendChild(vertHalfLine);
 
-  const horizHalfLine = makeElement("line");
+  const horizHalfLine = doc.createElement("line");
   horizHalfLine.setAttribute("x1", "0");
   horizHalfLine.setAttribute("y1", `${config.base.size.height / 2}`);
   horizHalfLine.setAttribute("x2", `${config.base.size.width}`);
@@ -84,7 +96,11 @@ function makeHalfwayLines(config: FullConfig, theme: Theme): SVGElement | null {
   return group;
 }
 
-function makeTerritoryLine(config: FullConfig, theme: Theme): SVGElement | null {
+function makeTerritoryLine(
+  doc: SvgDocument,
+  config: FullConfig,
+  theme: Theme,
+): SvgNode | null {
   // Absent `draw` defaults to on; only an explicit `false` suppresses. A
   // mission with no `territory` draws nothing regardless of the toggle.
   const territory = config.deployment.territory;
@@ -93,7 +109,7 @@ function makeTerritoryLine(config: FullConfig, theme: Theme): SVGElement | null 
   }
   const start = toPoint(territory.start, "territory start");
   const end = toPoint(territory.end, "territory end");
-  const line = makeElement("line");
+  const line = doc.createElement("line");
   line.setAttribute("id", "territory");
   line.setAttribute("x1", `${start.x}`);
   line.setAttribute("y1", `${start.y}`);
@@ -104,15 +120,16 @@ function makeTerritoryLine(config: FullConfig, theme: Theme): SVGElement | null 
 }
 
 function makeDeploymentZone(
+  doc: SvgDocument,
   config: FullConfig,
   attackerDefender: "attacker" | "defender",
   theme: Theme,
-): SVGElement {
+): SvgNode {
   const playerConfig = config.deployment[attackerDefender];
   const colorConfig = theme.deployment[attackerDefender];
   const maskRadius = playerConfig.mask_center ?? 0;
 
-  const dz = makeElement("polygon");
+  const dz = doc.createElement("polygon");
   dz.setAttribute("id", attackerDefender);
   dz.setAttribute(
     "points",
@@ -131,15 +148,15 @@ function makeDeploymentZone(
   // only where the zone actually is, so nothing bleeds outside the polygon
   // when the circle is centred on a zone corner (Search and Destroy).
   const maskId = `center-hole-${attackerDefender}`;
-  const mask = makeElement("mask");
+  const mask = doc.createElement("mask");
   mask.setAttribute("id", maskId);
-  const visible = makeElement("rect");
+  const visible = doc.createElement("rect");
   visible.setAttribute("x", "0");
   visible.setAttribute("y", "0");
   visible.setAttribute("width", `${config.base.size.width}`);
   visible.setAttribute("height", `${config.base.size.height}`);
   visible.setAttribute("fill", "white");
-  const hole = makeElement("circle");
+  const hole = doc.createElement("circle");
   hole.setAttribute("cx", `${config.base.size.width / 2}`);
   hole.setAttribute("cy", `${config.base.size.height / 2}`);
   hole.setAttribute("r", `${maskRadius}`);
@@ -148,22 +165,26 @@ function makeDeploymentZone(
   mask.appendChild(hole);
   dz.setAttribute("mask", `url(#${maskId})`);
 
-  const group = makeElement("g");
+  const group = doc.createElement("g");
   group.appendChild(mask);
   group.appendChild(dz);
   return group;
 }
 
-function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
+function makeGrid(
+  doc: SvgDocument,
+  config: FullConfig,
+  theme: Theme,
+): SvgNode | null {
   if (config?.base?.grid?.draw !== true) {
     return null;
   }
-  const group = makeElement("g");
+  const group = doc.createElement("g");
   applyAttributes(group, theme.grid);
   const size = config.base.size;
 
   for (let x = 1; x < size.width; x++) {
-    const line = makeElement("line");
+    const line = doc.createElement("line");
     line.setAttribute("x1", `${x}`);
     line.setAttribute("y1", "0");
     line.setAttribute("x2", `${x}`);
@@ -172,7 +193,7 @@ function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
     group.appendChild(line);
   }
   for (let y = 1; y < size.height; y++) {
-    const line = makeElement("line");
+    const line = doc.createElement("line");
     line.setAttribute("x1", "0");
     line.setAttribute("y1", `${y}`);
     line.setAttribute("x2", `${size.width}`);
@@ -184,19 +205,20 @@ function makeGrid(config: FullConfig, theme: Theme): SVGElement | null {
 }
 
 function makeAreaTerrain(
+  doc: SvgDocument,
   items: AreaTerrain[],
   theme: Theme,
-): SVGElement | null {
+): SvgNode | null {
   if (items.length === 0) return null;
-  const group = makeElement("g");
+  const group = doc.createElement("g");
   group.setAttribute("id", "area-terrain");
   for (const item of items) {
     const style =
       theme.area_terrain[item.label ?? ""] ?? theme.area_terrain.default;
-    let shape: SVGElement;
+    let shape: SvgNode;
     if (item.shape === "circle") {
       const r = (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
-      shape = makeElement("circle");
+      shape = doc.createElement("circle");
       shape.setAttribute("cx", `${item.x + r}`);
       shape.setAttribute("cy", `${item.y + r}`);
       shape.setAttribute("r", `${r}`);
@@ -205,7 +227,7 @@ function makeAreaTerrain(
         .map((raw) => toPoint(raw, "area_terrain points"))
         .map((p) => `${item.x + p.x},${item.y + p.y}`)
         .join(" ");
-      shape = makeElement("polygon");
+      shape = doc.createElement("polygon");
       shape.setAttribute("points", pts);
     }
     applyAttributes(shape, style);
@@ -223,20 +245,24 @@ function makeAreaTerrain(
 /** Numbered objective markers sit on top of zones, terrain, and buildings. */
 const OBJECTIVE_RADIUS = 1.5;
 
-function makeObjectives(config: FullConfig, theme: Theme): SVGElement | null {
+function makeObjectives(
+  doc: SvgDocument,
+  config: FullConfig,
+  theme: Theme,
+): SvgNode | null {
   const items = config.objectives;
   if (!items || items.length === 0) return null;
-  const group = makeElement("g");
+  const group = doc.createElement("g");
   group.setAttribute("id", "objectives");
   for (const item of items) {
-    const marker = makeElement("circle");
+    const marker = doc.createElement("circle");
     marker.setAttribute("cx", `${item.x}`);
     marker.setAttribute("cy", `${item.y}`);
     marker.setAttribute("r", `${OBJECTIVE_RADIUS}`);
     applyAttributes(marker, theme.objective.marker);
     group.appendChild(marker);
 
-    const label = makeElement("text");
+    const label = doc.createElement("text");
     label.setAttribute("x", `${item.x}`);
     label.setAttribute("y", `${item.y}`);
     label.setAttribute("text-anchor", "middle");
@@ -248,22 +274,26 @@ function makeObjectives(config: FullConfig, theme: Theme): SVGElement | null {
   return group;
 }
 
-function makeAnnotations(config: FullConfig, theme: Theme): SVGElement | null {
+function makeAnnotations(
+  doc: SvgDocument,
+  config: FullConfig,
+  theme: Theme,
+): SvgNode | null {
   const items = config.annotations;
   if (!items || items.length === 0) return null;
-  const group = makeElement("g");
+  const group = doc.createElement("g");
   group.setAttribute("id", "annotations");
   applyAttributes(group, theme.annotation.text);
   for (const item of items) {
     if (item.kind === "text") {
-      const el = makeElement("text");
+      const el = doc.createElement("text");
       el.setAttribute("x", `${item.x}`);
       el.setAttribute("y", `${item.y}`);
       applyAttributes(el, theme.annotation.text_outline);
       el.textContent = item.text ?? "";
       group.appendChild(el);
     } else {
-      const line = makeElement("line");
+      const line = doc.createElement("line");
       line.setAttribute("x1", `${item.x}`);
       line.setAttribute("y1", `${item.y}`);
       line.setAttribute("x2", `${item.endX ?? item.x}`);
@@ -276,11 +306,12 @@ function makeAnnotations(config: FullConfig, theme: Theme): SVGElement | null {
   return group;
 }
 
-export function makeMissionCard(
+function buildTree(
+  doc: SvgDocument,
   config: FullConfig,
-  theme: Theme = baseTheme,
-): SVGElement {
-  const svg = makeElement("svg");
+  theme: Theme,
+): SvgNode {
+  const svg = doc.createElement("svg");
   svg.setAttribute(
     "viewBox",
     `0 0 ${config.base.size.width} ${config.base.size.height}`,
@@ -288,12 +319,12 @@ export function makeMissionCard(
 
   // Give assistive tech an accessible name for the rendered card.
   svg.setAttribute("role", "img");
-  const title = makeElement("title");
+  const title = doc.createElement("title");
   title.textContent = `Deployment map: ${config.deployment.name}`;
   svg.appendChild(title);
 
   if (theme.background.fill) {
-    const background = makeElement("rect");
+    const background = doc.createElement("rect");
     background.setAttribute("x", "0");
     background.setAttribute("y", "0");
     background.setAttribute("width", `${config.base.size.width}`);
@@ -311,23 +342,23 @@ export function makeMissionCard(
     height: config.base.size.height,
   };
 
-  injectDefs(svg, config, theme, layout);
+  injectDefs(doc, svg, config, theme, layout);
 
-  svg.appendChild(makeDeploymentZone(config, "attacker", theme));
-  svg.appendChild(makeDeploymentZone(config, "defender", theme));
+  svg.appendChild(makeDeploymentZone(doc, config, "attacker", theme));
+  svg.appendChild(makeDeploymentZone(doc, config, "defender", theme));
 
   // Grid first so it sits behind everything else.
-  const grid = makeGrid(config, theme);
+  const grid = makeGrid(doc, config, theme);
   if (grid) {
     svg.appendChild(grid);
   }
 
-  const halfwayLines = makeHalfwayLines(config, theme);
+  const halfwayLines = makeHalfwayLines(doc, config, theme);
   if (halfwayLines) {
     svg.appendChild(halfwayLines);
   }
 
-  const territory = makeTerritoryLine(config, theme);
+  const territory = makeTerritoryLine(doc, config, theme);
   if (territory) {
     svg.appendChild(territory);
   }
@@ -336,6 +367,7 @@ export function makeMissionCard(
   // `<g id="buildings">` — matching the legacy renderer's warn-and-skip.
   svg.appendChild(
     makeBuildings(
+      doc,
       layout.buildings,
       config.terrain.templates,
       canvas,
@@ -346,28 +378,73 @@ export function makeMissionCard(
   // Area terrain draws after buildings: imported 40kdc area pieces render as
   // opaque buildings, and the smaller feature pieces (l-ruins, pipes, ...) are
   // emitted as area_terrain that sits on top of them.
-  const areaTerrain = makeAreaTerrain(layout.areaTerrain, theme);
+  const areaTerrain = makeAreaTerrain(doc, layout.areaTerrain, theme);
   if (areaTerrain) {
     svg.appendChild(areaTerrain);
   }
 
   if (layout.features.length > 0) {
-    svg.appendChild(makeFeatures(layout.features, theme, canvas));
+    svg.appendChild(makeFeatures(doc, layout.features, theme, canvas));
   }
 
-  const objectives = makeObjectives(config, theme);
+  const objectives = makeObjectives(doc, config, theme);
   if (objectives) {
     svg.appendChild(objectives);
   }
 
-  const annotations = makeAnnotations(config, theme);
+  const annotations = makeAnnotations(doc, config, theme);
   if (annotations) {
     svg.appendChild(annotations);
   }
 
-  if (layout.icons.length > 0) svg.appendChild(makeIcons(layout.icons));
+  if (layout.icons.length > 0) svg.appendChild(makeIcons(doc, layout.icons));
 
   return svg;
+}
+
+/**
+ * Renders the card as an `<svg>` element. Needs a DOM: nodes are created with
+ * `document.createElementNS`. For Node, `renderMissionCardToString` renders the
+ * same card without one.
+ */
+export function makeMissionCard(
+  config: FullConfig,
+  theme: Theme = baseTheme,
+): SVGElement {
+  return buildTree(
+    browserSvgDocument(),
+    config,
+    theme,
+  ) as unknown as SVGElement;
+}
+
+/** Root `<svg>` sizing for `renderMissionCardToString`. */
+export interface RenderToStringOptions {
+  /** `width` attribute: a number of pixels, or any SVG length (`"100%"`). */
+  width?: number | string;
+  /** `height` attribute, in the same terms as `width`. */
+  height?: number | string;
+}
+
+/**
+ * Renders the card as SVG markup, with no DOM and no dependencies — the
+ * server-side path. The result carries an `xmlns`, so it stands alone as a
+ * `.svg` file or drops straight into an HTML response.
+ *
+ * The card is otherwise sized by its `viewBox` alone, which leaves a
+ * standalone file or an `<img>` to pick a size. Since a string leaves no node
+ * to set attributes on afterwards, pass `width`/`height` here to fix one — the
+ * board is measured in inches, so `width: 60 * 15` renders it at 15px/inch.
+ */
+export function renderMissionCardToString(
+  config: FullConfig,
+  theme: Theme = baseTheme,
+  { width, height }: RenderToStringOptions = {},
+): string {
+  const svg = buildTree(virtualSvgDocument(), config, theme);
+  if (width !== undefined) svg.setAttribute("width", `${width}`);
+  if (height !== undefined) svg.setAttribute("height", `${height}`);
+  return serializeSvg(svg);
 }
 
 export function injectMissionCard(

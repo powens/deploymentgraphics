@@ -10,6 +10,12 @@ import type {
   PathSegment,
   PathTemplate,
 } from "./building-coordinates";
+import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
+
+const doc = browserSvgDocument();
+// The renderer builds against the minimal `SvgNode` contract; the browser
+// backend hands back real DOM nodes, which is what the assertions query.
+const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 const canvas = { width: 60, height: 44 };
 const templates = {
@@ -18,8 +24,8 @@ const templates = {
 
 describe("injectTemplateDefs", () => {
   it("appends a <rect> per template, sized and id'd", () => {
-    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    injectTemplateDefs(templates, defs);
+    const defs = doc.createElement("defs");
+    injectTemplateDefs(doc, templates, defs);
     const rect = defs.querySelector("#template-4x6");
     expect(rect).not.toBeNull();
     expect(rect!.tagName).toBe("rect");
@@ -30,10 +36,13 @@ describe("injectTemplateDefs", () => {
 
 describe("makeBuildings", () => {
   it("emits a <use> per resolved building (primary + mirror)", () => {
-    const group = makeBuildings(
-      [{ type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
-      templates,
-      canvas,
+    const group = asElement(
+      makeBuildings(
+        doc,
+        [{ type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
+        templates,
+        canvas,
+      ),
     );
     expect(group.tagName).toBe("g");
     const uses = group.querySelectorAll("use");
@@ -45,22 +54,28 @@ describe("makeBuildings", () => {
   });
 
   it("emits one <use> when mirror is false", () => {
-    const group = makeBuildings(
-      [{ type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
-      templates,
-      canvas,
+    const group = asElement(
+      makeBuildings(
+        doc,
+        [{ type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
+        templates,
+        canvas,
+      ),
     );
     expect(group.querySelectorAll("use")).toHaveLength(1);
   });
 
   it("numbers <use> ids sequentially across placements", () => {
-    const group = makeBuildings(
-      [
-        { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } },
-        { type: "4x6", mirror: false, corners: { TL: { x: 20, y: 5 }, TR: { x: 24, y: 5 } } },
-      ],
-      templates,
-      canvas,
+    const group = asElement(
+      makeBuildings(
+        doc,
+        [
+          { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } },
+          { type: "4x6", mirror: false, corners: { TL: { x: 20, y: 5 }, TR: { x: 24, y: 5 } } },
+        ],
+        templates,
+        canvas,
+      ),
     );
     const uses = group.querySelectorAll("use");
     expect(uses).toHaveLength(2);
@@ -78,36 +93,37 @@ describe("per-template styling", () => {
       : { fill: "#808080", stroke_width: 1.2 };
 
   it("injectTemplateDefs styles each template def by name", () => {
-    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    injectTemplateDefs({ pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styleFor);
+    const defs = doc.createElement("defs");
+    injectTemplateDefs(doc, { pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styleFor);
     expect(defs.querySelector("#template-pipe")!.getAttribute("fill")).toBe("#b9772e");
     expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBe("#808080");
   });
 
   it("makeBuildings styles each use by its template name", () => {
-    const group = makeBuildings(
-      [{ type: "pipe", mirror: false, corners: { TL: { x: 0, y: 0 }, TR: { x: 5.5, y: 0 } } }],
-      { pipe: { width: 5.5, height: 1 } },
-      { width: 60, height: 44 },
-      styleFor,
+    const group = asElement(
+      makeBuildings(
+        doc,
+        [{ type: "pipe", mirror: false, corners: { TL: { x: 0, y: 0 }, TR: { x: 5.5, y: 0 } } }],
+        { pipe: { width: 5.5, height: 1 } },
+        { width: 60, height: 44 },
+        styleFor,
+      ),
     );
     expect(group.querySelector("use")!.getAttribute("fill")).toBe("#b9772e");
   });
 
   it("injectTemplateDefs sets no fill when styleFor is omitted", () => {
-    const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
-    injectTemplateDefs({ "4x6": { width: 4, height: 6 } }, defs);
+    const defs = doc.createElement("defs");
+    injectTemplateDefs(doc, { "4x6": { width: 4, height: 6 } }, defs);
     expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBeNull();
   });
 });
 
 describe("polygon templates", () => {
   it("injectTemplateDefs emits a <polygon> for a polygon template", () => {
-    const defs = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "defs",
-    );
+    const defs = doc.createElement("defs");
     injectTemplateDefs(
+      doc,
       {
         ruins: {
           points: [
@@ -127,11 +143,9 @@ describe("polygon templates", () => {
   });
 
   it("injectTemplateDefs applies svg properties to a polygon", () => {
-    const defs = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "defs",
-    );
+    const defs = doc.createElement("defs");
     injectTemplateDefs(
+      doc,
       {
         ruins: {
           points: [
@@ -150,19 +164,22 @@ describe("polygon templates", () => {
   });
 
   it("makeBuildings emits a <use> referencing a polygon template", () => {
-    const group = makeBuildings(
-      [{ type: "ruins", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 17, y: 5 } } }],
-      {
-        ruins: {
-          points: [
-            { x: 0, y: 0 },
-            { x: 7, y: 0 },
-            { x: 7, y: 11 },
-            { x: 0, y: 11 },
-          ],
+    const group = asElement(
+      makeBuildings(
+        doc,
+        [{ type: "ruins", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 17, y: 5 } } }],
+        {
+          ruins: {
+            points: [
+              { x: 0, y: 0 },
+              { x: 7, y: 0 },
+              { x: 7, y: 11 },
+              { x: 0, y: 11 },
+            ],
+          },
         },
-      },
-      canvas,
+        canvas,
+      ),
     );
     expect(group.querySelector("use")!.getAttribute("href")).toBe(
       "#template-ruins",
@@ -199,14 +216,11 @@ describe("path templates", () => {
   });
 
   it("injectTemplateDefs emits a <path> for a path template", () => {
-    const defs = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "defs",
-    );
+    const defs = doc.createElement("defs");
     const templates: Record<string, PathTemplate> = {
       bastion: { width: 4, height: 4, start, segments },
     };
-    injectTemplateDefs(templates, defs);
+    injectTemplateDefs(doc, templates, defs);
     const path = defs.querySelector("#template-bastion");
     expect(path).not.toBeNull();
     expect(path!.tagName).toBe("path");
@@ -216,14 +230,11 @@ describe("path templates", () => {
   });
 
   it("injectTemplateDefs applies svg properties to a path template", () => {
-    const defs = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "defs",
-    );
+    const defs = doc.createElement("defs");
     const templates: Record<string, PathTemplate> = {
       bastion: { width: 4, height: 4, start, segments },
     };
-    injectTemplateDefs(templates, defs, () => ({ fill: "#808080" }));
+    injectTemplateDefs(doc, templates, defs, () => ({ fill: "#808080" }));
     expect(defs.querySelector("#template-bastion")!.getAttribute("fill")).toBe(
       "#808080",
     );
@@ -238,10 +249,13 @@ describe("path templates", () => {
         segments: [{ line: { x: 8, y: 0 } }, { line: { x: 8, y: 8 } }, { line: { x: 0, y: 8 } }],
       },
     };
-    const group = makeBuildings(
-      [{ type: "bastion", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 18, y: 5 } } }],
-      templates,
-      canvas,
+    const group = asElement(
+      makeBuildings(
+        doc,
+        [{ type: "bastion", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 18, y: 5 } } }],
+        templates,
+        canvas,
+      ),
     );
     expect(group.querySelector("use")!.getAttribute("href")).toBe(
       "#template-bastion",

@@ -69,14 +69,6 @@
     "url": "https://github.com/powens/deploymentgraphics/issues"
   },
   "homepage": "https://github.com/powens/deploymentgraphics#readme",
-  "peerDependencies": {
-    "happy-dom": ">=15"
-  },
-  "peerDependenciesMeta": {
-    "happy-dom": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@rollup/plugin-typescript": "^12.3.0",
