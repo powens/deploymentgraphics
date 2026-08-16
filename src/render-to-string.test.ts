@@ -1,20 +1,22 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
 import { makeMissionCard, renderMissionCardToString } from "./main.js";
+import { baseTheme } from "./presets/theme.js";
 import { buildConfig } from "./presets/build-config.js";
 import { missions } from "./presets/missions.js";
 import type { FullConfig } from "./types.js";
 
 /**
- * Parses rendered markup back into a DOM node and re-serializes it, so the
- * string path and the DOM path can be compared without tripping over
- * serialization differences (self-closing tags, the root `xmlns`).
+ * Serializes the DOM path's node as XML, giving the string path something to
+ * be compared against byte for byte.
+ *
+ * Comparing markup rather than parsing ours back matters: happy-dom's
+ * `DOMParser` is not a strict XML parser. It accepts a bare `&` in text and
+ * silently re-emits it as `&amp;`, so a round-trip would launder markup that a
+ * real browser rejects with a `parsererror`.
  */
-function reserialize(markup: string): string {
-  const doc = new DOMParser().parseFromString(markup, "image/svg+xml");
-  const root = doc.documentElement;
-  root.removeAttribute("xmlns");
-  return root.outerHTML;
+function domMarkup(node: SVGElement): string {
+  return new XMLSerializer().serializeToString(node);
 }
 
 const withExtras = (config: FullConfig): FullConfig => ({
@@ -72,8 +74,8 @@ const cases: [string, FullConfig][] = [
 
 describe("renderMissionCardToString", () => {
   it.each(cases)("matches the DOM renderer for %s", (_name, config) => {
-    expect(reserialize(renderMissionCardToString(config))).toBe(
-      makeMissionCard(config).outerHTML,
+    expect(renderMissionCardToString(config)).toBe(
+      domMarkup(makeMissionCard(config)),
     );
   });
 
@@ -83,6 +85,26 @@ describe("renderMissionCardToString", () => {
     );
     expect(markup.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).toBe(
       true,
+    );
+  });
+
+  it("sizes the root <svg> when width and height are given", () => {
+    const markup = renderMissionCardToString(
+      buildConfig({ mission: missions.dawn_of_war }),
+      baseTheme,
+      { width: 60 * 15, height: "100%" },
+    );
+    expect(markup).toContain('viewBox="0 0 60 44"');
+    expect(markup).toContain('width="900"');
+    expect(markup).toContain('height="100%"');
+  });
+
+  it("emits no width or height by default, leaving the viewBox to scale", () => {
+    const markup = renderMissionCardToString(
+      buildConfig({ mission: missions.dawn_of_war }),
+    );
+    expect(markup.slice(0, markup.indexOf(">"))).not.toMatch(
+      /\s(width|height)=/,
     );
   });
 

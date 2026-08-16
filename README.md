@@ -64,8 +64,22 @@ const svg = renderMissionCardToString(
 console.log(svg);
 ```
 
-The markup carries an `xmlns`, so it stands alone as a `.svg` file as well
-as inline in an HTML response.
+The markup carries an `xmlns`, so it works inline in an HTML response as
+well as on its own in a `.svg` file.
+
+The card is sized by its `viewBox` alone, which leaves a standalone file or
+an `<img>` to pick a size. Pass `width`/`height` to fix one — the board is
+measured in inches, so this renders a 60×44 board at 15px per inch:
+
+```ts
+import { baseTheme } from "deploymentgraphics";
+
+const svg = renderMissionCardToString(
+  buildConfig({ mission: missions.tipping_point }),
+  baseTheme,
+  { width: 60 * 15, height: 44 * 15 },
+);
+```
 
 ## Presets
 

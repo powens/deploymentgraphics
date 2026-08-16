@@ -40,11 +40,17 @@ export function browserSvgDocument(): BrowserSvgDocument {
   };
 }
 
-/** An SVG element held as data: tag, attributes, and children or text. */
+/**
+ * An SVG element held as data: a tag, its attributes, and its children.
+ *
+ * Children are elements and text runs both, mirroring the DOM's mixed content
+ * rather than forcing an element to be either textual or nested — otherwise
+ * `textContent` followed by `appendChild` would drop one of the two here while
+ * the browser backend kept both.
+ */
 export class VirtualSvgElement implements SvgNode {
   readonly attributes = new Map<string, string>();
-  readonly children: VirtualSvgElement[] = [];
-  #text: string | null = null;
+  readonly children: (VirtualSvgElement | string)[] = [];
 
   constructor(readonly tagName: string) {}
 
@@ -53,17 +59,26 @@ export class VirtualSvgElement implements SvgNode {
   }
 
   appendChild(child: SvgNode): void {
-    this.children.push(child as VirtualSvgElement);
+    if (!(child instanceof VirtualSvgElement)) {
+      // Most likely a node from `browserSvgDocument()`. Rejecting it here
+      // points at the mismatched append rather than failing later, deep inside
+      // `serializeSvg`, on a node it cannot walk.
+      throw new TypeError("appendChild expects a virtual SVG element");
+    }
+    this.children.push(child);
   }
 
-  // Mirrors the DOM: assigning text replaces any existing children.
-  get textContent(): string | null {
-    return this.#text;
+  // Mirrors the DOM: reading concatenates descendant text, and assigning
+  // replaces every child with a single text run.
+  get textContent(): string {
+    return this.children
+      .map((child) => (typeof child === "string" ? child : child.textContent))
+      .join("");
   }
 
   set textContent(value: string | null) {
-    this.#text = value;
     this.children.length = 0;
+    if (value) this.children.push(value);
   }
 }
 
@@ -72,17 +87,18 @@ export function virtualSvgDocument(): SvgDocument {
   return { createElement: (tagName) => new VirtualSvgElement(tagName) };
 }
 
-// `>` needs no escaping in XML attribute values or text, so both forms leave
-// it alone; quotes only matter inside the double-quoted attribute syntax.
+// `>` is only strictly forbidden as part of the `]]>` sequence, but escaping
+// it everywhere costs nothing and keeps text like `a ]]> b` well formed;
+// quotes only matter inside the double-quoted attribute syntax.
 function escapeAttribute(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll('"', "&quot;");
+  return escapeText(value).replaceAll('"', "&quot;");
 }
 
 function escapeText(value: string): string {
-  return value.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
 }
 
 function serializeNode(
@@ -93,14 +109,16 @@ function serializeNode(
     .map(([name, value]) => ` ${name}="${escapeAttribute(value)}"`)
     .join("");
 
-  if (node.children.length === 0 && !node.textContent) {
+  if (node.children.length === 0) {
     return `<${node.tagName}${open}/>`;
   }
-  const body = node.textContent
-    ? escapeText(node.textContent)
-    : node.children
-        .map((child) => serializeNode(child, child.attributes))
-        .join("");
+  const body = node.children
+    .map((child) =>
+      typeof child === "string"
+        ? escapeText(child)
+        : serializeNode(child, child.attributes),
+    )
+    .join("");
   return `<${node.tagName}${open}>${body}</${node.tagName}>`;
 }
 

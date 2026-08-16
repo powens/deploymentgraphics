@@ -48,21 +48,65 @@ describe("VirtualSvgElement", () => {
     el.textContent = "1";
     expect(serializeSvg(el)).toBe("<text>1</text>");
   });
+
+  it("keeps text already set when a child is appended after it", () => {
+    const el = new VirtualSvgElement("text");
+    el.textContent = "1";
+    el.appendChild(new VirtualSvgElement("circle"));
+    expect(serializeSvg(el)).toBe("<text>1<circle/></text>");
+  });
+
+  it("reads textContent back as the concatenated descendant text", () => {
+    const el = new VirtualSvgElement("text");
+    el.textContent = "1";
+    const child = new VirtualSvgElement("tspan");
+    child.textContent = "2";
+    el.appendChild(child);
+    expect(el.textContent).toBe("12");
+  });
+
+  it("empties the element when textContent is set to null", () => {
+    const el = new VirtualSvgElement("text");
+    el.textContent = "1";
+    el.textContent = null;
+    expect(serializeSvg(el)).toBe("<text/>");
+  });
+
+  it("rejects a child that did not come from the virtual backend", () => {
+    const el = new VirtualSvgElement("g");
+    const notVirtual = {
+      setAttribute() {},
+      appendChild() {},
+      textContent: null,
+    };
+    expect(() => el.appendChild(notVirtual)).toThrow(
+      /appendChild expects a virtual SVG element/,
+    );
+  });
 });
 
 describe("serializeSvg", () => {
-  it("escapes &, < and \" in attribute values", () => {
+  it('escapes &, <, > and " in attribute values', () => {
     const el = new VirtualSvgElement("use");
     el.setAttribute("style", '--body:a&b;--accent:<c>;--x:"d"');
     expect(serializeSvg(el)).toBe(
-      '<use style="--body:a&amp;b;--accent:&lt;c>;--x:&quot;d&quot;"/>',
+      '<use style="--body:a&amp;b;--accent:&lt;c&gt;;--x:&quot;d&quot;"/>',
     );
   });
 
-  it("escapes & and < in text content", () => {
+  it("escapes &, < and > in text content", () => {
     const el = new VirtualSvgElement("title");
     el.textContent = "Search & <Destroy>";
-    expect(serializeSvg(el)).toBe("<title>Search &amp; &lt;Destroy></title>");
+    expect(serializeSvg(el)).toBe(
+      "<title>Search &amp; &lt;Destroy&gt;</title>",
+    );
+  });
+
+  // `]]>` is the one sequence XML forbids outright in text.
+  it("keeps a ]]> sequence in text well formed", () => {
+    const el = new VirtualSvgElement("title");
+    el.textContent = "a ]]> b";
+    expect(serializeSvg(el)).toBe("<title>a ]]&gt; b</title>");
   });
 
   it("stamps the SVG namespace on a root <svg>", () => {

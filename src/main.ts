@@ -418,16 +418,33 @@ export function makeMissionCard(
   ) as unknown as SVGElement;
 }
 
+/** Root `<svg>` sizing for `renderMissionCardToString`. */
+export interface RenderToStringOptions {
+  /** `width` attribute: a number of pixels, or any SVG length (`"100%"`). */
+  width?: number | string;
+  /** `height` attribute, in the same terms as `width`. */
+  height?: number | string;
+}
+
 /**
  * Renders the card as SVG markup, with no DOM and no dependencies — the
  * server-side path. The result carries an `xmlns`, so it stands alone as a
  * `.svg` file or drops straight into an HTML response.
+ *
+ * The card is otherwise sized by its `viewBox` alone, which leaves a
+ * standalone file or an `<img>` to pick a size. Since a string leaves no node
+ * to set attributes on afterwards, pass `width`/`height` here to fix one — the
+ * board is measured in inches, so `width: 60 * 15` renders it at 15px/inch.
  */
 export function renderMissionCardToString(
   config: FullConfig,
   theme: Theme = baseTheme,
+  { width, height }: RenderToStringOptions = {},
 ): string {
-  return serializeSvg(buildTree(virtualSvgDocument(), config, theme));
+  const svg = buildTree(virtualSvgDocument(), config, theme);
+  if (width !== undefined) svg.setAttribute("width", `${width}`);
+  if (height !== undefined) svg.setAttribute("height", `${height}`);
+  return serializeSvg(svg);
 }
 
 export function injectMissionCard(
