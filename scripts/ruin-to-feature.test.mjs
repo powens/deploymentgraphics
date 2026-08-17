@@ -15,9 +15,15 @@ const read = (name) =>
       "utf8",
     ),
   );
-const layouts = read("terrain-layouts.json");
-const templates = read("terrain-templates.json");
-const fpById = new Map(templates.map((t) => [t.id, t.footprint]));
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
+
+const rawLayouts = read("terrain-layouts.json");
+const rawTemplates = read("terrain-templates.json");
+const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
+// Upstream now ships ruins as `features[]` on composite templates; normalize
+// back to the legacy piece vocabulary these converters consume.
+const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
+const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => fpById.get(id);
 
 // Absolute outline of a placed l-ruin feature (mirrors makeFeatures' transform
@@ -147,39 +153,45 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 });
 
 describe("ruinFeatures", () => {
-  it("roofs the whole-L ruins that sit under catwalks", () => {
-    // purge-the-foe-vs-purge-the-foe-2 has 16 whole-L corner ruins and two
-    // catwalks, each catwalk sitting on one ruin. (No vendored layout still
-    // uses the split wall-segment bar-pair encoding the crucible relied on.)
+  it("converts every whole-L ruin and consumes the catwalks", () => {
     const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
     const { features, consumedIds } = ruinFeatures(L, lookupFootprint, getParentFor(L));
     const catwalks = L.pieces.filter((p) => p.template === "catwalk");
     const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
-    // Each whole-L ruin piece -> one feature.
     expect(features.length).toBe(ruinPieces.length);
-    // Every catwalk and ruin piece is consumed (not re-emitted as area_terrain).
     for (const p of [...catwalks, ...ruinPieces]) {
       expect(consumedIds.has(p.id)).toBe(true);
     }
-    // The two ruins under catwalks are roofed; roofs use the -roof variant.
-    const roofs = features.filter((f) => f.type.includes("roof"));
-    expect(roofs.length).toBe(2);
     for (const f of features) {
-      expect(["l-ruin", "l-ruin-mirror", "l-ruin-roof", "l-ruin-roof-mirror"]).toContain(
-        f.type,
-      );
+      expect([
+        "l-ruin",
+        "l-ruin-mirror",
+        "l-ruin-roof",
+        "l-ruin-roof-mirror",
+      ]).toContain(f.type);
     }
   });
 
-  it("converts whole-L ruins and drops catwalks without roofing them", () => {
-    const L = layouts.find((l) => l.id === "take-and-hold-vs-disruption-1");
-    const { features, consumedIds } = ruinFeatures(L, lookupFootprint, getParentFor(L));
-    const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
-    expect(features.length).toBe(ruinPieces.length); // each L piece -> one feature
-    // Catwalks here are free-standing (~8in away), so no ruin is roofed.
-    expect(features.some((f) => f.type.includes("roof"))).toBe(false);
-    for (const p of L.pieces.filter((q) => q.template === "catwalk")) {
-      expect(consumedIds.has(p.id)).toBe(true);
+  it("roofs nothing: no battlemaster catwalk lands within ROOF_DISTANCE", () => {
+    // ROOF_DISTANCE = 3in. Since the battlemaster re-source the 90 catwalks sit
+    // min 3.23in from the nearest ruin centre (p50 5.26in), so the pairing
+    // heuristic no longer fires anywhere. Nothing separates roofed from
+    // free-standing in this data, so the threshold is left as-is rather than
+    // retuned to an arbitrary value. -roof variants stay reachable via the
+    // gw.yml demo layout and ruinFeaturePlacement(..., true).
+    const roofed = layouts
+      .filter((l) => l.mission_matchup_id)
+      .flatMap((l) => ruinFeatures(l, lookupFootprint, getParentFor(l)).features)
+      .filter((f) => f.type.includes("roof"));
+    expect(roofed).toEqual([]);
+  });
+
+  it("emits 16 whole-L ruins for every mission layout", () => {
+    // Upstream filled the two variants that used to be short (12 each), so the
+    // corpus is now uniform - this is what retires the gw.yml patch overlay.
+    for (const L of layouts.filter((l) => l.mission_matchup_id)) {
+      const { features } = ruinFeatures(L, lookupFootprint, getParentFor(L));
+      expect(features.length, L.id).toBe(16);
     }
   });
 });
