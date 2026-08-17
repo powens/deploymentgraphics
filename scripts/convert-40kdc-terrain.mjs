@@ -15,6 +15,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import * as yaml from "js-yaml";
 import { resolvePiece } from "./terrain-resolver.mjs";
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
 import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 import { ruinFeatures } from "./ruin-to-feature.mjs";
 import { rectFeatures } from "./rect-to-feature.mjs";
@@ -38,6 +39,7 @@ const templates = readJson("terrain-templates.json");
 
 const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => footprintById.get(id);
+const templatesById = new Map(templates.map((t) => [t.id, t]));
 
 // Pipes and barricades become building placements (see feature-to-building.mjs).
 // Any other unconsumed, non-area feature piece falls back to a generic
@@ -57,7 +59,7 @@ const out = {
 };
 
 const skipped = [];
-for (const layout of layouts) {
+for (let layout of layouts) {
   // Skip fan-format layouts that fall outside GW's mission system. These carry
   // no mission_matchup_id and bring their own terrain templates that have no
   // gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum layout
@@ -69,6 +71,11 @@ for (const layout of layouts) {
     skipped.push(layout.id);
     continue;
   }
+  // Upstream's battlemaster-11e re-source moved the ruins, pipes and generators
+  // out of the layout and onto composite *templates*. Rewrite them back into
+  // the legacy piece vocabulary before anything below touches the layout - see
+  // scripts/battlemaster-normalize.mjs.
+  layout = normalizeLayout(layout, templatesById);
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
   const getParent = (id) => byId.get(id);
   // Corner-ruins become l-ruin features (roofed where a catwalk sits on them);
