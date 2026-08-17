@@ -1,3 +1,5 @@
+import { footprintPolygon, centroid } from "./terrain-resolver.mjs";
+
 // Translates upstream 40kdc "battlemaster-11e" composite layouts back into the
 // legacy piece vocabulary the rest of this pipeline was built for.
 //
@@ -22,7 +24,29 @@
 //       polygons are chiral and `featureFromRefs` reads chirality from the
 //       *resolved* arms, which a parent's `mirror: horizontal` flips. K cancels
 //       the parent's parity and applies a per-part flip bit so each part always
-//       renders as the same l-ruin variant.
+//       renders as the same l-ruin variant. It is the composition of those two
+//       reflections, not a single one chosen to match their parity: the two
+//       agree on handedness but differ by a half-turn, so collapsing them turns
+//       the part (see the comment at the K in normalizeLayout).
+//
+//   Q - the legacy template and the upstream part are two drawings of the same
+//       physical model, but not always in the same orientation: six of the
+//       twelve parts are drawn a quarter- or half-turn apart. `rotation_degrees`
+//       is copied from upstream verbatim, so without Q those six render turned.
+//
+//   S - upstream anchors `position` at the part's *rectangle* centre, which for
+//       a rectangle is both its bbox centre and its area centroid. resolvePiece
+//       anchors at the area centroid, and the legacy `corner-*` polygons are
+//       L-shaped, so their centroid sits up to (1, 1)in inside their bbox
+//       centre. S re-anchors the substituted polygon by that offset, otherwise
+//       every L-shaped part lands ~1in off upstream's placement.
+//
+// Q, S and the flip bits are all measured against the pre-pull corpus (the
+// legacy-vocabulary layouts this repo shipped at f1d98fb, immediately before
+// c1bb2b4 adopted the battlemaster source). Both corpora draw the same physical
+// terrain, so for each part the rigid map taking our emitted piece onto the
+// pre-pull piece is a direct read-out of the correction. See
+// battlemaster-registration.test.mjs for what is pinned and how.
 
 /** Legacy area template for each Battlemaster size class. */
 export const SIZE_CLASS = {
@@ -33,28 +57,57 @@ export const SIZE_CLASS = {
   TR: "area-trapezoid",
 };
 
-// Legacy template for each Battlemaster part, plus `flip`: whether the part's
-// true handedness is the opposite of the legacy polygon's own. Derived by
-// matching each child against the nearest pre-pull piece of the mapped template
-// and reading off the variant it rendered as; `small-l` / `small-l-flip` is the
-// decisive pair (180/180 and 72/74 agreement). `corner-tiny` has equal arms, so
-// its bit is cosmetic. The `ab` / `ef` / `co` / `gh` bits (corner-ruin-balanced-*,
-// corner-ruin-left/-right) had thin or no corroborating matches in the pre-pull
-// corpus and rest on the Task 6 visual spot-check rather than a measured match;
-// see the pinned expectations in battlemaster-registration.test.mjs.
+// Legacy template for each Battlemaster part, plus:
+//
+//   `flip` - whether the part's true handedness is the opposite of the legacy
+//            polygon's own (see K above).
+//   `turn` - the quarter-turn taking the legacy polygon's drawing orientation
+//            onto the upstream part's (see Q above). Degrees, always a multiple
+//            of 90.
+//
+// Both are measured against the pre-pull corpus: emit each child, match it to
+// the nearest pre-pull piece of the mapped template, and read off the rigid map
+// between the two. Sweeping each part over all four turns and both flip bits
+// picks a unique optimum per part, by a wide margin over the runners-up
+// (worst-case ring mismatch vs the pre-pull piece, mean over matched instances):
+//
+//   part          turn 0   turn 90   turn 180   turn 270   -> registered
+//   ab             3.98      4.25      1.20       3.80        180
+//   co             4.37      0.74      4.48       2.54         90
+//   ef             4.40      1.03      4.37       4.02         90
+//   gh             0.47      4.57      2.60       4.65           0
+//   corner         1.71      1.61      1.69       0.57        270
+//   small-l        1.72      2.11      0.24       2.07        180
+//   small-l-flip   1.52      2.10      0.50       2.02        180
+//   generator      0.88      0.20      0.88       0.20         90 (rect: 90=270)
+//
+// The four parts absent from that table (tower, long-barrier, short-barrier,
+// pipes) map onto rectangles or a near-symmetric barricade, where 0 and 180 are
+// indistinguishable and 90/270 are decisively worse; they take turn 0.
+//
+// A bounding-box aspect ratio is NOT a valid oracle here and must not be used as
+// one: it is blind to a half-turn (`ab`, `small-l`, `small-l-flip` all measure
+// 180 while their aspect is unchanged), it is undefined for the square parts
+// (`corner`, `tower`), and for `ab` it actively prefers the wrong answer (90).
+// The legacy polygons are drawn a little larger than the upstream rectangles, so
+// aspect never matches exactly even when the orientation is right.
+//
+// The same sweep confirms every flip bit independently, each by a wide margin,
+// including the `ab` / `ef` / `co` / `gh` bits that previously rested on a
+// visual spot-check alone.
 export const PART_TO_TEMPLATE = {
-  ab: { template: "corner-ruin-balanced-left", flip: true },
-  ef: { template: "corner-ruin-balanced-right", flip: false },
-  co: { template: "corner-ruin-left", flip: false },
-  gh: { template: "corner-ruin-right", flip: false },
-  corner: { template: "corner-tiny", flip: true },
-  "small-l": { template: "corner-short", flip: true },
-  "small-l-flip": { template: "corner-short", flip: false },
-  tower: { template: "gantry", flip: false },
-  generator: { template: "generator", flip: false },
-  "long-barrier": { template: "pipe", flip: false },
-  "short-barrier": { template: "barricade", flip: false },
-  pipes: { template: "catwalk", flip: false },
+  ab: { template: "corner-ruin-balanced-left", flip: true, turn: 180 },
+  ef: { template: "corner-ruin-balanced-right", flip: false, turn: 90 },
+  co: { template: "corner-ruin-left", flip: false, turn: 90 },
+  gh: { template: "corner-ruin-right", flip: false, turn: 0 },
+  corner: { template: "corner-tiny", flip: true, turn: 270 },
+  "small-l": { template: "corner-short", flip: true, turn: 180 },
+  "small-l-flip": { template: "corner-short", flip: false, turn: 180 },
+  tower: { template: "gantry", flip: false, turn: 0 },
+  generator: { template: "generator", flip: false, turn: 90 },
+  "long-barrier": { template: "pipe", flip: false, turn: 0 },
+  "short-barrier": { template: "barricade", flip: false, turn: 0 },
+  pipes: { template: "catwalk", flip: false, turn: 0 },
 };
 
 export const IDENTITY = [[1, 0], [0, 1]];
@@ -141,6 +194,28 @@ export function decompose(A) {
   return out;
 }
 
+/** Centre of a ring's axis-aligned bounding box. */
+export function bboxCentre(points) {
+  const xs = points.map((p) => p.x);
+  const ys = points.map((p) => p.y);
+  return {
+    x: (Math.min(...xs) + Math.max(...xs)) / 2,
+    y: (Math.min(...ys) + Math.max(...ys)) / 2,
+  };
+}
+
+/**
+ * S: the part-frame offset re-anchoring a legacy footprint from the area
+ * centroid resolvePiece uses onto the bbox centre upstream's `position` means.
+ * Zero for every rectangle part, up to (1, 1)in for the L-shaped `corner-*`.
+ */
+export function anchorOffset(footprint) {
+  const ring = footprintPolygon(footprint);
+  const c = centroid(ring);
+  const b = bboxCentre(ring);
+  return { x: c.x - b.x, y: c.y - b.y };
+}
+
 /** The piece's own linear map: R(rotation_degrees) . diag(sx, sy). */
 export function pieceMatrix(piece) {
   const S =
@@ -199,26 +274,55 @@ export function normalizeLayout(layout, templatesById) {
 
     for (const feature of composite.features ?? []) {
       const part = partOf(feature.template);
-      const { template, flip } = PART_TO_TEMPLATE[part];
-      // K cancels the parent's parity and applies the part's flip bit, so the
-      // resolved handedness is the same however the parent is oriented.
-      const K = (flip ? -1 : 1) / det(M) > 0 ? IDENTITY : FLIP_X;
+      const { template, flip, turn } = PART_TO_TEMPLATE[part];
+      const legacy = templatesById.get(template);
+      if (!legacy) {
+        throw new Error(
+          `layout ${layout.id} maps part ${part} onto missing template ${template}`,
+        );
+      }
+      // K does two separate jobs, and they have to be composed rather than
+      // collapsed: P undoes a mirrored parent, F applies the part's own flip
+      // bit. Both are reflections, so only their *parity* was visible in the
+      // handedness the old `improper ? FLIP_X : IDENTITY` form was tuned
+      // against - and parity is all it preserved. It got the axis wrong
+      // whenever the parent was mirrored: FLIP_Y = R(180) . FLIP_X, so
+      // collapsing P . F to a single FLIP_X (or, when both fire, to IDENTITY)
+      // silently drops a half-turn. Measured against the pre-pull corpus, that
+      // was 44 of 44 `small-l-flip` under a mirrored parent drawn exactly 180
+      // degrees out. det(P . F) is identical to the old det(K) in all four
+      // combinations, so every flip bit and every pinned hand still holds.
+      const P = det(M) < 0 ? FLIP_Y : IDENTITY;
+      const F = flip ? FLIP_X : IDENTITY;
+      const K = matmul(P, F);
+      // Q rotates the legacy drawing onto the upstream part's orientation, so it
+      // sits inside K: the flip axis was calibrated in the part's frame, not the
+      // legacy template's. The two orders differ only where a part carries both
+      // a flip bit and a turn that is not a half-turn (`corner` alone today, a
+      // quarter-turn not commuting with FLIP_X), and the pre-pull corpus picks
+      // this one there by 51/68 exact matches against 2/68.
+      const A = matmul(
+        matmul(V, rotation(feature.rotation_degrees ?? 0)),
+        matmul(K, rotation(turn)),
+      );
+      // S rides through the child's full map, so it is applied after Q: what it
+      // re-anchors is the polygon as finally oriented, not as drawn.
+      const S = matvec(A, anchorOffset(legacy.footprint));
+      // V is self-inverse (asserted in battlemaster-registration.test.mjs), so
+      // applying it here undoes the V now folded into the parent's transform.
+      // If a future variant is ever registered that is not self-inverse,
+      // that assertion fails at registration time and this line must change
+      // to use the variant's actual inverse (matvec(inverse(V), ...)) rather
+      // than V itself.
+      const anchor = matvec(V, feature.position);
       const child = {
         id: `${piece.id}-${feature.id}`,
         name: feature.id,
         piece_type: "feature",
         template,
         parent_area_id: piece.id,
-        // V is self-inverse (asserted in battlemaster-registration.test.mjs), so
-        // applying it here undoes the V now folded into the parent's transform.
-        // If a future variant is ever registered that is not self-inverse,
-        // that assertion fails at registration time and this line must change
-        // to use the variant's actual inverse (matvec(inverse(V), ...)) rather
-        // than V itself.
-        position: matvec(V, feature.position),
-        ...decompose(
-          matmul(matmul(V, rotation(feature.rotation_degrees ?? 0)), K),
-        ),
+        position: { x: anchor.x + S.x, y: anchor.y + S.y },
+        ...decompose(A),
       };
       pieces.push(child);
     }

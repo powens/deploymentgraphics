@@ -3,8 +3,28 @@ import { normalizeLayout } from "./battlemaster-normalize.mjs";
 
 // A minimal stand-in for the vendored data: one composite whose footprint is
 // byte-identical to `area-short-line` (so VARIANT is identity), carrying two
-// parts - one that needs a chirality flip and one that does not.
+// parts - one that needs a chirality flip and one that does not - plus the two
+// legacy templates they map onto, which normalizeLayout reads to compute each
+// child's anchor offset. Both footprints are copied verbatim from
+// terrain-templates.json.
 const templatesById = new Map([
+  [
+    "corner-short",
+    {
+      id: "corner-short",
+      // An L: 2x3 bbox, so its area centroid sits (-0.4167, -0.4167) inside the
+      // bbox centre. That offset is what the child's `position` must absorb.
+      footprint: {
+        type: "polygon",
+        points: [
+          { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 0.5 },
+          { x: 0.5, y: 0.5 }, { x: 0.5, y: 3 }, { x: 0, y: 3 },
+        ],
+      },
+    },
+  ],
+  // A rectangle: centroid and bbox centre coincide, so its anchor offset is 0.
+  ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
   [
     "bm-bm-terrain-11e-1-composite-30-m0-p0",
     {
@@ -57,8 +77,28 @@ describe("normalizeLayout", () => {
     ]);
     expect(kids.map((k) => k.template)).toEqual(["corner-short", "gantry"]);
     for (const k of kids) expect(k.parent_area_id).toBe("area-01");
-    expect(kids[0].position).toEqual({ x: 1.5, y: -0.25 });
     expect(kids[1].rotation_degrees).toBe(0);
+  });
+
+  it("re-anchors an L-shaped part by its centroid-to-bbox offset", () => {
+    const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
+    const [lRuin, tower] = out.pieces.filter((p) => p.piece_type === "feature");
+    // small-l is flip:true under an unmirrored parent (K = FLIP_X) and turn:180,
+    // so A = R(90) . FLIP_X . R(180) = [[0, 1], [1, 0]], which maps corner-short's
+    // (-5/12, -5/12) anchor offset onto itself.
+    expect(lRuin.position.x).toBeCloseTo(1.5 - 5 / 12, 10);
+    expect(lRuin.position.y).toBeCloseTo(-0.25 - 5 / 12, 10);
+    // gantry is a rectangle, so its centroid is its bbox centre and upstream's
+    // position carries through untouched.
+    expect(tower.position).toEqual({ x: -1.5, y: 0.25 });
+  });
+
+  it("throws when a mapped legacy template is missing from the table", () => {
+    const without = new Map(templatesById);
+    without.delete("corner-short");
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), without),
+    ).toThrow(/corner-short/);
   });
 
   it("mirrors a flip-bit part so its handedness is fixed", () => {
@@ -78,6 +118,30 @@ describe("normalizeLayout", () => {
     );
     expect("mirror" in out.pieces[1]).toBe(false);
     expect(out.pieces[2].mirror).toBe("horizontal");
+  });
+
+  it("keeps the half-turn a mirrored parent introduces", () => {
+    // Handedness alone does not pin K: FLIP_Y = R(180) . FLIP_X, so a K that
+    // collapses P . F to one reflection has the right parity and the wrong
+    // orientation. Under a mirrored parent (M = FLIP_X, det -1):
+    //
+    //   small-l  flip:true   K = FLIP_Y . FLIP_X = R(180), turn 180
+    //                        => A = R(90) . R(180) . R(180) = R(90)
+    //   tower    flip:false  K = FLIP_Y, turn 0  => A = FLIP_Y
+    //
+    // Collapsing to `improper ? FLIP_X : IDENTITY` gives 270 and 0 instead -
+    // a half-turn out in both cases, with identical mirror flags, which is
+    // exactly what the assertions above cannot see.
+    const out = normalizeLayout(
+      layoutWith({ rotation_degrees: 0, mirror: "horizontal" }),
+      templatesById,
+    );
+    expect(out.pieces[1].rotation_degrees).toBe(90);
+    expect(out.pieces[2].rotation_degrees).toBe(180);
+    // ...and the proper-parent case is untouched by the composition.
+    const plain = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
+    expect(plain.pieces[1].rotation_degrees).toBe(270);
+    expect(plain.pieces[2].rotation_degrees).toBe(0);
   });
 
   it("folds a registered rigid variant into the area's own transform", () => {

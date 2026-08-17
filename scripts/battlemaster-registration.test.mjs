@@ -17,8 +17,9 @@ import {
   FLIP_X,
   FLIP_Y,
   normalizeLayout,
+  bboxCentre,
 } from "./battlemaster-normalize.mjs";
-import { resolvePiece, centroid } from "./terrain-resolver.mjs";
+import { resolvePiece, centroid, footprintPolygon } from "./terrain-resolver.mjs";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 
@@ -122,6 +123,41 @@ describe("registration tables", () => {
   // the identity when V is its own inverse. Both registered variants are
   // (a reflection and a 180-degree rotation), but the assumption is load-bearing
   // enough to pin: a future 90-degree variant would silently misplace children.
+  // Q is not recoverable from the shipped data: upstream's part footprints are
+  // plain rectangles, so nothing in terrain-templates.json records which way
+  // round the model is drawn. The values were measured against the pre-pull
+  // corpus (see PART_TO_TEMPLATE) and are pinned here for the same reason
+  // EXPECTED_HAND is - a re-pull must not silently turn a building.
+  //
+  // Do not "simplify" this into a bounding-box aspect check. Aspect cannot see a
+  // half-turn, three of these are half-turns, and for `ab` the aspect ratio
+  // prefers 90 - the answer the pre-pull corpus rules out at 4.25in mean ring
+  // mismatch against 1.21in for 180.
+  it("registers a measured quarter-turn for every part", () => {
+    const turns = Object.fromEntries(
+      Object.entries(PART_TO_TEMPLATE).map(([part, v]) => [part, v.turn]),
+    );
+    expect(turns).toEqual({
+      ab: 180,
+      co: 90,
+      corner: 270,
+      ef: 90,
+      generator: 90,
+      gh: 0,
+      "long-barrier": 0,
+      pipes: 0,
+      "short-barrier": 0,
+      "small-l": 180,
+      "small-l-flip": 180,
+      tower: 0,
+    });
+    // A turn that is not a multiple of 90 would take the legacy polygon off the
+    // board's axes; decompose would still round-trip it, so nothing else catches it.
+    for (const [part, t] of Object.entries(turns)) {
+      expect(Number.isInteger(t / 90), `${part} turn ${t} is not a quarter-turn`).toBe(true);
+    }
+  });
+
   it("registers only self-inverse variants", () => {
     for (const [id, V] of Object.entries(VARIANT)) {
       // +0 canonicalizes IEEE-754 -0 (e.g. (-1)*0) to 0 before the deep-equal,
@@ -178,8 +214,22 @@ const ringMismatch = (a, b) => {
 };
 
 describe("normalized layouts conform to upstream geometry", () => {
-  it("places every child exactly where the composite frame puts it", () => {
+  // The check that pins S. Upstream's `position` anchors the part's *rectangle*
+  // centre, which for a rectangle is also its area centroid - the point
+  // resolvePiece anchors on. The legacy `corner-*` polygons are L-shaped, so
+  // their centroid sits up to (1, 1)in inside their bbox centre, and carrying
+  // `position` across unchanged would land every L-shaped part that far out.
+  //
+  // So compare anchor points, not rings: the two footprints are different
+  // polygons of different sizes, but the emitted piece's bbox centre must land
+  // exactly where upstream's rectangle centre does. Resolving both rings and
+  // comparing them (the obvious formulation) cannot work here and, worse,
+  // resolving the *same* upstream footprint under both frames - which is what
+  // this test used to do - silently drops the substituted polygon from the
+  // comparison altogether, which is why it passed while every ruin sat ~1in off.
+  it("anchors every child on the upstream part's rectangle centre", () => {
     let worst = 0;
+    let checked = 0;
     for (let i = 0; i < layouts.length; i++) {
       const src = layouts[i];
       const out = normalized[i];
@@ -192,51 +242,54 @@ describe("normalized layouts conform to upstream geometry", () => {
         const feature = composite.features.find(
           (f) => `${areaId}-${f.id}` === child.id,
         );
-        // Resolve the *same* battlemaster part footprint under both frames, so
-        // this isolates position and orientation from the template swap.
-        //
-        // CAUTION: every Battlemaster part footprint is a rectangle (measured:
-        // 12 of 12), so its vertex set is invariant under FLIP_X, FLIP_Y and a
-        // 180-degree rotation. This test's <1e-9 tolerance therefore pins the
-        // child's *position* and its axis-alignment exactly, but it does NOT
-        // detect a chirality (K) or 180-degree error: forcing K to IDENTITY
-        // everywhere, or rotating every child an extra 180 degrees, both still
-        // pass this loop at the same ~7.9e-15 worst mismatch. The sibling
-        // "composes the same child orientation matrix K produces" test below
-        // checks the matrix directly and does catch those; the
-        // "renders each chiral part as exactly one l-ruin variant" test in the
-        // describe block above pins the actual shipped hand.
-        const truth = resolvePiece(
-          {
-            id: "truth",
-            template: feature.template,
-            position: feature.position,
-            rotation_degrees: feature.rotation_degrees ?? 0,
-            parent_area_id: areaId,
-          },
-          lookupFootprint,
-          srcParent,
+        // Where upstream puts the part's rectangle centre. Every Battlemaster
+        // part footprint is a rectangle (measured: 12 of 12), so its resolved
+        // centroid is its resolved bbox centre.
+        const want = centroid(
+          resolvePiece(
+            {
+              id: "truth",
+              template: feature.template,
+              position: feature.position,
+              rotation_degrees: feature.rotation_degrees ?? 0,
+              parent_area_id: areaId,
+            },
+            lookupFootprint,
+            srcParent,
+          ),
         );
-        const got = resolvePiece(
-          { ...child, template: feature.template },
-          lookupFootprint,
-          outParent,
-        );
-        worst = Math.max(worst, ringMismatch(truth, got));
+        // Where the emitted piece puts the legacy polygon's bbox centre. The
+        // resolved ring's centroid is the image of the footprint's centroid, so
+        // step from there to the bbox centre through the piece's own map.
+        const ring = footprintPolygon(lookupFootprint(child.template));
+        const T = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
+        const d = {
+          x: bboxCentre(ring).x - centroid(ring).x,
+          y: bboxCentre(ring).y - centroid(ring).y,
+        };
+        const c = centroid(resolvePiece(child, lookupFootprint, outParent));
+        const got = {
+          x: c.x + T[0][0] * d.x + T[0][1] * d.y,
+          y: c.y + T[1][0] * d.x + T[1][1] * d.y,
+        };
+        worst = Math.max(worst, Math.hypot(got.x - want.x, got.y - want.y));
+        checked++;
       }
     }
+    // The part totals pinned by "agrees with upstream's usage counts" above.
+    expect(checked).toBe(1260);
     expect(worst).toBeLessThan(1e-9);
   });
 
-  it("composes the child's orientation matrix exactly, including K", () => {
-    // The position test above resolves rectangle footprints, so it cannot
-    // detect a chirality or 180-degree error (see its comment). This test
-    // compares 2x2 orientation matrices directly instead: matmul(outParent,
-    // child) must equal matmul(srcParent, featureRotation) . K, where K is
-    // recomputed here from the module's parity/flip rule (not read off the
-    // emitted piece), so a bug in how K is derived or applied - wrong side,
-    // wrong sign, an extra rotation - shows up as a matrix mismatch even
-    // though the rectangle vertex check would not notice it.
+  it("composes the child's orientation matrix exactly, including K and Q", () => {
+    // The anchor test above compares a single point, so it cannot detect a
+    // chirality error, and it only detects a wrong Q through that point's
+    // offset. This test compares 2x2 orientation matrices directly instead:
+    // matmul(outParent, child) must equal matmul(srcParent, featureRotation)
+    // . K . Q, where K and Q are recomputed here from the module's parity/flip
+    // rule and the registered turn (not read off the emitted piece), so a bug in
+    // how either is derived or applied - wrong side, wrong sign, wrong order -
+    // shows up as a matrix mismatch.
     let worst = 0;
     for (let i = 0; i < layouts.length; i++) {
       const src = layouts[i];
@@ -251,12 +304,15 @@ describe("normalized layouts conform to upstream geometry", () => {
         const feature = composite.features.find(
           (f) => `${areaId}-${f.id}` === child.id,
         );
-        const { flip } = PART_TO_TEMPLATE[partOf(feature.template)];
+        const { flip, turn } = PART_TO_TEMPLATE[partOf(feature.template)];
         const Msrc = pieceMatrix(srcArea);
-        const K = (flip ? -1 : 1) / det(Msrc) > 0 ? IDENTITY : FLIP_X;
+        const K = matmul(
+          det(Msrc) < 0 ? FLIP_Y : IDENTITY,
+          flip ? FLIP_X : IDENTITY,
+        );
         const want = matmul(
           matmul(Msrc, rotation(feature.rotation_degrees ?? 0)),
-          K,
+          matmul(K, rotation(turn)),
         );
         const got = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
         for (let r = 0; r < 2; r++) {
