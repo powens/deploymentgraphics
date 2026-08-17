@@ -179,6 +179,13 @@ describe("ruinFeatures", () => {
     // free-standing in this data, so the threshold is left as-is rather than
     // retuned to an arbitrary value. -roof variants stay reachable via the
     // gw.yml demo layout and ruinFeaturePlacement(..., true).
+    // Guard the assertion below against a false pass: an empty roofed set is
+    // only meaningful if the catwalks that drive the pairing actually exist.
+    const catwalks = layouts
+      .filter((l) => l.mission_matchup_id)
+      .flatMap((l) => l.pieces)
+      .filter((p) => p.template === "catwalk");
+    expect(catwalks.length).toBe(90);
     const roofed = layouts
       .filter((l) => l.mission_matchup_id)
       .flatMap((l) => ruinFeatures(l, lookupFootprint, getParentFor(l)).features)
