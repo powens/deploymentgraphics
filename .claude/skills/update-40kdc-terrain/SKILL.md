@@ -59,7 +59,38 @@ Past pulls carried non-obvious payloads:
 - **gw.yml patch overlays survive the re-pull.** A `gw.yml` entry whose id matches a ported
   40kdc layout is an *additive patch* (its array fields append to the generated entry), used
   to fill upstream content gaps durably. Don't edit the vendored source JSON to fix a piece —
-  it gets clobbered on the next pull. See memory `gw-yml-patch-overlays`.
+  it gets clobbered on the next pull. See memory `gw-yml-patch-overlays`. The mechanism is
+  still fully supported, but there is currently no live example: the one overlay this repo
+  ever carried (`disruption-vs-purge-the-foe-3`) was retired during the battlemaster-11e
+  migration because upstream filled the gap it used to patch.
+- **Every layout now passes through `scripts/battlemaster-normalize.mjs` before conversion.**
+  Upstream's `battlemaster-11e` re-source moved corner ruins, pipes, generators, etc. off the
+  layout's `pieces[]` and onto the composite area template's `features[]`; the normalizer
+  rewrites a composite layout back into the flat legacy piece vocabulary the rest of the
+  pipeline expects, so nothing downstream had to change. See the module's header comment for
+  the `V` (rigid-variant) and `K` (chirality) subtleties. It throws loudly rather than
+  guessing on:
+  - **Unknown Battlemaster size class** (`unknown Battlemaster size class for composite …`) —
+    upstream added a size class (`BR`/`SR`/`SL`/`LL`/`TR`) not in `SIZE_CLASS`. Add the new
+    class and its legacy area template.
+  - **Unmapped part template** (`no legacy template mapping for part …`) — upstream added a
+    composite feature part not in `PART_TO_TEMPLATE`. Add it, and see the `flip` note below.
+  - **Inline piece footprint on a composite** (`… carries an inline footprint; composite
+    retemplating … would discard it`) — upstream attached a per-piece footprint (currently
+    only seen on `kotc-colosseum`) to a composite area piece. That would silently disagree
+    with the retemplated archetype; work out what upstream is telling you before removing
+    the guard.
+  - **Unregistered composite footprint variant** — not a throw, but a *test* failure in
+    `scripts/battlemaster-registration.test.mjs` (`… is not the registered rigid variant of
+    its archetype`): a new composite's footprint isn't byte-identical to its archetype and
+    isn't in `VARIANT` either. Add the rigid transform to `VARIANT`. A new `VARIANT` entry
+    **must be self-inverse** — there is a test (`registers only self-inverse variants`) that
+    asserts it, because the normalizer applies it to a child position and expects it to
+    cancel out.
+  - A new part's `flip` bit in `PART_TO_TEMPLATE` must be **derived**, never guessed: match
+    the new part against the nearest pre-pull piece of the same legacy template and read off
+    which l-ruin variant it actually rendered as. Guessing wrong is invisible to the suite —
+    see the chirality-pin test in `battlemaster-registration.test.mjs` and its comment.
 
 ## Common mistakes
 
