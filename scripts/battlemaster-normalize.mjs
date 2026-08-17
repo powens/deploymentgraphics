@@ -148,3 +148,58 @@ export function pieceMatrix(piece) {
         : IDENTITY;
   return matmul(rotation(piece.rotation_degrees ?? 0), S);
 }
+
+/**
+ * Rewrite a Battlemaster composite layout into the legacy piece vocabulary:
+ * each `area` piece renamed onto its legacy archetype (with the composite's
+ * rigid variant folded into its own transform), plus one parented `feature`
+ * child per composite part.
+ *
+ * Pieces that do not reference a composite template pass through untouched, so
+ * a layout that predates the battlemaster re-source is returned as-is.
+ *
+ * @param {object} layout - a 40kdc layout ({ id, pieces, ... }).
+ * @param {Map<string, object>} templatesById - the vendored template table.
+ * @returns {object} a new layout with a rewritten `pieces` array.
+ */
+export function normalizeLayout(layout, templatesById) {
+  const pieces = [];
+  for (const piece of layout.pieces) {
+    if (!isCompositeTemplate(piece.template)) {
+      pieces.push(piece);
+      continue;
+    }
+    const composite = templatesById.get(piece.template);
+    if (!composite) {
+      throw new Error(`layout ${layout.id} references missing template ${piece.template}`);
+    }
+    const V = VARIANT[piece.template] ?? IDENTITY;
+    const M = pieceMatrix(piece);
+
+    const area = { ...piece, template: SIZE_CLASS[classOf(composite)] };
+    delete area.mirror;
+    Object.assign(area, decompose(matmul(M, V)));
+    pieces.push(area);
+
+    for (const feature of composite.features ?? []) {
+      const part = partOf(feature.template);
+      const { template, flip } = PART_TO_TEMPLATE[part];
+      // K cancels the parent's parity and applies the part's flip bit, so the
+      // resolved handedness is the same however the parent is oriented.
+      const K = (flip ? -1 : 1) / det(M) > 0 ? IDENTITY : FLIP_X;
+      const child = {
+        id: `${piece.id}-${feature.id}`,
+        name: feature.id,
+        piece_type: "feature",
+        template,
+        parent_area_id: piece.id,
+        position: matvec(V, feature.position),
+        ...decompose(
+          matmul(matmul(V, rotation(feature.rotation_degrees ?? 0)), K),
+        ),
+      };
+      pieces.push(child);
+    }
+  }
+  return { ...layout, pieces };
+}
