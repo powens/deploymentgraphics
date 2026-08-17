@@ -10,7 +10,9 @@ import {
   partOf,
   decompose,
   matmul,
+  det,
   rotation,
+  pieceMatrix,
   IDENTITY,
   FLIP_X,
   FLIP_Y,
@@ -192,6 +194,18 @@ describe("normalized layouts conform to upstream geometry", () => {
         );
         // Resolve the *same* battlemaster part footprint under both frames, so
         // this isolates position and orientation from the template swap.
+        //
+        // CAUTION: every Battlemaster part footprint is a rectangle (measured:
+        // 12 of 12), so its vertex set is invariant under FLIP_X, FLIP_Y and a
+        // 180-degree rotation. This test's <1e-9 tolerance therefore pins the
+        // child's *position* and its axis-alignment exactly, but it does NOT
+        // detect a chirality (K) or 180-degree error: forcing K to IDENTITY
+        // everywhere, or rotating every child an extra 180 degrees, both still
+        // pass this loop at the same ~7.9e-15 worst mismatch. The sibling
+        // "composes the same child orientation matrix K produces" test below
+        // checks the matrix directly and does catch those; the
+        // "renders each chiral part as exactly one l-ruin variant" test in the
+        // describe block above pins the actual shipped hand.
         const truth = resolvePiece(
           {
             id: "truth",
@@ -209,6 +223,47 @@ describe("normalized layouts conform to upstream geometry", () => {
           outParent,
         );
         worst = Math.max(worst, ringMismatch(truth, got));
+      }
+    }
+    expect(worst).toBeLessThan(1e-9);
+  });
+
+  it("composes the child's orientation matrix exactly, including K", () => {
+    // The position test above resolves rectangle footprints, so it cannot
+    // detect a chirality or 180-degree error (see its comment). This test
+    // compares 2x2 orientation matrices directly instead: matmul(outParent,
+    // child) must equal matmul(srcParent, featureRotation) . K, where K is
+    // recomputed here from the module's parity/flip rule (not read off the
+    // emitted piece), so a bug in how K is derived or applied - wrong side,
+    // wrong sign, an extra rotation - shows up as a matrix mismatch even
+    // though the rectangle vertex check would not notice it.
+    let worst = 0;
+    for (let i = 0; i < layouts.length; i++) {
+      const src = layouts[i];
+      const out = normalized[i];
+      const srcParent = parentsOf(src);
+      const outParent = parentsOf(out);
+      for (const child of out.pieces) {
+        if (child.piece_type !== "feature") continue;
+        const areaId = child.parent_area_id;
+        const srcArea = srcParent(areaId);
+        const composite = byId.get(srcArea.template);
+        const feature = composite.features.find(
+          (f) => `${areaId}-${f.id}` === child.id,
+        );
+        const { flip } = PART_TO_TEMPLATE[partOf(feature.template)];
+        const Msrc = pieceMatrix(srcArea);
+        const K = (flip ? -1 : 1) / det(Msrc) > 0 ? IDENTITY : FLIP_X;
+        const want = matmul(
+          matmul(Msrc, rotation(feature.rotation_degrees ?? 0)),
+          K,
+        );
+        const got = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
+        for (let r = 0; r < 2; r++) {
+          for (let c = 0; c < 2; c++) {
+            worst = Math.max(worst, Math.abs(want[r][c] - got[r][c]));
+          }
+        }
       }
     }
     expect(worst).toBeLessThan(1e-9);
@@ -269,18 +324,34 @@ describe("normalized layouts conform to upstream geometry", () => {
     }
     // corner-short carries both hands because small-l and small-l-flip are the
     // two hands of one model; every other legacy template takes a single part.
+    //
+    // Upstream's new data does not encode chirality at all: parts are
+    // rectangles and no composite feature carries `mirror` (measured: 0 of
+    // them), so this table is a reconstruction, not a re-read of upstream. It
+    // is pinned here rather than left as `toHaveLength(1)` because a
+    // `toHaveLength(1)` assertion is symmetric under inverting every `flip`
+    // bit in PART_TO_TEMPLATE — that inversion was verified to pass the
+    // entire rest of the suite (registration counts, child conformance, board
+    // invariants) unchanged, so this is the only automated check that pins a
+    // hand at all. The values below are measured from the shipped code:
+    // `small-l`/`small-l-flip` (-> corner-short) rest on decisive evidence
+    // (180/180 tight positional matches against the pre-pull corpus); the
+    // `ab`/`ef`/`co`/`gh` bits (-> corner-ruin-balanced-left/-right,
+    // corner-ruin-left/-right) rest on the Task 6 visual spot-check only. A
+    // future re-pull must not silently flip a hand here.
     expect([...(seen["corner-short"] ?? [])].sort()).toEqual([
       "l-ruin",
       "l-ruin-mirror",
     ]);
-    for (const template of [
-      "corner-ruin-balanced-left",
-      "corner-ruin-balanced-right",
-      "corner-ruin-left",
-      "corner-ruin-right",
-      "corner-tiny",
-    ]) {
-      expect([...seen[template]], template).toHaveLength(1);
+    const EXPECTED_HAND = {
+      "corner-ruin-balanced-left": ["l-ruin-mirror"],
+      "corner-ruin-balanced-right": ["l-ruin-mirror"],
+      "corner-ruin-left": ["l-ruin"],
+      "corner-ruin-right": ["l-ruin-mirror"],
+      "corner-tiny": ["l-ruin-mirror"], // cosmetic: corner-tiny has equal arms
+    };
+    for (const [template, expected] of Object.entries(EXPECTED_HAND)) {
+      expect([...seen[template]].sort(), template).toEqual(expected);
     }
   });
 });
@@ -320,7 +391,12 @@ describe("board invariants", () => {
         if (d > 0.25) loose[a.kind]++;
       }
     }
-    // Upstream's own residual asymmetry: 0.707in on 4 areas and 8 features.
+    // Upstream's own residual asymmetry: 0.707in on 4 areas and 8 features,
+    // concentrated in disruption-vs-disruption-1 and
+    // reconnaissance-vs-reconnaissance-2 (0.354in point-symmetry slip in
+    // upstream's own data). Reproducing it is correct — this repo renders
+    // upstream's data faithfully — but if a failure ever lands here, diff
+    // against those two layout ids first before assuming a regression.
     expect(worst).toBeLessThan(1.0);
     expect(loose.area).toBeLessThanOrEqual(4);
     expect(loose.feature).toBeLessThanOrEqual(8);

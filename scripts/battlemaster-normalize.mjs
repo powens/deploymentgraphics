@@ -38,7 +38,10 @@ export const SIZE_CLASS = {
 // matching each child against the nearest pre-pull piece of the mapped template
 // and reading off the variant it rendered as; `small-l` / `small-l-flip` is the
 // decisive pair (180/180 and 72/74 agreement). `corner-tiny` has equal arms, so
-// its bit is cosmetic.
+// its bit is cosmetic. The `ab` / `ef` / `co` / `gh` bits (corner-ruin-balanced-*,
+// corner-ruin-left/-right) had thin or no corroborating matches in the pre-pull
+// corpus and rest on the Task 6 visual spot-check rather than a measured match;
+// see the pinned expectations in battlemaster-registration.test.mjs.
 export const PART_TO_TEMPLATE = {
   ab: { template: "corner-ruin-balanced-left", flip: true },
   ef: { template: "corner-ruin-balanced-right", flip: false },
@@ -178,6 +181,19 @@ export function normalizeLayout(layout, templatesById) {
 
     const area = { ...piece, template: SIZE_CLASS[classOf(composite)] };
     delete area.mirror;
+    // Upstream does use inline piece footprints elsewhere (kotc-colosseum), so
+    // this is live schema, just not on composite pieces today. If a future
+    // pull attaches one here, retemplating to the archetype would silently
+    // discard it: areaBuildingPlacement reads `piece.template` (the
+    // archetype) while resolvePiece prefers `piece.footprint` (the
+    // composite's own polygon) over the template, so the area would render
+    // from one polygon while its children parent through another. Throw
+    // instead of silently dropping it.
+    if (piece.footprint) {
+      throw new Error(
+        `piece ${piece.id} carries an inline footprint; composite retemplating to ${area.template} would discard it`,
+      );
+    }
     Object.assign(area, decompose(matmul(M, V)));
     pieces.push(area);
 
@@ -195,6 +211,10 @@ export function normalizeLayout(layout, templatesById) {
         parent_area_id: piece.id,
         // V is self-inverse (asserted in battlemaster-registration.test.mjs), so
         // applying it here undoes the V now folded into the parent's transform.
+        // If a future variant is ever registered that is not self-inverse,
+        // that assertion fails at registration time and this line must change
+        // to use the variant's actual inverse (matvec(inverse(V), ...)) rather
+        // than V itself.
         position: matvec(V, feature.position),
         ...decompose(
           matmul(matmul(V, rotation(feature.rotation_degrees ?? 0)), K),
