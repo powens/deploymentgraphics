@@ -193,6 +193,8 @@ export function normalizeLayout(layout, templatesById) {
         piece_type: "feature",
         template,
         parent_area_id: piece.id,
+        // V is self-inverse (asserted in battlemaster-registration.test.mjs), so
+        // applying it here undoes the V now folded into the parent's transform.
         position: matvec(V, feature.position),
         ...decompose(
           matmul(matmul(V, rotation(feature.rotation_degrees ?? 0)), K),
