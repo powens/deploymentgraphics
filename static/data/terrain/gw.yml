@@ -25,8 +25,9 @@
 # `{ type, x, y, width, height, color }` in inches (`x`/`y` = top-left of the
 # unrotated bounding box), with an optional `rotation` (degrees about the box
 # centre). `color` is a theme.yml palette key: stone, rust, sand, green,
-# gunmetal, bone. An optional `label` records the material category shared with
-# area_terrain (ruin, pipe, generator, barricade, gantry, catwalk); it is
+# gunmetal, teal, indigo, bone. An optional `label` records the material
+# category shared with area_terrain (ruin, pipe, generator, barricade,
+# gantry, catwalk); it is
 # carried for consistency with the ported 40kdc pieces and does not affect
 # styling, which comes from `color`. Features are drawn on top of the buildings.
 

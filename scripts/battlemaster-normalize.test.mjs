@@ -24,7 +24,44 @@ const templatesById = new Map([
     },
   ],
   // A rectangle: centroid and bbox centre coincide, so its anchor offset is 0.
+  // `tower` takes upstream's footprint (2x2.5) over this one, so both are here.
   ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
+  [
+    "bm-bm-terrain-11e-1-part-tower",
+    {
+      id: "bm-bm-terrain-11e-1-part-tower",
+      footprint: { type: "rectangle", width: 2, height: 2.5 },
+    },
+  ],
+  // The legacy generator is 3x4 and Battlemaster's part is 4.5x2 - a different
+  // model, not a re-drawing - so `generator` is the one part that carries
+  // upstream's own footprint through onto the child. Both copied verbatim from
+  // terrain-templates.json.
+  ["generator", { id: "generator", footprint: { type: "rectangle", width: 3, height: 4 } }],
+  [
+    "bm-bm-terrain-11e-1-part-generator",
+    {
+      id: "bm-bm-terrain-11e-1-part-generator",
+      footprint: { type: "rectangle", width: 4.5, height: 2 },
+    },
+  ],
+  [
+    "bm-bm-terrain-11e-1-composite-31-m0-p0",
+    {
+      id: "bm-bm-terrain-11e-1-composite-31-m0-p0",
+      name: "Battlemaster SL 31",
+      kind: "area",
+      footprint: { type: "polygon", points: [] },
+      features: [
+        {
+          id: "feature-1",
+          template: "bm-bm-terrain-11e-1-part-generator",
+          position: { x: 2, y: -1 },
+          rotation_degrees: 90,
+        },
+      ],
+    },
+  ],
   [
     "bm-bm-terrain-11e-1-composite-30-m0-p0",
     {
@@ -88,9 +125,45 @@ describe("normalizeLayout", () => {
     // (-5/12, -5/12) anchor offset onto itself.
     expect(lRuin.position.x).toBeCloseTo(1.5 - 5 / 12, 10);
     expect(lRuin.position.y).toBeCloseTo(-0.25 - 5 / 12, 10);
-    // gantry is a rectangle, so its centroid is its bbox centre and upstream's
+    // tower is a rectangle, so its centroid is its bbox centre and upstream's
     // position carries through untouched.
     expect(tower.position).toEqual({ x: -1.5, y: 0.25 });
+  });
+
+  it("carries upstream's own footprint for the tower part", () => {
+    const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
+    const tower = out.pieces[2];
+    // Upstream's 2x2.5, not the legacy gantry's 2x2. Neither footprint says
+    // anything the other doesn't beyond its size, so upstream's wins.
+    expect(tower.template).toBe("gantry");
+    expect(tower.footprint).toEqual({ type: "rectangle", width: 2, height: 2.5 });
+  });
+
+  it("carries upstream's own footprint for the generator part", () => {
+    const out = normalizeLayout(
+      layoutWith({
+        template: "bm-bm-terrain-11e-1-composite-31-m0-p0",
+        rotation_degrees: 0,
+      }),
+      templatesById,
+    );
+    const gen = out.pieces[1];
+    // Upstream's 4.5x2, not the legacy 3x4 the template id names. The id stays
+    // so rect-to-feature.mjs still types and colours it as a generator.
+    expect(gen.template).toBe("generator");
+    expect(gen.footprint).toEqual({ type: "rectangle", width: 4.5, height: 2 });
+    // Turn 0 and a rectangle's zero anchor offset, so upstream's placement
+    // carries through untouched.
+    expect(gen.position).toEqual({ x: 2, y: -1 });
+    expect(gen.rotation_degrees).toBe(90);
+  });
+
+  it("leaves a legacy-footprint part without an inline footprint", () => {
+    // corner-short's L exists only in the legacy polygon - upstream ships that
+    // part as a plain rectangle - so it must keep resolving through the
+    // template, not through an inline footprint.
+    const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
+    expect("footprint" in out.pieces[1]).toBe(false);
   });
 
   it("throws when a mapped legacy template is missing from the table", () => {

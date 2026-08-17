@@ -92,7 +92,7 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
     it(`reproduces the ${template} footprint`, () => {
       const pl = rectFeaturePlacement(piece, lookupFootprint, getParent);
       expect(pl.type).toBe(template);
-      expect(pl.color).toBe(template === "generator" ? "teal" : "gunmetal");
+      expect(pl.color).toBe(template === "generator" ? "teal" : "indigo");
       const target = resolvePiece(piece, lookupFootprint, getParent);
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });

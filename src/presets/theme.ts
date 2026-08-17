@@ -98,6 +98,7 @@ export const baseTheme: Theme = {
       green: { fill: "#4a8c3c", accent: "#2c5822" },
       gunmetal: { fill: "#5b6068", accent: "#3f444a" },
       teal: { fill: "#2f6b73", accent: "#1a3d42" },
+      indigo: { fill: "#4a5aa8", accent: "#2c3566" },
       bone: { fill: "#e8dcc0", accent: "#9a8f76" },
     },
   },

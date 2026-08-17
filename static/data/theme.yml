@@ -121,8 +121,11 @@ icon:
 feature:
   stroke_width: 0.2
   # Neutral ramp: stone-light (#9aa0a6) → stone-grey (#808080, building fill) →
-  # stone-dark (#5b6068) → #3f444a. gunmetal is the dark slate so gantries read
-  # against the grey buildings they sit on.
+  # stone-dark (#5b6068) → #3f444a. gunmetal is the dark slate, kept for
+  # hand-authored layouts; it shares the buildings' hue and only separates by
+  # value, which is why gantries moved off it onto indigo — blue is the one gap
+  # left in this palette (green ruins, rust pipes, sand barricades, teal
+  # generators) and stays clear of the deployment zones' red and sage.
   palette:
     stone: { fill: &stone-light "#9aa0a6", accent: *stone-dark }
     rust: { fill: *rust-fill, accent: *rust-accent }
@@ -130,4 +133,5 @@ feature:
     green: { fill: "#4a8c3c", accent: *green-accent }
     gunmetal: { fill: *stone-dark, accent: "#3f444a" }
     teal: { fill: "#2f6b73", accent: "#1a3d42" }
+    indigo: { fill: "#4a5aa8", accent: "#2c3566" }
     bone: { fill: *bone-fill, accent: "#9a8f76" }

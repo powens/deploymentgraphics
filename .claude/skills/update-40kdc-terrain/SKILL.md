@@ -87,10 +87,25 @@ Past pulls carried non-obvious payloads:
     **must be self-inverse** — there is a test (`registers only self-inverse variants`) that
     asserts it, because the normalizer applies it to a child position and expects it to
     cancel out.
-  - A new part's `flip` bit in `PART_TO_TEMPLATE` must be **derived**, never guessed: match
-    the new part against the nearest pre-pull piece of the same legacy template and read off
-    which l-ruin variant it actually rendered as. Guessing wrong is invisible to the suite —
-    see the chirality-pin test in `battlemaster-registration.test.mjs` and its comment.
+  - A new part's `flip` bit and `turn` in `PART_TO_TEMPLATE` must be **derived**, never
+    guessed: match the new part against the nearest pre-pull piece of the same legacy
+    template and read off which l-ruin variant it actually rendered as, and the rigid map
+    between the two rings. Guessing wrong is invisible to the suite — see the chirality-pin
+    test in `battlemaster-registration.test.mjs` and its comment. Do **not** use a
+    bounding-box aspect ratio to pick `turn`; it is blind to a half-turn and gets `ab` wrong.
+  - First decide whether the legacy footprint should be substituted at all. Upstream ships
+    every part as a plain rectangle, so where the legacy template is a *polygon* it is
+    carrying shape upstream discarded (the `corner-*` L, the 8-vertex `barricade`) and must
+    stay. Where the legacy template is itself a **rectangle**, it adds only a size — and the
+    sizes disagree by up to (1.5, 2)in with no consistent margin convention — so upstream's
+    own rectangle wins: set `upstreamFootprint: true` (as `generator` and `tower` do), which
+    carries upstream's footprint onto the child and keeps the legacy template id only for
+    the downstream feature type and colour. Two rectangle parts are exceptions, for reasons
+    worth knowing before you add a third: `long-barrier` maps onto the `pipe` **building**
+    template, which is drawn at its `templates-simple.yml` size and throws in `placement.ts`
+    if the pinned edge disagrees by >0.1in (adopting upstream's size there means redrawing
+    the gw template); `pipes` maps onto `catwalk`, which is consumed and dropped, so
+    switching it is provably output-neutral.
 
 ## Common mistakes
 

@@ -34,6 +34,18 @@ import { footprintPolygon, centroid } from "./terrain-resolver.mjs";
 //       twelve parts are drawn a quarter- or half-turn apart. `rotation_degrees`
 //       is copied from upstream verbatim, so without Q those six render turned.
 //
+//   F - substituting the legacy footprint is only sound where that polygon says
+//       something upstream's does not. Upstream ships every part as a plain
+//       rectangle, so for the chiral `corner-*` parts the legacy polygon is
+//       carrying the whole L shape and must win. But where the legacy footprint
+//       is *itself* a plain rectangle it adds no shape at all, only a size -
+//       and the sizes disagree, by up to (1.5, 2)in. There the substitution can
+//       only ever be a worse-measured version of upstream's own rectangle, so
+//       those parts (`generator`, `tower`) carry upstream's footprint inline
+//       and keep the legacy template id purely for the feature type and colour
+//       rect-to-feature.mjs reads off it. See PART_TO_TEMPLATE for the two
+//       rectangle parts this rule does *not* reach.
+//
 //   S - upstream anchors `position` at the part's *rectangle* centre, which for
 //       a rectangle is both its bbox centre and its area centroid. resolvePiece
 //       anchors at the area centroid, and the legacy `corner-*` polygons are
@@ -63,7 +75,11 @@ export const SIZE_CLASS = {
 //            polygon's own (see K above).
 //   `turn` - the quarter-turn taking the legacy polygon's drawing orientation
 //            onto the upstream part's (see Q above). Degrees, always a multiple
-//            of 90.
+//            of 90. Necessarily 0 for an `upstreamFootprint` part, which is
+//            already drawn in the upstream part's own frame.
+//   `upstreamFootprint`
+//          - carry the upstream part's own footprint on the emitted child
+//            rather than substituting the legacy polygon (see F above).
 //
 // Both are measured against the pre-pull corpus: emit each child, match it to
 // the nearest pre-pull piece of the mapped template, and read off the rigid map
@@ -79,11 +95,52 @@ export const SIZE_CLASS = {
 //   corner         1.71      1.61      1.69       0.57        270
 //   small-l        1.72      2.11      0.24       2.07        180
 //   small-l-flip   1.52      2.10      0.50       2.02        180
-//   generator      0.88      0.20      0.88       0.20         90 (rect: 90=270)
 //
 // The four parts absent from that table (tower, long-barrier, short-barrier,
 // pipes) map onto rectangles or a near-symmetric barricade, where 0 and 180 are
 // indistinguishable and 90/270 are decisively worse; they take turn 0.
+//
+// `generator` and `tower` are absent for a different reason: they take
+// upstream's own footprint, so they have no legacy drawing to re-orient and
+// their turn is 0 by construction. (Sweeping `generator` against the pre-pull
+// corpus while it still used the legacy polygon read 0.20in at 90/270 against
+// 0.88in at 0/180 - the pre-pull generator is landscape, as upstream's 4.5x2 is
+// - but 0.20in was the floor, because a 4x3 stand-in cannot sit on a 4.5x2
+// model exactly.)
+//
+// Legacy bbox (under its turn) against the upstream part's rectangle, all
+// twelve, which is what F above is reading:
+//
+//   part          legacy   upstream   delta
+//   ab            5x4.5    3.75x4.5   +1.25  0        L-shaped: legacy polygon
+//   ef            4.5x5    4.5x6       0    -1        carries the shape, so it
+//   co            6.5x3    6x2.5      +0.5  +0.5      stays whatever the size
+//   gh            3x6.5    3x6         0    +0.5      disagreement.
+//   corner        2x2      1.5x1.5    +0.5  +0.5
+//   small-l       2x3      1.5x2.5    +0.5  +0.5
+//   small-l-flip  2x3      1.5x2.5    +0.5  +0.5
+//   short-barrier 3.5x1    3.75x0.5   -0.25 +0.5      8-vertex legacy polygon.
+//   tower         2x2      2x2.5       0    -0.5      -> upstreamFootprint
+//   generator     3x4      4.5x2      -1.5  +2        -> upstreamFootprint
+//   long-barrier  5.5x1    4.5x0.5    +1    +0.5      rectangle, but see below
+//   pipes         7x2      6x1        +1    +1        rectangle, but see below
+//
+// The deltas are not a consistent margin convention (they run from -1.5 to
+// +1.25 and change sign), so there is no rule here that would let a legacy size
+// stand in for an upstream one; where upstream has a usable rectangle, it wins.
+//
+// The two rectangle parts that keep their legacy footprint anyway:
+//
+//   long-barrier - maps onto the `pipe` *building* template, and a building is
+//     drawn at its templates-simple.yml size, not at its piece's: placement.ts
+//     throws if the pinned corner distance disagrees with the template edge by
+//     more than 0.1in, and feature-to-building.mjs pins on a 5.5in edge that a
+//     4.5x0.5 rectangle does not have. Adopting upstream's size here means
+//     redrawing the gw template, not setting a flag.
+//   pipes - maps onto `catwalk`, which ruinFeatures consumes and drops; all it
+//     uses is the resolved centroid, which is the piece's `position` either
+//     way. Measured: switching it changes 0 of 900 features and 0 of 270
+//     buildings, and leaves the roofed count at 20. Left alone as churn.
 //
 // A bounding-box aspect ratio is NOT a valid oracle here and must not be used as
 // one: it is blind to a half-turn (`ab`, `small-l`, `small-l-flip` all measure
@@ -103,8 +160,13 @@ export const PART_TO_TEMPLATE = {
   corner: { template: "corner-tiny", flip: true, turn: 270 },
   "small-l": { template: "corner-short", flip: true, turn: 180 },
   "small-l-flip": { template: "corner-short", flip: false, turn: 180 },
-  tower: { template: "gantry", flip: false, turn: 0 },
-  generator: { template: "generator", flip: false, turn: 90 },
+  tower: { template: "gantry", flip: false, turn: 0, upstreamFootprint: true },
+  generator: {
+    template: "generator",
+    flip: false,
+    turn: 0,
+    upstreamFootprint: true,
+  },
   "long-barrier": { template: "pipe", flip: false, turn: 0 },
   "short-barrier": { template: "barricade", flip: false, turn: 0 },
   pipes: { template: "catwalk", flip: false, turn: 0 },
@@ -274,11 +336,15 @@ export function normalizeLayout(layout, templatesById) {
 
     for (const feature of composite.features ?? []) {
       const part = partOf(feature.template);
-      const { template, flip, turn } = PART_TO_TEMPLATE[part];
-      const legacy = templatesById.get(template);
-      if (!legacy) {
+      const { template, flip, turn, upstreamFootprint } = PART_TO_TEMPLATE[part];
+      const source = templatesById.get(
+        upstreamFootprint ? feature.template : template,
+      );
+      if (!source) {
         throw new Error(
-          `layout ${layout.id} maps part ${part} onto missing template ${template}`,
+          `layout ${layout.id} maps part ${part} onto missing template ${
+            upstreamFootprint ? feature.template : template
+          }`,
         );
       }
       // K does two separate jobs, and they have to be composed rather than
@@ -306,8 +372,10 @@ export function normalizeLayout(layout, templatesById) {
         matmul(K, rotation(turn)),
       );
       // S rides through the child's full map, so it is applied after Q: what it
-      // re-anchors is the polygon as finally oriented, not as drawn.
-      const S = matvec(A, anchorOffset(legacy.footprint));
+      // re-anchors is the polygon as finally oriented, not as drawn. It is zero
+      // for an upstreamFootprint part (a rectangle re-anchored onto itself),
+      // but derive it rather than special-case it.
+      const S = matvec(A, anchorOffset(source.footprint));
       // V is self-inverse (asserted in battlemaster-registration.test.mjs), so
       // applying it here undoes the V now folded into the parent's transform.
       // If a future variant is ever registered that is not self-inverse,
@@ -320,6 +388,11 @@ export function normalizeLayout(layout, templatesById) {
         name: feature.id,
         piece_type: "feature",
         template,
+        // Only for an upstreamFootprint part: resolvePiece prefers an inline
+        // footprint over the template's, while rect-to-feature.mjs keys its
+        // feature type and colour off `template`. So the child draws
+        // Battlemaster's rectangle and still renders as a generator.
+        ...(upstreamFootprint ? { footprint: source.footprint } : {}),
         parent_area_id: piece.id,
         position: { x: anchor.x + S.x, y: anchor.y + S.y },
         ...decompose(A),

@@ -142,7 +142,7 @@ describe("registration tables", () => {
       co: 90,
       corner: 270,
       ef: 90,
-      generator: 90,
+      generator: 0,
       gh: 0,
       "long-barrier": 0,
       pipes: 0,
@@ -155,6 +155,12 @@ describe("registration tables", () => {
     // board's axes; decompose would still round-trip it, so nothing else catches it.
     for (const [part, t] of Object.entries(turns)) {
       expect(Number.isInteger(t / 90), `${part} turn ${t} is not a quarter-turn`).toBe(true);
+    }
+    // A part drawn from upstream's own footprint is already in the upstream
+    // part's frame, so a non-zero turn there would be turning it away from the
+    // truth rather than onto it.
+    for (const [part, v] of Object.entries(PART_TO_TEMPLATE)) {
+      if (v.upstreamFootprint) expect(v.turn, part).toBe(0);
     }
   });
 
@@ -258,10 +264,14 @@ describe("normalized layouts conform to upstream geometry", () => {
             srcParent,
           ),
         );
-        // Where the emitted piece puts the legacy polygon's bbox centre. The
+        // Where the emitted piece puts its own polygon's bbox centre. The
         // resolved ring's centroid is the image of the footprint's centroid, so
         // step from there to the bbox centre through the piece's own map.
-        const ring = footprintPolygon(lookupFootprint(child.template));
+        // `child.footprint` first, for the parts that carry upstream's own
+        // rectangle instead of a legacy stand-in.
+        const ring = footprintPolygon(
+          child.footprint ?? lookupFootprint(child.template),
+        );
         const T = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
         const d = {
           x: bboxCentre(ring).x - centroid(ring).x,
@@ -278,6 +288,62 @@ describe("normalized layouts conform to upstream geometry", () => {
     }
     // The part totals pinned by "agrees with upstream's usage counts" above.
     expect(checked).toBe(1260);
+    expect(worst).toBeLessThan(1e-9);
+  });
+
+  // Where the legacy footprint is itself a plain rectangle it carries no shape
+  // upstream's rectangle lacks, only a size - and the sizes disagree (generator
+  // 3x4 against 4.5x2, tower 2x2 against 2x2.5). Those parts take upstream's
+  // own rectangle, so the emitted piece reproduces upstream's outline exactly
+  // rather than to within the ~0.2in a stand-in could manage. Pinned both ways:
+  // the inline footprint is upstream's to the vertex, and no other part quietly
+  // acquires one (which would bypass the legacy polygon a `corner-*` part
+  // depends on for its L shape).
+  it("draws the upstreamFootprint parts from upstream's own footprint", () => {
+    const inlined = Object.entries(PART_TO_TEMPLATE)
+      .filter(([, v]) => v.upstreamFootprint)
+      .map(([part]) => part);
+    expect(inlined).toEqual(["tower", "generator"]);
+
+    let worst = 0;
+    let checked = 0;
+    for (let i = 0; i < layouts.length; i++) {
+      const srcParent = parentsOf(layouts[i]);
+      const outParent = parentsOf(normalized[i]);
+      for (const child of normalized[i].pieces) {
+        if (child.piece_type !== "feature") continue;
+        const areaId = child.parent_area_id;
+        const composite = byId.get(srcParent(areaId).template);
+        const feature = composite.features.find(
+          (f) => `${areaId}-${f.id}` === child.id,
+        );
+        const part = partOf(feature.template);
+        if (!PART_TO_TEMPLATE[part].upstreamFootprint) {
+          expect(child.footprint, `${child.id} (${part})`).toBeUndefined();
+          continue;
+        }
+        expect(child.footprint).toEqual(lookupFootprint(feature.template));
+        // Same footprint, same frame: the emitted child must land on upstream's
+        // outline vertex for vertex, not merely near it.
+        const truth = resolvePiece(
+          {
+            id: "truth",
+            template: feature.template,
+            position: feature.position,
+            rotation_degrees: feature.rotation_degrees ?? 0,
+            parent_area_id: areaId,
+          },
+          lookupFootprint,
+          srcParent,
+        );
+        worst = Math.max(
+          worst,
+          ringMismatch(resolvePiece(child, lookupFootprint, outParent), truth),
+        );
+        checked++;
+      }
+    }
+    expect(checked).toBe(180); // the tower + generator counts pinned above
     expect(worst).toBeLessThan(1e-9);
   });
 
