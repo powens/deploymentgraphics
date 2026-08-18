@@ -274,7 +274,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 32.5,
           y: 32.5,
@@ -362,7 +362,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 25,
           y: 10,
@@ -725,7 +725,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 28.5,
           y: 32.5,
@@ -813,7 +813,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 29,
           y: 10,
@@ -2268,7 +2268,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 23,
           y: 11,
@@ -2356,7 +2356,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 34.5,
           y: 31.5,
@@ -5392,7 +5392,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 30.5,
           y: 32.5,
@@ -5502,7 +5502,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 27,
           y: 10,
@@ -5823,7 +5823,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 24.5,
           y: 32.5,
@@ -5911,7 +5911,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 33,
           y: 10,
@@ -6220,7 +6220,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 25.003,
           y: 11,
@@ -6308,7 +6308,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 32.497,
           y: 31.5,
@@ -6608,7 +6608,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 28.5,
           y: 32.5,
@@ -6696,7 +6696,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 29,
           y: 10,
@@ -8985,7 +8985,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 20.739,
           y: 20.109,
@@ -9073,7 +9073,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 36.761,
           y: 22.391,
@@ -11340,7 +11340,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 32.5,
           y: 32.5,
@@ -11428,7 +11428,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 25,
           y: 10,
@@ -11782,7 +11782,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 28.497,
           y: 32.5,
@@ -11870,7 +11870,7 @@ export const gwTerrain: TerrainConfig = {
           mirror: false,
         },
         {
-          type: "l-ruin-roof",
+          type: "l-ruin",
           label: "ruin",
           x: 29.003,
           y: 10,

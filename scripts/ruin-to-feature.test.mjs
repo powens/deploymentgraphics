@@ -76,6 +76,49 @@ function ringMismatch(a, b) {
   );
 }
 
+// Smallest distance between two closed rings (0 when their edges cross), plus a
+// point-in-ring test, so the roofing guard below can ask whether a catwalk and a
+// ruin actually share ground rather than comparing centroids.
+function ringGap(a, b) {
+  const segGap = (p, q, r, s) => {
+    const near = (u, v, w) => {
+      const vx = v.x - u.x;
+      const vy = v.y - u.y;
+      const len = vx * vx + vy * vy;
+      const t = len
+        ? Math.max(0, Math.min(1, ((w.x - u.x) * vx + (w.y - u.y) * vy) / len))
+        : 0;
+      return Math.hypot(u.x + t * vx - w.x, u.y + t * vy - w.y);
+    };
+    return Math.min(near(p, q, r), near(p, q, s), near(r, s, p), near(r, s, q));
+  };
+  let min = Infinity;
+  for (let i = 0; i < a.length; i++) {
+    for (let j = 0; j < b.length; j++) {
+      min = Math.min(
+        min,
+        segGap(a[i], a[(i + 1) % a.length], b[j], b[(j + 1) % b.length]),
+      );
+    }
+  }
+  return min;
+}
+
+const inRing = (p, ring) => {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    if (
+      ring[i].y > p.y !== ring[j].y > p.y &&
+      p.x <
+        ((ring[j].x - ring[i].x) * (p.y - ring[i].y)) / (ring[j].y - ring[i].y) +
+          ring[i].x
+    ) {
+      inside = !inside;
+    }
+  }
+  return inside;
+};
+
 const getParentFor = (L) => {
   const byId = new Map(L.pieces.map((p) => [p.id, p]));
   return (id) => byId.get(id);
@@ -116,7 +159,7 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
   for (const [template, { piece, getParent }] of Object.entries(sample)) {
     it(`reproduces the ${template} footprint`, () => {
-      const pl = ruinFeaturePlacement(piece, lookupFootprint, getParent, false);
+      const pl = ruinFeaturePlacement(piece, lookupFootprint, getParent);
       const target = resolvePiece(piece, lookupFootprint, getParent);
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });
@@ -124,32 +167,14 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
   it("picks the mirror variant for opposite-chirality templates", () => {
     const right = sample["corner-ruin-right"];
-    const pl = ruinFeaturePlacement(
-      right.piece,
-      lookupFootprint,
-      right.getParent,
-      false,
-    );
+    const pl = ruinFeaturePlacement(right.piece, lookupFootprint, right.getParent);
     expect(pl.type).toBe("l-ruin-mirror");
     const left = sample["corner-ruin-left"];
     expect(
-      ruinFeaturePlacement(left.piece, lookupFootprint, left.getParent, false)
-        .type,
+      ruinFeaturePlacement(left.piece, lookupFootprint, left.getParent).type,
     ).toBe("l-ruin");
   });
 
-  it("emits the -roof variant when roofed", () => {
-    const left = sample["corner-ruin-left"];
-    expect(
-      ruinFeaturePlacement(left.piece, lookupFootprint, left.getParent, true)
-        .type,
-    ).toBe("l-ruin-roof");
-    const right = sample["corner-ruin-right"];
-    expect(
-      ruinFeaturePlacement(right.piece, lookupFootprint, right.getParent, true)
-        .type,
-    ).toBe("l-ruin-roof-mirror");
-  });
 });
 
 describe("ruinFeatures", () => {
@@ -163,44 +188,75 @@ describe("ruinFeatures", () => {
       expect(consumedIds.has(p.id)).toBe(true);
     }
     for (const f of features) {
-      expect([
-        "l-ruin",
-        "l-ruin-mirror",
-        "l-ruin-roof",
-        "l-ruin-roof-mirror",
-      ]).toContain(f.type);
+      expect(["l-ruin", "l-ruin-mirror"]).toContain(f.type);
     }
   });
 
-  it("roofs the 20 catwalks that sit on a ruin, and nothing else", () => {
-    // Distances from each of the 90 catwalks to the nearest ruin centre, sorted:
+  it("emits no -roof variant, because no catwalk rests on a ruin", () => {
+    // The corpus has no catwalk-on-ruin relation to read, in the data or in the
+    // geometry, so the converter emits plain l-ruin everywhere. (`l-ruin-roof`
+    // is still a live feature type - gw.yml hand-authors one.)
     //
-    //   shipped   3.14 3.14 [3.15 x18] | 3.27 3.27 3.35 3.35 | 4.00 x4 | 4.87 ..
-    //   pre-Z     2.96 2.96 [2.97 x18] | 3.26 3.26 3.36 3.36 | 3.85 x4 | 4.39 ..
-    //   pre-pull  2.99 2.99 [3.09 x12] 3.15 x6 |            | 4.01 4.01 4.03 ..
+    // Upstream ships `pipes` as its own standalone composite - composite-03 and
+    // composite-30, each with the pipes part as its only child - so a catwalk is
+    // never a sibling of a ruin part, and the assertions below re-derive that
+    // from the shipped geometry every run.
     //
-    // All three corpora put exactly 20 catwalks in the tight leading cluster -
-    // those are the ones resting on a ruin - and the pre-pull corpus separates
-    // them from the rest by a clean 0.86in gap. Normalization moves the cluster
-    // by under 0.2in, so the population is upstream's geometry, not something
-    // this pipeline introduces. ROOF_DISTANCE = 3.21in sits in the gap after
-    // the cluster and selects exactly those 20, with ~0.055in of margin on
-    // either side. If this count ever moves, check the distances above before
-    // assuming the data changed: at that margin the threshold is the fragile
-    // part. It was 3in until the anchor fix (which is why the pre-pull corpus
-    // only ever roofed 2 of its 20 - 3in cut through the middle of that
-    // cluster), then 3.1in until Z resized the ruin footprints onto upstream's
-    // rectangles, which moved every resting catwalk out past it at once.
-    const catwalks = layouts
-      .filter((l) => l.mission_matchup_id)
+    // Catwalk-to-nearest-ruin polygon gaps over all 90, sorted:
+    //
+    //   0.002 x2  0.005 x4 | 0.435 x2  0.461 x2  0.498 x12  0.502 x10 .. 6.98
+    //
+    // Nothing at zero, no second ring within reach of any catwalk, and the six
+    // that come closest to touching are *not* the ones a centroid threshold
+    // picks: they sit 3.996-5.037in centre-to-centre, past every catwalk in the
+    // 0.5in-gap population. That is what retired `ROOF_DISTANCE = 3.21`, which
+    // roofed 20 of the 0.5in ones and skipped all six of these. The guard here
+    // is deliberately about contact, not about a count: if a future pull ever
+    // does seat a catwalk on a ruin, these fail and the -roof variant is worth
+    // reviving.
+    const missions = layouts.filter((l) => l.mission_matchup_id);
+    const catwalks = missions
       .flatMap((l) => l.pieces)
       .filter((p) => p.template === "catwalk");
     expect(catwalks.length).toBe(90);
-    const features = layouts
-      .filter((l) => l.mission_matchup_id)
-      .flatMap((l) => ruinFeatures(l, lookupFootprint, getParentFor(l)).features);
+    const features = missions.flatMap(
+      (l) => ruinFeatures(l, lookupFootprint, getParentFor(l)).features,
+    );
     expect(features.length).toBe(720);
-    expect(features.filter((f) => f.type.includes("roof")).length).toBe(20);
+    expect(features.filter((f) => f.type.includes("roof")).length).toBe(0);
+
+    let touching = 0;
+    let siblings = 0;
+    let minGap = Infinity;
+    for (const L of missions) {
+      const getParent = getParentFor(L);
+      const ruins = L.pieces
+        .filter(
+          (p) =>
+            isRuinTemplate(p.template) &&
+            isLFootprint(p.footprint ?? lookupFootprint(p.template)),
+        )
+        .map((p) => ({ p, ring: resolvePiece(p, lookupFootprint, getParent) }));
+      for (const p of L.pieces.filter((q) => q.template === "catwalk")) {
+        const ring = resolvePiece(p, lookupFootprint, getParent);
+        for (const r of ruins) {
+          const gap = ringGap(ring, r.ring);
+          minGap = Math.min(minGap, gap);
+          if (
+            ring.some((q) => inRing(q, r.ring)) ||
+            r.ring.some((q) => inRing(q, ring))
+          ) {
+            touching += 1;
+          }
+          if (p.parent_area_id && p.parent_area_id === r.p.parent_area_id) {
+            siblings += 1;
+          }
+        }
+      }
+    }
+    expect(touching).toBe(0);
+    expect(siblings).toBe(0);
+    expect(minGap).toBeGreaterThan(0);
   });
 
   it("emits 16 whole-L ruins for every mission layout", () => {

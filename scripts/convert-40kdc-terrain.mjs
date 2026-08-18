@@ -3,8 +3,7 @@
 // (layouts only — the building templates live in templates-simple.yml, which
 // gen-presets merges back in). Each `area` piece becomes a building
 // placement referencing a gw template; corner-ruin pieces become `l-ruin`
-// features (with `l-ruin-roof` where a catwalk sits on them); catwalk pieces
-// are dropped; pipe/barricade pieces become building placements (via
+// features; catwalk pieces are dropped; pipe/barricade pieces become building placements (via
 // feature-to-building.mjs); every other `feature` piece becomes a polygon
 // area_terrain entry (absolute points); is_objective pieces become skull icons
 // (a touching pair of objective pieces collapses to one marker — see
@@ -78,8 +77,8 @@ for (let layout of layouts) {
   layout = normalizeLayout(layout, templatesById);
   const byId = new Map(layout.pieces.map((p) => [p.id, p]));
   const getParent = (id) => byId.get(id);
-  // Corner-ruins become l-ruin features (roofed where a catwalk sits on them);
-  // catwalk pieces are dropped. Generators/gantries become rectangle features.
+  // Corner-ruins become l-ruin features; catwalk pieces are dropped.
+  // Generators/gantries become rectangle features.
   // `consumedIds` are the pieces the area_terrain pass must skip.
   const ruin = ruinFeatures(layout, lookupFootprint, getParent);
   const rect = rectFeatures(layout, lookupFootprint, getParent);

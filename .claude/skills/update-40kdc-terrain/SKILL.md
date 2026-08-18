@@ -116,12 +116,15 @@ Past pulls carried non-obvious payloads:
     the target — a redrawn upstream part is the likely cause. `short-barrier` is excluded:
     `feature-to-building.mjs` matches its 8-vertex profile to pick the `barricade` template,
     so its polygon is load-bearing beyond its bbox.
-  - **Resizing a ruin moves the catwalk roofing threshold.** `ROOF_DISTANCE` in
-    `ruin-to-feature.mjs` splits catwalk-to-ruin-centroid distances, and a resized ruin moves
-    its centroid, so the clusters shift under it — Z moved every resting catwalk from
-    ~2.97in to ~3.15in at once and silently dropped the roofed count from 20 to 0 until the
-    threshold followed. If `roofs the 20 catwalks that sit on a ruin` fails, re-measure the
-    sorted distances and re-centre the value in the gap; don't assume upstream changed.
+  - **Don't reintroduce a proximity heuristic for catwalk roofing.** `ruin-to-feature.mjs`
+    emits plain `l-ruin` everywhere and only *drops* catwalks; the `-roof` variants stay
+    reachable for hand-authored `gw.yml` layouts. Upstream ships `pipes` as its own
+    standalone composite, so no catwalk is ever a sibling of a ruin part, and no catwalk
+    overlaps or bridges one anywhere in the corpus. This was a centroid-distance threshold
+    (`ROOF_DISTANCE`) that had to be re-tuned every time a ruin was resized, and it was
+    selecting catwalks ~0.5in clear of a ruin while skipping six that are flush against
+    one. If `emits no -roof variant, because no catwalk rests on a ruin` fails, upstream
+    genuinely has seated a catwalk on a ruin — read the geometry before changing the test.
 
 ## Common mistakes
 

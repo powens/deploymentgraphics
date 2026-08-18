@@ -294,6 +294,24 @@ describe("normalizeLayout", () => {
     expect(normalizeLayout(layout, new Map()).pieces).toEqual(layout.pieces);
   });
 
+  it("throws on an unhandled composite feature field", () => {
+    // `mirror` is the one that matters: it is how upstream would express the
+    // other hand of a part, K would not see it, and the registration test
+    // recomputes K from the same rule, so a dropped `mirror` would sail
+    // through every other assertion in this file.
+    const withMirror = new Map([
+      ["bm-bm-terrain-11e-1-composite-30-m0-p0", {
+        id: "bm-bm-terrain-11e-1-composite-30-m0-p0",
+        name: "Battlemaster SL 30",
+        features: [{ id: "f", template: "bm-bm-terrain-11e-1-part-pipes",
+                     position: { x: 0, y: 0 }, mirror: "horizontal" }],
+      }],
+    ]);
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), withMirror),
+    ).toThrow(/unhandled field `mirror`/);
+  });
+
   it("throws on an unmapped part", () => {
     const bad = new Map([
       ["bm-bm-terrain-11e-1-composite-30-m0-p0", {

@@ -5,14 +5,26 @@
 // six corner templates (balanced-right, corner-right) are the opposite
 // chirality, so they map to the mirrored `l-ruin-mirror` variant — picked here
 // by the sign of the resolved arm cross product (the same shoe / shoe-mirror
-// trick used in area-to-building.mjs). A ruin with a catwalk on top uses the
-// `-roof` variant; catwalk pieces themselves are dropped.
+// trick used in area-to-building.mjs). Catwalk pieces are dropped.
+//
+// No ruin is emitted as a `-roof` variant. Those types still exist and still
+// render (gw.yml hand-authors one), but nothing in the battlemaster corpus says
+// a catwalk rests on a ruin, so this converter has no grounds to pick one.
+// Upstream ships `pipes` as its own standalone composite - composite-03 and
+// composite-30, whose only child is the pipes part - never as a child of a ruin
+// composite, and measured over all 45 mission layouts no catwalk overlaps a
+// ruin, touches one at each end, or shares a composite with one: the 90
+// catwalk-to-nearest-ruin polygon gaps run 0.002in to 6.98in with no cluster at
+// zero, and for 0 of 90 is the nearest ruin a sibling part. This used to be a
+// centroid-distance threshold (`ROOF_DISTANCE`), which roofed 20 ruins sitting
+// ~0.5in clear of their catwalk while skipping six that are flush against one.
+// See the measurements pinned in ruin-to-feature.test.mjs.
 //
 // Each ruin reduces to three absolute reference points — the outer corner and
 // the two arm ends — which a single fit (`featureFromRefs`) turns into a
 // placement. Every corner-ruin piece carries a whole L footprint.
 
-import { footprintPolygon, centroid, resolvePiece } from "./terrain-resolver.mjs";
+import { footprintPolygon, resolvePiece } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
 
 /** True for the 40kdc corner-ruin templates (l-ruin family). */
@@ -77,11 +89,6 @@ function lRefIndices(ring) {
   };
 }
 
-const ROOF = {
-  "l-ruin": "l-ruin-roof",
-  "l-ruin-mirror": "l-ruin-roof-mirror",
-};
-
 /**
  * Fit an l-ruin placement to three absolute reference points: the L's outer
  * corner and its two arm ends. The arm vectors are perpendicular; the sign of
@@ -91,7 +98,7 @@ const ROOF = {
  *
  * @returns {{type, x, y, width, height, rotation, color, label, mirror: false}}
  */
-export function featureFromRefs(Oa, A1, A2, roofed) {
+export function featureFromRefs(Oa, A1, A2) {
   const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
   const v = { x: A2.x - Oa.x, y: A2.y - Oa.y }; // horizontal-wall arm
   const cross = u.x * v.y - u.y * v.x;
@@ -123,9 +130,8 @@ export function featureFromRefs(Oa, A1, A2, roofed) {
   const y = Oa.y - ry - ctr.y;
 
   const rotation = ((rotDeg % 360) + 360) % 360;
-  const type = roofed ? ROOF[base] : base;
   return {
-    type,
+    type: base,
     label: "ruin",
     x: round(x),
     y: round(y),
@@ -149,30 +155,18 @@ function lPieceRefs(piece, lookupFootprint, getParent) {
 }
 
 /** Build a placement for a single whole-L corner-ruin piece. */
-export function ruinFeaturePlacement(piece, lookupFootprint, getParent, roofed) {
+export function ruinFeaturePlacement(piece, lookupFootprint, getParent) {
   const { Oa, A1, A2 } = lPieceRefs(piece, lookupFootprint, getParent);
-  return featureFromRefs(Oa, A1, A2, roofed);
+  return featureFromRefs(Oa, A1, A2);
 }
-
-// A catwalk roofs the ruin whose centre it lands nearest, within this distance
-// (inches). Across the 45 mission layouts the 90 catwalks split into a leading
-// cluster of 20 that rest on a ruin (3.144-3.155in) and 70 free-standing ones
-// (3.267in and out), so this sits in the gap between them, with ~0.055in of
-// margin on either side. Both this value and the clusters move whenever the
-// ruin footprints do, because the comparison is centroid to centroid: it was
-// 3.1 against a 2.96-2.97in cluster until Z (battlemaster-normalize.mjs) resized
-// the legacy corner polygons onto upstream's rectangles, which left the
-// free-standing distances almost untouched (3.26 -> 3.267) and pulled the
-// resting ones out by ~0.18in. See the distance table in
-// ruin-to-feature.test.mjs; keep this value and that table in step.
-const ROOF_DISTANCE = 3.21;
 
 /**
  * Resolve every whole-L corner-ruin in a layout to an `l-ruin` feature
- * placement, applying the `-roof` variant where a catwalk sits on the ruin.
- * Catwalk pieces are consumed (dropped). Returns the placements plus the set of
- * piece ids the caller should not also emit as area_terrain (ruin pieces and
- * catwalks).
+ * placement. Catwalk pieces are consumed (dropped) - upstream models them as
+ * standalone composites, and the parent area still becomes a building, so the
+ * child would only redraw ground the building already covers. Returns the
+ * placements plus the set of piece ids the caller should not also emit as
+ * area_terrain (ruin pieces and catwalks).
  *
  * @param {object} layout - a 40kdc layout ({ pieces }).
  * @param {(id: string) => object} lookupFootprint
@@ -181,7 +175,7 @@ const ROOF_DISTANCE = 3.21;
  */
 export function ruinFeatures(layout, lookupFootprint, getParent) {
   const consumedIds = new Set();
-  const ruins = []; // { ids, anchor, make(roofed) }
+  const features = [];
 
   for (const p of layout.pieces) {
     if (!isRuinTemplate(p.template)) continue;
@@ -189,35 +183,13 @@ export function ruinFeatures(layout, lookupFootprint, getParent) {
     // Only whole-L corner footprints become ruins; any other corner piece
     // falls through to area_terrain.
     if (!isLFootprint(footprint)) continue;
-    const resolved = resolvePiece(p, lookupFootprint, getParent);
-    const { Oa, A1, A2 } = lPieceRefs(p, lookupFootprint, getParent);
-    ruins.push({
-      ids: [p.id],
-      anchor: centroid(resolved),
-      make: (roofed) => featureFromRefs(Oa, A1, A2, roofed),
-    });
-  }
-
-  const roofed = new Set();
-  for (const p of layout.pieces) {
-    if (p.template !== "catwalk") continue;
     consumedIds.add(p.id);
-    const cc = centroid(resolvePiece(p, lookupFootprint, getParent));
-    let best = -1;
-    let bd = ROOF_DISTANCE;
-    ruins.forEach((r, i) => {
-      const d = Math.hypot(cc.x - r.anchor.x, cc.y - r.anchor.y);
-      if (d < bd) {
-        bd = d;
-        best = i;
-      }
-    });
-    if (best >= 0) roofed.add(best);
+    features.push(ruinFeaturePlacement(p, lookupFootprint, getParent));
   }
 
-  const features = ruins.map((r, i) => {
-    r.ids.forEach((id) => consumedIds.add(id));
-    return r.make(roofed.has(i));
-  });
+  for (const p of layout.pieces) {
+    if (p.template === "catwalk") consumedIds.add(p.id);
+  }
+
   return { features, consumedIds };
 }

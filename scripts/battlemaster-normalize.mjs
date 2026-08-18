@@ -229,6 +229,14 @@ export const PART_TO_TEMPLATE = {
   pipes: { template: "catwalk", flip: false, turn: 0 },
 };
 
+/** Every field this module reads off a composite's `features[]` entry. */
+export const FEATURE_KEYS = new Set([
+  "id",
+  "template",
+  "position",
+  "rotation_degrees",
+]);
+
 export const IDENTITY = [[1, 0], [0, 1]];
 export const FLIP_X = [[-1, 0], [0, 1]];
 export const FLIP_Y = [[1, 0], [0, -1]];
@@ -462,6 +470,23 @@ export function normalizeLayout(layout, templatesById) {
     pieces.push(area);
 
     for (const feature of composite.features ?? []) {
+      // Only these four fields are read below, so anything else upstream adds
+      // to a feature would be dropped in silence - and the silent cases are
+      // the dangerous ones. `mirror` is the natural way for upstream to
+      // express the other hand of a part, and is exactly the axis K controls,
+      // so a feature carrying one would emit a child of the wrong chirality
+      // while every test still passed (the registration test recomputes K from
+      // the same rule, so it would agree with the bug). An inline `footprint`
+      // would likewise lose to the template's under F/Z. Fail loudly instead,
+      // the way the piece-level guards above and the size-class and part
+      // lookups below already do.
+      for (const key of Object.keys(feature)) {
+        if (!FEATURE_KEYS.has(key)) {
+          throw new Error(
+            `composite ${piece.template} feature ${feature.id} carries unhandled field \`${key}\`; normalization would drop it`,
+          );
+        }
+      }
       const part = partOf(feature.template);
       const { template, flip, turn, upstreamFootprint, upstreamSize } =
         PART_TO_TEMPLATE[part];
