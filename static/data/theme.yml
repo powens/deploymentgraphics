@@ -1,7 +1,8 @@
 # All SVG visual properties live here — the single, opinionated theme.
 # Geometry (deployment/*.yml, terrain/gw.yml) and behaviour (base.yml draw
-# flags) carry no styling. snake_case keys are converted to kebab-case SVG attributes; keys already in
-# kebab-case (e.g. vector-effect) pass through unchanged.
+# flags) carry no styling. snake_case keys are converted to kebab-case SVG
+# attributes; a key already in kebab-case (e.g. vector-effect) passes through
+# unchanged.
 
 background:
   fill: "#f4f1e8"
@@ -31,18 +32,23 @@ building:
   group:
     opacity: 1
   template:
+    # One outline weight for every building, matching `feature.stroke_width`
+    # below so a ruin and the building it sits on are drawn with the same pen.
+    # These used to be non-scaling strokes (1.2 for the grey templates, 1.5 for
+    # pipe/barricade), i.e. a constant *viewport* width, which read thinner than
+    # everything else on the card and disagreed between templates. Board units
+    # (inches, like every other stroke_width here) instead: 0.2in.
     default:
-      vector-effect: non-scaling-stroke
       stroke: black
-      stroke_width: 1.2
+      stroke_width: &building-stroke 0.2
       fill: &stone-grey "#808080"
       opacity: 1
     # Ported 40kdc pipes (rust) and barricades (sand). The rust/sand fills are
     # anchored here and aliased by area_terrain + feature.palette below; their
     # darker accents are anchored in area_terrain (Crater, barricade). Both take a
     # black outline (like the buildings) so they read as defined pieces.
-    pipe:             { vector-effect: non-scaling-stroke, fill: &rust-fill "#b9772e", stroke: black, stroke_width: 1.5 }
-    barricade:        { vector-effect: non-scaling-stroke, fill: &sand-fill "#c9a86a", stroke: black, stroke_width: 1.5 }
+    pipe:             { fill: &rust-fill "#b9772e", stroke: black, stroke_width: *building-stroke }
+    barricade:        { fill: &sand-fill "#c9a86a", stroke: black, stroke_width: *building-stroke }
 
 grid:
   opacity: 0.3

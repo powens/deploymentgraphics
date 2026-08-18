@@ -21,24 +21,13 @@ export const baseTheme: Theme = {
     group: { opacity: 1 },
     template: {
       default: {
-        "vector-effect": "non-scaling-stroke",
         stroke: "black",
-        stroke_width: 1.2,
+        stroke_width: 0.2,
         fill: "#808080",
         opacity: 1,
       },
-      pipe: {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#b9772e",
-        stroke: "black",
-        stroke_width: 1.5,
-      },
-      barricade: {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#c9a86a",
-        stroke: "black",
-        stroke_width: 1.5,
-      },
+      pipe: { fill: "#b9772e", stroke: "black", stroke_width: 0.2 },
+      barricade: { fill: "#c9a86a", stroke: "black", stroke_width: 0.2 },
     },
   },
   grid: {
