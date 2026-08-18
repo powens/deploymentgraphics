@@ -15,9 +15,15 @@ const read = (name) =>
       "utf8",
     ),
   );
-const layouts = read("terrain-layouts.json");
-const templates = read("terrain-templates.json");
-const fpById = new Map(templates.map((t) => [t.id, t.footprint]));
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
+
+const rawLayouts = read("terrain-layouts.json");
+const rawTemplates = read("terrain-templates.json");
+const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
+// Upstream now ships ruins as `features[]` on composite templates; normalize
+// back to the legacy piece vocabulary these converters consume.
+const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
+const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => fpById.get(id);
 
 // Absolute outline of a placed l-ruin feature (mirrors makeFeatures' transform
@@ -147,39 +153,62 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 });
 
 describe("ruinFeatures", () => {
-  it("roofs the whole-L ruins that sit under catwalks", () => {
-    // purge-the-foe-vs-purge-the-foe-2 has 16 whole-L corner ruins and two
-    // catwalks, each catwalk sitting on one ruin. (No vendored layout still
-    // uses the split wall-segment bar-pair encoding the crucible relied on.)
+  it("converts every whole-L ruin and consumes the catwalks", () => {
     const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
     const { features, consumedIds } = ruinFeatures(L, lookupFootprint, getParentFor(L));
     const catwalks = L.pieces.filter((p) => p.template === "catwalk");
     const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
-    // Each whole-L ruin piece -> one feature.
     expect(features.length).toBe(ruinPieces.length);
-    // Every catwalk and ruin piece is consumed (not re-emitted as area_terrain).
     for (const p of [...catwalks, ...ruinPieces]) {
       expect(consumedIds.has(p.id)).toBe(true);
     }
-    // The two ruins under catwalks are roofed; roofs use the -roof variant.
-    const roofs = features.filter((f) => f.type.includes("roof"));
-    expect(roofs.length).toBe(2);
     for (const f of features) {
-      expect(["l-ruin", "l-ruin-mirror", "l-ruin-roof", "l-ruin-roof-mirror"]).toContain(
-        f.type,
-      );
+      expect([
+        "l-ruin",
+        "l-ruin-mirror",
+        "l-ruin-roof",
+        "l-ruin-roof-mirror",
+      ]).toContain(f.type);
     }
   });
 
-  it("converts whole-L ruins and drops catwalks without roofing them", () => {
-    const L = layouts.find((l) => l.id === "take-and-hold-vs-disruption-1");
-    const { features, consumedIds } = ruinFeatures(L, lookupFootprint, getParentFor(L));
-    const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
-    expect(features.length).toBe(ruinPieces.length); // each L piece -> one feature
-    // Catwalks here are free-standing (~8in away), so no ruin is roofed.
-    expect(features.some((f) => f.type.includes("roof"))).toBe(false);
-    for (const p of L.pieces.filter((q) => q.template === "catwalk")) {
-      expect(consumedIds.has(p.id)).toBe(true);
+  it("roofs the 20 catwalks that sit on a ruin, and nothing else", () => {
+    // Distances from each of the 90 catwalks to the nearest ruin centre, sorted:
+    //
+    //   shipped   3.14 3.14 [3.15 x18] | 3.27 3.27 3.35 3.35 | 4.00 x4 | 4.87 ..
+    //   pre-Z     2.96 2.96 [2.97 x18] | 3.26 3.26 3.36 3.36 | 3.85 x4 | 4.39 ..
+    //   pre-pull  2.99 2.99 [3.09 x12] 3.15 x6 |            | 4.01 4.01 4.03 ..
+    //
+    // All three corpora put exactly 20 catwalks in the tight leading cluster -
+    // those are the ones resting on a ruin - and the pre-pull corpus separates
+    // them from the rest by a clean 0.86in gap. Normalization moves the cluster
+    // by under 0.2in, so the population is upstream's geometry, not something
+    // this pipeline introduces. ROOF_DISTANCE = 3.21in sits in the gap after
+    // the cluster and selects exactly those 20, with ~0.055in of margin on
+    // either side. If this count ever moves, check the distances above before
+    // assuming the data changed: at that margin the threshold is the fragile
+    // part. It was 3in until the anchor fix (which is why the pre-pull corpus
+    // only ever roofed 2 of its 20 - 3in cut through the middle of that
+    // cluster), then 3.1in until Z resized the ruin footprints onto upstream's
+    // rectangles, which moved every resting catwalk out past it at once.
+    const catwalks = layouts
+      .filter((l) => l.mission_matchup_id)
+      .flatMap((l) => l.pieces)
+      .filter((p) => p.template === "catwalk");
+    expect(catwalks.length).toBe(90);
+    const features = layouts
+      .filter((l) => l.mission_matchup_id)
+      .flatMap((l) => ruinFeatures(l, lookupFootprint, getParentFor(l)).features);
+    expect(features.length).toBe(720);
+    expect(features.filter((f) => f.type.includes("roof")).length).toBe(20);
+  });
+
+  it("emits 16 whole-L ruins for every mission layout", () => {
+    // Upstream filled the two variants that used to be short (12 each), so the
+    // corpus is now uniform - this is what retires the gw.yml patch overlay.
+    for (const L of layouts.filter((l) => l.mission_matchup_id)) {
+      const { features } = ruinFeatures(L, lookupFootprint, getParentFor(L));
+      expect(features.length, L.id).toBe(16);
     }
   });
 });

@@ -21,24 +21,13 @@ export const baseTheme: Theme = {
     group: { opacity: 1 },
     template: {
       default: {
-        "vector-effect": "non-scaling-stroke",
         stroke: "black",
-        stroke_width: 1.2,
+        stroke_width: 0.2,
         fill: "#808080",
         opacity: 1,
       },
-      pipe: {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#b9772e",
-        stroke: "black",
-        stroke_width: 1.5,
-      },
-      barricade: {
-        "vector-effect": "non-scaling-stroke",
-        fill: "#c9a86a",
-        stroke: "black",
-        stroke_width: 1.5,
-      },
+      pipe: { fill: "#b9772e", stroke: "black", stroke_width: 0.2 },
+      barricade: { fill: "#c9a86a", stroke: "black", stroke_width: 0.2 },
     },
   },
   grid: {
@@ -98,6 +87,7 @@ export const baseTheme: Theme = {
       green: { fill: "#4a8c3c", accent: "#2c5822" },
       gunmetal: { fill: "#5b6068", accent: "#3f444a" },
       teal: { fill: "#2f6b73", accent: "#1a3d42" },
+      indigo: { fill: "#4a5aa8", accent: "#2c3566" },
       bone: { fill: "#e8dcc0", accent: "#9a8f76" },
     },
   },

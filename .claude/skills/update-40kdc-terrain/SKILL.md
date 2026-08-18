@@ -59,7 +59,69 @@ Past pulls carried non-obvious payloads:
 - **gw.yml patch overlays survive the re-pull.** A `gw.yml` entry whose id matches a ported
   40kdc layout is an *additive patch* (its array fields append to the generated entry), used
   to fill upstream content gaps durably. Don't edit the vendored source JSON to fix a piece —
-  it gets clobbered on the next pull. See memory `gw-yml-patch-overlays`.
+  it gets clobbered on the next pull. See memory `gw-yml-patch-overlays`. The mechanism is
+  still fully supported, but there is currently no live example: the one overlay this repo
+  ever carried (`disruption-vs-purge-the-foe-3`) was retired during the battlemaster-11e
+  migration because upstream filled the gap it used to patch.
+- **Every layout now passes through `scripts/battlemaster-normalize.mjs` before conversion.**
+  Upstream's `battlemaster-11e` re-source moved corner ruins, pipes, generators, etc. off the
+  layout's `pieces[]` and onto the composite area template's `features[]`; the normalizer
+  rewrites a composite layout back into the flat legacy piece vocabulary the rest of the
+  pipeline expects, so nothing downstream had to change. See the module's header comment for
+  the `V` (rigid-variant) and `K` (chirality) subtleties. It throws loudly rather than
+  guessing on:
+  - **Unknown Battlemaster size class** (`unknown Battlemaster size class for composite …`) —
+    upstream added a size class (`BR`/`SR`/`SL`/`LL`/`TR`) not in `SIZE_CLASS`. Add the new
+    class and its legacy area template.
+  - **Unmapped part template** (`no legacy template mapping for part …`) — upstream added a
+    composite feature part not in `PART_TO_TEMPLATE`. Add it, and see the `flip` note below.
+  - **Inline piece footprint on a composite** (`… carries an inline footprint; composite
+    retemplating … would discard it`) — upstream attached a per-piece footprint (currently
+    only seen on `kotc-colosseum`) to a composite area piece. That would silently disagree
+    with the retemplated archetype; work out what upstream is telling you before removing
+    the guard.
+  - **Unregistered composite footprint variant** — not a throw, but a *test* failure in
+    `scripts/battlemaster-registration.test.mjs` (`… is not the registered rigid variant of
+    its archetype`): a new composite's footprint isn't byte-identical to its archetype and
+    isn't in `VARIANT` either. Add the rigid transform to `VARIANT`. A new `VARIANT` entry
+    **must be self-inverse** — there is a test (`registers only self-inverse variants`) that
+    asserts it, because the normalizer applies it to a child position and expects it to
+    cancel out.
+  - A new part's `flip` bit and `turn` in `PART_TO_TEMPLATE` must be **derived**, never
+    guessed: match the new part against the nearest pre-pull piece of the same legacy
+    template and read off which l-ruin variant it actually rendered as, and the rigid map
+    between the two rings. Guessing wrong is invisible to the suite — see the chirality-pin
+    test in `battlemaster-registration.test.mjs` and its comment. Do **not** use a
+    bounding-box aspect ratio to pick `turn`; it is blind to a half-turn and gets `ab` wrong.
+  - First decide whether the legacy footprint should be substituted at all. Upstream ships
+    every part as a plain rectangle, so where the legacy template is a *polygon* it is
+    carrying shape upstream discarded (the `corner-*` L, the 8-vertex `barricade`) and must
+    stay. Where the legacy template is itself a **rectangle**, it adds only a size — and the
+    sizes disagree by up to (1.5, 2)in with no consistent margin convention — so upstream's
+    own rectangle wins: set `upstreamFootprint: true` (as `generator` and `tower` do), which
+    carries upstream's footprint onto the child and keeps the legacy template id only for
+    the downstream feature type and colour. Two rectangle parts are exceptions, for reasons
+    worth knowing before you add a third: `long-barrier` maps onto the `pipe` **building**
+    template, which is drawn at its `templates-simple.yml` size and throws in `placement.ts`
+    if the pinned edge disagrees by >0.1in (adopting upstream's size there means redrawing
+    the gw template); `pipes` maps onto `catwalk`, which is consumed and dropped, so
+    switching it is provably output-neutral.
+  - A polygon part keeps its *shape* but not its *size*: set `upstreamSize: true` (all six
+    `corner-*` templates do) and Z resizes the legacy L onto the upstream rectangle, moving
+    only each axis's far side so the 0.5in arms survive — which keeps the emitted footprint
+    identical to the polygon `lRuin` will draw. This is what makes ruins fit their parent
+    *by construction* (upstream's parts sit inside their composite to 0.003in, and `S` pins
+    our bbox centre on upstream's rectangle centre), rather than by measurement. It throws
+    if the resize misses upstream's box, which happens when a part's arm is no longer inside
+    the target — a redrawn upstream part is the likely cause. `short-barrier` is excluded:
+    `feature-to-building.mjs` matches its 8-vertex profile to pick the `barricade` template,
+    so its polygon is load-bearing beyond its bbox.
+  - **Resizing a ruin moves the catwalk roofing threshold.** `ROOF_DISTANCE` in
+    `ruin-to-feature.mjs` splits catwalk-to-ruin-centroid distances, and a resized ruin moves
+    its centroid, so the clusters shift under it — Z moved every resting catwalk from
+    ~2.97in to ~3.15in at once and silently dropped the roofed count from 20 to 0 until the
+    threshold followed. If `roofs the 20 catwalks that sit on a ruin` fails, re-measure the
+    sorted distances and re-centre the value in the gap; don't assume upstream changed.
 
 ## Common mistakes
 

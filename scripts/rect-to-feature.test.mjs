@@ -14,9 +14,15 @@ const read = (name) =>
       "utf8",
     ),
   );
-const layouts = read("terrain-layouts.json");
-const templates = read("terrain-templates.json");
-const fpById = new Map(templates.map((t) => [t.id, t.footprint]));
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
+
+const rawLayouts = read("terrain-layouts.json");
+const rawTemplates = read("terrain-templates.json");
+const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
+// Upstream now ships ruins as `features[]` on composite templates; normalize
+// back to the legacy piece vocabulary these converters consume.
+const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
+const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => fpById.get(id);
 
 const getParentFor = (L) => {
@@ -86,7 +92,7 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
     it(`reproduces the ${template} footprint`, () => {
       const pl = rectFeaturePlacement(piece, lookupFootprint, getParent);
       expect(pl.type).toBe(template);
-      expect(pl.color).toBe(template === "generator" ? "teal" : "gunmetal");
+      expect(pl.color).toBe(template === "generator" ? "teal" : "indigo");
       const target = resolvePiece(piece, lookupFootprint, getParent);
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });

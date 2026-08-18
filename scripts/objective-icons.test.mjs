@@ -9,9 +9,15 @@ const read = (name) =>
       "utf8",
     ),
   );
-const layouts = read("terrain-layouts.json");
-const templates = read("terrain-templates.json");
-const fpById = new Map(templates.map((t) => [t.id, t.footprint]));
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
+
+const rawLayouts = read("terrain-layouts.json");
+const rawTemplates = read("terrain-templates.json");
+const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
+// Upstream now ships ruins as `features[]` on composite templates; normalize
+// back to the legacy piece vocabulary these converters consume.
+const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
+const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
 const lookupFootprint = (id) => fpById.get(id);
 
 const layoutById = (id) => layouts.find((l) => l.id === id);

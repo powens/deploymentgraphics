@@ -25,8 +25,9 @@
 # `{ type, x, y, width, height, color }` in inches (`x`/`y` = top-left of the
 # unrotated bounding box), with an optional `rotation` (degrees about the box
 # centre). `color` is a theme.yml palette key: stone, rust, sand, green,
-# gunmetal, bone. An optional `label` records the material category shared with
-# area_terrain (ruin, pipe, generator, barricade, gantry, catwalk); it is
+# gunmetal, teal, indigo, bone. An optional `label` records the material
+# category shared with area_terrain (ruin, pipe, generator, barricade,
+# gantry, catwalk); it is
 # carried for consistency with the ported 40kdc pieces and does not affect
 # styling, which comes from `color`. Features are drawn on top of the buildings.
 
@@ -109,28 +110,3 @@ layout:
         height: 2
         color: rust
         mirror: false
-
-  # PATCH (not a standalone layout): the id matches a ported 40kdc layout, so
-  # convert:40kdc appends these `features` to the generated entry. The vendored
-  # 40kdc source omits the home-objective ruins for this variant (variants 1 & 2
-  # have them). These two ruins sit on one home platform; `mirror` (default on)
-  # point-reflects them onto the other home platform. Geometry mirrors variant
-  # 1's home ruins, shifted onto this variant's home platforms.
-  disruption-vs-purge-the-foe-3:
-    features:
-      - type: l-ruin-mirror
-        label: ruin
-        x: 43.92
-        y: 5.48
-        width: 4.5
-        height: 5
-        rotation: 180
-        color: green
-      - type: l-ruin-mirror
-        label: ruin
-        x: 51.603
-        y: 9.533
-        width: 3
-        height: 2
-        rotation: 0
-        color: green

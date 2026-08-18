@@ -20,11 +20,13 @@ const RECT_FEATURES = {
   gantry: "gantry",
 };
 
-// Feature type -> theme.yml palette key. Generators take an industrial teal so
-// they read against the grey buildings they sit on; gantries stay gunmetal.
+// Feature type -> theme.yml palette key. Both sit on top of the grey buildings,
+// so both take a hue rather than a value: generators an industrial teal,
+// gantries indigo. Gantries were gunmetal, which is the buildings' own hue a
+// few steps darker and barely separated from them.
 const RECT_FEATURE_COLORS = {
   generator: "teal",
-  gantry: "gunmetal",
+  gantry: "indigo",
 };
 
 /** True for a 40kdc template that maps to a rectangle feature. */
