@@ -18,6 +18,7 @@ import {
   FLIP_Y,
   normalizeLayout,
   bboxCentre,
+  bboxSize,
 } from "./battlemaster-normalize.mjs";
 import { resolvePiece, centroid, footprintPolygon } from "./terrain-resolver.mjs";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
@@ -291,14 +292,21 @@ describe("normalized layouts conform to upstream geometry", () => {
     expect(worst).toBeLessThan(1e-9);
   });
 
-  // Where the legacy footprint is itself a plain rectangle it carries no shape
-  // upstream's rectangle lacks, only a size - and the sizes disagree (generator
-  // 3x4 against 4.5x2, tower 2x2 against 2x2.5). Those parts take upstream's
-  // own rectangle, so the emitted piece reproduces upstream's outline exactly
-  // rather than to within the ~0.2in a stand-in could manage. Pinned both ways:
-  // the inline footprint is upstream's to the vertex, and no other part quietly
-  // acquires one (which would bypass the legacy polygon a `corner-*` part
-  // depends on for its L shape).
+  // Every part takes its size from upstream; they differ in how much of the
+  // legacy polygon survives with it.
+  //
+  //   F - where the legacy footprint is itself a plain rectangle it carries no
+  //       shape upstream's lacks, only a size, and the sizes disagree
+  //       (generator 3x4 against 4.5x2, tower 2x2 against 2x2.5). Those parts
+  //       take upstream's rectangle whole, reproducing its outline exactly
+  //       rather than to within the ~0.2in a stand-in could manage.
+  //   Z - the `corner-*` parts keep their L, resized onto upstream's rectangle.
+  //
+  // Pinned three ways: the F parts' inline footprint is upstream's to the
+  // vertex, the Z parts' is still a 6-vertex L but now on upstream's bounding
+  // box, and the three parts under neither rule stay on their template (an
+  // inline footprint appearing there would mean a part had quietly changed
+  // rules).
   it("draws the upstreamFootprint parts from upstream's own footprint", () => {
     const inlined = Object.entries(PART_TO_TEMPLATE)
       .filter(([, v]) => v.upstreamFootprint)
@@ -319,7 +327,26 @@ describe("normalized layouts conform to upstream geometry", () => {
         );
         const part = partOf(feature.template);
         if (!PART_TO_TEMPLATE[part].upstreamFootprint) {
-          expect(child.footprint, `${child.id} (${part})`).toBeUndefined();
+          // Only the three parts under neither F nor Z resolve through their
+          // template alone; everything else carries an inline footprint, and
+          // a `corner-*` one has to be the legacy L resized onto upstream's
+          // rectangle (Z), never upstream's bare rectangle - that would throw
+          // away the L shape ruin-to-feature.mjs reads its arms from.
+          if (!PART_TO_TEMPLATE[part].upstreamSize) {
+            expect(child.footprint, `${child.id} (${part})`).toBeUndefined();
+            continue;
+          }
+          const ring = footprintPolygon(child.footprint);
+          expect(ring.length, `${child.id} (${part})`).toBe(6);
+          // Q turns the legacy drawing into the part's frame, so a quarter-turn
+          // swaps which upstream side each legacy axis has to match.
+          const want = bboxSize(lookupFootprint(feature.template));
+          const quarter = PART_TO_TEMPLATE[part].turn % 180 !== 0;
+          const got = bboxSize(child.footprint);
+          expect(
+            [got.width, got.height],
+            `${child.id} (${part}) resized bbox`,
+          ).toEqual(quarter ? [want.height, want.width] : [want.width, want.height]);
           continue;
         }
         expect(child.footprint).toEqual(lookupFootprint(feature.template));

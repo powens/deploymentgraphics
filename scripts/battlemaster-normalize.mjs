@@ -46,6 +46,21 @@ import { footprintPolygon, centroid } from "./terrain-resolver.mjs";
 //       rect-to-feature.mjs reads off it. See PART_TO_TEMPLATE for the two
 //       rectangle parts this rule does *not* reach.
 //
+//   Z - F keeps the legacy polygon's *shape* for the `corner-*` parts, but its
+//       size was never upstream's either: those polygons are drawn up to 1.25in
+//       out (see the delta table below). Only the bounding box survives into the
+//       render - ruin-to-feature.mjs reads the outer corner and the two arm ends
+//       and nothing else, and lRuin draws its walls a fixed 0.5in thick - so the
+//       L shape and the size are separable, and there is no reason to take the
+//       size from the worse source. Z rescales each legacy polygon so that, once
+//       Q has turned it into the part's frame, its bbox *is* upstream's
+//       rectangle. That buys containment by construction rather than by
+//       measurement: upstream's parts sit inside their composite to within
+//       0.003in, S already pins our bbox centre on upstream's rectangle centre,
+//       so a bbox equal to that rectangle cannot leave the parent. Without Z the
+//       oversize `ab` and `corner` hung 0.13in and 0.11in outside the trapezoid
+//       composite, which has no slack at its slanted edge to absorb them.
+//
 //   S - upstream anchors `position` at the part's *rectangle* centre, which for
 //       a rectangle is both its bbox centre and its area centroid. resolvePiece
 //       anchors at the area centroid, and the legacy `corner-*` polygons are
@@ -80,6 +95,10 @@ export const SIZE_CLASS = {
 //   `upstreamFootprint`
 //          - carry the upstream part's own footprint on the emitted child
 //            rather than substituting the legacy polygon (see F above).
+//   `upstreamSize`
+//          - keep the legacy polygon's shape but rescale it onto the upstream
+//            part's rectangle (see Z above). Mutually exclusive with
+//            `upstreamFootprint`; both emit an inline footprint.
 //
 // Both are measured against the pre-pull corpus: emit each child, match it to
 // the nearest pre-pull piece of the mapped template, and read off the rigid map
@@ -113,9 +132,9 @@ export const SIZE_CLASS = {
 //
 //   part          legacy   upstream   delta
 //   ab            5x4.5    3.75x4.5   +1.25  0        L-shaped: legacy polygon
-//   ef            4.5x5    4.5x6       0    -1        carries the shape, so it
-//   co            6.5x3    6x2.5      +0.5  +0.5      stays whatever the size
-//   gh            3x6.5    3x6         0    +0.5      disagreement.
+//   ef            4.5x5    4.5x6       0    -1        carries the shape and
+//   co            6.5x3    6x2.5      +0.5  +0.5      upstream the size
+//   gh            3x6.5    3x6         0    +0.5      -> upstreamSize (Z)
 //   corner        2x2      1.5x1.5    +0.5  +0.5
 //   small-l       2x3      1.5x2.5    +0.5  +0.5
 //   small-l-flip  2x3      1.5x2.5    +0.5  +0.5
@@ -128,6 +147,9 @@ export const SIZE_CLASS = {
 // The deltas are not a consistent margin convention (they run from -1.5 to
 // +1.25 and change sign), so there is no rule here that would let a legacy size
 // stand in for an upstream one; where upstream has a usable rectangle, it wins.
+// `short-barrier` is the one part whose polygon is neither a rectangle nor a
+// bbox-only consumer - feature-to-building.mjs matches its 8-vertex profile to
+// pick the `barricade` template - so Z cannot reach it either.
 //
 // The two rectangle parts that keep their legacy footprint anyway:
 //
@@ -153,13 +175,48 @@ export const SIZE_CLASS = {
 // including the `ab` / `ef` / `co` / `gh` bits that previously rested on a
 // visual spot-check alone.
 export const PART_TO_TEMPLATE = {
-  ab: { template: "corner-ruin-balanced-left", flip: true, turn: 180 },
-  ef: { template: "corner-ruin-balanced-right", flip: false, turn: 90 },
-  co: { template: "corner-ruin-left", flip: false, turn: 90 },
-  gh: { template: "corner-ruin-right", flip: false, turn: 0 },
-  corner: { template: "corner-tiny", flip: true, turn: 270 },
-  "small-l": { template: "corner-short", flip: true, turn: 180 },
-  "small-l-flip": { template: "corner-short", flip: false, turn: 180 },
+  ab: {
+    template: "corner-ruin-balanced-left",
+    flip: true,
+    turn: 180,
+    upstreamSize: true,
+  },
+  ef: {
+    template: "corner-ruin-balanced-right",
+    flip: false,
+    turn: 90,
+    upstreamSize: true,
+  },
+  co: {
+    template: "corner-ruin-left",
+    flip: false,
+    turn: 90,
+    upstreamSize: true,
+  },
+  gh: {
+    template: "corner-ruin-right",
+    flip: false,
+    turn: 0,
+    upstreamSize: true,
+  },
+  corner: {
+    template: "corner-tiny",
+    flip: true,
+    turn: 270,
+    upstreamSize: true,
+  },
+  "small-l": {
+    template: "corner-short",
+    flip: true,
+    turn: 180,
+    upstreamSize: true,
+  },
+  "small-l-flip": {
+    template: "corner-short",
+    flip: false,
+    turn: 180,
+    upstreamSize: true,
+  },
   tower: { template: "gantry", flip: false, turn: 0, upstreamFootprint: true },
   generator: {
     template: "generator",
@@ -256,6 +313,76 @@ export function decompose(A) {
   return out;
 }
 
+/** Width and height of a footprint's axis-aligned bounding box. */
+export function bboxSize(footprint) {
+  const ring = footprintPolygon(footprint);
+  const xs = ring.map((p) => p.x);
+  const ys = ring.map((p) => p.y);
+  return {
+    width: Math.max(...xs) - Math.min(...xs),
+    height: Math.max(...ys) - Math.min(...ys),
+  };
+}
+
+/**
+ * Z: resize a legacy `corner-*` polygon so that, once Q has turned it into the
+ * upstream part's frame, its bounding box is the upstream rectangle (see Z in
+ * the header). A quarter-turn swaps which upstream side each legacy axis has to
+ * reach, which is the only thing `turn` contributes here.
+ *
+ * The arms keep their thickness instead of scaling with the box. That thickness
+ * is a rendering convention - `lRuin` draws a fixed 0.5in wall whatever the box
+ * - not something upstream's solid rectangle has an opinion about, and holding
+ * it fixed keeps the emitted footprint identical to the polygon the renderer
+ * will draw from it. So each axis moves only its far side: a coordinate in the
+ * near half stays put, one in the far half shifts by the whole size delta.
+ * Every legacy corner polygon is an axis-aligned L with 0.5in arms (measured, 6
+ * of 6), so this takes {0, t, W} to {0, t, W'} for an arm on the near side and
+ * {0, W-t, W} to {0, W'-t, W'} for one on the far side.
+ *
+ * Resizing about the polygon's own origin is enough: resolvePiece re-centres on
+ * the centroid and S then re-anchors onto the bbox centre, so the translation
+ * this introduces is absorbed downstream.
+ */
+export function scaleToUpstream(legacy, upstream, turn, part = "?") {
+  const ring = footprintPolygon(legacy);
+  const l = bboxSize(legacy);
+  const u = bboxSize(upstream);
+  const quarter = normDeg(turn) === 90 || normDeg(turn) === 270;
+  const want = {
+    width: quarter ? u.height : u.width,
+    height: quarter ? u.width : u.height,
+  };
+  const lo = {
+    x: Math.min(...ring.map((p) => p.x)),
+    y: Math.min(...ring.map((p) => p.y)),
+  };
+  const move = (v, min, size, delta) => (v - min > size / 2 ? v + delta : v);
+  const out = {
+    type: "polygon",
+    points: ring.map((p) => ({
+      x: move(p.x, lo.x, l.width, want.width - l.width),
+      y: move(p.y, lo.y, l.height, want.height - l.height),
+    })),
+  };
+  // The near/far split only lands the box on `want` for a polygon whose every
+  // vertex sits on a box edge or an arm within the near half - true of all six
+  // legacy corner Ls. Anything else (a redrawn upstream part, a new mapping)
+  // silently resizes to something other than upstream's rectangle, so measure
+  // rather than assume.
+  const got = bboxSize(out);
+  if (
+    Math.abs(got.width - want.width) > 1e-9 ||
+    Math.abs(got.height - want.height) > 1e-9
+  ) {
+    throw new Error(
+      `part ${part}: resizing its legacy polygon gave ` +
+        `${got.width}x${got.height}, not upstream's ${want.width}x${want.height}`,
+    );
+  }
+  return out;
+}
+
 /** Centre of a ring's axis-aligned bounding box. */
 export function bboxCentre(points) {
   const xs = points.map((p) => p.x);
@@ -336,17 +463,29 @@ export function normalizeLayout(layout, templatesById) {
 
     for (const feature of composite.features ?? []) {
       const part = partOf(feature.template);
-      const { template, flip, turn, upstreamFootprint } = PART_TO_TEMPLATE[part];
-      const source = templatesById.get(
-        upstreamFootprint ? feature.template : template,
-      );
-      if (!source) {
-        throw new Error(
-          `layout ${layout.id} maps part ${part} onto missing template ${
-            upstreamFootprint ? feature.template : template
-          }`,
-        );
+      const { template, flip, turn, upstreamFootprint, upstreamSize } =
+        PART_TO_TEMPLATE[part];
+      const legacy = templatesById.get(template);
+      const upstream = templatesById.get(feature.template);
+      for (const [id, t] of [
+        [template, legacy],
+        [feature.template, upstream],
+      ]) {
+        if (!t) {
+          throw new Error(
+            `layout ${layout.id} maps part ${part} onto missing template ${id}`,
+          );
+        }
       }
+      // F/Z: upstream's rectangle outright where the legacy polygon is itself a
+      // rectangle, the legacy polygon rescaled onto that rectangle where its L
+      // shape is load-bearing, and the legacy polygon untouched for the three
+      // parts neither rule reaches.
+      const footprint = upstreamFootprint
+        ? upstream.footprint
+        : upstreamSize
+          ? scaleToUpstream(legacy.footprint, upstream.footprint, turn, part)
+          : legacy.footprint;
       // K does two separate jobs, and they have to be composed rather than
       // collapsed: P undoes a mirrored parent, F applies the part's own flip
       // bit. Both are reflections, so only their *parity* was visible in the
@@ -375,7 +514,7 @@ export function normalizeLayout(layout, templatesById) {
       // re-anchors is the polygon as finally oriented, not as drawn. It is zero
       // for an upstreamFootprint part (a rectangle re-anchored onto itself),
       // but derive it rather than special-case it.
-      const S = matvec(A, anchorOffset(source.footprint));
+      const S = matvec(A, anchorOffset(footprint));
       // V is self-inverse (asserted in battlemaster-registration.test.mjs), so
       // applying it here undoes the V now folded into the parent's transform.
       // If a future variant is ever registered that is not self-inverse,
@@ -388,11 +527,12 @@ export function normalizeLayout(layout, templatesById) {
         name: feature.id,
         piece_type: "feature",
         template,
-        // Only for an upstreamFootprint part: resolvePiece prefers an inline
-        // footprint over the template's, while rect-to-feature.mjs keys its
-        // feature type and colour off `template`. So the child draws
-        // Battlemaster's rectangle and still renders as a generator.
-        ...(upstreamFootprint ? { footprint: source.footprint } : {}),
+        // resolvePiece prefers an inline footprint over the template's, while
+        // the downstream converters keep keying their feature type and colour
+        // off `template`. So the child draws at Battlemaster's size and still
+        // renders as a generator / l-ruin. The three parts under neither rule
+        // stay on their template alone.
+        ...(upstreamFootprint || upstreamSize ? { footprint } : {}),
         parent_area_id: piece.id,
         position: { x: anchor.x + S.x, y: anchor.y + S.y },
         ...decompose(A),

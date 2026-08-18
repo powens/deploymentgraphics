@@ -12,8 +12,11 @@ const templatesById = new Map([
     "corner-short",
     {
       id: "corner-short",
-      // An L: 2x3 bbox, so its area centroid sits (-0.4167, -0.4167) inside the
-      // bbox centre. That offset is what the child's `position` must absorb.
+      // An L: 2x3 bbox with 0.5in arms. Z resizes it onto upstream's 1.5x2.5
+      // (turn 180, so no axis swap) by moving each axis's far side only, giving
+      // a 1.5x2.5 L with the same 0.5in arms, whose area centroid then sits
+      // (-0.3125, -0.3125) inside its bbox centre. That offset is what the
+      // child's `position` must absorb.
       footprint: {
         type: "polygon",
         points: [
@@ -21,6 +24,13 @@ const templatesById = new Map([
           { x: 0.5, y: 0.5 }, { x: 0.5, y: 3 }, { x: 0, y: 3 },
         ],
       },
+    },
+  ],
+  [
+    "bm-bm-terrain-11e-1-part-small-l",
+    {
+      id: "bm-bm-terrain-11e-1-part-small-l",
+      footprint: { type: "rectangle", width: 1.5, height: 2.5 },
     },
   ],
   // A rectangle: centroid and bbox centre coincide, so its anchor offset is 0.
@@ -121,10 +131,13 @@ describe("normalizeLayout", () => {
     const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
     const [lRuin, tower] = out.pieces.filter((p) => p.piece_type === "feature");
     // small-l is flip:true under an unmirrored parent (K = FLIP_X) and turn:180,
-    // so A = R(90) . FLIP_X . R(180) = [[0, 1], [1, 0]], which maps corner-short's
-    // (-5/12, -5/12) anchor offset onto itself.
-    expect(lRuin.position.x).toBeCloseTo(1.5 - 5 / 12, 10);
-    expect(lRuin.position.y).toBeCloseTo(-0.25 - 5 / 12, 10);
+    // so A = R(90) . FLIP_X . R(180) = [[0, 1], [1, 0]], which maps the anchor
+    // offset onto itself. The offset is read off the *resized* polygon (Z), the
+    // 1.5x2.5 L with 0.5in arms: area 1.75, centroid (13/28, 27/28), bbox centre
+    // (0.75, 1.25), so the offset is (-2/7, -2/7). It was (-5/12, -5/12) off the
+    // unresized 2x3 L.
+    expect(lRuin.position.x).toBeCloseTo(1.5 - 2 / 7, 10);
+    expect(lRuin.position.y).toBeCloseTo(-0.25 - 2 / 7, 10);
     // tower is a rectangle, so its centroid is its bbox centre and upstream's
     // position carries through untouched.
     expect(tower.position).toEqual({ x: -1.5, y: 0.25 });
@@ -158,12 +171,40 @@ describe("normalizeLayout", () => {
     expect(gen.rotation_degrees).toBe(90);
   });
 
-  it("leaves a legacy-footprint part without an inline footprint", () => {
+  it("resizes a corner part's L onto the upstream rectangle, arms intact", () => {
     // corner-short's L exists only in the legacy polygon - upstream ships that
-    // part as a plain rectangle - so it must keep resolving through the
-    // template, not through an inline footprint.
+    // part as a plain rectangle - so the shape has to survive. Its *size* comes
+    // from upstream all the same: Z moves each axis's far side onto the 1.5x2.5
+    // rectangle and leaves the 0.5in arms where they are, so the emitted
+    // polygon is still an L, still 0.5in-walled (which is what lRuin draws), and
+    // now exactly upstream's bounding box.
     const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
-    expect("footprint" in out.pieces[1]).toBe(false);
+    const child = out.pieces[1];
+    expect(child.template).toBe("corner-short");
+    expect(child.footprint).toEqual({
+      type: "polygon",
+      points: [
+        { x: 0, y: 0 }, { x: 1.5, y: 0 }, { x: 1.5, y: 0.5 },
+        { x: 0.5, y: 0.5 }, { x: 0.5, y: 2.5 }, { x: 0, y: 2.5 },
+      ],
+    });
+  });
+
+  it("throws when resizing cannot land on the upstream rectangle", () => {
+    // Moving only the far side lands on the target box as long as the arm stays
+    // inside it. Shrink the upstream rectangle past corner-short's 0.5in arm
+    // (0.4in wide against an arm the near/far split leaves at 0.5) and the arm
+    // itself becomes the widest thing in the polygon, so the result is 0.5 wide,
+    // not 0.4. That has to throw rather than emit a piece that is not upstream's
+    // size after all.
+    const bad = new Map(templatesById);
+    bad.set("bm-bm-terrain-11e-1-part-small-l", {
+      id: "bm-bm-terrain-11e-1-part-small-l",
+      footprint: { type: "rectangle", width: 0.4, height: 2.5 },
+    });
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), bad),
+    ).toThrow(/resizing its legacy polygon/);
   });
 
   it("throws when a mapped legacy template is missing from the table", () => {

@@ -106,6 +106,22 @@ Past pulls carried non-obvious payloads:
     if the pinned edge disagrees by >0.1in (adopting upstream's size there means redrawing
     the gw template); `pipes` maps onto `catwalk`, which is consumed and dropped, so
     switching it is provably output-neutral.
+  - A polygon part keeps its *shape* but not its *size*: set `upstreamSize: true` (all six
+    `corner-*` templates do) and Z resizes the legacy L onto the upstream rectangle, moving
+    only each axis's far side so the 0.5in arms survive — which keeps the emitted footprint
+    identical to the polygon `lRuin` will draw. This is what makes ruins fit their parent
+    *by construction* (upstream's parts sit inside their composite to 0.003in, and `S` pins
+    our bbox centre on upstream's rectangle centre), rather than by measurement. It throws
+    if the resize misses upstream's box, which happens when a part's arm is no longer inside
+    the target — a redrawn upstream part is the likely cause. `short-barrier` is excluded:
+    `feature-to-building.mjs` matches its 8-vertex profile to pick the `barricade` template,
+    so its polygon is load-bearing beyond its bbox.
+  - **Resizing a ruin moves the catwalk roofing threshold.** `ROOF_DISTANCE` in
+    `ruin-to-feature.mjs` splits catwalk-to-ruin-centroid distances, and a resized ruin moves
+    its centroid, so the clusters shift under it — Z moved every resting catwalk from
+    ~2.97in to ~3.15in at once and silently dropped the roofed count from 20 to 0 until the
+    threshold followed. If `roofs the 20 catwalks that sit on a ruin` fails, re-measure the
+    sorted distances and re-centre the value in the gap; don't assume upstream changed.
 
 ## Common mistakes
 

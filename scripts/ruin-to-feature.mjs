@@ -156,13 +156,16 @@ export function ruinFeaturePlacement(piece, lookupFootprint, getParent, roofed) 
 
 // A catwalk roofs the ruin whose centre it lands nearest, within this distance
 // (inches). Across the 45 mission layouts the 90 catwalks split into a leading
-// cluster of 20 that rest on a ruin (2.96-2.97in) and 70 free-standing ones
-// (3.26in and out), so this sits in the gap between them, with ~0.13in of margin
-// on the roofed side and ~0.16in on the other. It was 3 - correct output, but
-// 0.03in off the cluster - until the battlemaster anchor fix made the margin
-// worth centring. See the distance table in ruin-to-feature.test.mjs; keep this
-// value and that table in step.
-const ROOF_DISTANCE = 3.1;
+// cluster of 20 that rest on a ruin (3.144-3.155in) and 70 free-standing ones
+// (3.267in and out), so this sits in the gap between them, with ~0.055in of
+// margin on either side. Both this value and the clusters move whenever the
+// ruin footprints do, because the comparison is centroid to centroid: it was
+// 3.1 against a 2.96-2.97in cluster until Z (battlemaster-normalize.mjs) resized
+// the legacy corner polygons onto upstream's rectangles, which left the
+// free-standing distances almost untouched (3.26 -> 3.267) and pulled the
+// resting ones out by ~0.18in. See the distance table in
+// ruin-to-feature.test.mjs; keep this value and that table in step.
+const ROOF_DISTANCE = 3.21;
 
 /**
  * Resolve every whole-L corner-ruin in a layout to an `l-ruin` feature

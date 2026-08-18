@@ -175,19 +175,22 @@ describe("ruinFeatures", () => {
   it("roofs the 20 catwalks that sit on a ruin, and nothing else", () => {
     // Distances from each of the 90 catwalks to the nearest ruin centre, sorted:
     //
-    //   shipped   2.96 2.96 [2.97 x18] | 3.26 3.26 3.36 3.36 | 3.85 x4 | 4.39 ..
+    //   shipped   3.14 3.14 [3.15 x18] | 3.27 3.27 3.35 3.35 | 4.00 x4 | 4.87 ..
+    //   pre-Z     2.96 2.96 [2.97 x18] | 3.26 3.26 3.36 3.36 | 3.85 x4 | 4.39 ..
     //   pre-pull  2.99 2.99 [3.09 x12] 3.15 x6 |            | 4.01 4.01 4.03 ..
     //
-    // Both corpora put exactly 20 catwalks in the tight leading cluster - those
-    // are the ones resting on a ruin - and the pre-pull corpus separates them
-    // from the rest by a clean 0.86in gap. Normalization moves the cluster by
-    // under 0.2in, so the population is upstream's geometry, not something this
-    // pipeline introduces. ROOF_DISTANCE = 3.1in sits in the gap after the
-    // cluster and selects exactly those 20, with ~0.13in of margin below and
-    // ~0.16in above. If this count ever moves, check the distances above before
+    // All three corpora put exactly 20 catwalks in the tight leading cluster -
+    // those are the ones resting on a ruin - and the pre-pull corpus separates
+    // them from the rest by a clean 0.86in gap. Normalization moves the cluster
+    // by under 0.2in, so the population is upstream's geometry, not something
+    // this pipeline introduces. ROOF_DISTANCE = 3.21in sits in the gap after
+    // the cluster and selects exactly those 20, with ~0.055in of margin on
+    // either side. If this count ever moves, check the distances above before
     // assuming the data changed: at that margin the threshold is the fragile
-    // part. It was 3in until the anchor fix, which is why the pre-pull corpus
-    // only ever roofed 2 of its 20 - 3in cut through the middle of that cluster.
+    // part. It was 3in until the anchor fix (which is why the pre-pull corpus
+    // only ever roofed 2 of its 20 - 3in cut through the middle of that
+    // cluster), then 3.1in until Z resized the ruin footprints onto upstream's
+    // rectangles, which moved every resting catwalk out past it at once.
     const catwalks = layouts
       .filter((l) => l.mission_matchup_id)
       .flatMap((l) => l.pieces)

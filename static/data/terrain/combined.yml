@@ -327,145 +327,145 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 28.75
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 29
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 32.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 32.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 25.807
-        'y': 23.409
+        'y': 24.034
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 58
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.53
-        'y': 22.008
-        width: 2
-        height: 2
+        x: 34.78
+        'y': 22.258
+        width: 1.5
+        height: 1.5
         rotation: 328
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.768
+        x: 8.018
         'y': 6.132
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.643
-        'y': 10.043
-        width: 6.5
-        height: 3
+        x: 12.893
+        'y': 10.293
+        width: 6
+        height: 2.5
         rotation: 235
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 9.589
-        'y': 31.308
+        'y': 30.808
         width: 4.5
-        height: 5
+        height: 6
         rotation: 329
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.406
-        'y': 26.679
-        width: 3
-        height: 2
+        x: 8.656
+        'y': 26.929
+        width: 2.5
+        height: 1.5
         rotation: 239
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.25
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 28.5
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 24.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 25
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 29.193
-        'y': 16.091
+        'y': 16.716
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 238
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 22.97
-        'y': 20.492
-        width: 2
-        height: 2
+        x: 23.22
+        'y': 20.742
+        width: 1.5
+        height: 1.5
         rotation: 148
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 45.732
+        x: 45.982
         'y': 34.868
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.857
-        'y': 30.957
-        width: 6.5
-        height: 3
+        x: 41.107
+        'y': 31.207
+        width: 6
+        height: 2.5
         rotation: 55
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 45.911
-        'y': 7.692
+        'y': 7.192
         width: 4.5
-        height: 5
+        height: 6
         rotation: 149
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.594
-        'y': 15.321
-        width: 3
-        height: 2
+        x: 48.844
+        'y': 15.571
+        width: 2.5
+        height: 1.5
         rotation: 59
         color: green
         mirror: false
@@ -739,144 +739,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 25.125
-        'y': 22.497
+        'y': 23.122
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.25
-        'y': 16.497
-        width: 2
-        height: 2
+        x: 25.5
+        'y': 16.747
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 39.25
+        x: 39.5
         'y': 36.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 37.5
-        'y': 30.497
-        width: 6.5
-        height: 3
+        x: 37.75
+        'y': 30.747
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.75
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 25
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 28.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 28.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.75
-        'y': 35.75
-        width: 3
-        height: 2
+        x: 9
+        'y': 36
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 5.25
-        'y': 26.75
-        width: 6.5
-        height: 3
+        x: 5.5
+        'y': 27
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.25
+        x: 14.5
         'y': 4.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16
-        'y': 10.503
-        width: 6.5
-        height: 3
+        x: 16.25
+        'y': 10.753
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.375
-        'y': 16.503
+        'y': 17.128
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.75
-        'y': 25.503
-        width: 2
-        height: 2
+        x: 33
+        'y': 25.753
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.25
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 32.5
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 28.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 29
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.25
-        'y': 6.25
-        width: 3
-        height: 2
+        x: 48.5
+        'y': 6.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.25
-        'y': 14.25
-        width: 6.5
-        height: 3
+        x: 48.5
+        'y': 14.5
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
@@ -1149,72 +1149,72 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 5.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 5.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 10
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.747
-        'y': 22.125
+        'y': 22.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.497
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.747
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 49.25
-        'y': 36.753
-        width: 3
-        height: 2
+        x: 49.5
+        'y': 37.003
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.75
-        'y': 37.253
-        width: 3
-        height: 2
+        x: 46
+        'y': 37.503
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 49.25
-        'y': 22.253
+        'y': 21.753
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.75
+        x: 47
         'y': 28.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -1222,71 +1222,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.753
-        'y': 16.875
+        'y': 17.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.503
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.753
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 51.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 52
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 44
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.75
-        'y': 5.247
-        width: 3
-        height: 2
+        x: 8
+        'y': 5.497
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.25
-        'y': 4.747
-        width: 3
-        height: 2
+        x: 11.5
+        'y': 4.997
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 6.25
-        'y': 16.747
+        'y': 16.247
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.75
+        x: 7
         'y': 12.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
@@ -1561,53 +1561,53 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 20.764
-        'y': 32.136
+        'y': 32.761
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 229
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.783
-        'y': 38.558
-        width: 2
-        height: 2
+        x: 28.033
+        'y': 38.808
+        width: 1.5
+        height: 1.5
         rotation: 319
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 46.75
-        'y': 5.75
+        'y': 5.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 53.75
-        'y': 8.75
-        width: 3
-        height: 2
+        x: 54
+        'y': 9
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 10.75
-        'y': 11.75
+        'y': 11.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.75
+        x: 4
         'y': 12
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -1615,90 +1615,90 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 34.736
-        'y': 6.864
+        'y': 7.489
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 49
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 30.217
-        'y': 3.442
-        width: 2
-        height: 2
+        x: 30.467
+        'y': 3.692
+        width: 1.5
+        height: 1.5
         rotation: 139
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.024
-        'y': 16.239
-        width: 3
-        height: 2
+        x: 41.274
+        'y': 16.489
+        width: 2.5
+        height: 1.5
         rotation: 147
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.35
-        'y': 18.902
-        width: 3
-        height: 2
+        x: 43.6
+        'y': 19.152
+        width: 2.5
+        height: 1.5
         rotation: 327
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 8.75
-        'y': 33.25
+        'y': 32.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.25
-        'y': 33.25
-        width: 3
-        height: 2
+        x: 3.5
+        'y': 33.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 44.75
-        'y': 27.25
+        'y': 26.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 49.75
+        x: 50
         'y': 29
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 15.976
-        'y': 25.761
-        width: 3
-        height: 2
+        x: 16.226
+        'y': 26.011
+        width: 2.5
+        height: 1.5
         rotation: 327
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 13.65
-        'y': 23.098
-        width: 3
-        height: 2
+        x: 13.9
+        'y': 23.348
+        width: 2.5
+        height: 1.5
         rotation: 147
         color: green
         mirror: false
@@ -1971,18 +1971,18 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 12.503
-        'y': 6
-        width: 6.5
-        height: 3
+        x: 12.753
+        'y': 6.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 18.753
+        x: 19.003
         'y': 4.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -1990,71 +1990,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 31.332
-        'y': 9.226
+        'y': 9.851
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 75
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 29.554
-        'y': 3.773
-        width: 2
-        height: 2
+        x: 29.804
+        'y': 4.023
+        width: 1.5
+        height: 1.5
         rotation: 165
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 42.75
-        'y': 14.75
+        'y': 14.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 49.75
-        'y': 17.75
-        width: 3
-        height: 2
+        x: 50
+        'y': 18
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.747
-        'y': 34.753
-        width: 3
-        height: 2
+        x: 47.997
+        'y': 35.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.247
-        'y': 31.253
-        width: 3
-        height: 2
+        x: 47.497
+        'y': 31.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.997
-        'y': 35
-        width: 6.5
-        height: 3
+        x: 41.247
+        'y': 35.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.747
+        x: 34.997
         'y': 36.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -2062,54 +2062,54 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.168
-        'y': 29.774
+        'y': 30.399
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 255
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 28.446
-        'y': 38.227
-        width: 2
-        height: 2
+        x: 28.696
+        'y': 38.477
+        width: 1.5
+        height: 1.5
         rotation: 345
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 12.75
-        'y': 24.25
+        'y': 23.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.25
-        'y': 24.25
-        width: 3
-        height: 2
+        x: 7.5
+        'y': 24.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.253
-        'y': 7.247
-        width: 3
-        height: 2
+        x: 9.503
+        'y': 7.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.753
-        'y': 10.747
-        width: 3
-        height: 2
+        x: 10.003
+        'y': 10.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
@@ -2382,144 +2382,144 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 42.997
-        'y': 6.003
-        width: 6.5
-        height: 3
+        x: 43.247
+        'y': 6.253
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 53.247
-        'y': 4.753
-        width: 3
-        height: 2
+        x: 53.497
+        'y': 5.003
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 38.38
-        'y': 10.959
+        'y': 11.584
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 304
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.263
-        'y': 9.299
-        width: 2
-        height: 2
+        x: 32.513
+        'y': 9.549
+        width: 1.5
+        height: 1.5
         rotation: 214
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 26.25
-        'y': 11.25
-        width: 3
-        height: 2
+        x: 26.5
+        'y': 11.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 22.75
-        'y': 10.75
-        width: 3
-        height: 2
+        x: 23
+        'y': 11
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.5
-        'y': 30.5
-        width: 6.5
-        height: 3
+        x: 44.75
+        'y': 30.75
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.25
+        x: 46.5
         'y': 36.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 10.503
-        'y': 34.997
-        width: 6.5
-        height: 3
+        x: 10.753
+        'y': 35.247
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.753
-        'y': 37.247
-        width: 3
-        height: 2
+        x: 4.003
+        'y': 37.497
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 17.12
-        'y': 28.041
+        'y': 28.666
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 124
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.737
-        'y': 32.701
-        width: 2
-        height: 2
+        x: 25.987
+        'y': 32.951
+        width: 1.5
+        height: 1.5
         rotation: 34
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 30.75
-        'y': 30.75
-        width: 3
-        height: 2
+        x: 31
+        'y': 31
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 34.25
-        'y': 31.25
-        width: 3
-        height: 2
+        x: 34.5
+        'y': 31.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9
-        'y': 10.5
-        width: 6.5
-        height: 3
+        x: 9.25
+        'y': 10.75
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.25
+        x: 7.5
         'y': 4.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -2793,54 +2793,54 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 42
-        'y': 8
-        width: 6.5
-        height: 3
+        x: 42.25
+        'y': 8.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 51.75
-        'y': 10.75
-        width: 3
-        height: 2
+        x: 52
+        'y': 11
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 37.25
-        'y': 6.753
-        width: 3
-        height: 2
+        x: 37.5
+        'y': 7.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 37.75
-        'y': 3.253
-        width: 3
-        height: 2
+        x: 38
+        'y': 3.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 41.356
-        'y': 32.712
+        'y': 32.212
         width: 4.5
-        height: 5
+        height: 6
         rotation: 163
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 45.815
+        x: 46.065
         'y': 33.612
-        width: 6.5
+        width: 6
         height: 3
         rotation: 343
         color: green
@@ -2848,71 +2848,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 37.193
-        'y': 24.453
+        'y': 25.078
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 311
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 31.515
-        'y': 21.919
-        width: 2
-        height: 2
+        x: 31.765
+        'y': 22.169
+        width: 1.5
+        height: 1.5
         rotation: 221
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.5
-        'y': 33
-        width: 6.5
-        height: 3
+        x: 11.75
+        'y': 33.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 5.25
-        'y': 31.25
-        width: 3
-        height: 2
+        x: 5.5
+        'y': 31.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 19.75
-        'y': 35.247
-        width: 3
-        height: 2
+        x: 20
+        'y': 35.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 19.25
-        'y': 38.747
-        width: 3
-        height: 2
+        x: 19.5
+        'y': 38.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 14.144
-        'y': 6.288
+        'y': 5.788
         width: 4.5
-        height: 5
+        height: 6
         rotation: 343
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.685
+        x: 7.935
         'y': 7.388
-        width: 6.5
+        width: 6
         height: 3
         rotation: 163
         color: green
@@ -2920,18 +2920,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 18.307
-        'y': 14.547
+        'y': 15.172
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 131
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 26.485
-        'y': 20.081
-        width: 2
-        height: 2
+        x: 26.735
+        'y': 20.331
+        width: 1.5
+        height: 1.5
         rotation: 41
         color: green
         mirror: false
@@ -3209,54 +3209,54 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 42.25
-        'y': 14.753
-        width: 3
-        height: 2
+        x: 42.5
+        'y': 15.003
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 48.25
-        'y': 15.753
+        'y': 15.253
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.75
-        'y': 6.753
-        width: 3
-        height: 2
+        x: 43
+        'y': 7.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.25
-        'y': 3.253
-        width: 3
-        height: 2
+        x: 42.5
+        'y': 3.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 39.5
-        'y': 29.5
+        'y': 29
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 39.25
+        x: 39.5
         'y': 36.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -3264,71 +3264,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 29.27
-        'y': 16.073
+        'y': 16.698
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 142
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 36.55
-        'y': 22.855
-        width: 2
-        height: 2
+        x: 36.8
+        'y': 23.105
+        width: 1.5
+        height: 1.5
         rotation: 52
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.75
-        'y': 27.247
-        width: 3
-        height: 2
+        x: 15
+        'y': 27.497
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 7.25
-        'y': 23.247
+        'y': 22.747
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.25
-        'y': 35.247
-        width: 3
-        height: 2
+        x: 14.5
+        'y': 35.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.75
-        'y': 38.747
-        width: 3
-        height: 2
+        x: 15
+        'y': 38.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 16
-        'y': 9.5
+        'y': 9
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.25
+        x: 14.5
         'y': 4.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -3336,18 +3336,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 26.23
-        'y': 22.927
+        'y': 23.552
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 322
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 21.45
-        'y': 19.145
-        width: 2
-        height: 2
+        x: 21.7
+        'y': 19.395
+        width: 1.5
+        height: 1.5
         rotation: 232
         color: green
         mirror: false
@@ -3620,145 +3620,145 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 51.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 52
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 44
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 33.214
-        'y': 23.894
+        'y': 24.519
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 5
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 26.895
-        'y': 25.861
-        width: 2
-        height: 2
+        x: 27.145
+        'y': 26.111
+        width: 1.5
+        height: 1.5
         rotation: 95
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 49.586
-        'y': 21.085
+        'y': 20.585
         width: 4.5
-        height: 5
+        height: 6
         rotation: 31
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 44.853
+        x: 45.103
         'y': 26.841
-        width: 6.5
+        width: 6
         height: 3
         rotation: 31
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16.824
-        'y': 5.208
-        width: 3
-        height: 2
+        x: 17.074
+        'y': 5.458
+        width: 2.5
+        height: 1.5
         rotation: 210
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.641
-        'y': 7.989
-        width: 3
-        height: 2
+        x: 14.891
+        'y': 8.239
+        width: 2.5
+        height: 1.5
         rotation: 30
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 5.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 5.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 10
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 22.286
-        'y': 15.106
+        'y': 15.731
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 185
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 31.105
-        'y': 16.139
-        width: 2
-        height: 2
+        x: 31.355
+        'y': 16.389
+        width: 1.5
+        height: 1.5
         rotation: 275
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 5.914
-        'y': 17.915
+        'y': 17.415
         width: 4.5
-        height: 5
+        height: 6
         rotation: 211
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.647
+        x: 8.897
         'y': 14.159
-        width: 6.5
+        width: 6
         height: 3
         rotation: 211
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.176
-        'y': 36.792
-        width: 3
-        height: 2
+        x: 40.426
+        'y': 37.042
+        width: 2.5
+        height: 1.5
         rotation: 30
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.359
-        'y': 34.011
-        width: 3
-        height: 2
+        x: 42.609
+        'y': 34.261
+        width: 2.5
+        height: 1.5
         rotation: 210
         color: green
         mirror: false
@@ -4037,53 +4037,53 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 43.747
-        'y': 15.753
+        'y': 15.253
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 51.247
-        'y': 14.753
-        width: 3
-        height: 2
+        x: 51.497
+        'y': 15.003
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.25
-        'y': 6.753
-        width: 3
-        height: 2
+        x: 42.5
+        'y': 7.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.75
-        'y': 3.253
-        width: 3
-        height: 2
+        x: 43
+        'y': 3.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 33.997
-        'y': 36
-        width: 6.5
-        height: 3
+        x: 34.247
+        'y': 36.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 40.247
+        x: 40.497
         'y': 37.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 360
         color: green
@@ -4091,71 +4091,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 18.695
-        'y': 14.517
+        'y': 15.142
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 125
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.257
-        'y': 19.305
-        width: 2
-        height: 2
+        x: 27.507
+        'y': 19.555
+        width: 1.5
+        height: 1.5
         rotation: 35
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 11.753
-        'y': 23.247
+        'y': 22.747
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 5.753
-        'y': 27.247
-        width: 3
-        height: 2
+        x: 6.003
+        'y': 27.497
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.75
-        'y': 35.247
-        width: 3
-        height: 2
+        x: 15
+        'y': 35.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.25
-        'y': 38.747
-        width: 3
-        height: 2
+        x: 14.5
+        'y': 38.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 19.503
-        'y': 5
-        width: 6.5
-        height: 3
+        x: 19.753
+        'y': 5.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 13.253
+        x: 13.503
         'y': 3.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -4163,18 +4163,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 36.805
-        'y': 24.483
+        'y': 25.108
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 305
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 30.743
-        'y': 22.695
-        width: 2
-        height: 2
+        x: 30.993
+        'y': 22.945
+        width: 1.5
+        height: 1.5
         rotation: 215
         color: green
         mirror: false
@@ -4452,144 +4452,144 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 36.75
-        'y': 7.75
-        width: 6.5
-        height: 3
+        x: 37
+        'y': 8
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 44.75
-        'y': 8.75
-        width: 3
-        height: 2
+        x: 45
+        'y': 9
+        width: 2.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 10.008
-        'y': 8.038
-        width: 3
-        height: 2
+        x: 10.258
+        'y': 8.288
+        width: 2.5
+        height: 1.5
         rotation: 318
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.038
-        'y': 5.102
-        width: 3
-        height: 2
+        x: 8.288
+        'y': 5.352
+        width: 2.5
+        height: 1.5
         rotation: 138
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 21.503
-        'y': 12.875
+        'y': 13.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 30.253
-        'y': 13.25
-        width: 2
-        height: 2
+        x: 30.503
+        'y': 13.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 46.74
-        'y': 24.156
+        'y': 23.656
         width: 4.5
-        height: 5
+        height: 6
         rotation: 51
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 49.931
+        x: 50.181
         'y': 20.797
-        width: 6.5
+        width: 6
         height: 3
         rotation: 231
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16.75
-        'y': 33.25
-        width: 6.5
-        height: 3
+        x: 17
+        'y': 33.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 12.25
-        'y': 33.25
-        width: 3
-        height: 2
+        x: 12.5
+        'y': 33.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 46.992
-        'y': 33.962
-        width: 3
-        height: 2
+        x: 47.242
+        'y': 34.212
+        width: 2.5
+        height: 1.5
         rotation: 138
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.962
-        'y': 36.898
-        width: 3
-        height: 2
+        x: 49.212
+        'y': 37.148
+        width: 2.5
+        height: 1.5
         rotation: 318
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 33.997
-        'y': 26.125
+        'y': 26.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.747
-        'y': 28.75
-        width: 2
-        height: 2
+        x: 27.997
+        'y': 29
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 8.76
-        'y': 14.844
+        'y': 14.344
         width: 4.5
-        height: 5
+        height: 6
         rotation: 231
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.569
+        x: 3.819
         'y': 20.203
-        width: 6.5
+        width: 6
         height: 3
         rotation: 51
         color: green
@@ -4868,145 +4868,145 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 46.75
-        'y': 7.75
-        width: 3
-        height: 2
+        x: 47
+        'y': 8
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 38.75
-        'y': 6.75
-        width: 6.5
-        height: 3
+        x: 39
+        'y': 7
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 32.125
-        'y': 20.25
+        'y': 20.875
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.25
-        'y': 14.25
-        width: 2
-        height: 2
+        x: 32.5
+        'y': 14.5
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 45.986
-        'y': 29.003
+        'y': 28.503
         width: 4.5
-        height: 5
+        height: 6
         rotation: 127
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 50.229
+        x: 50.479
         'y': 33.015
-        width: 6.5
+        width: 6
         height: 3
         rotation: 307
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 37.586
-        'y': 32.953
-        width: 3
-        height: 2
+        x: 37.836
+        'y': 33.203
+        width: 2.5
+        height: 1.5
         rotation: 38
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.135
-        'y': 30.503
-        width: 3
-        height: 2
+        x: 40.385
+        'y': 30.753
+        width: 2.5
+        height: 1.5
         rotation: 218
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.25
-        'y': 34.25
-        width: 3
-        height: 2
+        x: 10.5
+        'y': 34.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.75
-        'y': 34.25
-        width: 6.5
-        height: 3
+        x: 15
+        'y': 34.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 23.375
-        'y': 18.75
+        'y': 19.375
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.75
-        'y': 27.75
-        width: 2
-        height: 2
+        x: 26
+        'y': 28
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 9.514
-        'y': 9.997
+        'y': 9.497
         width: 4.5
-        height: 5
+        height: 6
         rotation: 307
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.271
+        x: 3.521
         'y': 7.985
-        width: 6.5
+        width: 6
         height: 3
         rotation: 127
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 19.414
-        'y': 9.047
-        width: 3
-        height: 2
+        x: 19.664
+        'y': 9.297
+        width: 2.5
+        height: 1.5
         rotation: 218
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16.865
-        'y': 11.497
-        width: 3
-        height: 2
+        x: 17.115
+        'y': 11.747
+        width: 2.5
+        height: 1.5
         rotation: 38
         color: green
         mirror: false
@@ -5284,144 +5284,144 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 22.25
-        'y': 11.25
-        width: 3
-        height: 2
+        x: 22.5
+        'y': 11.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 18.75
-        'y': 10.75
-        width: 3
-        height: 2
+        x: 19
+        'y': 11
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 32.917
-        'y': 8.369
+        'y': 8.994
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 37
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.501
-        'y': 6.254
-        width: 2
-        height: 2
+        x: 27.751
+        'y': 6.504
+        width: 1.5
+        height: 1.5
         rotation: 127
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 53.25
-        'y': 4.75
-        width: 3
-        height: 2
+        x: 53.5
+        'y': 5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.75
-        'y': 7.75
-        width: 6.5
-        height: 3
+        x: 45
+        'y': 8
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 5.25
-        'y': 12.75
+        'y': 12.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.25
+        x: 10.5
         'y': 13
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 34.75
-        'y': 30.75
-        width: 3
-        height: 2
+        x: 35
+        'y': 31
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 38.25
-        'y': 31.25
-        width: 3
-        height: 2
+        x: 38.5
+        'y': 31.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 22.583
-        'y': 30.631
+        'y': 31.256
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 217
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 30.499
-        'y': 35.746
-        width: 2
-        height: 2
+        x: 30.749
+        'y': 35.996
+        width: 1.5
+        height: 1.5
         rotation: 307
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.75
-        'y': 37.25
-        width: 3
-        height: 2
+        x: 4
+        'y': 37.5
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.75
-        'y': 33.25
-        width: 6.5
-        height: 3
+        x: 9
+        'y': 33.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 50.25
-        'y': 26.25
+        'y': 25.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.25
+        x: 43.5
         'y': 28
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -5695,54 +5695,54 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 26.75
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 27
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 30.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 30.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.25
-        'y': 13.253
-        width: 6.5
-        height: 3
+        x: 47.5
+        'y': 13.503
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 47.25
-        'y': 5.253
-        width: 3
-        height: 2
+        x: 47.5
+        'y': 5.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 10.274
-        'y': 5.806
+        'y': 5.306
         width: 4.5
-        height: 5
+        height: 6
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 13.329
+        x: 13.579
         'y': 11.291
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
@@ -5750,17 +5750,17 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 45.226
-        'y': 33.194
+        'y': 32.694
         width: 4.5
-        height: 5
+        height: 6
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 40.171
+        x: 40.421
         'y': 29.709
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
@@ -5768,72 +5768,72 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 14.726
-        'y': 22.165
+        'y': 22.79
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 139
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 22.275
-        'y': 28.624
-        width: 2
-        height: 2
+        x: 22.525
+        'y': 28.874
+        width: 1.5
+        height: 1.5
         rotation: 49
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 30.25
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 30.5
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 26.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 27
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 6.25
-        'y': 27.747
-        width: 6.5
-        height: 3
+        x: 6.5
+        'y': 27.997
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 9.75
-        'y': 36.747
-        width: 3
-        height: 2
+        x: 10
+        'y': 36.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 40.774
-        'y': 16.835
+        'y': 17.46
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 319
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 35.725
-        'y': 13.376
-        width: 2
-        height: 2
+        x: 35.975
+        'y': 13.626
+        width: 1.5
+        height: 1.5
         rotation: 229
         color: green
         mirror: false
@@ -6106,54 +6106,54 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 7.25
-        'y': 36.747
-        width: 6.5
-        height: 3
+        x: 7.5
+        'y': 36.997
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.75
-        'y': 28.747
-        width: 3
-        height: 2
+        x: 11
+        'y': 28.997
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 20.75
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 21
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 24.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 24.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.997
-        'y': 35
-        width: 6.5
-        height: 3
+        x: 33.247
+        'y': 35.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 39.247
+        x: 39.497
         'y': 36.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 360
         color: green
@@ -6161,71 +6161,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 48.122
-        'y': 28.747
+        'y': 29.372
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.247
-        'y': 22.747
-        width: 2
-        height: 2
+        x: 48.497
+        'y': 22.997
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 46.25
-        'y': 4.253
-        width: 6.5
-        height: 3
+        x: 46.5
+        'y': 4.503
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.25
-        'y': 13.253
-        width: 3
-        height: 2
-        rotation: 0
+        x: 46.5
+        'y': 13.503
+        width: 2.5
+        height: 1.5
+        rotation: 360
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 36.25
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 36.5
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 32.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 33
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 20.503
-        'y': 6
-        width: 6.5
-        height: 3
+        x: 20.753
+        'y': 6.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.253
+        x: 14.503
         'y': 4.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -6233,18 +6233,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 7.378
-        'y': 10.253
+        'y': 10.878
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 9.753
-        'y': 19.253
-        width: 2
-        height: 2
+        x: 10.003
+        'y': 19.503
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
@@ -6517,54 +6517,54 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 53.25
-        'y': 7.75
-        width: 3
-        height: 2
+        x: 53.5
+        'y': 8
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.75
-        'y': 10.75
-        width: 6.5
-        height: 3
+        x: 45
+        'y': 11
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.253
-        'y': 11.25
-        width: 3
-        height: 2
+        x: 28.503
+        'y': 11.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 24.753
-        'y': 10.75
-        width: 3
-        height: 2
+        x: 25.003
+        'y': 11
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 43.417
-        'y': 29.368
+        'y': 28.868
         width: 4.5
-        height: 5
+        height: 6
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.472
+        x: 46.722
         'y': 34.852
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
@@ -6572,71 +6572,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 31.125
-        'y': 17.25
+        'y': 17.875
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.75
-        'y': 34.25
-        width: 3
-        height: 2
+        x: 4
+        'y': 34.5
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.75
-        'y': 30.25
-        width: 6.5
-        height: 3
+        x: 9
+        'y': 30.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.747
-        'y': 30.75
-        width: 3
-        height: 2
+        x: 28.997
+        'y': 31
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 32.247
-        'y': 31.25
-        width: 3
-        height: 2
+        x: 32.497
+        'y': 31.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 12.083
-        'y': 9.632
+        'y': 9.132
         width: 4.5
-        height: 5
+        height: 6
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.028
+        x: 7.278
         'y': 6.148
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
@@ -6644,18 +6644,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.375
-        'y': 21.75
+        'y': 22.375
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
@@ -6929,71 +6929,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 25.5
-        'y': 16.125
+        'y': 16.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.25
-        'y': 25.5
-        width: 2
-        height: 2
+        x: 25.5
+        'y': 25.75
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.75
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 25
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 28.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 28.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.75
-        'y': 36.75
-        width: 3
-        height: 2
+        x: 11
+        'y': 37
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.25
-        'y': 27.75
-        width: 6.5
-        height: 3
+        x: 7.5
+        'y': 28
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 40.5
-        'y': 28.503
+        'y': 28.003
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 40.25
+        x: 40.5
         'y': 35.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -7001,71 +7001,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 30
-        'y': 22.875
+        'y': 23.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.75
-        'y': 16.5
-        width: 2
-        height: 2
+        x: 33
+        'y': 16.75
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.25
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 32.5
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 28.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 29
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.25
-        'y': 5.25
-        width: 3
-        height: 2
+        x: 46.5
+        'y': 5.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 46.25
-        'y': 13.25
-        width: 6.5
-        height: 3
+        x: 46.5
+        'y': 13.5
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 15
-        'y': 10.497
+        'y': 9.997
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 13.25
+        x: 13.5
         'y': 5.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -7339,145 +7339,145 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 50.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 51
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 43
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.75
-        'y': 22.125
+        'y': 22.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 5.253
-        'y': 10.75
+        'y': 10.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.253
+        x: 10.503
         'y': 11
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 18.756
-        'y': 6.247
-        width: 3
-        height: 2
+        x: 19.006
+        'y': 6.497
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 15.256
-        'y': 5.747
-        width: 3
-        height: 2
+        x: 15.506
+        'y': 5.997
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 6.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 10.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 11
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 24.75
-        'y': 16.875
+        'y': 17.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 50.247
-        'y': 28.25
+        'y': 27.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.247
+        x: 43.497
         'y': 30
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 38.244
-        'y': 35.753
-        width: 3
-        height: 2
+        x: 38.494
+        'y': 36.003
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.744
-        'y': 36.253
-        width: 3
-        height: 2
+        x: 41.994
+        'y': 36.503
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
@@ -7751,144 +7751,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 33.118
-        'y': 21.323
+        'y': 21.948
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 322
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 29.151
-        'y': 28.327
-        width: 2
-        height: 2
+        x: 29.401
+        'y': 28.577
+        width: 1.5
+        height: 1.5
         rotation: 52
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 36.576
-        'y': 35.925
-        width: 3
-        height: 2
+        x: 36.826
+        'y': 36.175
+        width: 2.5
+        height: 1.5
         rotation: 321
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 34.762
-        'y': 32.891
-        width: 3
-        height: 2
+        x: 35.012
+        'y': 33.141
+        width: 2.5
+        height: 1.5
         rotation: 141
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 50.247
-        'y': 24.25
+        'y': 23.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.247
+        x: 43.497
         'y': 26
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.25
-        'y': 32.747
-        width: 6.5
-        height: 3
+        x: 11.5
+        'y': 32.997
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 19.25
-        'y': 32.747
-        width: 3
-        height: 2
+        x: 19.5
+        'y': 32.997
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 22.382
-        'y': 17.677
+        'y': 18.302
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 142
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 28.849
-        'y': 13.673
-        width: 2
-        height: 2
+        x: 29.099
+        'y': 13.923
+        width: 1.5
+        height: 1.5
         rotation: 232
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 20.424
-        'y': 6.075
-        width: 3
-        height: 2
+        x: 20.674
+        'y': 6.325
+        width: 2.5
+        height: 1.5
         rotation: 141
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 22.238
-        'y': 9.109
-        width: 3
-        height: 2
+        x: 22.488
+        'y': 9.359
+        width: 2.5
+        height: 1.5
         rotation: 321
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 5.253
-        'y': 14.75
+        'y': 14.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.253
+        x: 10.503
         'y': 15
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.25
-        'y': 8.253
-        width: 6.5
-        height: 3
+        x: 42.5
+        'y': 8.503
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 37.75
-        'y': 9.253
-        width: 3
-        height: 2
+        x: 38
+        'y': 9.503
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
@@ -8167,144 +8167,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 23.143
-        'y': 19.324
+        'y': 19.949
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 39
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 28.183
-        'y': 13.76
-        width: 2
-        height: 2
+        x: 28.433
+        'y': 14.01
+        width: 1.5
+        height: 1.5
         rotation: 309
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 39.5
-        'y': 30.5
+        'y': 30
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 39.25
+        x: 39.5
         'y': 37.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 52.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 53
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 45
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.25
-        'y': 7.753
-        width: 3
-        height: 2
+        x: 28.5
+        'y': 8.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.75
-        'y': 4.253
-        width: 3
-        height: 2
+        x: 29
+        'y': 4.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 16
-        'y': 8.5
+        'y': 8
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.25
+        x: 14.5
         'y': 3.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 4.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 4.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 9
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.75
-        'y': 34.247
-        width: 3
-        height: 2
+        x: 29
+        'y': 34.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.25
-        'y': 37.747
-        width: 3
-        height: 2
+        x: 28.5
+        'y': 37.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 32.357
-        'y': 19.676
+        'y': 20.301
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 219
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 29.817
-        'y': 28.24
-        width: 2
-        height: 2
+        x: 30.067
+        'y': 28.49
+        width: 1.5
+        height: 1.5
         rotation: 129
         color: green
         mirror: false
@@ -8582,54 +8582,54 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 9.744
-        'y': 38.756
-        width: 3
-        height: 2
+        x: 9.994
+        'y': 39.006
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.244
-        'y': 35.256
-        width: 3
-        height: 2
+        x: 9.494
+        'y': 35.506
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.003
-        'y': 21.503
-        width: 6.5
-        height: 3
+        x: 11.253
+        'y': 21.753
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 13.253
-        'y': 15.753
-        width: 3
-        height: 2
+        x: 13.503
+        'y': 16.003
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 21
-        'y': 7.5
+        'y': 7
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 19.25
+        x: 19.5
         'y': 2.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -8637,71 +8637,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 25.466
-        'y': 17.669
+        'y': 18.294
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 58
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.6
-        'y': 13.724
-        width: 2
-        height: 2
+        x: 32.85
+        'y': 13.974
+        width: 1.5
+        height: 1.5
         rotation: 328
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.256
-        'y': 3.244
-        width: 3
-        height: 2
+        x: 47.506
+        'y': 3.494
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.756
-        'y': 6.744
-        width: 3
-        height: 2
+        x: 48.006
+        'y': 6.994
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.497
-        'y': 19.497
-        width: 6.5
-        height: 3
+        x: 42.747
+        'y': 19.747
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.747
-        'y': 26.247
-        width: 3
-        height: 2
+        x: 43.997
+        'y': 26.497
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 34.5
-        'y': 31.5
+        'y': 31
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.25
+        x: 34.5
         'y': 38.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -8709,18 +8709,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 30.034
-        'y': 21.331
+        'y': 21.956
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 238
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.4
-        'y': 28.276
-        width: 2
-        height: 2
+        x: 25.65
+        'y': 28.526
+        width: 1.5
+        height: 1.5
         rotation: 148
         color: green
         mirror: false
@@ -8999,71 +8999,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 9.75
-        'y': 32.25
+        'y': 31.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 4.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 4.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 6.992
-        'y': 17.961
+        'y': 18.586
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 239
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 13.069
-        'y': 25.31
-        width: 2
-        height: 2
+        x: 13.319
+        'y': 25.56
+        width: 1.5
+        height: 1.5
         rotation: 329
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 15.25
-        'y': 4.25
-        width: 3
-        height: 2
+        x: 15.5
+        'y': 4.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 15.75
-        'y': 7.75
-        width: 3
-        height: 2
+        x: 16
+        'y': 8
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 22.247
-        'y': 14.253
-        width: 6.5
-        height: 3
+        x: 22.497
+        'y': 14.503
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 16.247
+        x: 16.497
         'y': 16.003
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -9071,71 +9071,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 45.75
-        'y': 6.75
+        'y': 6.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 52.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 53
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 48.508
-        'y': 21.039
+        'y': 21.664
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 59
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 44.931
-        'y': 16.69
-        width: 2
-        height: 2
+        x: 45.181
+        'y': 16.94
+        width: 1.5
+        height: 1.5
         rotation: 149
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.75
-        'y': 37.75
-        width: 3
-        height: 2
+        x: 42
+        'y': 38
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.25
-        'y': 34.25
-        width: 3
-        height: 2
+        x: 41.5
+        'y': 34.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 31.253
-        'y': 26.747
-        width: 6.5
-        height: 3
+        x: 31.503
+        'y': 26.997
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 37.253
+        x: 37.503
         'y': 24.997
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
@@ -9415,144 +9415,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 10.545
-        'y': 27.533
+        'y': 28.158
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 284
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 11.072
-        'y': 36.582
-        width: 2
-        height: 2
+        x: 11.322
+        'y': 36.832
+        width: 1.5
+        height: 1.5
         rotation: 14
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 16.003
-        'y': 7.503
+        'y': 7.003
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.253
-        'y': 2.253
-        width: 3
-        height: 2
+        x: 14.503
+        'y': 2.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 17.708
-        'y': 17.676
-        width: 3
-        height: 2
+        x: 17.958
+        'y': 17.926
+        width: 2.5
+        height: 1.5
         rotation: 120
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 20.489
-        'y': 19.859
-        width: 3
-        height: 2
+        x: 20.739
+        'y': 20.109
+        width: 2.5
+        height: 1.5
         rotation: 300
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.25
+        x: 27.5
         'y': 34
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 25.5
-        'y': 28
-        width: 6.5
-        height: 3
+        x: 25.75
+        'y': 28.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 44.955
-        'y': 11.467
+        'y': 12.092
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 104
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.928
-        'y': 5.418
-        width: 2
-        height: 2
+        x: 47.178
+        'y': 5.668
+        width: 1.5
+        height: 1.5
         rotation: 194
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 39.497
-        'y': 31.497
+        'y': 30.997
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 42.747
-        'y': 39.747
-        width: 3
-        height: 2
+        x: 42.997
+        'y': 39.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 39.292
-        'y': 24.324
-        width: 3
-        height: 2
+        x: 39.542
+        'y': 24.574
+        width: 2.5
+        height: 1.5
         rotation: 300
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 36.511
-        'y': 22.141
-        width: 3
-        height: 2
+        x: 36.761
+        'y': 22.391
+        width: 2.5
+        height: 1.5
         rotation: 120
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 26.25
+        x: 26.5
         'y': 7
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28
-        'y': 13
-        width: 6.5
-        height: 3
+        x: 28.25
+        'y': 13.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
@@ -9831,71 +9831,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 9.75
-        'y': 32.25
+        'y': 31.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 4.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 4.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 13.614
-        'y': 6.088
+        'y': 6.713
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 29
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.759
-        'y': 4.936
-        width: 2
-        height: 2
+        x: 8.009
+        'y': 5.186
+        width: 1.5
+        height: 1.5
         rotation: 119
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 16.462
-        width: 3
-        height: 2
+        x: 44
+        'y': 16.712
+        width: 2.5
+        height: 1.5
         rotation: 136
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 46.541
-        'y': 18.633
-        width: 3
-        height: 2
+        x: 46.791
+        'y': 18.883
+        width: 2.5
+        height: 1.5
         rotation: 316
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 33.25
-        'y': 25.25
-        width: 6.5
-        height: 3
+        x: 33.5
+        'y': 25.5
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.25
+        x: 33.5
         'y': 17.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -9903,71 +9903,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 45.75
-        'y': 6.75
+        'y': 6.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 52.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 53
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 41.886
-        'y': 32.912
+        'y': 33.537
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 209
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 50.241
-        'y': 37.064
-        width: 2
-        height: 2
+        x: 50.491
+        'y': 37.314
+        width: 1.5
+        height: 1.5
         rotation: 299
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 13.25
-        'y': 25.538
-        width: 3
-        height: 2
+        x: 13.5
+        'y': 25.788
+        width: 2.5
+        height: 1.5
         rotation: 316
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 10.459
-        'y': 23.367
-        width: 3
-        height: 2
+        x: 10.709
+        'y': 23.617
+        width: 2.5
+        height: 1.5
         rotation: 136
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 20.25
-        'y': 15.75
-        width: 6.5
-        height: 3
+        x: 20.5
+        'y': 16
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 20.25
+        x: 20.5
         'y': 23.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -10246,18 +10246,18 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 27.997
-        'y': 36
-        width: 6.5
-        height: 3
+        x: 28.247
+        'y': 36.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.247
+        x: 34.497
         'y': 37.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 360
         color: green
@@ -10265,71 +10265,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 46.25
-        'y': 19.253
+        'y': 18.753
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 45.25
-        'y': 13.253
-        width: 3
-        height: 2
+        x: 45.5
+        'y': 13.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 34.378
-        'y': 18.253
+        'y': 18.878
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 36.753
-        'y': 27.253
-        width: 2
-        height: 2
+        x: 37.003
+        'y': 27.503
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.25
-        'y': 6.753
-        width: 3
-        height: 2
+        x: 43.5
+        'y': 7.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 3.253
-        width: 3
-        height: 2
+        x: 44
+        'y': 3.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 25.503
-        'y': 5
-        width: 6.5
-        height: 3
+        x: 25.753
+        'y': 5.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 19.253
+        x: 19.503
         'y': 3.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -10337,54 +10337,54 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 9.25
-        'y': 19.747
+        'y': 19.247
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 11.75
-        'y': 28.747
-        width: 3
-        height: 2
+        x: 12
+        'y': 28.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 21.122
-        'y': 20.747
+        'y': 21.372
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 21.247
-        'y': 14.747
-        width: 2
-        height: 2
+        x: 21.497
+        'y': 14.997
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 13.75
-        'y': 35.247
-        width: 3
-        height: 2
+        x: 14
+        'y': 35.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 13.25
-        'y': 38.747
-        width: 3
-        height: 2
+        x: 13.5
+        'y': 38.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
@@ -10662,144 +10662,144 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 4.25
-        'y': 17.75
-        width: 6.5
-        height: 3
+        x: 4.5
+        'y': 18
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 9.75
-        'y': 14.25
+        'y': 13.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 18.485
-        'y': 17.124
+        'y': 17.749
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 135
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 26.364
-        'y': 23.132
-        width: 2
-        height: 2
+        x: 26.614
+        'y': 23.382
+        width: 1.5
+        height: 1.5
         rotation: 45
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.83
-        'y': 15.128
-        width: 3
-        height: 2
+        x: 48.08
+        'y': 15.378
+        width: 2.5
+        height: 1.5
         rotation: 311
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.517
-        'y': 12.454
-        width: 3
-        height: 2
+        x: 45.767
+        'y': 12.704
+        width: 2.5
+        height: 1.5
         rotation: 131
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.247
-        'y': 7.253
-        width: 3
-        height: 2
+        x: 33.497
+        'y': 7.503
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 38.247
+        x: 38.497
         'y': 6.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 49.25
-        'y': 23.25
-        width: 6.5
-        height: 3
+        x: 49.5
+        'y': 23.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 45.75
-        'y': 24.75
+        'y': 24.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 37.015
-        'y': 21.876
+        'y': 22.501
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 315
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 31.636
-        'y': 18.868
-        width: 2
-        height: 2
+        x: 31.886
+        'y': 19.118
+        width: 1.5
+        height: 1.5
         rotation: 225
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.17
-        'y': 26.872
-        width: 3
-        height: 2
+        x: 9.42
+        'y': 27.122
+        width: 2.5
+        height: 1.5
         rotation: 131
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.483
-        'y': 29.546
-        width: 3
-        height: 2
+        x: 11.733
+        'y': 29.796
+        width: 2.5
+        height: 1.5
         rotation: 311
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 23.753
-        'y': 34.747
-        width: 3
-        height: 2
+        x: 24.003
+        'y': 34.997
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 15.253
+        x: 15.503
         'y': 34.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -11069,144 +11069,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 49.25
-        'y': 13.253
+        'y': 12.753
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.25
-        'y': 7.253
-        width: 3
-        height: 2
+        x: 48.5
+        'y': 7.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 34.506
-        'y': 19.719
+        'y': 20.344
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 327
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 30.079
-        'y': 26.248
-        width: 2
-        height: 2
+        x: 30.329
+        'y': 26.498
+        width: 1.5
+        height: 1.5
         rotation: 57
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.732
+        x: 43.982
         'y': 35.868
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 38.857
-        'y': 31.957
-        width: 6.5
-        height: 3
+        x: 39.107
+        'y': 32.207
+        width: 6
+        height: 2.5
         rotation: 55
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.253
-        'y': 9.753
-        width: 3
-        height: 2
+        x: 24.503
+        'y': 10.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.753
-        'y': 6.253
-        width: 3
-        height: 2
+        x: 25.003
+        'y': 6.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 6.25
-        'y': 25.747
+        'y': 25.247
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.75
-        'y': 34.747
-        width: 3
-        height: 2
+        x: 9
+        'y': 34.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 20.994
-        'y': 19.281
+        'y': 19.906
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 147
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.921
-        'y': 15.752
-        width: 2
-        height: 2
+        x: 28.171
+        'y': 16.002
+        width: 1.5
+        height: 1.5
         rotation: 237
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 9.768
+        x: 10.018
         'y': 5.132
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 14.643
-        'y': 9.043
-        width: 6.5
-        height: 3
+        x: 14.893
+        'y': 9.293
+        width: 6
+        height: 2.5
         rotation: 235
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.747
-        'y': 32.247
-        width: 3
-        height: 2
+        x: 32.997
+        'y': 32.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.247
-        'y': 35.747
-        width: 3
-        height: 2
+        x: 32.497
+        'y': 35.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
@@ -11485,17 +11485,17 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 6.25
-        'y': 16.747
+        'y': 16.247
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.75
+        x: 7
         'y': 12.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
@@ -11503,71 +11503,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.75
-        'y': 16.875
+        'y': 17.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 5.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 5.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 10
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 49.25
-        'y': 36.753
-        width: 3
-        height: 2
+        x: 49.5
+        'y': 37.003
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.75
-        'y': 37.253
-        width: 3
-        height: 2
+        x: 46
+        'y': 37.503
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 49.25
-        'y': 22.253
+        'y': 21.753
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.75
+        x: 47
         'y': 28.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -11575,54 +11575,54 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 30.75
-        'y': 22.125
+        'y': 22.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 51.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 52
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 44
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.75
-        'y': 5.247
-        width: 3
-        height: 2
+        x: 8
+        'y': 5.497
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.25
-        'y': 4.747
-        width: 3
-        height: 2
+        x: 11.5
+        'y': 4.997
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
@@ -11895,145 +11895,145 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 28.75
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 29
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 32.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 32.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 9.589
-        'y': 31.308
+        'y': 30.808
         width: 4.5
-        height: 5
+        height: 6
         rotation: 329
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.406
-        'y': 26.679
-        width: 3
-        height: 2
+        x: 8.656
+        'y': 26.929
+        width: 2.5
+        height: 1.5
         rotation: 239
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 25.807
-        'y': 23.409
+        'y': 24.034
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 58
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.53
-        'y': 22.008
-        width: 2
-        height: 2
+        x: 34.78
+        'y': 22.258
+        width: 1.5
+        height: 1.5
         rotation: 328
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.768
+        x: 8.018
         'y': 6.132
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.643
-        'y': 10.043
-        width: 6.5
-        height: 3
+        x: 12.893
+        'y': 10.293
+        width: 6
+        height: 2.5
         rotation: 235
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 28.25
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 28.5
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 24.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 25
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 29.193
-        'y': 16.091
+        'y': 16.716
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 238
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 22.97
-        'y': 20.492
-        width: 2
-        height: 2
+        x: 23.22
+        'y': 20.742
+        width: 1.5
+        height: 1.5
         rotation: 148
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 45.911
-        'y': 7.692
+        'y': 7.192
         width: 4.5
-        height: 5
+        height: 6
         rotation: 149
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.594
-        'y': 15.321
-        width: 3
-        height: 2
+        x: 48.844
+        'y': 15.571
+        width: 2.5
+        height: 1.5
         rotation: 59
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 45.732
+        x: 45.982
         'y': 34.868
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.857
-        'y': 30.957
-        width: 6.5
-        height: 3
+        x: 41.107
+        'y': 31.207
+        width: 6
+        height: 2.5
         rotation: 55
         color: green
         mirror: false
@@ -12306,144 +12306,144 @@ layout:
     features:
       - type: l-ruin-mirror
         label: ruin
-        x: 14.253
+        x: 14.503
         'y': 4.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16.003
-        'y': 10.503
-        width: 6.5
-        height: 3
+        x: 16.253
+        'y': 10.753
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 25.125
-        'y': 22.497
+        'y': 23.122
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.25
-        'y': 16.497
-        width: 2
-        height: 2
+        x: 25.5
+        'y': 16.747
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.747
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 24.997
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 28.247
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 28.497
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.753
-        'y': 35.75
-        width: 3
-        height: 2
+        x: 9.003
+        'y': 36
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.753
+        x: 7.003
         'y': 28.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 39.247
+        x: 39.497
         'y': 36.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 37.497
-        'y': 30.497
-        width: 6.5
-        height: 3
+        x: 37.747
+        'y': 30.747
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.375
-        'y': 16.503
+        'y': 17.128
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.75
-        'y': 25.503
-        width: 2
-        height: 2
+        x: 33
+        'y': 25.753
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.253
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 32.503
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-roof
         label: ruin
-        x: 28.753
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 29.003
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.247
-        'y': 6.25
-        width: 3
-        height: 2
+        x: 48.497
+        'y': 6.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.747
+        x: 46.997
         'y': 12.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -12718,125 +12718,125 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 25.125
-        'y': 22.497
+        'y': 23.122
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.25
-        'y': 16.497
-        width: 2
-        height: 2
+        x: 25.5
+        'y': 16.747
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 19.506
-        'y': 3.997
-        width: 4.5
-        height: 5
-        rotation: 0
-        color: green
-        mirror: false
-      - type: l-ruin-mirror
-        label: ruin
-        x: 13.256
         'y': 3.497
-        width: 6.5
+        width: 4.5
+        height: 6
+        rotation: 0
+        color: green
+        mirror: false
+      - type: l-ruin-mirror
+        label: ruin
+        x: 13.506
+        'y': 3.497
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.253
-        'y': 13.753
-        width: 3
-        height: 2
+        x: 9.503
+        'y': 14.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.753
-        'y': 10.253
-        width: 3
-        height: 2
+        x: 10.003
+        'y': 10.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 4.503
-        'y': 25
-        width: 6.5
-        height: 3
+        x: 4.753
+        'y': 25.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.753
-        'y': 27.25
-        width: 3
-        height: 2
+        x: 15.003
+        'y': 27.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.997
-        'y': 16
-        width: 6.5
-        height: 3
+        x: 49.247
+        'y': 16.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 42.247
-        'y': 14.75
-        width: 3
-        height: 2
+        x: 42.497
+        'y': 15
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.747
-        'y': 28.247
-        width: 3
-        height: 2
+        x: 47.997
+        'y': 28.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.247
-        'y': 31.747
-        width: 3
-        height: 2
+        x: 47.497
+        'y': 31.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 35.994
-        'y': 35.003
+        'y': 34.503
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 40.244
+        x: 40.494
         'y': 37.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 360
         color: green
@@ -12844,18 +12844,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 30.375
-        'y': 16.503
+        'y': 17.128
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.75
-        'y': 25.503
-        width: 2
-        height: 2
+        x: 33
+        'y': 25.753
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
@@ -13128,144 +13128,144 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 9.832
-        'y': 7.087
-        width: 3
-        height: 2
+        x: 10.082
+        'y': 7.337
+        width: 2.5
+        height: 1.5
         rotation: 320
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.965
-        'y': 4.085
-        width: 3
-        height: 2
+        x: 8.215
+        'y': 4.335
+        width: 2.5
+        height: 1.5
         rotation: 140
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.25
-        'y': 7.753
-        width: 6.5
-        height: 3
+        x: 24.5
+        'y': 8.003
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.75
-        'y': 4.753
-        width: 3
-        height: 2
+        x: 33
+        'y': 5.003
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 31.128
-        'y': 21.75
+        'y': 22.375
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.503
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.753
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 47.247
-        'y': 19.747
+        'y': 19.247
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 44.747
+        x: 44.997
         'y': 25.997
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.168
-        'y': 34.913
-        width: 3
-        height: 2
+        x: 47.418
+        'y': 35.163
+        width: 2.5
+        height: 1.5
         rotation: 140
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 49.035
-        'y': 37.915
-        width: 3
-        height: 2
+        x: 49.285
+        'y': 38.165
+        width: 2.5
+        height: 1.5
         rotation: 320
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 29.25
-        'y': 33.247
-        width: 6.5
-        height: 3
+        x: 29.5
+        'y': 33.497
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.25
-        'y': 37.247
-        width: 3
-        height: 2
+        x: 24.5
+        'y': 37.497
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 24.372
-        'y': 17.25
+        'y': 17.875
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.497
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.747
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 8.253
-        'y': 19.253
+        'y': 18.753
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.753
+        x: 9.003
         'y': 15.003
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
@@ -13539,144 +13539,144 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 40.25
-        'y': 12.25
-        width: 3
-        height: 2
+        x: 40.5
+        'y': 12.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 36.75
-        'y': 11.75
-        width: 3
-        height: 2
+        x: 37
+        'y': 12
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.375
-        'y': 16.503
+        'y': 17.128
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.75
-        'y': 25.503
-        width: 2
-        height: 2
+        x: 33
+        'y': 25.753
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.997
-        'y': 33
-        width: 6.5
-        height: 3
+        x: 42.247
+        'y': 33.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 52.247
-        'y': 31.75
-        width: 3
-        height: 2
+        x: 52.497
+        'y': 32
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 46.039
-        'y': 7
+        'y': 6.5
         width: 4.5
-        height: 5
+        height: 6
         rotation: 134
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 49.876
+        x: 50.126
         'y': 11.628
-        width: 6.5
+        width: 6
         height: 3
         rotation: 314
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16.75
-        'y': 29.75
-        width: 3
-        height: 2
+        x: 17
+        'y': 30
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 20.25
-        'y': 30.25
-        width: 3
-        height: 2
+        x: 20.5
+        'y': 30.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 25.125
-        'y': 22.497
+        'y': 23.122
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.25
-        'y': 16.497
-        width: 2
-        height: 2
+        x: 25.5
+        'y': 16.747
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.503
-        'y': 8
-        width: 6.5
-        height: 3
+        x: 11.753
+        'y': 8.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 4.753
-        'y': 10.25
-        width: 3
-        height: 2
+        x: 5.003
+        'y': 10.5
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 9.461
-        'y': 32
+        'y': 31.5
         width: 4.5
-        height: 5
+        height: 6
         rotation: 314
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 3.624
+        x: 3.874
         'y': 29.372
-        width: 6.5
+        width: 6
         height: 3
         rotation: 134
         color: green
@@ -13951,144 +13951,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 11.503
-        'y': 10.997
+        'y': 10.497
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 5.253
+        x: 5.503
         'y': 10.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 52.25
-        'y': 4.747
-        width: 3
-        height: 2
+        x: 52.5
+        'y': 4.997
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 7.747
-        width: 6.5
-        height: 3
+        x: 44
+        'y': 7.997
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.75
-        'y': 22.125
+        'y': 22.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.75
-        'y': 36.75
-        width: 3
-        height: 2
+        x: 41
+        'y': 37
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.25
-        'y': 37.25
-        width: 3
-        height: 2
+        x: 44.5
+        'y': 37.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 43.997
-        'y': 28.003
+        'y': 27.503
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.247
+        x: 48.497
         'y': 30.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 4.75
-        'y': 37.253
-        width: 3
-        height: 2
+        x: 5
+        'y': 37.503
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 33.253
-        width: 6.5
-        height: 3
+        x: 10
+        'y': 33.503
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 24.75
-        'y': 16.875
+        'y': 17.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 16.25
-        'y': 5.25
-        width: 3
-        height: 2
+        x: 16.5
+        'y': 5.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.75
-        'y': 4.75
-        width: 3
-        height: 2
+        x: 13
+        'y': 5
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
@@ -14362,144 +14362,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 43.676
-        'y': 29.384
+        'y': 28.884
         width: 4.5
-        height: 5
+        height: 6
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.732
+        x: 46.982
         'y': 34.868
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.746
-        'y': 17.017
-        width: 3
-        height: 2
+        x: 43.996
+        'y': 17.267
+        width: 2.5
+        height: 1.5
         rotation: 146
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.288
-        'y': 20.198
-        width: 3
-        height: 2
+        x: 45.538
+        'y': 20.448
+        width: 2.5
+        height: 1.5
         rotation: 326
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 54.25
-        'y': 5.75
-        width: 3
-        height: 2
+        x: 54.5
+        'y': 6
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 46
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 11.824
-        'y': 9.616
+        'y': 9.116
         width: 4.5
-        height: 5
+        height: 6
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.768
+        x: 7.018
         'y': 6.132
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 2.75
-        'y': 36.25
-        width: 3
-        height: 2
+        x: 3
+        'y': 36.5
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 8
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 24.375
-        'y': 21.75
+        'y': 22.375
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 31.125
-        'y': 17.25
+        'y': 17.875
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 13.254
-        'y': 24.983
-        width: 3
-        height: 2
+        x: 13.504
+        'y': 25.233
+        width: 2.5
+        height: 1.5
         rotation: 326
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.712
-        'y': 21.802
-        width: 3
-        height: 2
+        x: 11.962
+        'y': 22.052
+        width: 2.5
+        height: 1.5
         rotation: 146
         color: green
         mirror: false
@@ -14772,54 +14772,54 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 12.003
-        'y': 23
-        width: 6.5
-        height: 3
+        x: 12.253
+        'y': 23.25
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 14.253
-        'y': 17.25
-        width: 3
-        height: 2
+        x: 14.503
+        'y': 17.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.75
-        'y': 34.247
-        width: 3
-        height: 2
+        x: 12
+        'y': 34.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.25
-        'y': 37.747
-        width: 3
-        height: 2
+        x: 11.5
+        'y': 37.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 19.5
-        'y': 3
+        'y': 2.5
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 19.25
+        x: 19.5
         'y': 10
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -14827,71 +14827,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.375
-        'y': 21.75
+        'y': 22.375
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.497
-        'y': 18
-        width: 6.5
-        height: 3
+        x: 41.747
+        'y': 18.25
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 42.747
-        'y': 24.75
-        width: 3
-        height: 2
+        x: 42.997
+        'y': 25
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.25
-        'y': 7.753
-        width: 3
-        height: 2
+        x: 45.5
+        'y': 8.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.75
-        'y': 4.253
-        width: 3
-        height: 2
+        x: 46
+        'y': 4.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 36
-        'y': 36
+        'y': 35.5
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.25
+        x: 34.5
         'y': 31
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -14899,18 +14899,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 31.125
-        'y': 17.25
+        'y': 17.875
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
@@ -15183,145 +15183,145 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 5.25
-        'y': 27.747
-        width: 6.5
-        height: 3
+        x: 5.5
+        'y': 27.997
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.75
-        'y': 36.747
-        width: 3
-        height: 2
+        x: 9
+        'y': 36.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 14.824
-        'y': 8.616
+        'y': 8.116
         width: 4.5
-        height: 5
+        height: 6
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 9.768
+        x: 10.018
         'y': 5.132
-        width: 6.5
+        width: 6
         height: 3
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 21.148
-        'y': 36.947
-        width: 3
-        height: 2
+        x: 21.398
+        'y': 37.197
+        width: 2.5
+        height: 1.5
         rotation: 323
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 19.441
-        'y': 33.851
-        width: 3
-        height: 2
+        x: 19.691
+        'y': 34.101
+        width: 2.5
+        height: 1.5
         rotation: 143
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 22.378
-        'y': 18.253
+        'y': 18.878
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.753
-        'y': 27.253
-        width: 2
-        height: 2
+        x: 25.003
+        'y': 27.503
+        width: 1.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.25
-        'y': 13.253
-        width: 6.5
-        height: 3
+        x: 48.5
+        'y': 13.503
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.25
-        'y': 5.253
-        width: 3
-        height: 2
+        x: 48.5
+        'y': 5.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 40.676
-        'y': 30.384
+        'y': 29.884
         width: 4.5
-        height: 5
+        height: 6
         rotation: 145
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.732
+        x: 43.982
         'y': 35.868
-        width: 6.5
+        width: 6
         height: 3
         rotation: 325
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 35.852
-        'y': 5.053
-        width: 3
-        height: 2
+        x: 36.102
+        'y': 5.303
+        width: 2.5
+        height: 1.5
         rotation: 143
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 37.559
-        'y': 8.149
-        width: 3
-        height: 2
+        x: 37.809
+        'y': 8.399
+        width: 2.5
+        height: 1.5
         rotation: 323
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 33.122
-        'y': 20.747
+        'y': 21.372
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.247
-        'y': 14.747
-        width: 2
-        height: 2
+        x: 33.497
+        'y': 14.997
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
@@ -15600,144 +15600,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 21.344
-        'y': 24.242
+        'y': 24.867
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 121
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 25.492
-        'y': 18.733
-        width: 2
-        height: 2
+        x: 25.742
+        'y': 18.983
+        width: 1.5
+        height: 1.5
         rotation: 211
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 25.253
-        'y': 3.25
+        'y': 2.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 18.253
+        x: 18.503
         'y': 5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.25
-        'y': 26.747
-        width: 6.5
-        height: 3
+        x: 7.5
+        'y': 26.997
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.75
-        'y': 35.747
-        width: 3
-        height: 2
+        x: 11
+        'y': 35.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.25
-        'y': 32.247
-        width: 3
-        height: 2
+        x: 47.5
+        'y': 32.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.75
-        'y': 35.747
-        width: 3
-        height: 2
+        x: 48
+        'y': 35.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 34.156
-        'y': 14.758
+        'y': 15.383
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 301
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 32.508
-        'y': 23.267
-        width: 2
-        height: 2
+        x: 32.758
+        'y': 23.517
+        width: 1.5
+        height: 1.5
         rotation: 31
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 30.247
-        'y': 35.75
+        'y': 35.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 35.247
+        x: 35.497
         'y': 36
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 46.25
-        'y': 14.253
-        width: 6.5
-        height: 3
+        x: 46.5
+        'y': 14.503
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.25
-        'y': 6.253
-        width: 3
-        height: 2
+        x: 46.5
+        'y': 6.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 9.753
-        width: 3
-        height: 2
+        x: 10
+        'y': 10.003
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.25
-        'y': 6.253
-        width: 3
-        height: 2
+        x: 9.5
+        'y': 6.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
@@ -16016,107 +16016,107 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 50.25
-        'y': 23.247
+        'y': 22.747
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 43.25
+        x: 43.5
         'y': 24.997
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 20.753
-        'y': 34.247
-        width: 6.5
-        height: 3
+        x: 21.003
+        'y': 34.497
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 16.253
-        'y': 34.247
-        width: 3
-        height: 2
+        x: 16.503
+        'y': 34.497
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 23.944
-        'y': 23.068
+        'y': 23.693
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 330
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 19.958
-        'y': 18.498
-        width: 2
-        height: 2
+        x: 20.208
+        'y': 18.748
+        width: 1.5
+        height: 1.5
         rotation: 240
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.066
-        'y': 6.836
-        width: 3
-        height: 2
+        x: 8.316
+        'y': 7.086
+        width: 2.5
+        height: 1.5
         rotation: 312
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 5.799
-        'y': 4.122
-        width: 3
-        height: 2
+        x: 6.049
+        'y': 4.372
+        width: 2.5
+        height: 1.5
         rotation: 132
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.747
-        'y': 6.753
-        width: 6.5
-        height: 3
+        x: 32.997
+        'y': 7.003
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 40.747
-        'y': 7.753
-        width: 3
-        height: 2
+        x: 40.997
+        'y': 8.003
+        width: 2.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 5.25
-        'y': 15.753
+        'y': 15.253
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.25
+        x: 10.5
         'y': 16.003
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
@@ -16124,36 +16124,36 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 31.556
-        'y': 15.932
+        'y': 16.557
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 150
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 38.042
-        'y': 23.502
-        width: 2
-        height: 2
+        x: 38.292
+        'y': 23.752
+        width: 1.5
+        height: 1.5
         rotation: 60
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.934
-        'y': 35.164
-        width: 3
-        height: 2
+        x: 49.184
+        'y': 35.414
+        width: 2.5
+        height: 1.5
         rotation: 132
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 51.201
-        'y': 37.878
-        width: 3
-        height: 2
+        x: 51.451
+        'y': 38.128
+        width: 2.5
+        height: 1.5
         rotation: 312
         color: green
         mirror: false
@@ -16432,144 +16432,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 22.193
-        'y': 15.193
+        'y': 15.818
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 187
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 31.024
-        'y': 16.49
-        width: 2
-        height: 2
+        x: 31.274
+        'y': 16.74
+        width: 1.5
+        height: 1.5
         rotation: 277
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 50.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 51
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 42.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 43
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 6.25
-        'y': 11.753
+        'y': 11.253
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 11.25
+        x: 11.5
         'y': 12.003
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 35.538
-        'y': 7.492
-        width: 3
-        height: 2
+        x: 35.788
+        'y': 7.742
+        width: 2.5
+        height: 1.5
         rotation: 228
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 32.602
-        'y': 9.462
-        width: 3
-        height: 2
+        x: 32.852
+        'y': 9.712
+        width: 2.5
+        height: 1.5
         rotation: 48
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 33.307
-        'y': 23.807
+        'y': 24.432
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 7
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 26.976
-        'y': 25.51
-        width: 2
-        height: 2
+        x: 27.226
+        'y': 25.76
+        width: 1.5
+        height: 1.5
         rotation: 97
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 6.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 10.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 11
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 49.25
-        'y': 27.247
+        'y': 26.747
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 42.25
+        x: 42.5
         'y': 28.997
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 21.462
-        'y': 34.508
-        width: 3
-        height: 2
+        x: 21.712
+        'y': 34.758
+        width: 2.5
+        height: 1.5
         rotation: 48
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 24.398
-        'y': 32.538
-        width: 3
-        height: 2
+        x: 24.648
+        'y': 32.788
+        width: 2.5
+        height: 1.5
         rotation: 228
         color: green
         mirror: false
@@ -16848,17 +16848,17 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 9
-        'y': 9.5
+        'y': 9
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.25
+        x: 7.5
         'y': 4.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -16866,71 +16866,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 22.024
-        'y': 17.082
+        'y': 17.707
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 165
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 30.227
-        'y': 15.554
-        width: 2
-        height: 2
+        x: 30.477
+        'y': 15.804
+        width: 1.5
+        height: 1.5
         rotation: 255
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 30.25
-        'y': 4.25
-        width: 3
-        height: 2
+        x: 30.5
+        'y': 4.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 30.75
-        'y': 7.75
-        width: 3
-        height: 2
+        x: 31
+        'y': 8
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 51.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 52
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 43.75
-        'y': 8.75
-        width: 6.5
-        height: 3
+        x: 44
+        'y': 9
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 46.5
-        'y': 29.5
+        'y': 29
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.25
+        x: 46.5
         'y': 36.5
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -16938,54 +16938,54 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 33.476
-        'y': 21.918
+        'y': 22.543
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 345
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 27.773
-        'y': 26.446
-        width: 2
-        height: 2
+        x: 28.023
+        'y': 26.696
+        width: 1.5
+        height: 1.5
         rotation: 75
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 26.75
-        'y': 37.75
-        width: 3
-        height: 2
+        x: 27
+        'y': 38
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 26.25
-        'y': 34.25
-        width: 3
-        height: 2
+        x: 26.5
+        'y': 34.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 5.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 5.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 32.25
-        width: 6.5
-        height: 3
+        x: 10
+        'y': 32.5
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
@@ -17264,144 +17264,144 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 23.611
-        'y': 23.376
+        'y': 24.001
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 80
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 22.451
-        'y': 17.686
-        width: 2
-        height: 2
+        x: 22.701
+        'y': 17.936
+        width: 1.5
+        height: 1.5
         rotation: 170
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 34.497
-        'y': 31.497
+        'y': 30.997
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 34.247
+        x: 34.497
         'y': 38.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 46.25
-        'y': 13.253
-        width: 6.5
-        height: 3
+        x: 46.5
+        'y': 13.503
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 46.25
-        'y': 5.253
-        width: 3
-        height: 2
+        x: 46.5
+        'y': 5.503
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 45.648
-        'y': 30.027
-        width: 3
-        height: 2
+        x: 45.898
+        'y': 30.277
+        width: 2.5
+        height: 1.5
         rotation: 42
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.361
-        'y': 27.76
-        width: 3
-        height: 2
+        x: 48.611
+        'y': 28.01
+        width: 2.5
+        height: 1.5
         rotation: 222
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 31.889
-        'y': 15.624
+        'y': 16.249
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 260
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 35.549
-        'y': 24.314
-        width: 2
-        height: 2
+        x: 35.799
+        'y': 24.564
+        width: 1.5
+        height: 1.5
         rotation: 350
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 21.003
-        'y': 7.503
+        'y': 7.003
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 19.253
+        x: 19.503
         'y': 2.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 7.25
-        'y': 27.747
-        width: 6.5
-        height: 3
+        x: 7.5
+        'y': 27.997
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 10.75
-        'y': 36.747
-        width: 3
-        height: 2
+        x: 11
+        'y': 36.997
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 11.352
-        'y': 11.973
-        width: 3
-        height: 2
+        x: 11.602
+        'y': 12.223
+        width: 2.5
+        height: 1.5
         rotation: 222
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.639
-        'y': 14.24
-        width: 3
-        height: 2
+        x: 8.889
+        'y': 14.49
+        width: 2.5
+        height: 1.5
         rotation: 42
         color: green
         mirror: false
@@ -17680,71 +17680,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 31.125
-        'y': 17.25
+        'y': 17.875
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.247
-        'y': 7.25
-        width: 3
-        height: 2
+        x: 48.497
+        'y': 7.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 48.247
-        'y': 15.25
-        width: 6.5
-        height: 3
+        x: 48.497
+        'y': 15.5
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.75
-        'y': 26.247
-        width: 3
-        height: 2
+        x: 48
+        'y': 26.497
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 47.25
-        'y': 22.747
-        width: 3
-        height: 2
+        x: 47.5
+        'y': 22.997
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 41.997
-        'y': 33.997
+        'y': 33.497
         width: 4.5
-        height: 5
+        height: 6
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 40.247
+        x: 40.497
         'y': 28.997
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -17752,71 +17752,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.375
-        'y': 21.75
+        'y': 22.375
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.753
-        'y': 34.75
-        width: 3
-        height: 2
+        x: 9.003
+        'y': 35
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 5.253
-        'y': 25.75
-        width: 6.5
-        height: 3
+        x: 5.503
+        'y': 26
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.25
-        'y': 15.753
-        width: 3
-        height: 2
+        x: 9.5
+        'y': 16.003
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 9.75
-        'y': 19.253
-        width: 3
-        height: 2
+        x: 10
+        'y': 19.503
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 13.503
-        'y': 5.003
+        'y': 4.503
         width: 4.5
-        height: 5
+        height: 6
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 13.253
+        x: 13.503
         'y': 12.003
-        width: 6.5
+        width: 6
         height: 3
         rotation: 0
         color: green
@@ -18091,107 +18091,107 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 30.75
-        'y': 22.125
+        'y': 22.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.747
-        'y': 8.253
-        width: 6.5
-        height: 3
+        x: 40.997
+        'y': 8.503
+        width: 6
+        height: 2.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 48.747
-        'y': 9.253
-        width: 3
-        height: 2
+        x: 48.997
+        'y': 9.503
+        width: 2.5
+        height: 1.5
         rotation: 360
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 6.253
-        'y': 14.747
+        'y': 14.247
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 11.253
+        x: 11.503
         'y': 14.997
-        width: 6.5
+        width: 6
         height: 3
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 41.593
-        'y': 36.503
-        width: 3
-        height: 2
+        x: 41.843
+        'y': 36.753
+        width: 2.5
+        height: 1.5
         rotation: 49
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.563
-        'y': 34.584
-        width: 3
-        height: 2
+        x: 44.813
+        'y': 34.834
+        width: 2.5
+        height: 1.5
         rotation: 229
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.753
-        'y': 32.747
-        width: 6.5
-        height: 3
+        x: 13.003
+        'y': 32.997
+        width: 6
+        height: 2.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 8.253
-        'y': 32.747
-        width: 3
-        height: 2
+        x: 8.503
+        'y': 32.997
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 49.247
-        'y': 24.253
+        'y': 23.753
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 42.247
+        x: 42.497
         'y': 26.003
-        width: 6.5
+        width: 6
         height: 3
         rotation: 90
         color: green
@@ -18199,36 +18199,36 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.75
-        'y': 16.875
+        'y': 17.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 15.407
-        'y': 5.497
-        width: 3
-        height: 2
+        x: 15.657
+        'y': 5.747
+        width: 2.5
+        height: 1.5
         rotation: 229
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.437
-        'y': 7.416
-        width: 3
-        height: 2
+        x: 12.687
+        'y': 7.666
+        width: 2.5
+        height: 1.5
         rotation: 49
         color: green
         mirror: false
@@ -18501,54 +18501,54 @@ layout:
     features:
       - type: l-ruin
         label: ruin
-        x: 48.253
-        'y': 23.25
-        width: 3
-        height: 2
+        x: 48.503
+        'y': 23.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 44.753
-        'y': 22.75
-        width: 3
-        height: 2
+        x: 45.003
+        'y': 23
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 42.75
-        'y': 6.75
+        'y': 6.25
         width: 4.5
-        height: 5
+        height: 6
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 49.75
-        'y': 9.75
-        width: 3
-        height: 2
+        x: 50
+        'y': 10
+        width: 2.5
+        height: 1.5
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 40.997
-        'y': 33.003
-        width: 6.5
-        height: 3
+        x: 41.247
+        'y': 33.253
+        width: 6
+        height: 2.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 47.247
+        x: 47.497
         'y': 34.503
-        width: 6.5
+        width: 6
         height: 3
         rotation: 360
         color: green
@@ -18556,71 +18556,71 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 30.75
-        'y': 22.125
+        'y': 22.75
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 0
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 24.5
-        'y': 24.75
-        width: 2
-        height: 2
+        x: 24.75
+        'y': 25
+        width: 1.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
         x: 12.75
-        'y': 32.25
+        'y': 31.75
         width: 4.5
-        height: 5
+        height: 6
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 7.25
-        'y': 32.25
-        width: 3
-        height: 2
+        x: 7.5
+        'y': 32.5
+        width: 2.5
+        height: 1.5
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 8.747
-        'y': 18.75
-        width: 3
-        height: 2
+        x: 8.997
+        'y': 19
+        width: 2.5
+        height: 1.5
         rotation: 90
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.247
-        'y': 19.25
-        width: 3
-        height: 2
+        x: 12.497
+        'y': 19.5
+        width: 2.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin
         label: ruin
-        x: 12.503
-        'y': 7.997
-        width: 6.5
-        height: 3
+        x: 12.753
+        'y': 8.247
+        width: 6
+        height: 2.5
         rotation: 270
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 6.253
+        x: 6.503
         'y': 6.497
-        width: 6.5
+        width: 6
         height: 3
         rotation: 180
         color: green
@@ -18628,18 +18628,18 @@ layout:
       - type: l-ruin-mirror
         label: ruin
         x: 24.75
-        'y': 16.875
+        'y': 17.5
         width: 4.5
-        height: 5
+        height: 3.75
         rotation: 180
         color: green
         mirror: false
       - type: l-ruin-mirror
         label: ruin
-        x: 33.5
-        'y': 17.25
-        width: 2
-        height: 2
+        x: 33.75
+        'y': 17.5
+        width: 1.5
+        height: 1.5
         rotation: 270
         color: green
         mirror: false
