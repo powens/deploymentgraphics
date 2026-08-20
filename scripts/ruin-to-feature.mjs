@@ -163,10 +163,15 @@ export function ruinFeaturePlacement(piece, lookupFootprint, getParent) {
 /**
  * Resolve every whole-L corner-ruin in a layout to an `l-ruin` feature
  * placement. Catwalk pieces are consumed (dropped) - upstream models them as
- * standalone composites, and the parent area still becomes a building, so the
- * child would only redraw ground the building already covers. Returns the
- * placements plus the set of piece ids the caller should not also emit as
- * area_terrain (ruin pieces and catwalks).
+ * standalone composites, and the parent area still becomes a building that
+ * already covers upstream's 6x1in `pipes` part. The legacy `catwalk` template
+ * that part is normalized onto is 7x2in, so the resolved child does overhang
+ * its 6x2in parent by 0.5in at each end (measured: catwalk y 4.5015-11.5015
+ * against area y 5.000-11.000). That overhang is an artifact of the oversized
+ * legacy template rather than ground upstream draws - see the `pipes` note on
+ * PART_TO_TEMPLATE in battlemaster-normalize.mjs - and is accepted, not
+ * emitted. Returns the placements plus the set of piece ids the caller should
+ * not also emit as area_terrain (ruin pieces and catwalks).
  *
  * @param {object} layout - a 40kdc layout ({ pieces }).
  * @param {(id: string) => object} lookupFootprint

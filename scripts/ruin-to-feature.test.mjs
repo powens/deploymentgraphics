@@ -76,9 +76,25 @@ function ringMismatch(a, b) {
   );
 }
 
-// Smallest distance between two closed rings (0 when their edges cross), plus a
-// point-in-ring test, so the roofing guard below can ask whether a catwalk and a
-// ruin actually share ground rather than comparing centroids.
+// True when segments pq and rs properly straddle one another. Distance alone
+// cannot see this: for two crossing segments all four endpoint-to-segment
+// distances are strictly positive, so a 7x2in catwalk laid squarely across a
+// 0.5in ruin arm - the literal "resting on it" case the roofing guard below
+// exists to catch - would otherwise read as 0.5in clear, indistinguishable from
+// the 0.498/0.502 population that is genuinely clear of a ruin.
+function segCross(p, q, r, s) {
+  const side = (o, a, b) =>
+    (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+  const d1 = side(r, s, p);
+  const d2 = side(r, s, q);
+  const d3 = side(p, q, r);
+  const d4 = side(p, q, s);
+  return (d1 > 0) !== (d2 > 0) && (d3 > 0) !== (d4 > 0);
+}
+
+// Smallest distance between two closed rings, 0 when their edges cross, so the
+// roofing guard below can ask whether a catwalk and a ruin actually share
+// ground rather than comparing centroids.
 function ringGap(a, b) {
   const segGap = (p, q, r, s) => {
     const near = (u, v, w) => {
@@ -94,11 +110,13 @@ function ringGap(a, b) {
   };
   let min = Infinity;
   for (let i = 0; i < a.length; i++) {
+    const p = a[i];
+    const q = a[(i + 1) % a.length];
     for (let j = 0; j < b.length; j++) {
-      min = Math.min(
-        min,
-        segGap(a[i], a[(i + 1) % a.length], b[j], b[(j + 1) % b.length]),
-      );
+      const r = b[j];
+      const s = b[(j + 1) % b.length];
+      if (segCross(p, q, r, s)) return 0;
+      min = Math.min(min, segGap(p, q, r, s));
     }
   }
   return min;
@@ -117,6 +135,28 @@ const inRing = (p, ring) => {
     }
   }
   return inside;
+};
+
+// Do two closed rings share ground? Vertex containment either way catches
+// nesting and corner overlap; the edge-crossing pass catches the plus-shaped
+// overlap where neither ring has a vertex inside the other.
+const ringsOverlap = (a, b) => {
+  if (a.some((p) => inRing(p, b)) || b.some((p) => inRing(p, a))) return true;
+  for (let i = 0; i < a.length; i++) {
+    for (let j = 0; j < b.length; j++) {
+      if (
+        segCross(
+          a[i],
+          a[(i + 1) % a.length],
+          b[j],
+          b[(j + 1) % b.length],
+        )
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
 };
 
 const getParentFor = (L) => {
@@ -177,6 +217,59 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
 });
 
+// The roofing guard below is the only tripwire for a catwalk seated on a ruin,
+// so its geometry gets its own test rather than being trusted by inspection.
+describe("roofing guard geometry", () => {
+  // Outer corner at the origin: a 5x0.5in horizontal arm and a 0.5x4.5in
+  // vertical one, the shape of a resolved l-ruin.
+  const ruin = [
+    { x: 0, y: 0 },
+    { x: 5, y: 0 },
+    { x: 5, y: 0.5 },
+    { x: 0.5, y: 0.5 },
+    { x: 0.5, y: 4.5 },
+    { x: 0, y: 4.5 },
+  ];
+
+  it("sees a catwalk laid across a ruin arm", () => {
+    // Nothing here is caught by vertex containment - the catwalk spans the
+    // 0.5in-wide arm, so neither ring holds a vertex of the other - and every
+    // endpoint-to-segment distance is 0.5. Only the edge crossing gives it away.
+    const across = [
+      { x: -3, y: 2 },
+      { x: 4, y: 2 },
+      { x: 4, y: 4 },
+      { x: -3, y: 4 },
+    ];
+    expect(across.some((p) => inRing(p, ruin))).toBe(false);
+    expect(ruin.some((p) => inRing(p, across))).toBe(false);
+    expect(ringsOverlap(across, ruin)).toBe(true);
+    expect(ringGap(across, ruin)).toBe(0);
+  });
+
+  it("still calls a clear catwalk clear", () => {
+    const clear = [
+      { x: -3, y: 6 },
+      { x: 4, y: 6 },
+      { x: 4, y: 8 },
+      { x: -3, y: 8 },
+    ];
+    expect(ringsOverlap(clear, ruin)).toBe(false);
+    expect(ringGap(clear, ruin)).toBeCloseTo(1.5, 10);
+  });
+
+  it("sees a catwalk resting on the outer corner", () => {
+    const onCorner = [
+      { x: -1, y: -1 },
+      { x: 1, y: -1 },
+      { x: 1, y: 1 },
+      { x: -1, y: 1 },
+    ];
+    expect(ringsOverlap(onCorner, ruin)).toBe(true);
+    expect(ringGap(onCorner, ruin)).toBe(0);
+  });
+});
+
 describe("ruinFeatures", () => {
   it("converts every whole-L ruin and consumes the catwalks", () => {
     const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
@@ -213,7 +306,9 @@ describe("ruinFeatures", () => {
     // roofed 20 of the 0.5in ones and skipped all six of these. The guard here
     // is deliberately about contact, not about a count: if a future pull ever
     // does seat a catwalk on a ruin, these fail and the -roof variant is worth
-    // reviving.
+    // reviving. `ringsOverlap` / `ringGap` both run a real segment-crossing
+    // test, so a catwalk laid across a ruin arm trips them even though neither
+    // ring would then hold a vertex of the other - see the geometry test above.
     const missions = layouts.filter((l) => l.mission_matchup_id);
     const catwalks = missions
       .flatMap((l) => l.pieces)
@@ -242,10 +337,7 @@ describe("ruinFeatures", () => {
         for (const r of ruins) {
           const gap = ringGap(ring, r.ring);
           minGap = Math.min(minGap, gap);
-          if (
-            ring.some((q) => inRing(q, r.ring)) ||
-            r.ring.some((q) => inRing(q, ring))
-          ) {
+          if (ringsOverlap(ring, r.ring)) {
             touching += 1;
           }
           if (p.parent_area_id && p.parent_area_id === r.p.parent_area_id) {
