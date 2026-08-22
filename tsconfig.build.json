@@ -5,5 +5,14 @@
     "sourceMap": false,
     "declaration": true
   },
-  "exclude": ["node_modules", "dist", "lib", "static", "**/*.test.ts"]
+  // bundle.ts is the demo app's rollup entry, not a published one — it would
+  // otherwise ship a lib/bundle.d.ts naming symbols the package does not export.
+  "exclude": [
+    "node_modules",
+    "dist",
+    "lib",
+    "static",
+    "src/bundle.ts",
+    "**/*.test.ts"
+  ]
 }
