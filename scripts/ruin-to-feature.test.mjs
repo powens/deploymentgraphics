@@ -49,8 +49,6 @@ function featureFootprint(pl) {
   });
 }
 
-// Max distance from each vertex of one ring to the nearest vertex of the other,
-// in both directions (Hausdorff over vertex sets).
 // True when segments pq and rs properly straddle one another. Distance alone
 // cannot see this: for two crossing segments all four endpoint-to-segment
 // distances are strictly positive, so a 7x2in catwalk laid squarely across a

@@ -44,19 +44,20 @@ const out = {
   layout: { ...(gw.layout ?? {}) },
 };
 
-const skipped = [];
-for (const layout of corpus.layouts) {
-  // Skip fan-format layouts that fall outside GW's mission system. These carry
-  // no mission_matchup_id and bring their own terrain templates that have no
-  // gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum layout
-  // with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
-  // separate feature; excluding them keeps `make update-terrain` re-runnable
-  // and auto-skips any future fan variant (also matchup-less) rather than
-  // throwing on an unmapped template.
-  if (!layout.mission_matchup_id) {
-    skipped.push(layout.id);
-    continue;
-  }
+// Fan-format layouts that fall outside GW's mission system are left out. These
+// carry no mission_matchup_id and bring their own terrain templates that have
+// no gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum
+// layout with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
+// separate feature; excluding them keeps `make update-terrain` re-runnable and
+// auto-skips any future fan variant (also matchup-less) rather than throwing on
+// an unmapped template. Reading `corpus.missionLayouts` (rather than filtering
+// `corpus.layouts`) is what keeps that true: the corpus normalizes the mission
+// set without ever normalizing the layouts skipped here.
+const skipped = corpus.rawLayouts
+  .filter((l) => !l.mission_matchup_id)
+  .map((l) => l.id);
+
+for (const layout of corpus.missionLayouts) {
   // Corner-ruins become l-ruin features; catwalk pieces are dropped.
   // Generators/gantries become rectangle features.
   // `consumedIds` are the pieces the area_terrain pass must skip.

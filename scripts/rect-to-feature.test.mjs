@@ -10,7 +10,9 @@ import {
 const { layouts, footprintOf } = loadCorpus();
 
 // Absolute outline of a placed rectangle feature: the box corners after
-// makeFeatures' translate(x,y) . rotate(rotation, w/2, h/2).
+// makeFeatures' translate(x,y) . rotate(rotation, w/2, h/2). The outline is
+// reflection-symmetric, so ringMismatch against resolvePiece's ring matches
+// regardless of mirror parity — no mirror variant is needed to compare them.
 function featureFootprint(pl) {
   const { x, y, width: w, height: h, rotation = 0 } = pl;
   const local = [
@@ -34,9 +36,6 @@ function featureFootprint(pl) {
   });
 }
 
-// Max distance from each vertex of one ring to the nearest vertex of the other,
-// in both directions (Hausdorff over vertex sets). Outline is reflection-
-// symmetric, so this matches regardless of mirror parity.
 // One representative piece per rectangle-feature template, drawn from the
 // source. The piece rides along with its layout, which carries the lookups
 // needed to resolve it.

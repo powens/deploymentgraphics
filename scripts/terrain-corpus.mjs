@@ -57,6 +57,9 @@ export function withLookups(layout, footprintOf) {
 /**
  * Load the vendored 40kdc corpus, normalized and ready to resolve.
  *
+ * `layouts` is normalized on first read and memoized; `missionLayouts` is
+ * normalized eagerly and never touches the fan layouts (see below).
+ *
  * @returns {{
  *   layouts: object[],
  *   missionLayouts: object[],
@@ -79,10 +82,25 @@ export function loadCorpus() {
   // out of the layout and onto composite *templates*. Rewrite them back into
   // the legacy piece vocabulary every converter downstream consumes - see
   // scripts/battlemaster-normalize.mjs.
-  const layouts = rawLayoutData.map((l) =>
-    withLookups(normalizeLayout(l, templatesById), footprintOf),
-  );
+  const normalize = (l) =>
+    withLookups(normalizeLayout(l, templatesById), footprintOf);
   const rawLayouts = rawLayoutData.map((l) => withLookups(l, footprintOf));
+
+  // The mission set is normalized directly rather than by filtering an
+  // already-normalized `layouts`. Fan-format layouts carry no
+  // mission_matchup_id and bring their own templates, and normalizeLayout
+  // throws on an unmapped part - so normalizing the whole corpus just to reach
+  // the mission layouts would abort the conversion on the very layouts the
+  // converter's skip exists to pass over. `layouts` stays lazy for the same
+  // reason: only a caller that genuinely wants every layout pays that cost.
+  const missionLayouts = rawLayoutData
+    .filter((l) => l.mission_matchup_id)
+    .map(normalize);
+
+  let allLayouts;
+  const layoutsOf = () => (allLayouts ??= rawLayoutData.map(normalize));
+  let byId;
+  const byIdOf = () => (byId ??= new Map(layoutsOf().map((l) => [l.id, l])));
 
   // Building templates, read only to size `area` placements. Not part of the
   // 40kdc source - these are the hand-authored gw templates the placements
@@ -90,15 +108,15 @@ export function loadCorpus() {
   const gwTemplates =
     yaml.load(readFileSync(templatesPath, "utf8")).templates ?? {};
 
-  const byId = new Map(layouts.map((l) => [l.id, l]));
-
   return {
-    layouts,
+    get layouts() {
+      return layoutsOf();
+    },
     // Layouts outside GW's mission system carry no mission_matchup_id; see the
     // skip note in scripts/convert-40kdc-terrain.mjs.
-    missionLayouts: layouts.filter((l) => l.mission_matchup_id),
+    missionLayouts,
     rawLayouts,
-    layout: (id) => byId.get(id),
+    layout: (id) => byIdOf().get(id),
     templatesById,
     gwTemplates,
     footprintOf,

@@ -44,6 +44,16 @@ describe("objectiveIcons", () => {
     expect(icons.filter((i) => i.type === "fortress")).toHaveLength(2);
   });
 
+  it("refuses a layout whose lookups were lost to a spread", () => {
+    // Without `resolve` no footprint resolves, nothing touches, and the
+    // central pair would silently split into two markers at the trapezoid
+    // positions instead of collapsing to one at the board centre. Throw
+    // rather than emit quietly-wrong geometry.
+    const layout = layoutById("take-and-hold-mirror-1");
+    const derived = { ...layout, pieces: layout.pieces };
+    expect(() => objectiveIcons(derived)).toThrow(/no resolve/);
+  });
+
   it("returns no icons for a layout without objectives", () => {
     // No vendored layout is objective-free, so strip the objective pieces from
     // take-and-hold-mirror-1: the remaining terrain carries no objective_role,

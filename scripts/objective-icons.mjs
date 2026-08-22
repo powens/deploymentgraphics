@@ -62,16 +62,24 @@ function polygonGap(A, B) {
  * @returns {Array<{ type: "skull", pos: { x: number, y: number } }>}
  */
 export function objectiveIcons(layout) {
+  // A layout derived by spreading (`{ ...layout, pieces }`) loses the
+  // non-enumerable lookups. Without them nothing resolves, every objective
+  // stands alone, and the clustering below silently stops happening — so say
+  // so instead. Rewrap with withLookups (scripts/terrain-corpus.mjs).
+  if (typeof layout.resolve !== "function") {
+    throw new TypeError(
+      `layout ${layout.id ?? "?"} carries no resolve(); wrap it with withLookups`,
+    );
+  }
   const objectives = layout.pieces.filter((p) => p.is_objective);
   // Resolve each objective to an absolute polygon for the touch test. A piece
   // without a footprint (no template) degenerates to its single position point,
-  // which never touches anything — it simply stands alone.
+  // which never touches anything — it simply stands alone. Every other resolve
+  // failure (a missing parent, an unsupported footprint type) is a data fault
+  // and propagates.
   const polys = objectives.map((p) => {
-    try {
-      return layout.resolve(p);
-    } catch {
-      return [p.position];
-    }
+    const footprint = p.footprint ?? layout.footprintOf(p.template);
+    return footprint ? layout.resolve(p) : [p.position];
   });
 
   // Union-find over touching pairs so a cluster of mutually-touching pieces
