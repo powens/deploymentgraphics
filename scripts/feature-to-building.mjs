@@ -78,21 +78,3 @@ export function featureBuildingPlacement(piece, lookupFootprint, getParent) {
     `piece ${piece.id ?? "?"}: no ${width}" edge to pin for template ${name}`,
   );
 }
-
-/**
- * Resolve every pipe/barricade piece in a layout to a building placement.
- * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
- * @returns {{ buildings: object[], consumedIds: Set<string> }}
- */
-export function featureBuildings(layout) {
-  const buildings = [];
-  const consumedIds = new Set();
-  for (const piece of layout.pieces) {
-    if (!isFeatureBuildingTemplate(piece.template)) continue;
-    buildings.push(
-      featureBuildingPlacement(piece, layout.footprintOf, layout.parentOf),
-    );
-    consumedIds.add(piece.id);
-  }
-  return { buildings, consumedIds };
-}

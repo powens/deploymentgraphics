@@ -4,7 +4,6 @@ import { loadCorpus } from "./terrain-corpus.mjs";
 import {
   isRectFeatureTemplate,
   rectFeaturePlacement,
-  rectFeatures,
 } from "./rect-to-feature.mjs";
 
 const { layouts, footprintOf } = loadCorpus();
@@ -70,18 +69,4 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });
   }
-});
-
-describe("rectFeatures", () => {
-  it("converts every generator and gantry piece and consumes their ids", () => {
-    const L = layouts.find((l) => l.id === "take-and-hold-vs-disruption-1");
-    const { features, consumedIds } = rectFeatures(L);
-    const rectPieces = L.pieces.filter((p) => isRectFeatureTemplate(p.template));
-    expect(features.length).toBe(rectPieces.length);
-    for (const p of rectPieces) expect(consumedIds.has(p.id)).toBe(true);
-    for (const f of features) {
-      expect(["generator", "gantry"]).toContain(f.type);
-      expect(f.mirror).toBe(false);
-    }
-  });
 });

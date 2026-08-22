@@ -159,7 +159,7 @@ export const SIZE_CLASS = {
 //     more than 0.1in, and feature-to-building.mjs pins on a 5.5in edge that a
 //     4.5x0.5 rectangle does not have. Adopting upstream's size here means
 //     redrawing the gw template, not setting a flag.
-//   pipes - maps onto `catwalk`, which ruinFeatures consumes and drops; all it
+//   pipes - maps onto `catwalk`, which layout-to-placements.mjs drops; all it
 //     uses is the resolved centroid, which is the piece's `position` either
 //     way. Measured: switching it changes 0 of 900 features and 0 of 270
 //     buildings, and leaves the roofed count at 20. Left alone as churn.
