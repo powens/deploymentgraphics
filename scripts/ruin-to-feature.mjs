@@ -5,7 +5,8 @@
 // six corner templates (balanced-right, corner-right) are the opposite
 // chirality, so they map to the mirrored `l-ruin-mirror` variant — picked here
 // by the sign of the resolved arm cross product (the same shoe / shoe-mirror
-// trick used in area-to-building.mjs). Catwalk pieces are dropped.
+// trick used in area-to-building.mjs). Which pieces reach this converter -
+// and that catwalks reach none - is decided in layout-to-placements.mjs.
 //
 // No ruin is emitted as a `-roof` variant. Those types still exist and still
 // render (gw.yml hand-authors one), but nothing in the battlemaster corpus says
@@ -158,41 +159,4 @@ function lPieceRefs(piece, lookupFootprint, getParent) {
 export function ruinFeaturePlacement(piece, lookupFootprint, getParent) {
   const { Oa, A1, A2 } = lPieceRefs(piece, lookupFootprint, getParent);
   return featureFromRefs(Oa, A1, A2);
-}
-
-/**
- * Resolve every whole-L corner-ruin in a layout to an `l-ruin` feature
- * placement. Catwalk pieces are consumed (dropped) - upstream models them as
- * standalone composites, and the parent area still becomes a building that
- * already covers upstream's 6x1in `pipes` part. The legacy `catwalk` template
- * that part is normalized onto is 7x2in, so the resolved child does overhang
- * its 6x2in parent by 0.5in at each end (measured: catwalk y 4.5015-11.5015
- * against area y 5.000-11.000). That overhang is an artifact of the oversized
- * legacy template rather than ground upstream draws - see the `pipes` note on
- * PART_TO_TEMPLATE in battlemaster-normalize.mjs - and is accepted, not
- * emitted. Returns the placements plus the set of piece ids the caller should
- * not also emit as area_terrain (ruin pieces and catwalks).
- *
- * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
- * @returns {{ features: object[], consumedIds: Set<string> }}
- */
-export function ruinFeatures(layout) {
-  const consumedIds = new Set();
-  const features = [];
-
-  for (const p of layout.pieces) {
-    if (!isRuinTemplate(p.template)) continue;
-    const footprint = p.footprint ?? layout.footprintOf(p.template);
-    // Only whole-L corner footprints become ruins; any other corner piece
-    // falls through to area_terrain.
-    if (!isLFootprint(footprint)) continue;
-    consumedIds.add(p.id);
-    features.push(ruinFeaturePlacement(p, layout.footprintOf, layout.parentOf));
-  }
-
-  for (const p of layout.pieces) {
-    if (p.template === "catwalk") consumedIds.add(p.id);
-  }
-
-  return { features, consumedIds };
 }

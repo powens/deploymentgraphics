@@ -14,10 +14,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import * as yaml from "js-yaml";
 import { loadCorpus } from "./terrain-corpus.mjs";
-import { areaBuildingPlacement, round } from "./area-to-building.mjs";
-import { ruinFeatures } from "./ruin-to-feature.mjs";
-import { rectFeatures } from "./rect-to-feature.mjs";
-import { featureBuildings } from "./feature-to-building.mjs";
+import { layoutPlacements } from "./layout-to-placements.mjs";
 import { matchupToDispositions } from "./matchup-to-dispositions.mjs";
 import { objectiveIcons } from "./objective-icons.mjs";
 
@@ -27,11 +24,6 @@ const outPath = new URL("../static/data/terrain/combined.yml", import.meta.url);
 // One bootstrap for the whole 40kdc corpus: read, normalize, and hand back
 // layouts that already carry their own footprint/parent/resolve lookups.
 const corpus = loadCorpus();
-
-// Pipes and barricades become building placements (see feature-to-building.mjs).
-// Any other unconsumed, non-area feature piece falls back to a generic
-// `feature` area_terrain zone (coloured by theme.area_terrain.feature).
-const labelFor = () => "feature";
 
 // gw.yml is the hand-authored input: the demo layout ("1"). The ported 40kdc
 // layouts are layered on top of it, so the combined file is a superset of the
@@ -58,43 +50,14 @@ const skipped = corpus.rawLayouts
   .map((l) => l.id);
 
 for (const layout of corpus.missionLayouts) {
-  // Corner-ruins become l-ruin features; catwalk pieces are dropped.
-  // Generators/gantries become rectangle features.
-  // `consumedIds` are the pieces the area_terrain pass must skip.
-  const ruin = ruinFeatures(layout);
-  const rect = rectFeatures(layout);
-  const feat = featureBuildings(layout);
-  const features = [...ruin.features, ...rect.features];
-  const consumedIds = new Set([
-    ...ruin.consumedIds,
-    ...rect.consumedIds,
-    ...feat.consumedIds,
-  ]);
-  const buildings = [];
-  const area_terrain = [];
-  for (const piece of layout.pieces) {
-    if (piece.piece_type === "area") {
-      buildings.push(
-        areaBuildingPlacement(
-          piece,
-          layout.footprintOf(piece.template),
-          corpus.gwTemplates,
-        ),
-      );
-    } else if (!consumedIds.has(piece.id)) {
-      const points = layout.resolve(piece).map((p) => ({
-        x: round(p.x),
-        y: round(p.y),
-      }));
-      area_terrain.push({
-        shape: "polygon",
-        x: 0,
-        y: 0,
-        points,
-        label: labelFor(piece),
-      });
-    }
-  }
+  // One classification pass per layout: areas and pipes/barricades become
+  // building placements, corner-ruins and generators/gantries become features,
+  // catwalks are dropped, and anything left over becomes an area_terrain
+  // polygon. See scripts/layout-to-placements.mjs.
+  const { templates, features, areaTerrain } = layoutPlacements(
+    layout,
+    corpus.gwTemplates,
+  );
   const icons = objectiveIcons(layout);
   // 40kdc layout metadata: the deployment pattern (kept for downstream use,
   // currently unrendered) and the mission matchup split into its two
@@ -104,8 +67,8 @@ for (const layout of corpus.missionLayouts) {
   if (layout.deployment_pattern_id)
     entry.deployment_pattern_id = layout.deployment_pattern_id;
   if (dispositions) entry.dispositions = dispositions;
-  entry.templates = [...buildings, ...feat.buildings];
-  if (area_terrain.length > 0) entry.area_terrain = area_terrain;
+  entry.templates = templates;
+  if (areaTerrain.length > 0) entry.area_terrain = areaTerrain;
   if (features.length > 0) entry.features = features;
   if (icons.length > 0) entry.icons = icons;
   // A gw.yml layout whose id matches this 40kdc layout is a hand-authored

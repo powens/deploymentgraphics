@@ -5,10 +5,17 @@ import {
   isRuinTemplate,
   isLFootprint,
   ruinFeaturePlacement,
-  ruinFeatures,
 } from "./ruin-to-feature.mjs";
+import { layoutPlacements } from "./layout-to-placements.mjs";
 
-const { layouts, missionLayouts, footprintOf } = loadCorpus();
+const { layouts, missionLayouts, footprintOf, gwTemplates } = loadCorpus();
+
+// The ruins one layout emits, read back off the single classification pass that
+// decides which pieces are ruins (scripts/layout-to-placements.mjs).
+const ruinsOf = (L) =>
+  layoutPlacements(L, gwTemplates).features.filter((f) =>
+    f.type.startsWith("l-ruin"),
+  );
 
 // Absolute outline of a placed l-ruin feature (mirrors makeFeatures' transform
 // and the lRuin / lRuinMirror wall paths). Used to check the emitted placement
@@ -238,16 +245,13 @@ describe("roofing guard geometry", () => {
   });
 });
 
-describe("ruinFeatures", () => {
-  it("converts every whole-L ruin and consumes the catwalks", () => {
+describe("ruins over the corpus", () => {
+  it("emits an l-ruin or l-ruin-mirror for every corner piece", () => {
     const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
-    const { features, consumedIds } = ruinFeatures(L);
-    const catwalks = L.pieces.filter((p) => p.template === "catwalk");
-    const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
-    expect(features.length).toBe(ruinPieces.length);
-    for (const p of [...catwalks, ...ruinPieces]) {
-      expect(consumedIds.has(p.id)).toBe(true);
-    }
+    const features = ruinsOf(L);
+    expect(features.length).toBe(
+      L.pieces.filter((p) => isRuinTemplate(p.template)).length,
+    );
     for (const f of features) {
       expect(["l-ruin", "l-ruin-mirror"]).toContain(f.type);
     }
@@ -282,7 +286,7 @@ describe("ruinFeatures", () => {
       .flatMap((l) => l.pieces)
       .filter((p) => p.template === "catwalk");
     expect(catwalks.length).toBe(90);
-    const features = missions.flatMap((l) => ruinFeatures(l).features);
+    const features = missions.flatMap(ruinsOf);
     expect(features.length).toBe(720);
     expect(features.filter((f) => f.type.includes("roof")).length).toBe(0);
 
@@ -320,8 +324,7 @@ describe("ruinFeatures", () => {
     // Upstream filled the two variants that used to be short (12 each), so the
     // corpus is now uniform - this is what retires the gw.yml patch overlay.
     for (const L of missionLayouts) {
-      const { features } = ruinFeatures(L);
-      expect(features.length, L.id).toBe(16);
+      expect(ruinsOf(L).length, L.id).toBe(16);
     }
   });
 });
