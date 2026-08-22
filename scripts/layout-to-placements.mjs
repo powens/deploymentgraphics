@@ -113,7 +113,8 @@ export function layoutPlacements(layout, gwTemplates) {
   const areaTerrain = [];
 
   for (const piece of layout.pieces) {
-    switch (classifyPiece(piece, layout.footprintOf)) {
+    const kind = classifyPiece(piece, layout.footprintOf);
+    switch (kind) {
       case PIECE_KINDS.areaBuilding:
         areaBuildings.push(
           areaBuildingPlacement(
@@ -140,7 +141,7 @@ export function layoutPlacements(layout, gwTemplates) {
         break;
       case PIECE_KINDS.dropped:
         break;
-      default:
+      case PIECE_KINDS.areaTerrain:
         areaTerrain.push({
           shape: "polygon",
           x: 0,
@@ -151,6 +152,11 @@ export function layoutPlacements(layout, gwTemplates) {
           // One generic zone type, coloured by theme.area_terrain.feature.
           label: "feature",
         });
+        break;
+      // Every kind is handled above: a new PIECE_KINDS entry without a case
+      // here is a miscategorisation, not a fallback to area_terrain.
+      default:
+        throw new Error(`unhandled piece kind ${kind}`);
     }
   }
 

@@ -96,7 +96,11 @@ describe("layoutPlacements", () => {
       const dropped = layout.pieces.filter(
         (p) => classifyPiece(p, layout.footprintOf) === PIECE_KINDS.dropped,
       );
-      expect(dropped.length, layout.id).toBeGreaterThan(0);
+      // The dropped set is exactly the catwalks - the corpus-wide count lives
+      // in ruin-to-feature.test.mjs; here we only pin what was dropped.
+      expect(dropped.length, layout.id).toBe(
+        layout.pieces.filter((p) => p.template === "catwalk").length,
+      );
       expect(
         templates.length + features.length + areaTerrain.length,
         layout.id,
