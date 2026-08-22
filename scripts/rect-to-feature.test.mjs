@@ -1,37 +1,18 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
-import { resolvePiece } from "./terrain-resolver.mjs";
+import { ringMismatch } from "./terrain-resolver.mjs";
+import { loadCorpus } from "./terrain-corpus.mjs";
 import {
   isRectFeatureTemplate,
   rectFeaturePlacement,
   rectFeatures,
 } from "./rect-to-feature.mjs";
 
-const read = (name) =>
-  JSON.parse(
-    readFileSync(
-      new URL(`../static/data/terrain/source/40kdc/${name}`, import.meta.url),
-      "utf8",
-    ),
-  );
-import { normalizeLayout } from "./battlemaster-normalize.mjs";
-
-const rawLayouts = read("terrain-layouts.json");
-const rawTemplates = read("terrain-templates.json");
-const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
-// Upstream now ships ruins as `features[]` on composite templates; normalize
-// back to the legacy piece vocabulary these converters consume.
-const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
-const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
-const lookupFootprint = (id) => fpById.get(id);
-
-const getParentFor = (L) => {
-  const byId = new Map(L.pieces.map((p) => [p.id, p]));
-  return (id) => byId.get(id);
-};
+const { layouts, footprintOf } = loadCorpus();
 
 // Absolute outline of a placed rectangle feature: the box corners after
-// makeFeatures' translate(x,y) . rotate(rotation, w/2, h/2).
+// makeFeatures' translate(x,y) . rotate(rotation, w/2, h/2). The outline is
+// reflection-symmetric, so ringMismatch against resolvePiece's ring matches
+// regardless of mirror parity — no mirror variant is needed to compare them.
 function featureFootprint(pl) {
   const { x, y, width: w, height: h, rotation = 0 } = pl;
   const local = [
@@ -55,22 +36,14 @@ function featureFootprint(pl) {
   });
 }
 
-// Max distance from each vertex of one ring to the nearest vertex of the other,
-// in both directions (Hausdorff over vertex sets). Outline is reflection-
-// symmetric, so this matches regardless of mirror parity.
-function ringMismatch(a, b) {
-  const near = (p, ring) =>
-    Math.min(...ring.map((q) => Math.hypot(p.x - q.x, p.y - q.y)));
-  return Math.max(...a.map((p) => near(p, b)), ...b.map((p) => near(p, a)));
-}
-
-// One representative piece per rectangle-feature template, drawn from the source.
+// One representative piece per rectangle-feature template, drawn from the
+// source. The piece rides along with its layout, which carries the lookups
+// needed to resolve it.
 const sample = {};
 for (const L of layouts) {
-  const getParent = getParentFor(L);
   for (const p of L.pieces) {
     if (!isRectFeatureTemplate(p.template)) continue;
-    sample[p.template] ??= { piece: p, getParent };
+    sample[p.template] ??= { piece: p, layout: L };
   }
 }
 
@@ -88,12 +61,12 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
     expect(Object.keys(sample).sort()).toEqual(["gantry", "generator"]);
   });
 
-  for (const [template, { piece, getParent }] of Object.entries(sample)) {
+  for (const [template, { piece, layout }] of Object.entries(sample)) {
     it(`reproduces the ${template} footprint`, () => {
-      const pl = rectFeaturePlacement(piece, lookupFootprint, getParent);
+      const pl = rectFeaturePlacement(piece, footprintOf, layout.parentOf);
       expect(pl.type).toBe(template);
       expect(pl.color).toBe(template === "generator" ? "teal" : "indigo");
-      const target = resolvePiece(piece, lookupFootprint, getParent);
+      const target = layout.resolve(piece);
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });
   }
@@ -102,7 +75,7 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
 describe("rectFeatures", () => {
   it("converts every generator and gantry piece and consumes their ids", () => {
     const L = layouts.find((l) => l.id === "take-and-hold-vs-disruption-1");
-    const { features, consumedIds } = rectFeatures(L, lookupFootprint, getParentFor(L));
+    const { features, consumedIds } = rectFeatures(L);
     const rectPieces = L.pieces.filter((p) => isRectFeatureTemplate(p.template));
     expect(features.length).toBe(rectPieces.length);
     for (const p of rectPieces) expect(consumedIds.has(p.id)).toBe(true);

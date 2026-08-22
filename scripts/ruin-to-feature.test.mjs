@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
-import { resolvePiece } from "./terrain-resolver.mjs";
+import { ringMismatch } from "./terrain-resolver.mjs";
+import { loadCorpus } from "./terrain-corpus.mjs";
 import {
   isRuinTemplate,
   isLFootprint,
@@ -8,23 +8,7 @@ import {
   ruinFeatures,
 } from "./ruin-to-feature.mjs";
 
-const read = (name) =>
-  JSON.parse(
-    readFileSync(
-      new URL(`../static/data/terrain/source/40kdc/${name}`, import.meta.url),
-      "utf8",
-    ),
-  );
-import { normalizeLayout } from "./battlemaster-normalize.mjs";
-
-const rawLayouts = read("terrain-layouts.json");
-const rawTemplates = read("terrain-templates.json");
-const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
-// Upstream now ships ruins as `features[]` on composite templates; normalize
-// back to the legacy piece vocabulary these converters consume.
-const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
-const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
-const lookupFootprint = (id) => fpById.get(id);
+const { layouts, missionLayouts, footprintOf } = loadCorpus();
 
 // Absolute outline of a placed l-ruin feature (mirrors makeFeatures' transform
 // and the lRuin / lRuinMirror wall paths). Used to check the emitted placement
@@ -63,17 +47,6 @@ function featureFootprint(pl) {
       y: (dx * sin + dy * cos) + cy + y,
     };
   });
-}
-
-// Max distance from each vertex of one ring to the nearest vertex of the other,
-// in both directions (Hausdorff over vertex sets).
-function ringMismatch(a, b) {
-  const near = (p, ring) =>
-    Math.min(...ring.map((q) => Math.hypot(p.x - q.x, p.y - q.y)));
-  return Math.max(
-    ...a.map((p) => near(p, b)),
-    ...b.map((p) => near(p, a)),
-  );
 }
 
 // True when segments pq and rs properly straddle one another. Distance alone
@@ -159,26 +132,22 @@ const ringsOverlap = (a, b) => {
   return false;
 };
 
-const getParentFor = (L) => {
-  const byId = new Map(L.pieces.map((p) => [p.id, p]));
-  return (id) => byId.get(id);
-};
-
 // One representative L-ruin piece per corner template, drawn from the source.
+// The piece rides along with its layout, which carries the lookups needed to
+// resolve it.
 const sample = {};
 for (const L of layouts) {
-  const getParent = getParentFor(L);
   for (const p of L.pieces) {
     if (!isRuinTemplate(p.template)) continue;
-    const fp = p.footprint ?? lookupFootprint(p.template);
+    const fp = p.footprint ?? footprintOf(p.template);
     if (!isLFootprint(fp)) continue;
-    sample[p.template] ??= { piece: p, getParent };
+    sample[p.template] ??= { piece: p, layout: L };
   }
 }
 
 describe("isLFootprint", () => {
   it("accepts an L template and rejects a bar", () => {
-    expect(isLFootprint(fpById.get("corner-tiny"))).toBe(true);
+    expect(isLFootprint(footprintOf("corner-tiny"))).toBe(true);
     expect(
       isLFootprint({ type: "rectangle", width: 2, height: 0.25 }),
     ).toBe(false);
@@ -197,22 +166,21 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
     ]);
   });
 
-  for (const [template, { piece, getParent }] of Object.entries(sample)) {
+  const placementOf = ({ piece, layout }) =>
+    ruinFeaturePlacement(piece, footprintOf, layout.parentOf);
+
+  for (const [template, entry] of Object.entries(sample)) {
     it(`reproduces the ${template} footprint`, () => {
-      const pl = ruinFeaturePlacement(piece, lookupFootprint, getParent);
-      const target = resolvePiece(piece, lookupFootprint, getParent);
-      expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
+      const target = entry.layout.resolve(entry.piece);
+      expect(
+        ringMismatch(featureFootprint(placementOf(entry)), target),
+      ).toBeLessThan(0.02);
     });
   }
 
   it("picks the mirror variant for opposite-chirality templates", () => {
-    const right = sample["corner-ruin-right"];
-    const pl = ruinFeaturePlacement(right.piece, lookupFootprint, right.getParent);
-    expect(pl.type).toBe("l-ruin-mirror");
-    const left = sample["corner-ruin-left"];
-    expect(
-      ruinFeaturePlacement(left.piece, lookupFootprint, left.getParent).type,
-    ).toBe("l-ruin");
+    expect(placementOf(sample["corner-ruin-right"]).type).toBe("l-ruin-mirror");
+    expect(placementOf(sample["corner-ruin-left"]).type).toBe("l-ruin");
   });
 
 });
@@ -273,7 +241,7 @@ describe("roofing guard geometry", () => {
 describe("ruinFeatures", () => {
   it("converts every whole-L ruin and consumes the catwalks", () => {
     const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
-    const { features, consumedIds } = ruinFeatures(L, lookupFootprint, getParentFor(L));
+    const { features, consumedIds } = ruinFeatures(L);
     const catwalks = L.pieces.filter((p) => p.template === "catwalk");
     const ruinPieces = L.pieces.filter((p) => isRuinTemplate(p.template));
     expect(features.length).toBe(ruinPieces.length);
@@ -309,14 +277,12 @@ describe("ruinFeatures", () => {
     // reviving. `ringsOverlap` / `ringGap` both run a real segment-crossing
     // test, so a catwalk laid across a ruin arm trips them even though neither
     // ring would then hold a vertex of the other - see the geometry test above.
-    const missions = layouts.filter((l) => l.mission_matchup_id);
+    const missions = missionLayouts;
     const catwalks = missions
       .flatMap((l) => l.pieces)
       .filter((p) => p.template === "catwalk");
     expect(catwalks.length).toBe(90);
-    const features = missions.flatMap(
-      (l) => ruinFeatures(l, lookupFootprint, getParentFor(l)).features,
-    );
+    const features = missions.flatMap((l) => ruinFeatures(l).features);
     expect(features.length).toBe(720);
     expect(features.filter((f) => f.type.includes("roof")).length).toBe(0);
 
@@ -324,16 +290,15 @@ describe("ruinFeatures", () => {
     let siblings = 0;
     let minGap = Infinity;
     for (const L of missions) {
-      const getParent = getParentFor(L);
       const ruins = L.pieces
         .filter(
           (p) =>
             isRuinTemplate(p.template) &&
-            isLFootprint(p.footprint ?? lookupFootprint(p.template)),
+            isLFootprint(p.footprint ?? footprintOf(p.template)),
         )
-        .map((p) => ({ p, ring: resolvePiece(p, lookupFootprint, getParent) }));
+        .map((p) => ({ p, ring: L.resolve(p) }));
       for (const p of L.pieces.filter((q) => q.template === "catwalk")) {
-        const ring = resolvePiece(p, lookupFootprint, getParent);
+        const ring = L.resolve(p);
         for (const r of ruins) {
           const gap = ringGap(ring, r.ring);
           minGap = Math.min(minGap, gap);
@@ -354,8 +319,8 @@ describe("ruinFeatures", () => {
   it("emits 16 whole-L ruins for every mission layout", () => {
     // Upstream filled the two variants that used to be short (12 each), so the
     // corpus is now uniform - this is what retires the gw.yml patch overlay.
-    for (const L of layouts.filter((l) => l.mission_matchup_id)) {
-      const { features } = ruinFeatures(L, lookupFootprint, getParentFor(L));
+    for (const L of missionLayouts) {
+      const { features } = ruinFeatures(L);
       expect(features.length, L.id).toBe(16);
     }
   });

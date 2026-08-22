@@ -1,6 +1,4 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
-import * as yaml from "js-yaml";
 import {
   SIZE_CLASS,
   PART_TO_TEMPLATE,
@@ -16,25 +14,27 @@ import {
   IDENTITY,
   FLIP_X,
   FLIP_Y,
-  normalizeLayout,
   bboxCentre,
   bboxSize,
 } from "./battlemaster-normalize.mjs";
-import { resolvePiece, centroid, footprintPolygon } from "./terrain-resolver.mjs";
+import {
+  resolvePiece,
+  centroid,
+  footprintPolygon,
+  ringMismatch,
+} from "./terrain-resolver.mjs";
+import { loadCorpus } from "./terrain-corpus.mjs";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 
-const read = (name) =>
-  JSON.parse(
-    readFileSync(
-      new URL(`../static/data/terrain/source/40kdc/${name}`, import.meta.url),
-      "utf8",
-    ),
-  );
-const layouts = read("terrain-layouts.json").filter((l) => l.mission_matchup_id);
-const templates = read("terrain-templates.json");
-const byId = new Map(templates.map((t) => [t.id, t]));
-const fpById = new Map(templates.map((t) => [t.id, t.footprint]));
+const corpus = loadCorpus();
+const { templatesById: byId, gwTemplates, footprintOf } = corpus;
+// This suite is the one place that reads both frames: it checks the normalized
+// layouts against the upstream ones they were derived from, so it takes the
+// raw layouts alongside `missionLayouts`. Both come out of the corpus in
+// source order, which is what lets `layouts[i]` and `normalized[i]` pair up.
+const layouts = corpus.rawLayouts.filter((l) => l.mission_matchup_id);
+const normalized = corpus.missionLayouts;
 
 describe("registration tables", () => {
   it("maps every size class and part used by the mission layouts", () => {
@@ -52,9 +52,10 @@ describe("registration tables", () => {
   });
 
   it("targets legacy templates that still exist upstream", () => {
-    for (const id of Object.values(SIZE_CLASS)) expect(fpById.has(id)).toBe(true);
+    for (const id of Object.values(SIZE_CLASS))
+      expect(footprintOf(id), id).toBeDefined();
     for (const { template } of Object.values(PART_TO_TEMPLATE)) {
-      expect(fpById.has(template)).toBe(true);
+      expect(footprintOf(template), template).toBeDefined();
     }
   });
 
@@ -105,8 +106,10 @@ describe("registration tables", () => {
         b.some((q) => Math.hypot(p.x - q.x, p.y - q.y) < 1e-6),
       );
 
-    for (const composite of templates.filter((t) => isCompositeTemplate(t.id))) {
-      const archetype = fpById.get(SIZE_CLASS[classOf(composite)]);
+    for (const composite of [...byId.values()].filter((t) =>
+      isCompositeTemplate(t.id),
+    )) {
+      const archetype = footprintOf(SIZE_CLASS[classOf(composite)]);
       const V = VARIANT[composite.id] ?? IDENTITY;
       const want = centredRing(archetype).map((p) => ({
         x: V[0][0] * p.x + V[0][1] * p.y,
@@ -198,28 +201,6 @@ describe("decompose", () => {
   });
 });
 
-const lookupFootprint = (id) => fpById.get(id);
-const gwTemplates = yaml.load(
-  readFileSync(
-    new URL("../static/data/terrain/templates-simple.yml", import.meta.url),
-    "utf8",
-  ),
-).templates;
-
-const normalized = layouts.map((l) => normalizeLayout(l, byId));
-const parentsOf = (l) => {
-  const map = new Map(l.pieces.map((p) => [p.id, p]));
-  return (id) => map.get(id);
-};
-
-// Max distance from each vertex of one ring to the nearest vertex of the other,
-// in both directions (Hausdorff over vertex sets).
-const ringMismatch = (a, b) => {
-  const near = (p, ring) =>
-    Math.min(...ring.map((q) => Math.hypot(p.x - q.x, p.y - q.y)));
-  return Math.max(...a.map((p) => near(p, b)), ...b.map((p) => near(p, a)));
-};
-
 describe("normalized layouts conform to upstream geometry", () => {
   // The check that pins S. Upstream's `position` anchors the part's *rectangle*
   // centre, which for a rectangle is also its area centroid - the point
@@ -240,8 +221,8 @@ describe("normalized layouts conform to upstream geometry", () => {
     for (let i = 0; i < layouts.length; i++) {
       const src = layouts[i];
       const out = normalized[i];
-      const srcParent = parentsOf(src);
-      const outParent = parentsOf(out);
+      const srcParent = src.parentOf;
+      const outParent = out.parentOf;
       for (const child of out.pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
@@ -261,7 +242,7 @@ describe("normalized layouts conform to upstream geometry", () => {
               rotation_degrees: feature.rotation_degrees ?? 0,
               parent_area_id: areaId,
             },
-            lookupFootprint,
+            footprintOf,
             srcParent,
           ),
         );
@@ -271,14 +252,14 @@ describe("normalized layouts conform to upstream geometry", () => {
         // `child.footprint` first, for the parts that carry upstream's own
         // rectangle instead of a legacy stand-in.
         const ring = footprintPolygon(
-          child.footprint ?? lookupFootprint(child.template),
+          child.footprint ?? footprintOf(child.template),
         );
         const T = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
         const d = {
           x: bboxCentre(ring).x - centroid(ring).x,
           y: bboxCentre(ring).y - centroid(ring).y,
         };
-        const c = centroid(resolvePiece(child, lookupFootprint, outParent));
+        const c = centroid(resolvePiece(child, footprintOf, outParent));
         const got = {
           x: c.x + T[0][0] * d.x + T[0][1] * d.y,
           y: c.y + T[1][0] * d.x + T[1][1] * d.y,
@@ -316,8 +297,8 @@ describe("normalized layouts conform to upstream geometry", () => {
     let worst = 0;
     let checked = 0;
     for (let i = 0; i < layouts.length; i++) {
-      const srcParent = parentsOf(layouts[i]);
-      const outParent = parentsOf(normalized[i]);
+      const srcParent = layouts[i].parentOf;
+      const outParent = normalized[i].parentOf;
       for (const child of normalized[i].pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
@@ -340,7 +321,7 @@ describe("normalized layouts conform to upstream geometry", () => {
           expect(ring.length, `${child.id} (${part})`).toBe(6);
           // Q turns the legacy drawing into the part's frame, so a quarter-turn
           // swaps which upstream side each legacy axis has to match.
-          const want = bboxSize(lookupFootprint(feature.template));
+          const want = bboxSize(footprintOf(feature.template));
           const quarter = PART_TO_TEMPLATE[part].turn % 180 !== 0;
           const got = bboxSize(child.footprint);
           expect(
@@ -349,7 +330,7 @@ describe("normalized layouts conform to upstream geometry", () => {
           ).toEqual(quarter ? [want.height, want.width] : [want.width, want.height]);
           continue;
         }
-        expect(child.footprint).toEqual(lookupFootprint(feature.template));
+        expect(child.footprint).toEqual(footprintOf(feature.template));
         // Same footprint, same frame: the emitted child must land on upstream's
         // outline vertex for vertex, not merely near it.
         const truth = resolvePiece(
@@ -360,12 +341,12 @@ describe("normalized layouts conform to upstream geometry", () => {
             rotation_degrees: feature.rotation_degrees ?? 0,
             parent_area_id: areaId,
           },
-          lookupFootprint,
+          footprintOf,
           srcParent,
         );
         worst = Math.max(
           worst,
-          ringMismatch(resolvePiece(child, lookupFootprint, outParent), truth),
+          ringMismatch(resolvePiece(child, footprintOf, outParent), truth),
         );
         checked++;
       }
@@ -387,8 +368,8 @@ describe("normalized layouts conform to upstream geometry", () => {
     for (let i = 0; i < layouts.length; i++) {
       const src = layouts[i];
       const out = normalized[i];
-      const srcParent = parentsOf(src);
-      const outParent = parentsOf(out);
+      const srcParent = src.parentOf;
+      const outParent = out.parentOf;
       for (const child of out.pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
@@ -421,12 +402,12 @@ describe("normalized layouts conform to upstream geometry", () => {
   it("keeps the trapezoid areas on their upstream outline", () => {
     let worst = 0;
     for (let i = 0; i < layouts.length; i++) {
-      const srcParent = parentsOf(layouts[i]);
+      const srcParent = layouts[i].parentOf;
       for (const piece of normalized[i].pieces) {
         if (piece.template !== "area-trapezoid") continue;
         const placement = areaBuildingPlacement(
           piece,
-          lookupFootprint(piece.template),
+          footprintOf(piece.template),
           gwTemplates,
         );
         // Rebuild the rendered outline: TL is the template origin and the
@@ -446,7 +427,7 @@ describe("normalized layouts conform to upstream geometry", () => {
         }));
         const truth = resolvePiece(
           srcParent(piece.id),
-          lookupFootprint,
+          footprintOf,
           srcParent,
         );
         worst = Math.max(worst, ringMismatch(drawn, truth));
@@ -458,13 +439,13 @@ describe("normalized layouts conform to upstream geometry", () => {
   it("renders each chiral part as exactly one l-ruin variant", () => {
     const seen = {};
     for (const layout of normalized) {
-      const getParent = parentsOf(layout);
+      const getParent = layout.parentOf;
       for (const piece of layout.pieces) {
         if (piece.piece_type !== "feature") continue;
         if (!piece.template.startsWith("corner-")) continue;
         const placement = ruinFeaturePlacement(
           piece,
-          lookupFootprint,
+          footprintOf,
           getParent,
           false,
         );
@@ -508,9 +489,9 @@ describe("normalized layouts conform to upstream geometry", () => {
 describe("board invariants", () => {
   it("keeps every resolved vertex on the 60x44 board", () => {
     for (const layout of normalized) {
-      const getParent = parentsOf(layout);
+      const getParent = layout.parentOf;
       for (const piece of layout.pieces) {
-        for (const v of resolvePiece(piece, lookupFootprint, getParent)) {
+        for (const v of resolvePiece(piece, footprintOf, getParent)) {
           expect(v.x, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
           expect(v.x, `${layout.id} ${piece.id}`).toBeLessThanOrEqual(60.5);
           expect(v.y, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
@@ -524,10 +505,10 @@ describe("board invariants", () => {
     let worst = 0;
     const loose = { area: 0, feature: 0 };
     for (const layout of normalized) {
-      const getParent = parentsOf(layout);
+      const getParent = layout.parentOf;
       const pts = layout.pieces.map((p) => ({
         kind: p.piece_type,
-        c: centroid(resolvePiece(p, lookupFootprint, getParent)),
+        c: centroid(resolvePiece(p, footprintOf, getParent)),
       }));
       for (const a of pts) {
         const target = { x: 60 - a.c.x, y: 44 - a.c.y };

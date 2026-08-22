@@ -81,17 +81,17 @@ export function featureBuildingPlacement(piece, lookupFootprint, getParent) {
 
 /**
  * Resolve every pipe/barricade piece in a layout to a building placement.
- * @param {object} layout - a 40kdc layout ({ pieces }).
- * @param {(id: string) => object | undefined} lookupFootprint
- * @param {(id: string) => object | undefined} getParent
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @returns {{ buildings: object[], consumedIds: Set<string> }}
  */
-export function featureBuildings(layout, lookupFootprint, getParent) {
+export function featureBuildings(layout) {
   const buildings = [];
   const consumedIds = new Set();
   for (const piece of layout.pieces) {
     if (!isFeatureBuildingTemplate(piece.template)) continue;
-    buildings.push(featureBuildingPlacement(piece, lookupFootprint, getParent));
+    buildings.push(
+      featureBuildingPlacement(piece, layout.footprintOf, layout.parentOf),
+    );
     consumedIds.add(piece.id);
   }
   return { buildings, consumedIds };

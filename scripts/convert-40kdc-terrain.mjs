@@ -13,8 +13,7 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 import * as yaml from "js-yaml";
-import { resolvePiece } from "./terrain-resolver.mjs";
-import { normalizeLayout } from "./battlemaster-normalize.mjs";
+import { loadCorpus } from "./terrain-corpus.mjs";
 import { areaBuildingPlacement, round } from "./area-to-building.mjs";
 import { ruinFeatures } from "./ruin-to-feature.mjs";
 import { rectFeatures } from "./rect-to-feature.mjs";
@@ -22,23 +21,12 @@ import { featureBuildings } from "./feature-to-building.mjs";
 import { matchupToDispositions } from "./matchup-to-dispositions.mjs";
 import { objectiveIcons } from "./objective-icons.mjs";
 
-const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const gwPath = new URL("../static/data/terrain/gw.yml", import.meta.url);
-const templatesPath = new URL(
-  "../static/data/terrain/templates-simple.yml",
-  import.meta.url,
-);
 const outPath = new URL("../static/data/terrain/combined.yml", import.meta.url);
 
-const readJson = (name) =>
-  JSON.parse(readFileSync(new URL(name, srcDir), "utf8"));
-
-const layouts = readJson("terrain-layouts.json");
-const templates = readJson("terrain-templates.json");
-
-const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
-const lookupFootprint = (id) => footprintById.get(id);
-const templatesById = new Map(templates.map((t) => [t.id, t]));
+// One bootstrap for the whole 40kdc corpus: read, normalize, and hand back
+// layouts that already carry their own footprint/parent/resolve lookups.
+const corpus = loadCorpus();
 
 // Pipes and barricades become building placements (see feature-to-building.mjs).
 // Any other unconsumed, non-area feature piece falls back to a generic
@@ -48,41 +36,34 @@ const labelFor = () => "feature";
 // gw.yml is the hand-authored input: the demo layout ("1"). The ported 40kdc
 // layouts are layered on top of it, so the combined file is a superset of the
 // demo with the real layouts added. Building templates come from
-// templates-simple.yml; they are only read here to size `area` placements and
-// are NOT written to combined.yml (gen-presets merges them into the preset).
+// templates-simple.yml (via the corpus); they are only read to size `area`
+// placements and are NOT written to combined.yml (gen-presets merges them into
+// the preset).
 const gw = yaml.load(readFileSync(gwPath, "utf8"));
-const gwTemplates =
-  yaml.load(readFileSync(templatesPath, "utf8")).templates ?? {};
 const out = {
   layout: { ...(gw.layout ?? {}) },
 };
 
-const skipped = [];
-for (let layout of layouts) {
-  // Skip fan-format layouts that fall outside GW's mission system. These carry
-  // no mission_matchup_id and bring their own terrain templates that have no
-  // gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum layout
-  // with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
-  // separate feature; excluding them keeps `make update-terrain` re-runnable
-  // and auto-skips any future fan variant (also matchup-less) rather than
-  // throwing on an unmapped template.
-  if (!layout.mission_matchup_id) {
-    skipped.push(layout.id);
-    continue;
-  }
-  // Upstream's battlemaster-11e re-source moved the ruins, pipes and generators
-  // out of the layout and onto composite *templates*. Rewrite them back into
-  // the legacy piece vocabulary before anything below touches the layout - see
-  // scripts/battlemaster-normalize.mjs.
-  layout = normalizeLayout(layout, templatesById);
-  const byId = new Map(layout.pieces.map((p) => [p.id, p]));
-  const getParent = (id) => byId.get(id);
+// Fan-format layouts that fall outside GW's mission system are left out. These
+// carry no mission_matchup_id and bring their own terrain templates that have
+// no gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum
+// layout with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
+// separate feature; excluding them keeps `make update-terrain` re-runnable and
+// auto-skips any future fan variant (also matchup-less) rather than throwing on
+// an unmapped template. Reading `corpus.missionLayouts` (rather than filtering
+// `corpus.layouts`) is what keeps that true: the corpus normalizes the mission
+// set without ever normalizing the layouts skipped here.
+const skipped = corpus.rawLayouts
+  .filter((l) => !l.mission_matchup_id)
+  .map((l) => l.id);
+
+for (const layout of corpus.missionLayouts) {
   // Corner-ruins become l-ruin features; catwalk pieces are dropped.
   // Generators/gantries become rectangle features.
   // `consumedIds` are the pieces the area_terrain pass must skip.
-  const ruin = ruinFeatures(layout, lookupFootprint, getParent);
-  const rect = rectFeatures(layout, lookupFootprint, getParent);
-  const feat = featureBuildings(layout, lookupFootprint, getParent);
+  const ruin = ruinFeatures(layout);
+  const rect = rectFeatures(layout);
+  const feat = featureBuildings(layout);
   const features = [...ruin.features, ...rect.features];
   const consumedIds = new Set([
     ...ruin.consumedIds,
@@ -96,12 +77,12 @@ for (let layout of layouts) {
       buildings.push(
         areaBuildingPlacement(
           piece,
-          lookupFootprint(piece.template),
-          gwTemplates,
+          layout.footprintOf(piece.template),
+          corpus.gwTemplates,
         ),
       );
     } else if (!consumedIds.has(piece.id)) {
-      const points = resolvePiece(piece, lookupFootprint, getParent).map((p) => ({
+      const points = layout.resolve(piece).map((p) => ({
         x: round(p.x),
         y: round(p.y),
       }));
@@ -114,7 +95,7 @@ for (let layout of layouts) {
       });
     }
   }
-  const icons = objectiveIcons(layout, lookupFootprint, getParent);
+  const icons = objectiveIcons(layout);
   // 40kdc layout metadata: the deployment pattern (kept for downstream use,
   // currently unrendered) and the mission matchup split into its two
   // dispositions. Both are absent on the hand-authored demo layout.

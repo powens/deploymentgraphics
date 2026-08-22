@@ -59,17 +59,17 @@ export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
  * Returns the placements plus the set of piece ids the caller should not also
  * emit as area_terrain.
  *
- * @param {object} layout - a 40kdc layout ({ pieces }).
- * @param {(id: string) => object} lookupFootprint
- * @param {(id: string) => object} getParent
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @returns {{ features: object[], consumedIds: Set<string> }}
  */
-export function rectFeatures(layout, lookupFootprint, getParent) {
+export function rectFeatures(layout) {
   const features = [];
   const consumedIds = new Set();
   for (const piece of layout.pieces) {
     if (!isRectFeatureTemplate(piece.template)) continue;
-    features.push(rectFeaturePlacement(piece, lookupFootprint, getParent));
+    features.push(
+      rectFeaturePlacement(piece, layout.footprintOf, layout.parentOf),
+    );
     consumedIds.add(piece.id);
   }
   return { features, consumedIds };

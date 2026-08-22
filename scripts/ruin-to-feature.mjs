@@ -173,23 +173,21 @@ export function ruinFeaturePlacement(piece, lookupFootprint, getParent) {
  * emitted. Returns the placements plus the set of piece ids the caller should
  * not also emit as area_terrain (ruin pieces and catwalks).
  *
- * @param {object} layout - a 40kdc layout ({ pieces }).
- * @param {(id: string) => object} lookupFootprint
- * @param {(id: string) => object} getParent
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @returns {{ features: object[], consumedIds: Set<string> }}
  */
-export function ruinFeatures(layout, lookupFootprint, getParent) {
+export function ruinFeatures(layout) {
   const consumedIds = new Set();
   const features = [];
 
   for (const p of layout.pieces) {
     if (!isRuinTemplate(p.template)) continue;
-    const footprint = p.footprint ?? lookupFootprint(p.template);
+    const footprint = p.footprint ?? layout.footprintOf(p.template);
     // Only whole-L corner footprints become ruins; any other corner piece
     // falls through to area_terrain.
     if (!isLFootprint(footprint)) continue;
     consumedIds.add(p.id);
-    features.push(ruinFeaturePlacement(p, lookupFootprint, getParent));
+    features.push(ruinFeaturePlacement(p, layout.footprintOf, layout.parentOf));
   }
 
   for (const p of layout.pieces) {
