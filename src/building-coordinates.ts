@@ -1,6 +1,11 @@
+import { bounds, type Point } from "./geometry.js";
+
 export type Anchor = "TL" | "TR" | "BL" | "BR";
-export type Point = { x: number; y: number };
 export type CanvasSize = { width: number; height: number };
+
+// `Point` is plane geometry, owned by `geometry.ts`; re-exported here because
+// the template and corner vocabulary below is spelled in terms of it.
+export type { Point };
 
 /** A corner: { x, y } with an optional `from` anchor override. x/y are inward distances. */
 export type CornerSpec = { x: number; y: number; from?: Anchor };
@@ -127,17 +132,14 @@ export function templateBounds(
       }
       return { width, height };
     }
-    const xs = points.map((p) => p.x);
-    const ys = points.map((p) => p.y);
-    const minX = Math.min(...xs);
-    const minY = Math.min(...ys);
+    const { minX, minY, maxX, maxY } = bounds(points);
     if (minX !== 0 || minY !== 0) {
       throw new Error(
         `template ${name}: polygon bounding box must start at 0,0 ` +
           `(got ${minX},${minY})`,
       );
     }
-    return { width: Math.max(...xs), height: Math.max(...ys) };
+    return { width: maxX, height: maxY };
   }
   if ("width" in template && "height" in template) {
     return { width: template.width, height: template.height };
@@ -172,13 +174,7 @@ export function localCorner(
   }
 }
 
-/** Rotates a point about the origin by `rad` radians. */
-export function rotate(p: Point, rad: number): Point {
-  const cos = Math.cos(rad);
-  const sin = Math.sin(rad);
-  return { x: p.x * cos - p.y * sin, y: p.x * sin + p.y * cos };
-}
-
 // Building placement resolution (corner-pin -> resolved geometry) and the
 // canonical `Placed` form live in `placement.ts`, which builds on these
-// primitives (`resolveCorner`, `templateBounds`, `localCorner`, `rotate`).
+// primitives (`resolveCorner`, `templateBounds`, `localCorner`) and on
+// `geometry.ts` for the plane maths underneath them.

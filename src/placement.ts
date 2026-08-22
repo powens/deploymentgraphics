@@ -1,15 +1,20 @@
 import {
   localCorner,
   resolveCorner,
-  rotate,
   templateBounds,
   type Anchor,
   type BuildingPlacement,
   type CanvasSize,
   type CornerSpec,
-  type Point,
   type Template,
 } from "./building-coordinates.js";
+import {
+  normalizeDegrees,
+  rotate,
+  toRadians,
+  type Point,
+  type Ring,
+} from "./geometry.js";
 import type { FeaturePlacement } from "./terrain-config.js";
 
 /** An axis-aligned box in canvas inches; (x,y) is the unrotated top-left. */
@@ -39,6 +44,27 @@ export function placedTransform(placed: Placed): string {
     `translate(${placed.box.x} ${placed.box.y}) ` +
     `rotate(${placed.rotation} ${placed.box.width / 2} ${placed.box.height / 2})`
   );
+}
+
+/**
+ * Draws a template-local ring through a `Placed` — the same centre-pivot map
+ * `placedTransform` hands the SVG renderer, applied in JavaScript instead.
+ *
+ * This is what a converter's output has to be checked against: a converter fits
+ * a placement to a resolved footprint, and the only way to know the fit is
+ * right is to put the template's own ring back through the placement and
+ * compare. Spelling that by hand — which five converter test files each did —
+ * means a pivot bug can hide by being made twice, once in the converter and
+ * once in the check.
+ */
+export function placedRing(ring: Ring, placed: Placed): Ring {
+  const rad = toRadians(placed.rotation);
+  const cx = placed.box.width / 2;
+  const cy = placed.box.height / 2;
+  return ring.map((p) => {
+    const r = rotate({ x: p.x - cx, y: p.y - cy }, rad);
+    return { x: placed.box.x + cx + r.x, y: placed.box.y + cy + r.y };
+  });
 }
 
 /**
@@ -127,7 +153,7 @@ function resolvePrimary(
   // Origin-pivot landing of the template origin, then converted to a
   // centre-pivot box: box = translate + (Rot(theta)·c - c).
   const translate: Point = { x: pA.x - rotatedLA.x, y: pA.y - rotatedLA.y };
-  const rotation = ((((theta * 180) / Math.PI) % 360) + 360) % 360;
+  const rotation = normalizeDegrees((theta * 180) / Math.PI);
   const c: Point = { x: size.width / 2, y: size.height / 2 };
   const rc = rotate(c, theta);
   return {

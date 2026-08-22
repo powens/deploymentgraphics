@@ -1,4 +1,18 @@
-import { footprintPolygon, centroid } from "./terrain-resolver.mjs";
+import { footprintPolygon } from "./terrain-resolver.mjs";
+import {
+  FLIP_X,
+  FLIP_Y,
+  IDENTITY,
+  boundsCentre,
+  boundsSize,
+  centroid,
+  det,
+  matmul,
+  matvec,
+  normalizeDegrees,
+  rotationMatrix,
+  toDegrees,
+} from "../src/geometry.ts";
 
 // Translates upstream 40kdc "battlemaster-11e" composite layouts back into the
 // legacy piece vocabulary the rest of this pipeline was built for.
@@ -237,10 +251,6 @@ export const FEATURE_KEYS = new Set([
   "rotation_degrees",
 ]);
 
-export const IDENTITY = [[1, 0], [0, 1]];
-export const FLIP_X = [[-1, 0], [0, 1]];
-export const FLIP_Y = [[1, 0], [0, -1]];
-
 // Composites whose footprint is a rigid transform of their archetype rather
 // than a copy of it. Everything absent from this table is byte-identical to its
 // archetype; the registration test enforces that.
@@ -278,30 +288,15 @@ export function partOf(templateId) {
   return part;
 }
 
-export const matmul = (A, B) => [
-  [A[0][0] * B[0][0] + A[0][1] * B[1][0], A[0][0] * B[0][1] + A[0][1] * B[1][1]],
-  [A[1][0] * B[0][0] + A[1][1] * B[1][0], A[1][0] * B[0][1] + A[1][1] * B[1][1]],
-];
-
-export const matvec = (A, v) => ({
-  x: A[0][0] * v.x + A[0][1] * v.y,
-  y: A[1][0] * v.x + A[1][1] * v.y,
-});
-
-export const det = (A) => A[0][0] * A[1][1] - A[0][1] * A[1][0];
-
-/** Rotation matrix for an angle in degrees. */
-export function rotation(deg) {
-  const t = (deg * Math.PI) / 180;
-  return [
-    [Math.cos(t), -Math.sin(t)],
-    [Math.sin(t), Math.cos(t)],
-  ];
-}
-
-/** Normalise degrees into [0, 360), snapping away float noise. */
+/**
+ * `normalizeDegrees` plus a float-noise snap. The angles here come out of
+ * `atan2` on composed matrices, so an exact quarter-turn arrives as
+ * 89.99999999999999 or as a hair under 360 — either of which would be written
+ * into the emitted corpus verbatim. The renderer's own normalisation has no
+ * such problem and stays exact.
+ */
 const normDeg = (deg) => {
-  const r = Math.round((((deg % 360) + 360) % 360) * 1e6) / 1e6;
+  const r = Math.round(normalizeDegrees(deg) * 1e6) / 1e6;
   return r === 360 ? 0 : r;
 };
 
@@ -315,7 +310,7 @@ export function decompose(A) {
   const improper = det(A) < 0;
   const R = improper ? matmul(A, FLIP_X) : A;
   const out = {
-    rotation_degrees: normDeg((Math.atan2(R[1][0], R[0][0]) * 180) / Math.PI),
+    rotation_degrees: normDeg(toDegrees(Math.atan2(R[1][0], R[0][0]))),
   };
   if (improper) out.mirror = "horizontal";
   return out;
@@ -323,13 +318,7 @@ export function decompose(A) {
 
 /** Width and height of a footprint's axis-aligned bounding box. */
 export function bboxSize(footprint) {
-  const ring = footprintPolygon(footprint);
-  const xs = ring.map((p) => p.x);
-  const ys = ring.map((p) => p.y);
-  return {
-    width: Math.max(...xs) - Math.min(...xs),
-    height: Math.max(...ys) - Math.min(...ys),
-  };
+  return boundsSize(footprintPolygon(footprint));
 }
 
 /**
@@ -391,16 +380,6 @@ export function scaleToUpstream(legacy, upstream, turn, part = "?") {
   return out;
 }
 
-/** Centre of a ring's axis-aligned bounding box. */
-export function bboxCentre(points) {
-  const xs = points.map((p) => p.x);
-  const ys = points.map((p) => p.y);
-  return {
-    x: (Math.min(...xs) + Math.max(...xs)) / 2,
-    y: (Math.min(...ys) + Math.max(...ys)) / 2,
-  };
-}
-
 /**
  * S: the part-frame offset re-anchoring a legacy footprint from the area
  * centroid resolvePiece uses onto the bbox centre upstream's `position` means.
@@ -409,7 +388,7 @@ export function bboxCentre(points) {
 export function anchorOffset(footprint) {
   const ring = footprintPolygon(footprint);
   const c = centroid(ring);
-  const b = bboxCentre(ring);
+  const b = boundsCentre(ring);
   return { x: c.x - b.x, y: c.y - b.y };
 }
 
@@ -421,7 +400,7 @@ export function pieceMatrix(piece) {
       : piece.mirror === "vertical"
         ? FLIP_Y
         : IDENTITY;
-  return matmul(rotation(piece.rotation_degrees ?? 0), S);
+  return matmul(rotationMatrix(piece.rotation_degrees ?? 0), S);
 }
 
 /**
@@ -532,8 +511,8 @@ export function normalizeLayout(layout, templatesById) {
       // quarter-turn not commuting with FLIP_X), and the pre-pull corpus picks
       // this one there by 51/68 exact matches against 2/68.
       const A = matmul(
-        matmul(V, rotation(feature.rotation_degrees ?? 0)),
-        matmul(K, rotation(turn)),
+        matmul(V, rotationMatrix(feature.rotation_degrees ?? 0)),
+        matmul(K, rotationMatrix(turn)),
       );
       // S rides through the child's full map, so it is applied after Q: what it
       // re-anchors is the polygon as finally oriented, not as drawn. It is zero

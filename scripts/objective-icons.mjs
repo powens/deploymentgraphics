@@ -18,40 +18,12 @@
 // threshold separates them cleanly.
 
 import { round } from "./area-to-building.mjs";
+import { ringGap } from "../src/geometry.ts";
 
 // Footprint gap (inches) at or below which two objective pieces count as one
 // objective. Sits in the empty band between the touching pairs (<=0.03) and the
 // nearest genuinely-separate pair (2.83).
 const TOUCH_GAP = 0.5;
-
-/** Distance from point `p` to segment `a`-`b`. */
-function pointSegDistance(p, a, b) {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  const len2 = dx * dx + dy * dy;
-  let t = len2 ? ((p.x - a.x) * dx + (p.y - a.y) * dy) / len2 : 0;
-  t = Math.max(0, Math.min(1, t));
-  return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
-}
-
-/**
- * Smallest distance between the edges of two simple polygons. Zero (or near it)
- * when they touch or overlap. Treats each ring as closed.
- */
-function polygonGap(A, B) {
-  let min = Infinity;
-  for (const p of A) {
-    for (let j = 0; j < B.length; j++) {
-      min = Math.min(min, pointSegDistance(p, B[j], B[(j + 1) % B.length]));
-    }
-  }
-  for (const p of B) {
-    for (let j = 0; j < A.length; j++) {
-      min = Math.min(min, pointSegDistance(p, A[j], A[(j + 1) % A.length]));
-    }
-  }
-  return min;
-}
 
 /**
  * Build the objective markers for a layout. Each `is_objective` piece is one
@@ -91,7 +63,7 @@ export function objectiveIcons(layout) {
   };
   for (let i = 0; i < objectives.length; i++) {
     for (let j = i + 1; j < objectives.length; j++) {
-      if (polygonGap(polys[i], polys[j]) <= TOUCH_GAP) {
+      if (ringGap(polys[i], polys[j]) <= TOUCH_GAP) {
         parent[find(i)] = find(j);
       }
     }

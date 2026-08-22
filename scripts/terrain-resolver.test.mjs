@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { resolvePiece, centroid } from "./terrain-resolver.mjs";
+import { resolvePiece } from "./terrain-resolver.mjs";
+import { centroid } from "../src/geometry.ts";
 
 const TRAPEZOID = {
   type: "polygon",

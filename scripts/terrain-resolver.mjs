@@ -8,6 +8,12 @@
 // Verified against the upstream terrain-resolver conformance suite.
 // Order (per piece): center -> mirror -> rotate -> translate; for a child the
 // parent's (mirror -> rotate -> translate) is applied last.
+//
+// The plane maths under all of this — centroids, rotation, ring comparison —
+// belongs to src/geometry.ts, which the renderer shares. This module owns only
+// the part that knows what a *piece* is.
+
+import { centroid, rotate, toRadians } from "../src/geometry.ts";
 
 /** Footprint as a closed ring of { x, y } points. */
 export function footprintPolygon(footprint) {
@@ -26,54 +32,13 @@ export function footprintPolygon(footprint) {
   throw new Error(`unsupported footprint type: ${footprint.type}`);
 }
 
-/**
- * Area centroid of a simple polygon (shoelace). Falls back to the vertex
- * average for a degenerate (zero-area) ring.
- */
-export function centroid(points) {
-  let area = 0;
-  let cx = 0;
-  let cy = 0;
-  for (let i = 0; i < points.length; i++) {
-    const p = points[i];
-    const q = points[(i + 1) % points.length];
-    const cross = p.x * q.y - q.x * p.y;
-    area += cross;
-    cx += (p.x + q.x) * cross;
-    cy += (p.y + q.y) * cross;
-  }
-  if (area === 0) {
-    const n = points.length;
-    return {
-      x: points.reduce((s, p) => s + p.x, 0) / n,
-      y: points.reduce((s, p) => s + p.y, 0) / n,
-    };
-  }
-  return { x: cx / (3 * area), y: cy / (3 * area) };
-}
-
-/**
- * How far apart two rings are: the largest distance from a vertex of either
- * ring to the nearest vertex of the other (Hausdorff over vertex sets). Used
- * by the converter tests to check an emitted placement reproduces the ring
- * `resolvePiece` derives from the source footprint.
- */
-export function ringMismatch(a, b) {
-  const near = (p, ring) =>
-    Math.min(...ring.map((q) => Math.hypot(p.x - q.x, p.y - q.y)));
-  return Math.max(...a.map((p) => near(p, b)), ...b.map((p) => near(p, a)));
-}
-
 /** Apply a piece's own mirror then rotation to a centred point (no translate). */
 function orient(x, y, piece) {
-  let ox = x;
-  let oy = y;
-  if (piece.mirror === "horizontal") ox = -ox;
-  if (piece.mirror === "vertical") oy = -oy;
-  const t = ((piece.rotation_degrees ?? 0) * Math.PI) / 180;
-  const cos = Math.cos(t);
-  const sin = Math.sin(t);
-  return { x: ox * cos - oy * sin, y: ox * sin + oy * cos };
+  const mirrored = {
+    x: piece.mirror === "horizontal" ? -x : x,
+    y: piece.mirror === "vertical" ? -y : y,
+  };
+  return rotate(mirrored, toRadians(piece.rotation_degrees ?? 0));
 }
 
 /** Full placement transform: mirror -> rotate -> translate(piece.position). */

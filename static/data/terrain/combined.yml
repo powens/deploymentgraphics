@@ -8773,8 +8773,8 @@ layout:
         objective_role: expansion
       - type: skull
         pos:
-          x: 29.634
-          'y': 19.034
+          x: 30
+          'y': 22
         objective_role: center
       - type: fortress
         pos:
@@ -8786,11 +8786,6 @@ layout:
           x: 37.442
           'y': 36.228
         objective_role: expansion
-      - type: skull
-        pos:
-          x: 30.366
-          'y': 24.966
-        objective_role: center
   purge-the-foe-vs-purge-the-foe-1:
     deployment_pattern_id: search-and-destroy
     dispositions:

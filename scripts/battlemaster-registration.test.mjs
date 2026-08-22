@@ -7,25 +7,27 @@ import {
   classOf,
   partOf,
   decompose,
-  matmul,
-  det,
-  rotation,
   pieceMatrix,
-  IDENTITY,
-  FLIP_X,
-  FLIP_Y,
-  bboxCentre,
   bboxSize,
 } from "./battlemaster-normalize.mjs";
+import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
 import {
-  resolvePiece,
+  FLIP_X,
+  FLIP_Y,
+  IDENTITY,
+  boundsCentre as bboxCentre,
   centroid,
-  footprintPolygon,
+  det,
+  matmul,
   ringMismatch,
-} from "./terrain-resolver.mjs";
+  rotationMatrix as rotation,
+} from "../src/geometry.ts";
+import { placedRing, resolvePlacement } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { ruinFeaturePlacement } from "./ruin-to-feature.mjs";
+
+const CANVAS = { width: 60, height: 44 };
 
 const corpus = loadCorpus();
 const { templatesById: byId, gwTemplates, footprintOf } = corpus;
@@ -410,21 +412,17 @@ describe("normalized layouts conform to upstream geometry", () => {
           footprintOf(piece.template),
           gwTemplates,
         );
-        // Rebuild the rendered outline: TL is the template origin and the
-        // TL->TR vector is its local +x axis.
+        // Rebuild the rendered outline by crossing the placement seam: resolve
+        // the corner-pin placement to a `Placed`, then draw the template's own
+        // ring through it. Re-deriving the pin math here would let the same
+        // pivot mistake hide in both the converter and its check.
         const gw = gwTemplates[placement.type];
         const local = gw.points ?? [
           { x: 0, y: 0 }, { x: gw.width, y: 0 },
           { x: gw.width, y: gw.height }, { x: 0, y: gw.height },
         ];
-        const W = Math.max(...local.map((p) => p.x));
-        const { TL, TR } = placement.corners;
-        const ux = (TR.x - TL.x) / W;
-        const uy = (TR.y - TL.y) / W;
-        const drawn = local.map((p) => ({
-          x: TL.x + p.x * ux - p.y * uy,
-          y: TL.y + p.x * uy + p.y * ux,
-        }));
+        const [placed] = resolvePlacement(placement, gwTemplates, CANVAS);
+        const drawn = placedRing(local, placed);
         const truth = resolvePiece(
           srcParent(piece.id),
           footprintOf,

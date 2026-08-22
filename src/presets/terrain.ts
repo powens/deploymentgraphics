@@ -8361,11 +8361,7 @@ export const gwTerrain: TerrainConfig = {
           pos: { x: 22.558, y: 7.772 },
           objective_role: "expansion",
         },
-        {
-          type: "skull",
-          pos: { x: 29.634, y: 19.034 },
-          objective_role: "center",
-        },
+        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
         {
           type: "fortress",
           pos: { x: 47.555, y: 23.269 },
@@ -8375,11 +8371,6 @@ export const gwTerrain: TerrainConfig = {
           type: "skull",
           pos: { x: 37.442, y: 36.228 },
           objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 30.366, y: 24.966 },
-          objective_role: "center",
         },
       ],
     },
