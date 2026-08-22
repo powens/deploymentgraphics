@@ -32,9 +32,7 @@ export type Placed = {
  * The transform that draws a `Placed`: translate to the box top-left, then
  * rotate about the box centre `(width/2, height/2)`. The single owner of the
  * centre-pivot convention — every renderer of a `Placed` (buildings, features)
- * crosses this seam instead of re-spelling the pivot. Note: `ResolvedBuilding`
- * below rotates about the *top-left* (origin-pivot), a different convention,
- * and must NOT use this.
+ * crosses this seam instead of re-spelling the pivot.
  */
 export function placedTransform(placed: Placed): string {
   return (
@@ -186,38 +184,4 @@ export function resolveFeature(
     rotation: feature.rotation ?? 0,
   };
   return withMirror(primary, feature.mirror, canvas);
-}
-
-/**
- * Origin-pivot resolved building: an unrotated top-left `translate` plus a
- * rotation taken *about that top-left*, rather than about the box centre.
- */
-export type ResolvedBuilding = {
-  templateName: string;
-  translate: Point;
-  rotation: number; // degrees, [0, 360)
-};
-
-/** Converts a centre-pivot `Placed` to its origin-pivot form. */
-function placedToOrigin(placed: Placed): ResolvedBuilding {
-  const c: Point = { x: placed.box.width / 2, y: placed.box.height / 2 };
-  const rc = rotate(c, (placed.rotation * Math.PI) / 180);
-  return {
-    templateName: placed.name,
-    translate: { x: placed.box.x + c.x - rc.x, y: placed.box.y + c.y - rc.y },
-    rotation: placed.rotation,
-  };
-}
-
-/**
- * Resolves a building to origin-pivot `ResolvedBuilding`s (template origin
- * lands at `translate`, rotation about that origin). A thin adapter over the
- * centre-pivot `resolvePlacement` so the corner math has one home.
- */
-export function resolveBuilding(
-  placement: BuildingPlacement,
-  templates: Record<string, Template>,
-  canvas: CanvasSize,
-): ResolvedBuilding[] {
-  return resolvePlacement(placement, templates, canvas).map(placedToOrigin);
 }

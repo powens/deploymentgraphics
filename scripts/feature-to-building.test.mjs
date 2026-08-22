@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { featureBuildingPlacement } from "./feature-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
-import { resolveBuilding } from "../src/placement.ts";
+import { resolvePlacement } from "../src/placement.ts";
 
 const CANVAS = { width: 60, height: 44 };
 
@@ -44,15 +44,22 @@ const ringOf = (t) =>
         { x: 0, y: t.height },
       ];
 
-// Reconstruct the placed polygon from a resolveBuilding result.
+// Draw a template ring through a `Placed`, the way a renderer does:
+// translate(box.x box.y) rotate(rotation cx cy) about the box centre.
 const placedRing = (templateName, placed) => {
   const rad = (placed.rotation * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
-  return ringOf(TEMPLATES[templateName]).map((p) => ({
-    x: placed.translate.x + p.x * cos - p.y * sin,
-    y: placed.translate.y + p.x * sin + p.y * cos,
-  }));
+  const cx = placed.box.width / 2;
+  const cy = placed.box.height / 2;
+  return ringOf(TEMPLATES[templateName]).map((p) => {
+    const dx = p.x - cx;
+    const dy = p.y - cy;
+    return {
+      x: placed.box.x + cx + dx * cos - dy * sin,
+      y: placed.box.y + cy + dx * sin + dy * cos,
+    };
+  });
 };
 
 // Compare two polygons as point SETS (order-independent), within tolerance.
@@ -72,7 +79,7 @@ const sameSet = (a, b) => {
 const roundTrip = (piece, getParent) => {
   const placement = featureBuildingPlacement(piece, lookupFootprint, getParent);
   expect(placement.mirror).toBe(false);
-  const placed = resolveBuilding(placement, TEMPLATES, CANVAS);
+  const placed = resolvePlacement(placement, TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1); // mirror:false -> single placement
   const expected = resolvePiece(piece, lookupFootprint, getParent);
   sameSet(placedRing(placement.type, placed[0]), expected);

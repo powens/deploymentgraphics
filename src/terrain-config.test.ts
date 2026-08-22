@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
 import { mergeTerrain, type TerrainConfig } from "./terrain-config";
-import { resolveBuilding } from "./placement";
+import { resolvePlacement } from "./placement";
 
 describe("mergeTerrain", () => {
   it("reunites a templates file and a layouts file into one TerrainConfig", () => {
@@ -59,7 +59,7 @@ describe("placeholder gw.yml", () => {
       // Patch overlays may carry only `features`, so guard the templates list.
       for (const placement of layout.templates ?? []) {
         expect(
-          () => resolveBuilding(placement, gwTerrain.templates, CANVAS),
+          () => resolvePlacement(placement, gwTerrain.templates, CANVAS),
           `layout ${name}, building type ${placement.type}`,
         ).not.toThrow();
       }

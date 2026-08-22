@@ -21,15 +21,11 @@ cx cy)`. The single representation behind the placement module's seam.
 **Resolve** — map an authoring placement to one or more `Placed` (corner-pin → box
 for buildings; identity for already-box features). The forward direction.
 
-**Centre-pivot** — the `Placed` convention: rotation is taken about the box centre.
-Every renderer draws this way via `placedTransform` (the single owner of the
-`translate(x y) rotate(rot cx cy)` string); features are authored this way too.
-
-**Origin-pivot** — an alternative building convention: a `{x, y}` translate (the
-unrotated box top-left) plus a rotation taken *about that top-left corner*.
-`resolveBuilding` maps corner-pin → origin-pivot; it is an adapter over
-`resolvePlacement` for callers that reason about a top-left pivot (the
-placement tests and the 40kdc converter checks), not a second source of truth.
+**Centre-pivot** — the `Placed` convention, and the only pivot convention in the
+codebase: rotation is taken about the box centre. Every renderer draws this way
+via `placedTransform` (the single owner of the `translate(x y) rotate(rot cx cy)`
+string); features are authored this way too. The corner-pin math lands a template
+origin first, but that intermediate never leaves `resolvePrimary`.
 
 **Mirror** — point-reflect a `Placed` through the canvas centre (`rotation += 180`).
 A piece emits a mirrored copy unless its placement says `mirror: false`; the default
