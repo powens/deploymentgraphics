@@ -52,6 +52,18 @@ export function centroid(points) {
   return { x: cx / (3 * area), y: cy / (3 * area) };
 }
 
+/**
+ * How far apart two rings are: the largest distance from a vertex of either
+ * ring to the nearest vertex of the other (Hausdorff over vertex sets). Used
+ * by the converter tests to check an emitted placement reproduces the ring
+ * `resolvePiece` derives from the source footprint.
+ */
+export function ringMismatch(a, b) {
+  const near = (p, ring) =>
+    Math.min(...ring.map((q) => Math.hypot(p.x - q.x, p.y - q.y)));
+  return Math.max(...a.map((p) => near(p, b)), ...b.map((p) => near(p, a)));
+}
+
 /** Apply a piece's own mirror then rotation to a centred point (no translate). */
 function orient(x, y, piece) {
   let ox = x;

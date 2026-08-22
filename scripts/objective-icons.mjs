@@ -17,7 +17,6 @@
 // from rounding) while the nearest non-touching pair gaps by 2.83in, so a small
 // threshold separates them cleanly.
 
-import { resolvePiece } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
 
 // Footprint gap (inches) at or below which two objective pieces count as one
@@ -59,19 +58,17 @@ function polygonGap(A, B) {
  * marker, except that pieces whose footprints touch are clustered and emitted
  * as a single marker at the average of their positions.
  *
- * @param {object} layout - a 40kdc layout ({ pieces }).
- * @param {(id: string) => object} lookupFootprint
- * @param {(id: string) => object} getParent
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @returns {Array<{ type: "skull", pos: { x: number, y: number } }>}
  */
-export function objectiveIcons(layout, lookupFootprint, getParent) {
+export function objectiveIcons(layout) {
   const objectives = layout.pieces.filter((p) => p.is_objective);
   // Resolve each objective to an absolute polygon for the touch test. A piece
   // without a footprint (no template) degenerates to its single position point,
   // which never touches anything — it simply stands alone.
   const polys = objectives.map((p) => {
     try {
-      return resolvePiece(p, lookupFootprint, getParent);
+      return layout.resolve(p);
     } catch {
       return [p.position];
     }

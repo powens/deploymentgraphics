@@ -1,31 +1,10 @@
 import { describe, it, expect } from "vitest";
-import { readFileSync } from "node:fs";
 import { objectiveIcons } from "./objective-icons.mjs";
+import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
 
-const read = (name) =>
-  JSON.parse(
-    readFileSync(
-      new URL(`../static/data/terrain/source/40kdc/${name}`, import.meta.url),
-      "utf8",
-    ),
-  );
-import { normalizeLayout } from "./battlemaster-normalize.mjs";
+const { layout: layoutById, footprintOf } = loadCorpus();
 
-const rawLayouts = read("terrain-layouts.json");
-const rawTemplates = read("terrain-templates.json");
-const templatesById = new Map(rawTemplates.map((t) => [t.id, t]));
-// Upstream now ships ruins as `features[]` on composite templates; normalize
-// back to the legacy piece vocabulary these converters consume.
-const layouts = rawLayouts.map((l) => normalizeLayout(l, templatesById));
-const fpById = new Map(rawTemplates.map((t) => [t.id, t.footprint]));
-const lookupFootprint = (id) => fpById.get(id);
-
-const layoutById = (id) => layouts.find((l) => l.id === id);
-const iconsFor = (id) => {
-  const layout = layoutById(id);
-  const byId = new Map(layout.pieces.map((p) => [p.id, p]));
-  return objectiveIcons(layout, lookupFootprint, (pid) => byId.get(pid));
-};
+const iconsFor = (id) => objectiveIcons(layoutById(id));
 
 describe("objectiveIcons", () => {
   it("merges the touching central objective pair into a single marker", () => {
@@ -71,12 +50,9 @@ describe("objectiveIcons", () => {
     // and objectiveIcons emits nothing.
     const layout = layoutById("take-and-hold-mirror-1");
     const pieces = layout.pieces.filter((p) => !p.is_objective && !p.objective_role);
-    const byId = new Map(pieces.map((p) => [p.id, p]));
-    const icons = objectiveIcons(
-      { ...layout, pieces },
-      lookupFootprint,
-      (pid) => byId.get(pid),
-    );
+    // Rewrap rather than spread: a derived layout needs its own parent lookup,
+    // not the one closed over the original piece list.
+    const icons = objectiveIcons(withLookups({ ...layout, pieces }, footprintOf));
     expect(icons).toEqual([]);
   });
 });
