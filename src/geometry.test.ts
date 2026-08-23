@@ -61,6 +61,12 @@ describe("the module itself", () => {
     // import here and `pnpm convert:40kdc` stops resolving.
     const source = readFileSync(new URL("./geometry.ts", import.meta.url), "utf8");
     expect(source).not.toMatch(/^\s*import\b/m);
+    // A bare `import` is not the only way to name another module: a re-export
+    // (`export { x } from "./y.js"`) and a dynamic `import("./y.js")` both
+    // carry a specifier Node cannot resolve either, and neither starts a line
+    // with `import`.
+    expect(source).not.toMatch(/\bfrom\s*["']/);
+    expect(source).not.toMatch(/\bimport\s*\(/);
   });
 });
 
@@ -256,6 +262,22 @@ describe("ringsOverlap", () => {
     expect(wide.some((p) => pointInRing(p, tall))).toBe(false);
     expect(tall.some((p) => pointInRing(p, wide))).toBe(false);
     expect(ringsOverlap(wide, tall)).toBe(true);
+  });
+
+  it("decides touching rings inconsistently, which is why gap is the contact test", () => {
+    // Characterization, not a guarantee. `pointInRing` documents edge points
+    // as undefined, and that undefinedness reaches ringsOverlap: whether a
+    // touching pair reads true comes down to which vertex the ray cast
+    // happens to catch, so the answer changes with how the contact is shaped.
+    expect(ringsOverlap(unitSquare, unitSquare)).toBe(true);
+    expect(ringsOverlap(unitSquare, rect(1, 0, 1, 1))).toBe(true);
+    expect(ringsOverlap(unitSquare, rect(1, 0.25, 1, 0.5))).toBe(false);
+
+    // `ringGap` is exact on all three, which is why the objective-icon
+    // clustering asks it rather than ringsOverlap.
+    expect(ringGap(unitSquare, unitSquare)).toBe(0);
+    expect(ringGap(unitSquare, rect(1, 0, 1, 1))).toBe(0);
+    expect(ringGap(unitSquare, rect(1, 0.25, 1, 0.5))).toBe(0);
   });
 });
 

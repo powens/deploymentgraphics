@@ -12,17 +12,19 @@
 // expansion); it rides along on the marker. The `home` role renders as the
 // keep/fortress icon, every other role as the neutral skull.
 //
-// Touching is measured as the gap between the two resolved footprint polygons:
-// across the vendored layouts the touching central pairs gap by ~0 (max 0.03in
-// from rounding) while the nearest non-touching pair gaps by 2.83in, so a small
-// threshold separates them cleanly.
+// Touching is measured as the crossing-aware gap between the two resolved
+// footprint polygons (ringGap). Across the vendored layouts: 25 of the 28
+// touching pairs gap by exactly 0, three sit at 0.35-0.38in, and the nearest
+// genuinely-separate pair gaps by 1.98in. So the empty band is (0.38, 1.98) —
+// real, but not the rounding-error sliver the figures below the threshold
+// suggest, and the three outliers are what the threshold is absorbing.
 
 import { round } from "./area-to-building.mjs";
 import { ringGap } from "../src/geometry.ts";
 
 // Footprint gap (inches) at or below which two objective pieces count as one
-// objective. Sits in the empty band between the touching pairs (<=0.03) and the
-// nearest genuinely-separate pair (2.83).
+// objective. Sits in the empty band between the touching pairs (<=0.38) and the
+// nearest genuinely-separate pair (1.98).
 const TOUCH_GAP = 0.5;
 
 /**

@@ -270,8 +270,12 @@ export function segmentsCross(p: Point, q: Point, r: Point, s: Point): boolean {
 
 /**
  * Smallest distance between the edges of two closed rings — 0 when their edges
- * cross, so callers can ask whether two pieces actually share ground rather
- * than comparing centroids.
+ * cross or touch, so callers can ask how far apart two pieces are rather than
+ * comparing centroids.
+ *
+ * This measures edges, not areas: a ring nested wholly inside another with
+ * clearance all round gaps by that clearance, not 0, however completely the
+ * two overlap. `ringsOverlap` is the predicate for "do these share ground".
  */
 export function ringGap(a: Ring, b: Ring): number {
   let min = Infinity;
@@ -315,6 +319,14 @@ export function pointInRing(p: Point, ring: Ring): boolean {
  * Do two closed rings share ground? Vertex containment either way catches
  * nesting and corner overlap; the edge-crossing pass catches the plus-shaped
  * overlap where neither ring has a vertex inside the other.
+ *
+ * Rings that only touch are not decided consistently, because `pointInRing`
+ * leaves edge points undefined: two coincident rings and two rectangles
+ * sharing a whole edge both read true (one vertex happens to ray-cast inside),
+ * while rectangles sharing part of an edge read false. Callers that care about
+ * contact rather than shared area should ask `ringGap(a, b) === 0`, which is
+ * exact on all three. The corpus has no coincident objective footprints, so
+ * nothing downstream depends on which way these fall today.
  */
 export function ringsOverlap(a: Ring, b: Ring): boolean {
   if (a.some((p) => pointInRing(p, b)) || b.some((p) => pointInRing(p, a))) {
