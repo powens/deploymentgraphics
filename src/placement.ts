@@ -9,8 +9,10 @@ import {
   type Template,
 } from "./building-coordinates.js";
 import {
+  distance,
   normalizeDegrees,
   rotate,
+  toDegrees,
   toRadians,
   type Point,
   type Ring,
@@ -134,8 +136,8 @@ function resolvePrimary(
     const pB = resolveCorner(specB, defaultFrom, canvas);
     const lB = localCorner(cornerB, size);
 
-    const targetLength = Math.hypot(pB.x - pA.x, pB.y - pA.y);
-    const templateLength = Math.hypot(lB.x - lA.x, lB.y - lA.y);
+    const targetLength = distance(pA, pB);
+    const templateLength = distance(lA, lB);
     if (Math.abs(targetLength - templateLength) > 0.1) {
       throw new Error(
         `building ${placement.type}: corners ${cornerA}->${cornerB} measure ` +
@@ -153,7 +155,7 @@ function resolvePrimary(
   // Origin-pivot landing of the template origin, then converted to a
   // centre-pivot box: box = translate + (Rot(theta)·c - c).
   const translate: Point = { x: pA.x - rotatedLA.x, y: pA.y - rotatedLA.y };
-  const rotation = normalizeDegrees((theta * 180) / Math.PI);
+  const rotation = normalizeDegrees(toDegrees(theta));
   const c: Point = { x: size.width / 2, y: size.height / 2 };
   const rc = rotate(c, theta);
   return {

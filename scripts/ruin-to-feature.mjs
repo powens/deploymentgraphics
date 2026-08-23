@@ -29,6 +29,7 @@ import { footprintPolygon, resolvePiece } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
 import {
   boundsCorners,
+  cross,
   distance,
   normalizeDegrees,
   toDegrees,
@@ -87,18 +88,18 @@ function lRefIndices(ring) {
 export function featureFromRefs(Oa, A1, A2) {
   const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
   const v = { x: A2.x - Oa.x, y: A2.y - Oa.y }; // horizontal-wall arm
-  const cross = u.x * v.y - u.y * v.x;
-  const base = cross > 0 ? "l-ruin" : "l-ruin-mirror";
+  const chirality = cross(Oa, A1, A2);
+  const base = chirality > 0 ? "l-ruin" : "l-ruin-mirror";
 
-  const h = Math.hypot(u.x, u.y); // vertical-wall length
-  const w = Math.hypot(v.x, v.y); // horizontal-wall length
+  const h = distance(Oa, A1); // vertical-wall length
+  const w = distance(Oa, A2); // horizontal-wall length
   const uh = { x: u.x / h, y: u.y / h };
   const vh = { x: v.x / w, y: v.y / w };
 
   // Rotation R mapping the variant's local wall vectors onto (u, v). Local
   // vertical wall vec = (0,-1); horizontal = (sh,0) with sh = +1 (l-ruin) or
   // -1 (mirror). R = [uh vh] * [sv sh]^T.
-  const sh = cross > 0 ? 1 : -1;
+  const sh = chirality > 0 ? 1 : -1;
   const R00 = vh.x * sh;
   const R01 = -uh.x;
   const R10 = vh.y * sh;

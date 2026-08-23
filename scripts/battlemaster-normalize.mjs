@@ -3,6 +3,7 @@ import {
   FLIP_X,
   FLIP_Y,
   IDENTITY,
+  bounds,
   boundsCentre,
   boundsSize,
   centroid,
@@ -350,16 +351,13 @@ export function scaleToUpstream(legacy, upstream, turn, part = "?") {
     width: quarter ? u.height : u.width,
     height: quarter ? u.width : u.height,
   };
-  const lo = {
-    x: Math.min(...ring.map((p) => p.x)),
-    y: Math.min(...ring.map((p) => p.y)),
-  };
+  const { minX, minY } = bounds(ring);
   const move = (v, min, size, delta) => (v - min > size / 2 ? v + delta : v);
   const out = {
     type: "polygon",
     points: ring.map((p) => ({
-      x: move(p.x, lo.x, l.width, want.width - l.width),
-      y: move(p.y, lo.y, l.height, want.height - l.height),
+      x: move(p.x, minX, l.width, want.width - l.width),
+      y: move(p.y, minY, l.height, want.height - l.height),
     })),
   };
   // The near/far split only lands the box on `want` for a polygon whose every
