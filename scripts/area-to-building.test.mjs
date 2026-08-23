@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
-import { resolveBuilding } from "../src/placement.ts";
+import { resolvePlacement } from "../src/placement.ts";
 
 // gw.yml templates referenced by the converter (subset, incl. shoe-mirror).
 const GW_TEMPLATES = {
@@ -56,15 +56,22 @@ const gwRing = (t) =>
         { x: 0, y: t.height },
       ];
 
-// Apply a resolveBuilding result (translate + rotation deg) to the template ring.
+// Draw a template ring through a `Placed`, the way a renderer does:
+// translate(box.x box.y) rotate(rotation cx cy) about the box centre.
 const placedRing = (templateName, placed) => {
   const rad = (placed.rotation * Math.PI) / 180;
   const cos = Math.cos(rad);
   const sin = Math.sin(rad);
-  return gwRing(GW_TEMPLATES[templateName]).map((p) => ({
-    x: placed.translate.x + p.x * cos - p.y * sin,
-    y: placed.translate.y + p.x * sin + p.y * cos,
-  }));
+  const cx = placed.box.width / 2;
+  const cy = placed.box.height / 2;
+  return gwRing(GW_TEMPLATES[templateName]).map((p) => {
+    const dx = p.x - cx;
+    const dy = p.y - cy;
+    return {
+      x: placed.box.x + cx + dx * cos - dy * sin,
+      y: placed.box.y + cy + dx * sin + dy * cos,
+    };
+  });
 };
 
 // Compare two polygons as point SETS (order-independent), within tolerance.
@@ -89,7 +96,7 @@ const roundTrip = (piece) => {
     GW_TEMPLATES,
   );
   expect(placement.mirror).toBe(false);
-  const placed = resolveBuilding(placement, GW_TEMPLATES, CANVAS);
+  const placed = resolvePlacement(placement, GW_TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1); // mirror:false -> single placement
   const expected = resolvePiece(piece, (id) => FOOTPRINTS[id]);
   sameSet(placedRing(placement.type, placed[0]), expected);

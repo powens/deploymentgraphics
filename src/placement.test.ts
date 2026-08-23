@@ -7,11 +7,16 @@ import {
   resolvePlacement,
   type Placed,
 } from "./placement";
-import type { Template } from "./building-coordinates";
+import type {
+  PathTemplate,
+  PolygonTemplate,
+  Template,
+} from "./building-coordinates";
 
 const canvas = { width: 60, height: 44 };
 const templates: Record<string, Template> = {
   "4x6": { width: 4, height: 6 },
+  "6x12": { width: 6, height: 12 },
   "3x4": { width: 3, height: 4 },
 };
 
@@ -29,17 +34,127 @@ describe("resolvePlacement (canonical Placed)", () => {
     });
   });
 
-  it("keeps the box top-left invariant under a 90-degree rotation", () => {
-    // 3x4 rotated 90deg about its centre: the unrotated box top-left stays the
-    // anchor; rotation is carried separately.
+  it("places an axis-aligned building from a TL/TR corner pair", () => {
+    const [primary] = resolvePlacement(
+      { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } },
+      templates,
+      canvas,
+    );
+    expect(primary).toEqual({
+      name: "4x6",
+      box: { x: 10, y: 5, width: 4, height: 6 },
+      rotation: 0,
+    });
+  });
+
+  it("resolves the two corners from different canvas anchors", () => {
+    // [46,5,TR] -> (60-46, 5) = (14,5): same building as the axis-aligned case
+    const [primary] = resolvePlacement(
+      { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 46, y: 5, from: "TR" } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box).toEqual({ x: 10, y: 5, width: 4, height: 6 });
+    expect(primary.rotation).toBe(0);
+  });
+
+  it("offsets the box so the pinned corners land where authored (90 degrees)", () => {
+    // 6x12 pinned TL->(20,10), TR->(20,16): a quarter turn. The unrotated box
+    // sits at (11,7); rotating it 90deg about its centre (14,13) carries the
+    // template's TL to the pinned (20,10).
+    const [primary] = resolvePlacement(
+      { type: "6x12", mirror: false, corners: { TL: { x: 20, y: 10 }, TR: { x: 20, y: 16 } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box.x).toBeCloseTo(11);
+    expect(primary.box.y).toBeCloseTo(7);
+    expect(primary.box.width).toBe(6);
+    expect(primary.box.height).toBe(12);
+    expect(primary.rotation).toBeCloseTo(90);
+  });
+
+  it("places a building defined by a diagonal corner pair", () => {
+    const [primary] = resolvePlacement(
+      { type: "3x4", mirror: false, corners: { TL: { x: 10, y: 10 }, BR: { x: 13, y: 14 } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box).toEqual({ x: 10, y: 10, width: 3, height: 4 });
+    expect(primary.rotation).toBe(0);
+  });
+
+  it("places a diagonal corner pair with a non-zero rotation", () => {
+    // 3x4 template (local diagonal TL->BR = (3,4)) rotated 90 degrees.
+    // rotate((3,4), 90deg) = (-4,3), so BR sits at TL + (-4,3).
     const [primary] = resolvePlacement(
       { type: "3x4", mirror: false, corners: { TL: { x: 20, y: 10 }, BR: { x: 16, y: 13 } } },
       templates,
       canvas,
     );
-    expect(primary.rotation).toBeCloseTo(90, 5);
+    expect(primary.box.x).toBeCloseTo(16.5);
+    expect(primary.box.y).toBeCloseTo(9.5);
     expect(primary.box.width).toBe(3);
     expect(primary.box.height).toBe(4);
+    expect(primary.rotation).toBeCloseTo(90);
+  });
+});
+
+describe("resolvePlacement (single corner)", () => {
+  const pin = (corners: Parameters<typeof resolvePlacement>[0]["corners"]) =>
+    resolvePlacement({ type: "4x6", mirror: false, corners }, templates, canvas)[0];
+
+  it("pins a single TL corner with no rotation", () => {
+    expect(pin({ TL: { x: 10, y: 5 } }).box).toEqual({ x: 10, y: 5, width: 4, height: 6 });
+  });
+
+  it("pins a single TR corner (box offset by the template width)", () => {
+    // building TR corner -> canvas point (10,5); localCorner(TR)=(4,0)
+    expect(pin({ TR: { x: 10, y: 5 } }).box).toEqual({ x: 6, y: 5, width: 4, height: 6 });
+  });
+
+  it("pins a single BL corner (box offset by the template height)", () => {
+    // building BL corner -> canvas point (10,5); localCorner(BL)=(0,6)
+    expect(pin({ BL: { x: 10, y: 5 } }).box).toEqual({ x: 10, y: -1, width: 4, height: 6 });
+  });
+
+  it("pins a single BR corner (offset by width and height)", () => {
+    // building BR corner -> canvas point (10,5); localCorner(BR)=(4,6)
+    expect(pin({ BR: { x: 10, y: 5 } }).box).toEqual({ x: 6, y: -1, width: 4, height: 6 });
+  });
+
+  it("honours the canvas anchor for a single corner", () => {
+    // building TL corner -> (10,5) from canvas TR = (60-10, 5) = (50,5)
+    expect(pin({ TL: { x: 10, y: 5, from: "TR" } }).box).toEqual({
+      x: 50,
+      y: 5,
+      width: 4,
+      height: 6,
+    });
+  });
+});
+
+describe("resolvePlacement validation", () => {
+  it("throws on an unknown template", () => {
+    expect(() =>
+      resolvePlacement({ type: "ghost", corners: { TL: { x: 0, y: 0 } } }, templates, canvas),
+    ).toThrow(/unknown template/);
+  });
+
+  it("throws when there are no corners", () => {
+    expect(() =>
+      resolvePlacement({ type: "4x6", corners: {} }, templates, canvas),
+    ).toThrow(/1 or 2 corners/i);
+  });
+
+  it("throws when there are more than 2 corners", () => {
+    expect(() =>
+      resolvePlacement(
+        { type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 }, BR: { x: 14, y: 11 } } },
+        templates,
+        canvas,
+      ),
+    ).toThrow(/1 or 2 corners/i);
   });
 
   it("throws when a corner pair disagrees with the template edge", () => {
@@ -52,10 +167,84 @@ describe("resolvePlacement (canonical Placed)", () => {
     ).toThrow(/measure .* apart but template edge/);
   });
 
-  it("throws on an unknown template", () => {
+  it("accepts a corner distance within the 0.1\" tolerance", () => {
     expect(() =>
-      resolvePlacement({ type: "ghost", corners: { TL: { x: 0, y: 0 } } }, templates, canvas),
-    ).toThrow(/unknown template/);
+      resolvePlacement(
+        { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14.05, y: 5 } } },
+        templates,
+        canvas,
+      ),
+    ).not.toThrow();
+  });
+});
+
+describe("resolvePlacement with a polygon template", () => {
+  const polyTemplates: Record<string, PolygonTemplate> = {
+    ruins: {
+      points: [
+        { x: 1, y: 0 },
+        { x: 7, y: 2 },
+        { x: 5, y: 11 },
+        { x: 0, y: 6 },
+      ],
+    },
+  };
+
+  it("places a polygon by pinning its bounding-box corners", () => {
+    // The polygon's bbox is 7x11, so TL->TR must span 7.
+    const result = resolvePlacement(
+      { type: "ruins", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 17, y: 5 } } },
+      polyTemplates,
+      canvas,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      name: "ruins",
+      box: { x: 10, y: 5, width: 7, height: 11 },
+      rotation: 0,
+    });
+  });
+
+  it("throws when a corner span disagrees with the polygon bbox edge", () => {
+    // TL->TR span is 6 but the polygon bbox's TL->TR edge is 7.
+    expect(() =>
+      resolvePlacement(
+        { type: "ruins", corners: { TL: { x: 10, y: 5 }, TR: { x: 16, y: 5 } } },
+        polyTemplates,
+        canvas,
+      ),
+    ).toThrow(/template edge/i);
+  });
+});
+
+describe("resolvePlacement with a path template", () => {
+  const pathTemplates: Record<string, PathTemplate> = {
+    bastion: {
+      width: 8,
+      height: 8,
+      start: { x: 4, y: 0 },
+      segments: [
+        { cubic: { x: 8, y: 4 }, controls: [{ x: 6, y: 0 }, { x: 8, y: 2 }] },
+        { cubic: { x: 4, y: 8 }, controls: [{ x: 8, y: 6 }, { x: 6, y: 8 }] },
+        { cubic: { x: 0, y: 4 }, controls: [{ x: 2, y: 8 }, { x: 0, y: 6 }] },
+        { cubic: { x: 4, y: 0 }, controls: [{ x: 0, y: 2 }, { x: 2, y: 0 }] },
+      ],
+    },
+  };
+
+  it("places a path template by pinning its declared bounding-box corners", () => {
+    // The declared bbox is 8x8, so TL->TR must span 8.
+    const result = resolvePlacement(
+      { type: "bastion", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 18, y: 5 } } },
+      pathTemplates,
+      canvas,
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0]).toEqual({
+      name: "bastion",
+      box: { x: 10, y: 5, width: 8, height: 8 },
+      rotation: 0,
+    });
   });
 });
 
@@ -75,6 +264,16 @@ describe("mirror default", () => {
     expect(
       resolvePlacement({ type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 } } }, templates, canvas),
     ).toHaveLength(1);
+  });
+
+  it("mirrors when mirror is explicitly true", () => {
+    expect(
+      resolvePlacement(
+        { type: "4x6", mirror: true, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } },
+        templates,
+        canvas,
+      ),
+    ).toHaveLength(2);
   });
 });
 
