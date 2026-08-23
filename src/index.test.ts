@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import * as pkg from "./index.js";
+import * as presets from "./presets/index.js";
 
 /**
  * The package's published interface, pinned.
@@ -13,6 +14,11 @@ import * as pkg from "./index.js";
  * Types can't be enumerated at runtime, so this covers the value exports —
  * the ones that carry code, and the ones re-exporting a whole module would
  * leak. `pnpm type-check` covers the type side.
+ *
+ * `package.json` publishes a second entry, `./presets`, so pinning the root
+ * alone would leave half the committed surface unguarded — that is how
+ * `eventMatrix` stayed reachable as `deploymentgraphics/presets` after the
+ * root stopped exporting it.
  */
 const PUBLIC_VALUES = [
   // Renderers
@@ -66,5 +72,20 @@ describe("the package root", () => {
     ]) {
       expect(pkg).not.toHaveProperty(name);
     }
+  });
+});
+
+describe("the presets entry", () => {
+  it("exports the same presets as the root, and nothing the root omits", () => {
+    const rootPresets = PUBLIC_VALUES.filter(
+      (name) => name !== "makeMissionCard" && name !== "renderMissionCardToString",
+    );
+    expect(Object.keys(presets).sort()).toEqual([...rootPresets].sort());
+  });
+
+  it("keeps the event matrix out of the package module graph", () => {
+    // No renderer reads it. The browser demo does, and reaches it by path
+    // through `bundle.ts` rather than through a published entry.
+    expect(presets).not.toHaveProperty("eventMatrix");
   });
 });
