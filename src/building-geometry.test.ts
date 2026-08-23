@@ -9,8 +9,10 @@
 // box is covered), and snapshots the ABSOLUTE canvas positions. Anything that
 // moves a building on the canvas — placement or mirroring — surfaces here as a
 // snapshot diff. A change to the shape of the transform itself fails earlier,
-// in the parse: the pivot is mandatory, so a pivot-less `rotate(deg)` throws
-// `unparsable transform` rather than producing a diff.
+// in the parse: the transform must match `translate(a b) rotate(deg cx cy)`
+// whole-string, so both a pivot-less `rotate(deg)` and an extra component the
+// evaluator does not model throw `unparsable transform` rather than passing
+// silently.
 import { describe, it, expect } from "vitest";
 import { makeBuildings } from "./buildings";
 import { templateBounds, type Template } from "./building-coordinates";
@@ -61,18 +63,22 @@ function localPoints(name: string): { x: number; y: number }[] {
 
 /**
  * Parse the renderer's `translate(a b) rotate(deg cx cy)` transform into a
- * function mapping a local point to its absolute canvas position. The pivot is
- * required: centre-pivot is the only convention `placedTransform` emits, so a
- * transform arriving without one is a regression, not a form to accommodate.
+ * function mapping a local point to its absolute canvas position. The match is
+ * whole-string and the pivot is required: centre-pivot is the only convention
+ * `placedTransform` emits, so a transform that drops the pivot — or that gains
+ * a component this evaluator would silently ignore, such as a `scale(...)` —
+ * is a regression, not a form to accommodate.
  */
 function evalTransform(transform: string): (p: { x: number; y: number }) => { x: number; y: number } {
-  const tr = /translate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s*\)/.exec(transform);
-  const ro = /rotate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s*\)/.exec(transform);
-  if (!tr || !ro) throw new Error(`unparsable transform: ${transform}`);
-  const tx = +tr[1], ty = +tr[2];
-  const deg = +ro[1];
-  const cx = +ro[2];
-  const cy = +ro[3];
+  const m =
+    /^translate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s*\)\s*rotate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s*\)$/.exec(
+      transform,
+    );
+  if (!m) throw new Error(`unparsable transform: ${transform}`);
+  const tx = +m[1], ty = +m[2];
+  const deg = +m[3];
+  const cx = +m[4];
+  const cy = +m[5];
   const rad = (deg * Math.PI) / 180;
   const cos = Math.cos(rad), sin = Math.sin(rad);
   return (p) => {
