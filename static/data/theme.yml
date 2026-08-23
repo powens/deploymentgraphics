@@ -41,7 +41,7 @@ building:
     default:
       stroke: black
       stroke_width: &building-stroke 0.2
-      fill: &stone-grey "#808080"
+      fill: "#808080"
       opacity: 1
     # Ported 40kdc pipes (rust) and barricades (sand). The rust/sand fills are
     # anchored here and aliased by feature.palette below, which also holds their

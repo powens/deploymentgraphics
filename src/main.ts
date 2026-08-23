@@ -292,8 +292,8 @@ function buildTree(
   }
 
   // Resolve the selected layout once: its buildings/icons (empty when no
-  // layout is selected) plus features/area-terrain unioned with the board's
-  // top-level arrays. Every layout-dependent pass below reads from it.
+  // layout is selected) plus features unioned with the board's top-level
+  // array. Every layout-dependent pass below reads from it.
   const layout = resolveLayout(config);
   const canvas = {
     width: config.base.size.width,
