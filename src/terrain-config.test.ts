@@ -20,7 +20,6 @@ describe("mergeTerrain", () => {
       },
     });
   });
-
 });
 
 // Canvas size taken from static/data/base.yml (`size:`).
