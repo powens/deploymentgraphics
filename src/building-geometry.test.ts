@@ -1,15 +1,18 @@
 // @vitest-environment happy-dom
 //
-// CHARACTERIZATION GATE for the origin-pivot -> centre-pivot building switch.
+// GEOMETRY SNAPSHOT for rendered buildings.
 //
-// The building <use> transform STRING changes shape when buildings move from
-// `translate(tx ty) rotate(deg)` (rotation about the template origin) to
-// `translate(x y) rotate(deg cx cy)` (rotation about the box centre). The
-// rendered GEOMETRY must not. This test reads whatever transform makeBuildings
-// emits, evaluates it on each template's distinctive local points (bbox corners
-// plus polygon vertices, so a nubbin that pokes past the declared box is
-// covered), and snapshots the ABSOLUTE canvas positions. Pixel-identity holds
-// iff this snapshot is unchanged across the refactor.
+// `makeBuildings` emits one `translate(x y) rotate(deg cx cy)` per building —
+// rotation about the box centre. This test reads whatever transform the
+// renderer emits, evaluates it on each template's distinctive local points
+// (bbox corners plus polygon vertices, so a nubbin that pokes past the declared
+// box is covered), and snapshots the ABSOLUTE canvas positions. Anything that
+// moves a building on the canvas — placement or mirroring — surfaces here as a
+// snapshot diff. A change to the shape of the transform itself fails earlier,
+// in the parse: the transform must match `translate(a b) rotate(deg cx cy)`
+// whole-string, so both a pivot-less `rotate(deg)` and an extra component the
+// evaluator does not model throw `unparsable transform` rather than passing
+// silently.
 import { describe, it, expect } from "vitest";
 import { makeBuildings } from "./buildings";
 import { templateBounds, type Template } from "./building-coordinates";
@@ -23,7 +26,7 @@ const asElement = (node: SvgNode) => node as unknown as SVGElement;
 const canvas = { width: 60, height: 44 };
 
 // A polygon whose geometry pokes past its declared 4x6 box (nubbin to x=5),
-// so the characterization exercises a point outside the placement box under
+// so the snapshot exercises a point outside the placement box under
 // rotation and mirroring.
 const nub: Template = {
   width: 4,
@@ -59,18 +62,23 @@ function localPoints(name: string): { x: number; y: number }[] {
 }
 
 /**
- * Parse an SVG transform of the form `translate(a b) rotate(deg[ cx cy])` into
- * a function mapping a local point to its absolute canvas position. Handles
- * BOTH the origin-pivot (no cx/cy) and centre-pivot (cx/cy) forms.
+ * Parse the renderer's `translate(a b) rotate(deg cx cy)` transform into a
+ * function mapping a local point to its absolute canvas position. The match is
+ * whole-string and the pivot is required: centre-pivot is the only convention
+ * `placedTransform` emits, so a transform that drops the pivot — or that gains
+ * a component this evaluator would silently ignore, such as a `scale(...)` —
+ * is a regression, not a form to accommodate.
  */
 function evalTransform(transform: string): (p: { x: number; y: number }) => { x: number; y: number } {
-  const tr = /translate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s*\)/.exec(transform);
-  const ro = /rotate\(\s*(-?[\d.]+)(?:\s+(-?[\d.]+)\s+(-?[\d.]+))?\s*\)/.exec(transform);
-  if (!tr || !ro) throw new Error(`unparsable transform: ${transform}`);
-  const tx = +tr[1], ty = +tr[2];
-  const deg = +ro[1];
-  const cx = ro[2] !== undefined ? +ro[2] : 0;
-  const cy = ro[3] !== undefined ? +ro[3] : 0;
+  const m =
+    /^translate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s*\)\s*rotate\(\s*(-?[\d.]+)\s+(-?[\d.]+)\s+(-?[\d.]+)\s*\)$/.exec(
+      transform,
+    );
+  if (!m) throw new Error(`unparsable transform: ${transform}`);
+  const tx = +m[1], ty = +m[2];
+  const deg = +m[3];
+  const cx = +m[4];
+  const cy = +m[5];
   const rad = (deg * Math.PI) / 180;
   const cos = Math.cos(rad), sin = Math.sin(rad);
   return (p) => {
@@ -99,7 +107,7 @@ function absolutePoints(placements: Parameters<typeof makeBuildings>[1]): string
   return out;
 }
 
-describe("building geometry is pivot-invariant (characterization gate)", () => {
+describe("rendered building geometry", () => {
   it("axis-aligned, rotated, nubbin, and mirrored buildings land at fixed canvas points", () => {
     const placements: Parameters<typeof makeBuildings>[1] = [
       // axis-aligned single corner, mirror on
