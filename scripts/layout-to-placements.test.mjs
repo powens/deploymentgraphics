@@ -48,7 +48,11 @@ describe("classifyPiece", () => {
   it("throws on a corner piece with a non-L footprint", () => {
     // No converter draws a rotated bar as a ruin, and there is no generic
     // fallback any more (#182), so this has to fail the pull.
-    const p = piece({ id: "bar", template: "corner-bar", footprint: BAR_FOOTPRINT });
+    const p = piece({
+      id: "bar",
+      template: "corner-bar",
+      footprint: BAR_FOOTPRINT,
+    });
     expect(() => classifyPiece(p, footprintOf)).toThrow(/matches no converter/);
   });
 

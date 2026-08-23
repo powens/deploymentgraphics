@@ -27,7 +27,7 @@
 
 import { footprintPolygon, resolvePiece } from "./terrain-resolver.mjs";
 import { featureRow } from "./emit-placement.mjs";
-import { boundsCorners, distance, toDegrees } from "../src/geometry.ts";
+import { boundsCorners, cross, distance, toDegrees } from "../src/geometry.ts";
 import { placedFromPin } from "../src/placement.ts";
 
 /** True for the 40kdc corner-ruin templates (l-ruin family). */
@@ -82,20 +82,19 @@ function lRefIndices(ring) {
  * @returns {object} an emitted `features` row (see emit-placement.mjs).
  */
 export function featureFromRefs(Oa, A1, A2) {
-  const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
   const v = { x: A2.x - Oa.x, y: A2.y - Oa.y }; // horizontal-wall arm
-  const cross = u.x * v.y - u.y * v.x;
-  const base = cross > 0 ? "l-ruin" : "l-ruin-mirror";
+  const chirality = cross(Oa, A1, A2);
+  const base = chirality > 0 ? "l-ruin" : "l-ruin-mirror";
 
-  const h = Math.hypot(u.x, u.y); // vertical-wall length
-  const w = Math.hypot(v.x, v.y); // horizontal-wall length
-  // The rotation R maps the variant's local wall vectors onto (u, v). Its
+  const h = distance(Oa, A1); // vertical-wall length
+  const w = distance(Oa, A2); // horizontal-wall length
+  // The rotation R maps the variant's local wall vectors onto the arms. Its
   // local horizontal wall vector is (sh, 0), sh = +1 (l-ruin) or -1 (mirror),
   // so R's first column points along the horizontal arm times sh — and since
   // the arms are perpendicular, R is a rotation and that first column fixes the
   // whole map. Only the direction matters, so the arm goes into atan2 unscaled.
   // The placement module takes it from here as an angle.
-  const sh = cross > 0 ? 1 : -1;
+  const sh = chirality > 0 ? 1 : -1;
   const rotDeg = toDegrees(Math.atan2(v.y * sh, v.x * sh));
 
   // The variant's own outer corner, pinned to the resolved one. Crossing the

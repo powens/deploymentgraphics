@@ -45,6 +45,7 @@ is *mirror on*. One formula, owned by the placement module.
 **Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
 pass draws into a `ResolvedLayout` (buildings, icons, features). Buildings and
 icons come from the selected layout alone (empty arrays when none is selected);
-features are unioned with the board's top-level array. Distinct from **Resolve** above: that maps one placement to a `Placed`;
-this assembles placement *arrays* and applies the "is a layout selected / union
-with top-level" rules in one place.
+features are unioned with the board's top-level array. Distinct from
+**Resolve** above: that maps one placement to a `Placed`; this assembles
+placement *arrays* and applies the "is a layout selected / union with
+top-level" rules in one place.
