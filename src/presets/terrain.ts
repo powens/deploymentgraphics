@@ -74,7 +74,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.5,
           y: 24.5,
           width: 7,
@@ -85,7 +84,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-roof",
-          label: "ruin",
           x: 43,
           y: 3,
           width: 5,
@@ -95,7 +93,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 28,
           y: 21.5,
           width: 5,
@@ -106,7 +103,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "pipe",
-          label: "pipe",
           x: 33,
           y: 15,
           width: 6,
@@ -264,7 +260,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29,
           y: 32,
           width: 2.5,
@@ -275,7 +270,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.5,
           y: 32.5,
           width: 2.5,
@@ -286,7 +280,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.807,
           y: 24.034,
           width: 4.5,
@@ -297,7 +290,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.78,
           y: 22.258,
           width: 1.5,
@@ -308,7 +300,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.018,
           y: 6.132,
           width: 6,
@@ -319,7 +310,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.893,
           y: 10.293,
           width: 6,
@@ -330,7 +320,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.589,
           y: 30.808,
           width: 4.5,
@@ -341,7 +330,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.656,
           y: 26.929,
           width: 2.5,
@@ -352,7 +340,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.5,
           y: 10.5,
           width: 2.5,
@@ -363,7 +350,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25,
           y: 10,
           width: 2.5,
@@ -374,7 +360,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 29.193,
           y: 16.716,
           width: 4.5,
@@ -385,7 +370,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 23.22,
           y: 20.742,
           width: 1.5,
@@ -396,7 +380,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.982,
           y: 34.868,
           width: 6,
@@ -407,7 +390,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.107,
           y: 31.207,
           width: 6,
@@ -418,7 +400,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.911,
           y: 7.192,
           width: 4.5,
@@ -429,7 +410,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.844,
           y: 15.571,
           width: 2.5,
@@ -440,7 +420,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 20.252,
           y: 33.749,
           width: 2,
@@ -451,7 +430,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 9.562,
           y: 19.558,
           width: 4.5,
@@ -462,7 +440,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 45.938,
           y: 22.442,
           width: 4.5,
@@ -473,7 +450,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 37.748,
           y: 7.752,
           width: 2,
@@ -671,7 +647,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.125,
           y: 23.122,
           width: 4.5,
@@ -682,7 +657,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.5,
           y: 16.747,
           width: 1.5,
@@ -693,7 +667,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.5,
           y: 36.497,
           width: 6,
@@ -704,7 +677,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37.75,
           y: 30.747,
           width: 6,
@@ -715,7 +687,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25,
           y: 32,
           width: 2.5,
@@ -726,7 +697,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.5,
           y: 32.5,
           width: 2.5,
@@ -737,7 +707,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9,
           y: 36,
           width: 2.5,
@@ -748,7 +717,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 5.5,
           y: 27,
           width: 6,
@@ -759,7 +727,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.5,
           y: 4.503,
           width: 6,
@@ -770,7 +737,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 16.25,
           y: 10.753,
           width: 6,
@@ -781,7 +747,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.375,
           y: 17.128,
           width: 4.5,
@@ -792,7 +757,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33,
           y: 25.753,
           width: 1.5,
@@ -803,7 +767,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.5,
           y: 10.5,
           width: 2.5,
@@ -814,7 +777,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29,
           y: 10,
           width: 2.5,
@@ -825,7 +787,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.5,
           y: 6.5,
           width: 2.5,
@@ -836,7 +797,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.5,
           y: 14.5,
           width: 6,
@@ -847,7 +807,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 16.979,
           y: 30.688,
           width: 2,
@@ -858,7 +817,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 7.75,
           y: 16,
           width: 4.5,
@@ -869,7 +827,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 41.021,
           y: 10.812,
           width: 2,
@@ -880,7 +837,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 47.75,
           y: 26,
           width: 4.5,
@@ -1059,7 +1015,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.5,
           y: 32.5,
           width: 2.5,
@@ -1070,7 +1025,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 32.5,
           width: 6,
@@ -1081,7 +1035,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.747,
           y: 22.75,
           width: 4.5,
@@ -1092,7 +1045,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.747,
           y: 25,
           width: 1.5,
@@ -1103,7 +1055,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.5,
           y: 37.003,
           width: 2.5,
@@ -1114,7 +1065,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46,
           y: 37.503,
           width: 2.5,
@@ -1125,7 +1075,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 49.25,
           y: 21.753,
           width: 4.5,
@@ -1136,7 +1085,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47,
           y: 28.503,
           width: 6,
@@ -1147,7 +1095,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.753,
           y: 17.5,
           width: 4.5,
@@ -1158,7 +1105,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.753,
           y: 17.5,
           width: 1.5,
@@ -1169,7 +1115,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52,
           y: 10,
           width: 2.5,
@@ -1180,7 +1125,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 9,
           width: 6,
@@ -1191,7 +1135,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8,
           y: 5.497,
           width: 2.5,
@@ -1202,7 +1145,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.5,
           y: 4.997,
           width: 2.5,
@@ -1213,7 +1155,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.25,
           y: 16.247,
           width: 4.5,
@@ -1224,7 +1165,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7,
           y: 12.497,
           width: 6,
@@ -1235,7 +1175,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 20.581,
           y: 31.638,
           width: 2,
@@ -1246,7 +1185,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 42.747,
           y: 19,
           width: 4.5,
@@ -1257,7 +1195,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 37.419,
           y: 9.862,
           width: 2,
@@ -1268,7 +1205,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 12.753,
           y: 23,
           width: 4.5,
@@ -1435,7 +1371,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 20.764,
           y: 32.761,
           width: 4.5,
@@ -1446,7 +1381,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 28.033,
           y: 38.808,
           width: 1.5,
@@ -1457,7 +1391,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.75,
           y: 5.25,
           width: 4.5,
@@ -1468,7 +1401,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 54,
           y: 9,
           width: 2.5,
@@ -1479,7 +1411,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.75,
           y: 11.25,
           width: 4.5,
@@ -1490,7 +1421,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4,
           y: 12,
           width: 6,
@@ -1501,7 +1431,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.736,
           y: 7.489,
           width: 4.5,
@@ -1512,7 +1441,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.467,
           y: 3.692,
           width: 1.5,
@@ -1523,7 +1451,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.274,
           y: 16.489,
           width: 2.5,
@@ -1534,7 +1461,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43.6,
           y: 19.152,
           width: 2.5,
@@ -1545,7 +1471,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.75,
           y: 32.75,
           width: 4.5,
@@ -1556,7 +1481,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 3.5,
           y: 33.5,
           width: 2.5,
@@ -1567,7 +1491,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 44.75,
           y: 26.75,
           width: 4.5,
@@ -1578,7 +1501,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50,
           y: 29,
           width: 6,
@@ -1589,7 +1511,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 16.226,
           y: 26.011,
           width: 2.5,
@@ -1600,7 +1521,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 13.9,
           y: 23.348,
           width: 2.5,
@@ -1611,7 +1531,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 13.998,
           y: 5.001,
           width: 2,
@@ -1622,7 +1541,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 25.75,
           y: 21,
           width: 4.5,
@@ -1633,7 +1551,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 44.002,
           y: 36.499,
           width: 2,
@@ -1644,7 +1561,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 29.75,
           y: 21,
           width: 4.5,
@@ -1820,7 +1736,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.753,
           y: 6.25,
           width: 6,
@@ -1831,7 +1746,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.003,
           y: 4.5,
           width: 6,
@@ -1842,7 +1756,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.332,
           y: 9.851,
           width: 4.5,
@@ -1853,7 +1766,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 29.804,
           y: 4.023,
           width: 1.5,
@@ -1864,7 +1776,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.75,
           y: 14.25,
           width: 4.5,
@@ -1875,7 +1786,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50,
           y: 18,
           width: 2.5,
@@ -1886,7 +1796,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.997,
           y: 35.003,
           width: 2.5,
@@ -1897,7 +1806,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.497,
           y: 31.503,
           width: 2.5,
@@ -1908,7 +1816,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.247,
           y: 35.25,
           width: 6,
@@ -1919,7 +1826,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.997,
           y: 36.5,
           width: 6,
@@ -1930,7 +1836,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.168,
           y: 30.399,
           width: 4.5,
@@ -1941,7 +1846,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 28.696,
           y: 38.477,
           width: 1.5,
@@ -1952,7 +1856,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 12.75,
           y: 23.75,
           width: 4.5,
@@ -1963,7 +1866,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.5,
           y: 24.5,
           width: 2.5,
@@ -1974,7 +1876,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.503,
           y: 7.497,
           width: 2.5,
@@ -1985,7 +1886,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.003,
           y: 10.997,
           width: 2.5,
@@ -1996,7 +1896,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 14.013,
           y: 16.498,
           width: 2,
@@ -2007,7 +1906,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.753,
           y: 19,
           width: 4.5,
@@ -2018,7 +1916,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 43.987,
           y: 25.002,
           width: 2,
@@ -2029,7 +1926,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.747,
           y: 23,
           width: 4.5,
@@ -2214,7 +2110,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43.247,
           y: 6.253,
           width: 6,
@@ -2225,7 +2120,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 53.497,
           y: 5.003,
           width: 2.5,
@@ -2236,7 +2130,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 38.38,
           y: 11.584,
           width: 4.5,
@@ -2247,7 +2140,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.513,
           y: 9.549,
           width: 1.5,
@@ -2258,7 +2150,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 26.5,
           y: 11.5,
           width: 2.5,
@@ -2269,7 +2160,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 23,
           y: 11,
           width: 2.5,
@@ -2280,7 +2170,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44.75,
           y: 30.75,
           width: 6,
@@ -2291,7 +2180,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 36.5,
           width: 6,
@@ -2302,7 +2190,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.753,
           y: 35.247,
           width: 6,
@@ -2313,7 +2200,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4.003,
           y: 37.497,
           width: 2.5,
@@ -2324,7 +2210,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 17.12,
           y: 28.666,
           width: 4.5,
@@ -2335,7 +2220,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.987,
           y: 32.951,
           width: 1.5,
@@ -2346,7 +2230,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 31,
           y: 31,
           width: 2.5,
@@ -2357,7 +2240,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 34.5,
           y: 31.5,
           width: 2.5,
@@ -2368,7 +2250,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.25,
           y: 10.75,
           width: 6,
@@ -2379,7 +2260,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.5,
           y: 4.5,
           width: 6,
@@ -2390,7 +2270,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 50.001,
           y: 20.004,
           width: 2,
@@ -2401,7 +2280,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 19,
           width: 4.5,
@@ -2412,7 +2290,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 7.999,
           y: 21.495,
           width: 2,
@@ -2423,7 +2300,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 23,
           width: 4.5,
@@ -2599,7 +2475,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.25,
           y: 8.25,
           width: 6,
@@ -2610,7 +2485,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52,
           y: 11,
           width: 2.5,
@@ -2621,7 +2495,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37.5,
           y: 7.003,
           width: 2.5,
@@ -2632,7 +2505,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 38,
           y: 3.503,
           width: 2.5,
@@ -2643,7 +2515,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 41.356,
           y: 32.212,
           width: 4.5,
@@ -2654,7 +2525,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.065,
           y: 33.612,
           width: 6,
@@ -2665,7 +2535,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 37.193,
           y: 25.078,
           width: 4.5,
@@ -2676,7 +2545,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.765,
           y: 22.169,
           width: 1.5,
@@ -2687,7 +2555,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.75,
           y: 33.25,
           width: 6,
@@ -2698,7 +2565,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.5,
           y: 31.5,
           width: 2.5,
@@ -2709,7 +2575,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 20,
           y: 35.497,
           width: 2.5,
@@ -2720,7 +2585,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 19.5,
           y: 38.997,
           width: 2.5,
@@ -2731,7 +2595,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.144,
           y: 5.788,
           width: 4.5,
@@ -2742,7 +2605,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.935,
           y: 7.388,
           width: 6,
@@ -2753,7 +2615,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 18.307,
           y: 15.172,
           width: 4.5,
@@ -2764,7 +2625,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 26.735,
           y: 20.331,
           width: 1.5,
@@ -2775,7 +2635,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 10,
           width: 4.5,
@@ -2786,7 +2645,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 48.001,
           y: 22.001,
           width: 2,
@@ -2797,7 +2655,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 32,
           width: 4.5,
@@ -2808,7 +2665,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 9.999,
           y: 19.499,
           width: 2,
@@ -2990,7 +2846,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.5,
           y: 15.003,
           width: 2.5,
@@ -3001,7 +2856,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.25,
           y: 15.253,
           width: 4.5,
@@ -3012,7 +2866,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43,
           y: 7.003,
           width: 2.5,
@@ -3023,7 +2876,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.5,
           y: 3.503,
           width: 2.5,
@@ -3034,7 +2886,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.5,
           y: 29,
           width: 4.5,
@@ -3045,7 +2896,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.5,
           y: 36.5,
           width: 6,
@@ -3056,7 +2906,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 29.27,
           y: 16.698,
           width: 4.5,
@@ -3067,7 +2916,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 36.8,
           y: 23.105,
           width: 1.5,
@@ -3078,7 +2926,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 15,
           y: 27.497,
           width: 2.5,
@@ -3089,7 +2936,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.25,
           y: 22.747,
           width: 4.5,
@@ -3100,7 +2946,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 14.5,
           y: 35.497,
           width: 2.5,
@@ -3111,7 +2956,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 15,
           y: 38.997,
           width: 2.5,
@@ -3122,7 +2966,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 16,
           y: 9,
           width: 4.5,
@@ -3133,7 +2976,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.5,
           y: 4.5,
           width: 6,
@@ -3144,7 +2986,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 26.23,
           y: 23.552,
           width: 4.5,
@@ -3155,7 +2996,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21.7,
           y: 19.395,
           width: 1.5,
@@ -3166,7 +3006,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 30.75,
           y: 10,
           width: 4.5,
@@ -3177,7 +3016,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 49.748,
           y: 28.748,
           width: 2,
@@ -3188,7 +3026,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 24.75,
           y: 32,
           width: 4.5,
@@ -3199,7 +3036,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 8.252,
           y: 12.752,
           width: 2,
@@ -3393,7 +3229,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52,
           y: 10,
           width: 2.5,
@@ -3404,7 +3239,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 9,
           width: 6,
@@ -3415,7 +3249,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.214,
           y: 24.519,
           width: 4.5,
@@ -3426,7 +3259,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 27.145,
           y: 26.111,
           width: 1.5,
@@ -3437,7 +3269,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 49.586,
           y: 20.585,
           width: 4.5,
@@ -3448,7 +3279,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.103,
           y: 26.841,
           width: 6,
@@ -3459,7 +3289,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 17.074,
           y: 5.458,
           width: 2.5,
@@ -3470,7 +3299,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 14.891,
           y: 8.239,
           width: 2.5,
@@ -3481,7 +3309,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.5,
           y: 32.5,
           width: 2.5,
@@ -3492,7 +3319,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 32.5,
           width: 6,
@@ -3503,7 +3329,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.286,
           y: 15.731,
           width: 4.5,
@@ -3514,7 +3339,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.355,
           y: 16.389,
           width: 1.5,
@@ -3525,7 +3349,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.914,
           y: 17.415,
           width: 4.5,
@@ -3536,7 +3359,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.897,
           y: 14.159,
           width: 6,
@@ -3547,7 +3369,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 40.426,
           y: 37.042,
           width: 2.5,
@@ -3558,7 +3379,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.609,
           y: 34.261,
           width: 2.5,
@@ -3569,7 +3389,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 26.351,
           y: 8.234,
           width: 4.5,
@@ -3580,7 +3399,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 40.241,
           y: 14.759,
           width: 2,
@@ -3591,7 +3409,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 29.149,
           y: 33.766,
           width: 4.5,
@@ -3602,7 +3419,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 17.759,
           y: 26.741,
           width: 2,
@@ -3799,7 +3615,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.747,
           y: 15.253,
           width: 4.5,
@@ -3810,7 +3625,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 51.497,
           y: 15.003,
           width: 2.5,
@@ -3821,7 +3635,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.5,
           y: 7.003,
           width: 2.5,
@@ -3832,7 +3645,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43,
           y: 3.503,
           width: 2.5,
@@ -3843,7 +3655,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 34.247,
           y: 36.25,
           width: 6,
@@ -3854,7 +3665,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.497,
           y: 37.5,
           width: 6,
@@ -3865,7 +3675,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 18.695,
           y: 15.142,
           width: 4.5,
@@ -3876,7 +3685,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 27.507,
           y: 19.555,
           width: 1.5,
@@ -3887,7 +3695,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11.753,
           y: 22.747,
           width: 4.5,
@@ -3898,7 +3705,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.003,
           y: 27.497,
           width: 2.5,
@@ -3909,7 +3715,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 15,
           y: 35.497,
           width: 2.5,
@@ -3920,7 +3725,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 14.5,
           y: 38.997,
           width: 2.5,
@@ -3931,7 +3735,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 19.753,
           y: 5.25,
           width: 6,
@@ -3942,7 +3745,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.503,
           y: 3.5,
           width: 6,
@@ -3953,7 +3755,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 36.805,
           y: 25.108,
           width: 4.5,
@@ -3964,7 +3765,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.993,
           y: 22.945,
           width: 1.5,
@@ -3975,7 +3775,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 47.252,
           y: 27.745,
           width: 2,
@@ -3986,7 +3785,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 23.499,
           y: 31.437,
           width: 4.5,
@@ -3997,7 +3795,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 10.749,
           y: 13.755,
           width: 2,
@@ -4008,7 +3805,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 32.001,
           y: 10.563,
           width: 4.5,
@@ -4199,7 +3995,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37,
           y: 8,
           width: 6,
@@ -4210,7 +4005,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45,
           y: 9,
           width: 2.5,
@@ -4221,7 +4015,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.258,
           y: 8.288,
           width: 2.5,
@@ -4232,7 +4025,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8.288,
           y: 5.352,
           width: 2.5,
@@ -4243,7 +4035,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21.503,
           y: 13.5,
           width: 4.5,
@@ -4254,7 +4045,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.503,
           y: 13.5,
           width: 1.5,
@@ -4265,7 +4055,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.74,
           y: 23.656,
           width: 4.5,
@@ -4276,7 +4065,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.181,
           y: 20.797,
           width: 6,
@@ -4287,7 +4075,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 17,
           y: 33.5,
           width: 6,
@@ -4298,7 +4085,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 12.5,
           y: 33.5,
           width: 2.5,
@@ -4309,7 +4095,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.242,
           y: 34.212,
           width: 2.5,
@@ -4320,7 +4105,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.212,
           y: 37.148,
           width: 2.5,
@@ -4331,7 +4115,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.997,
           y: 26.75,
           width: 4.5,
@@ -4342,7 +4125,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 27.997,
           y: 29,
           width: 1.5,
@@ -4353,7 +4135,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.76,
           y: 14.344,
           width: 4.5,
@@ -4364,7 +4145,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 3.819,
           y: 20.203,
           width: 6,
@@ -4375,7 +4155,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 24.294,
           y: 7.422,
           width: 4.5,
@@ -4386,7 +4165,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 37.981,
           y: 16.08,
           width: 2,
@@ -4397,7 +4175,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 31.206,
           y: 34.578,
           width: 4.5,
@@ -4408,7 +4185,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 20.019,
           y: 25.42,
           width: 2,
@@ -4596,7 +4372,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47,
           y: 8,
           width: 2.5,
@@ -4607,7 +4382,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 39,
           y: 7,
           width: 6,
@@ -4618,7 +4392,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.125,
           y: 20.875,
           width: 4.5,
@@ -4629,7 +4402,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.5,
           y: 14.5,
           width: 1.5,
@@ -4640,7 +4412,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.986,
           y: 28.503,
           width: 4.5,
@@ -4651,7 +4422,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.479,
           y: 33.015,
           width: 6,
@@ -4662,7 +4432,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37.836,
           y: 33.203,
           width: 2.5,
@@ -4673,7 +4442,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 40.385,
           y: 30.753,
           width: 2.5,
@@ -4684,7 +4452,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.5,
           y: 34.5,
           width: 2.5,
@@ -4695,7 +4462,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 15,
           y: 34.5,
           width: 6,
@@ -4706,7 +4472,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 23.375,
           y: 19.375,
           width: 4.5,
@@ -4717,7 +4482,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 26,
           y: 28,
           width: 1.5,
@@ -4728,7 +4492,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.514,
           y: 9.497,
           width: 4.5,
@@ -4739,7 +4502,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 3.521,
           y: 7.985,
           width: 6,
@@ -4750,7 +4512,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 19.664,
           y: 9.297,
           width: 2.5,
@@ -4761,7 +4522,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 17.115,
           y: 11.747,
           width: 2.5,
@@ -4772,7 +4532,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 8,
           width: 4.5,
@@ -4783,7 +4542,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 48.999,
           y: 20.001,
           width: 2,
@@ -4794,7 +4552,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 34,
           width: 4.5,
@@ -4805,7 +4562,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 9.002,
           y: 21.499,
           width: 2,
@@ -4982,7 +4738,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 22.5,
           y: 11.5,
           width: 2.5,
@@ -4993,7 +4748,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 19,
           y: 11,
           width: 2.5,
@@ -5004,7 +4758,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.917,
           y: 8.994,
           width: 4.5,
@@ -5015,7 +4768,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 27.751,
           y: 6.504,
           width: 1.5,
@@ -5026,7 +4778,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 53.5,
           y: 5,
           width: 2.5,
@@ -5037,7 +4788,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45,
           y: 8,
           width: 6,
@@ -5048,7 +4798,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.25,
           y: 12.25,
           width: 4.5,
@@ -5059,7 +4808,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.5,
           y: 13,
           width: 6,
@@ -5070,7 +4818,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 35,
           y: 31,
           width: 2.5,
@@ -5081,7 +4828,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 38.5,
           y: 31.5,
           width: 2.5,
@@ -5092,7 +4838,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.583,
           y: 31.256,
           width: 4.5,
@@ -5103,7 +4848,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.749,
           y: 35.996,
           width: 1.5,
@@ -5114,7 +4858,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4,
           y: 37.5,
           width: 2.5,
@@ -5125,7 +4868,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9,
           y: 33.5,
           width: 6,
@@ -5136,7 +4878,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.25,
           y: 25.75,
           width: 4.5,
@@ -5147,7 +4888,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.5,
           y: 28,
           width: 6,
@@ -5158,7 +4898,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 25.75,
           y: 21,
           width: 4.5,
@@ -5169,7 +4908,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 10.999,
           y: 5.251,
           width: 2,
@@ -5180,7 +4918,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 29.75,
           y: 21,
           width: 4.5,
@@ -5191,7 +4928,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 47.001,
           y: 36.248,
           width: 2,
@@ -5382,7 +5118,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 27,
           y: 32,
           width: 2.5,
@@ -5393,7 +5128,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 30.5,
           y: 32.5,
           width: 2.5,
@@ -5404,7 +5138,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.5,
           y: 13.503,
           width: 6,
@@ -5415,7 +5148,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47.5,
           y: 5.503,
           width: 2.5,
@@ -5426,7 +5158,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.274,
           y: 5.306,
           width: 4.5,
@@ -5437,7 +5168,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.579,
           y: 11.291,
           width: 6,
@@ -5448,7 +5178,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.226,
           y: 32.694,
           width: 4.5,
@@ -5459,7 +5188,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.421,
           y: 29.709,
           width: 6,
@@ -5470,7 +5198,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.726,
           y: 22.79,
           width: 4.5,
@@ -5481,7 +5208,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.525,
           y: 28.874,
           width: 1.5,
@@ -5492,7 +5218,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 30.5,
           y: 10.5,
           width: 2.5,
@@ -5503,7 +5228,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 27,
           y: 10,
           width: 2.5,
@@ -5514,7 +5238,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 6.5,
           y: 27.997,
           width: 6,
@@ -5525,7 +5248,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10,
           y: 36.997,
           width: 2.5,
@@ -5536,7 +5258,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.774,
           y: 17.46,
           width: 4.5,
@@ -5547,7 +5268,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 35.975,
           y: 13.626,
           width: 1.5,
@@ -5558,7 +5278,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 23,
           width: 4.5,
@@ -5569,7 +5288,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 49.991,
           y: 24.509,
           width: 2,
@@ -5580,7 +5298,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 19,
           width: 4.5,
@@ -5591,7 +5308,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 8.009,
           y: 16.991,
           width: 2,
@@ -5791,7 +5507,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 7.5,
           y: 36.997,
           width: 6,
@@ -5802,7 +5517,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11,
           y: 28.997,
           width: 2.5,
@@ -5813,7 +5527,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 21,
           y: 32,
           width: 2.5,
@@ -5824,7 +5537,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 24.5,
           y: 32.5,
           width: 2.5,
@@ -5835,7 +5547,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 33.247,
           y: 35.25,
           width: 6,
@@ -5846,7 +5557,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.497,
           y: 36.5,
           width: 6,
@@ -5857,7 +5567,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.122,
           y: 29.372,
           width: 4.5,
@@ -5868,7 +5577,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.497,
           y: 22.997,
           width: 1.5,
@@ -5879,7 +5587,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46.5,
           y: 4.503,
           width: 6,
@@ -5890,7 +5597,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 13.503,
           width: 2.5,
@@ -5901,7 +5607,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 36.5,
           y: 10.5,
           width: 2.5,
@@ -5912,7 +5617,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 33,
           y: 10,
           width: 2.5,
@@ -5923,7 +5627,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 20.753,
           y: 6.25,
           width: 6,
@@ -5934,7 +5637,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.503,
           y: 4.5,
           width: 6,
@@ -5945,7 +5647,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.378,
           y: 10.878,
           width: 4.5,
@@ -5956,7 +5657,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.003,
           y: 19.503,
           width: 1.5,
@@ -5967,7 +5667,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 19,
           width: 4.5,
@@ -5978,7 +5677,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 39.411,
           y: 22.845,
           width: 2,
@@ -5989,7 +5687,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 27.75,
           y: 23,
           width: 4.5,
@@ -6000,7 +5697,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 18.589,
           y: 18.655,
           width: 2,
@@ -6188,7 +5884,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 53.5,
           y: 8,
           width: 2.5,
@@ -6199,7 +5894,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45,
           y: 11,
           width: 6,
@@ -6210,7 +5904,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.503,
           y: 11.5,
           width: 2.5,
@@ -6221,7 +5914,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25.003,
           y: 11,
           width: 2.5,
@@ -6232,7 +5924,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.417,
           y: 28.868,
           width: 4.5,
@@ -6243,7 +5934,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.722,
           y: 34.852,
           width: 6,
@@ -6254,7 +5944,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.125,
           y: 17.875,
           width: 4.5,
@@ -6265,7 +5954,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 1.5,
@@ -6276,7 +5964,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4,
           y: 34.5,
           width: 2.5,
@@ -6287,7 +5974,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9,
           y: 30.5,
           width: 6,
@@ -6298,7 +5984,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.997,
           y: 31,
           width: 2.5,
@@ -6309,7 +5994,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.497,
           y: 31.5,
           width: 2.5,
@@ -6320,7 +6004,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 12.083,
           y: 9.132,
           width: 4.5,
@@ -6331,7 +6014,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.278,
           y: 6.148,
           width: 6,
@@ -6342,7 +6024,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.375,
           y: 22.375,
           width: 4.5,
@@ -6353,7 +6034,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 25,
           width: 1.5,
@@ -6364,7 +6044,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 36.251,
           y: 5.751,
           width: 2,
@@ -6375,7 +6054,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 44.557,
           y: 21.969,
           width: 4.5,
@@ -6386,7 +6064,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 21.748,
           y: 35.749,
           width: 2,
@@ -6397,7 +6074,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 10.943,
           y: 20.031,
           width: 4.5,
@@ -6576,7 +6252,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.5,
           y: 16.75,
           width: 4.5,
@@ -6587,7 +6262,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.5,
           y: 25.75,
           width: 1.5,
@@ -6598,7 +6272,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25,
           y: 32,
           width: 2.5,
@@ -6609,7 +6282,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.5,
           y: 32.5,
           width: 2.5,
@@ -6620,7 +6292,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11,
           y: 37,
           width: 2.5,
@@ -6631,7 +6302,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 7.5,
           y: 28,
           width: 6,
@@ -6642,7 +6312,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.5,
           y: 28.003,
           width: 4.5,
@@ -6653,7 +6322,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.5,
           y: 35.503,
           width: 6,
@@ -6664,7 +6332,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30,
           y: 23.5,
           width: 4.5,
@@ -6675,7 +6342,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33,
           y: 16.75,
           width: 1.5,
@@ -6686,7 +6352,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.5,
           y: 10.5,
           width: 2.5,
@@ -6697,7 +6362,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29,
           y: 10,
           width: 2.5,
@@ -6708,7 +6372,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 5.5,
           width: 2.5,
@@ -6719,7 +6382,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46.5,
           y: 13.5,
           width: 6,
@@ -6730,7 +6392,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 15,
           y: 9.997,
           width: 4.5,
@@ -6741,7 +6402,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.5,
           y: 5.497,
           width: 6,
@@ -6752,7 +6412,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 19.004,
           y: 33.594,
           width: 2,
@@ -6763,7 +6422,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 48.75,
           y: 27.003,
           width: 4.5,
@@ -6774,7 +6432,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 38.996,
           y: 7.906,
           width: 2,
@@ -6785,7 +6442,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 6.75,
           y: 14.997,
           width: 4.5,
@@ -6961,7 +6617,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 51,
           y: 10,
           width: 2.5,
@@ -6972,7 +6627,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43,
           y: 9,
           width: 6,
@@ -6983,7 +6637,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.75,
           y: 22.75,
           width: 4.5,
@@ -6994,7 +6647,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 25,
           width: 1.5,
@@ -7005,7 +6657,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.253,
           y: 10.25,
           width: 4.5,
@@ -7016,7 +6667,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.503,
           y: 11,
           width: 6,
@@ -7027,7 +6677,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 19.006,
           y: 6.497,
           width: 2.5,
@@ -7038,7 +6687,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 15.506,
           y: 5.997,
           width: 2.5,
@@ -7049,7 +6697,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.5,
           y: 32.5,
           width: 2.5,
@@ -7060,7 +6707,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11,
           y: 32.5,
           width: 6,
@@ -7071,7 +6717,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 4.5,
@@ -7082,7 +6727,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 17.5,
           width: 1.5,
@@ -7093,7 +6737,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.247,
           y: 27.75,
           width: 4.5,
@@ -7104,7 +6747,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.497,
           y: 30,
           width: 6,
@@ -7115,7 +6757,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 38.494,
           y: 36.003,
           width: 2.5,
@@ -7126,7 +6767,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.994,
           y: 36.503,
           width: 2.5,
@@ -7137,7 +6777,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 29.422,
           y: 7.402,
           width: 2,
@@ -7148,7 +6787,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 42.333,
           y: 19.308,
           width: 4.5,
@@ -7159,7 +6797,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 28.578,
           y: 34.098,
           width: 2,
@@ -7170,7 +6807,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 13.167,
           y: 22.692,
           width: 4.5,
@@ -7361,7 +6997,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.118,
           y: 21.948,
           width: 4.5,
@@ -7372,7 +7007,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 29.401,
           y: 28.577,
           width: 1.5,
@@ -7383,7 +7017,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 36.826,
           y: 36.175,
           width: 2.5,
@@ -7394,7 +7027,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 35.012,
           y: 33.141,
           width: 2.5,
@@ -7405,7 +7037,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.247,
           y: 23.75,
           width: 4.5,
@@ -7416,7 +7047,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.497,
           y: 26,
           width: 6,
@@ -7427,7 +7057,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.5,
           y: 32.997,
           width: 6,
@@ -7438,7 +7067,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.5,
           y: 32.997,
           width: 2.5,
@@ -7449,7 +7077,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.382,
           y: 18.302,
           width: 4.5,
@@ -7460,7 +7087,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 29.099,
           y: 13.923,
           width: 1.5,
@@ -7471,7 +7097,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 20.674,
           y: 6.325,
           width: 2.5,
@@ -7482,7 +7107,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 22.488,
           y: 9.359,
           width: 2.5,
@@ -7493,7 +7117,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.253,
           y: 14.25,
           width: 4.5,
@@ -7504,7 +7127,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.503,
           y: 15,
           width: 6,
@@ -7515,7 +7137,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.5,
           y: 8.503,
           width: 6,
@@ -7526,7 +7147,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 38,
           y: 9.503,
           width: 2.5,
@@ -7537,7 +7157,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 7.333,
           y: 26.442,
           width: 4.5,
@@ -7548,7 +7167,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 47.999,
           y: 35.499,
           width: 2,
@@ -7559,7 +7177,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 48.167,
           y: 15.558,
           width: 4.5,
@@ -7570,7 +7187,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 10.001,
           y: 6.001,
           width: 2,
@@ -7749,7 +7365,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 23.143,
           y: 19.949,
           width: 4.5,
@@ -7760,7 +7375,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 28.433,
           y: 14.01,
           width: 1.5,
@@ -7771,7 +7385,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.5,
           y: 30,
           width: 4.5,
@@ -7782,7 +7395,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.5,
           y: 37.5,
           width: 6,
@@ -7793,7 +7405,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 53,
           y: 10,
           width: 2.5,
@@ -7804,7 +7415,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45,
           y: 9,
           width: 6,
@@ -7815,7 +7425,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.5,
           y: 8.003,
           width: 2.5,
@@ -7826,7 +7435,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29,
           y: 4.503,
           width: 2.5,
@@ -7837,7 +7445,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 16,
           y: 8,
           width: 4.5,
@@ -7848,7 +7455,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.5,
           y: 3.5,
           width: 6,
@@ -7859,7 +7465,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4.5,
           y: 32.5,
           width: 2.5,
@@ -7870,7 +7475,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9,
           y: 32.5,
           width: 6,
@@ -7881,7 +7485,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29,
           y: 34.497,
           width: 2.5,
@@ -7892,7 +7495,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.5,
           y: 37.997,
           width: 2.5,
@@ -7903,7 +7505,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.357,
           y: 20.301,
           width: 4.5,
@@ -7914,7 +7515,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.067,
           y: 28.49,
           width: 1.5,
@@ -7925,7 +7525,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 46.999,
           y: 21.002,
           width: 2,
@@ -7936,7 +7535,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 49.75,
           y: 30.003,
           width: 4.5,
@@ -7947,7 +7545,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 11.001,
           y: 20.498,
           width: 2,
@@ -7958,7 +7555,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 5.75,
           y: 11.997,
           width: 4.5,
@@ -8131,7 +7727,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.994,
           y: 39.006,
           width: 2.5,
@@ -8142,7 +7737,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.494,
           y: 35.506,
           width: 2.5,
@@ -8153,7 +7747,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.253,
           y: 21.753,
           width: 6,
@@ -8164,7 +7757,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.503,
           y: 16.003,
           width: 2.5,
@@ -8175,7 +7767,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21,
           y: 7,
           width: 4.5,
@@ -8186,7 +7777,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.5,
           y: 2.5,
           width: 6,
@@ -8197,7 +7787,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.466,
           y: 18.294,
           width: 4.5,
@@ -8208,7 +7797,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.85,
           y: 13.974,
           width: 1.5,
@@ -8219,7 +7807,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.506,
           y: 3.494,
           width: 2.5,
@@ -8230,7 +7817,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.006,
           y: 6.994,
           width: 2.5,
@@ -8241,7 +7827,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.747,
           y: 19.747,
           width: 6,
@@ -8252,7 +7837,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.997,
           y: 26.497,
           width: 2.5,
@@ -8263,7 +7847,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.5,
           y: 31,
           width: 4.5,
@@ -8274,7 +7857,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.5,
           y: 38.5,
           width: 6,
@@ -8285,7 +7867,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.034,
           y: 21.956,
           width: 4.5,
@@ -8296,7 +7877,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.65,
           y: 28.526,
           width: 1.5,
@@ -8307,7 +7887,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 19.747,
           y: 33,
           width: 4.5,
@@ -8318,7 +7897,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 11.251,
           y: 7.751,
           width: 2,
@@ -8329,7 +7907,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 35.753,
           y: 9,
           width: 4.5,
@@ -8340,7 +7917,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 46.749,
           y: 33.748,
           width: 2,
@@ -8528,7 +8104,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.75,
           y: 31.75,
           width: 4.5,
@@ -8539,7 +8114,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4.5,
           y: 32.5,
           width: 2.5,
@@ -8550,7 +8124,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.992,
           y: 18.586,
           width: 4.5,
@@ -8561,7 +8134,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.319,
           y: 25.56,
           width: 1.5,
@@ -8572,7 +8144,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 15.5,
           y: 4.5,
           width: 2.5,
@@ -8583,7 +8154,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 16,
           y: 8,
           width: 2.5,
@@ -8594,7 +8164,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 22.497,
           y: 14.503,
           width: 6,
@@ -8605,7 +8174,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 16.497,
           y: 16.003,
           width: 6,
@@ -8616,7 +8184,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.75,
           y: 6.25,
           width: 4.5,
@@ -8627,7 +8194,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 53,
           y: 10,
           width: 2.5,
@@ -8638,7 +8204,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.508,
           y: 21.664,
           width: 4.5,
@@ -8649,7 +8214,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.181,
           y: 16.94,
           width: 1.5,
@@ -8660,7 +8224,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42,
           y: 38,
           width: 2.5,
@@ -8671,7 +8234,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.5,
           y: 34.5,
           width: 2.5,
@@ -8682,7 +8244,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 31.503,
           y: 26.997,
           width: 6,
@@ -8693,7 +8254,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 37.503,
           y: 24.997,
           width: 6,
@@ -8704,7 +8264,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 4.753,
           y: 9.003,
           width: 4.5,
@@ -8715,7 +8274,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 22.004,
           y: 28.998,
           width: 2,
@@ -8726,7 +8284,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 35.996,
           y: 12.502,
           width: 2,
@@ -8737,7 +8294,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 50.747,
           y: 32.997,
           width: 4.5,
@@ -8922,7 +8478,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.545,
           y: 28.158,
           width: 4.5,
@@ -8933,7 +8488,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11.322,
           y: 36.832,
           width: 1.5,
@@ -8944,7 +8498,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 16.003,
           y: 7.003,
           width: 4.5,
@@ -8955,7 +8508,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.503,
           y: 2.503,
           width: 2.5,
@@ -8966,7 +8518,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 17.958,
           y: 17.926,
           width: 2.5,
@@ -8977,7 +8528,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 20.739,
           y: 20.109,
           width: 2.5,
@@ -8988,7 +8538,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 27.5,
           y: 34,
           width: 6,
@@ -8999,7 +8548,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25.75,
           y: 28.25,
           width: 6,
@@ -9010,7 +8558,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 44.955,
           y: 12.092,
           width: 4.5,
@@ -9021,7 +8568,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47.178,
           y: 5.668,
           width: 1.5,
@@ -9032,7 +8578,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.497,
           y: 30.997,
           width: 4.5,
@@ -9043,7 +8588,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.997,
           y: 39.997,
           width: 2.5,
@@ -9054,7 +8598,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 39.542,
           y: 24.574,
           width: 2.5,
@@ -9065,7 +8608,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 36.761,
           y: 22.391,
           width: 2.5,
@@ -9076,7 +8618,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 26.5,
           y: 7,
           width: 6,
@@ -9087,7 +8628,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.25,
           y: 13.25,
           width: 6,
@@ -9098,7 +8638,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 7.748,
           y: 16.748,
           width: 2,
@@ -9109,7 +8648,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 18.75,
           y: 37,
           width: 4.5,
@@ -9120,7 +8658,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 50.252,
           y: 24.752,
           width: 2,
@@ -9131,7 +8668,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 36.75,
           y: 5,
           width: 4.5,
@@ -9319,7 +8855,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.75,
           y: 31.75,
           width: 4.5,
@@ -9330,7 +8865,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 4.5,
           y: 32.5,
           width: 2.5,
@@ -9341,7 +8875,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.614,
           y: 6.713,
           width: 4.5,
@@ -9352,7 +8885,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.009,
           y: 5.186,
           width: 1.5,
@@ -9363,7 +8895,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 16.712,
           width: 2.5,
@@ -9374,7 +8905,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46.791,
           y: 18.883,
           width: 2.5,
@@ -9385,7 +8915,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 33.5,
           y: 25.5,
           width: 6,
@@ -9396,7 +8925,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.5,
           y: 17.5,
           width: 6,
@@ -9407,7 +8935,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.75,
           y: 6.25,
           width: 4.5,
@@ -9418,7 +8945,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 53,
           y: 10,
           width: 2.5,
@@ -9429,7 +8955,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 41.886,
           y: 33.537,
           width: 4.5,
@@ -9440,7 +8965,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.491,
           y: 37.314,
           width: 1.5,
@@ -9451,7 +8975,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 13.5,
           y: 25.788,
           width: 2.5,
@@ -9462,7 +8985,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.709,
           y: 23.617,
           width: 2.5,
@@ -9473,7 +8995,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 20.5,
           y: 16,
           width: 6,
@@ -9484,7 +9005,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 20.5,
           y: 23.5,
           width: 6,
@@ -9495,7 +9015,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 50.497,
           y: 28.997,
           width: 4.5,
@@ -9506,7 +9025,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 28.674,
           y: 7.925,
           width: 2,
@@ -9517,7 +9035,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 5.003,
           y: 13.003,
           width: 4.5,
@@ -9528,7 +9045,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 29.326,
           y: 33.575,
           width: 2,
@@ -9719,7 +9235,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.247,
           y: 36.25,
           width: 6,
@@ -9730,7 +9245,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.497,
           y: 37.5,
           width: 6,
@@ -9741,7 +9255,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.25,
           y: 18.753,
           width: 4.5,
@@ -9752,7 +9265,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.5,
           y: 13.503,
           width: 2.5,
@@ -9763,7 +9275,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.378,
           y: 18.878,
           width: 4.5,
@@ -9774,7 +9285,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 37.003,
           y: 27.503,
           width: 1.5,
@@ -9785,7 +9295,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43.5,
           y: 7.003,
           width: 2.5,
@@ -9796,7 +9305,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 3.503,
           width: 2.5,
@@ -9807,7 +9315,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25.753,
           y: 5.25,
           width: 6,
@@ -9818,7 +9325,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.503,
           y: 3.5,
           width: 6,
@@ -9829,7 +9335,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.25,
           y: 19.247,
           width: 4.5,
@@ -9840,7 +9345,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 12,
           y: 28.997,
           width: 2.5,
@@ -9851,7 +9355,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21.122,
           y: 21.372,
           width: 4.5,
@@ -9862,7 +9365,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21.497,
           y: 14.997,
           width: 1.5,
@@ -9873,7 +9375,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 14,
           y: 35.497,
           width: 2.5,
@@ -9884,7 +9385,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 13.5,
           y: 38.997,
           width: 2.5,
@@ -9895,7 +9395,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 22.004,
           y: 33.594,
           width: 2,
@@ -9906,7 +9405,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 43.747,
           y: 29.003,
           width: 4.5,
@@ -9917,7 +9415,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 35.996,
           y: 7.906,
           width: 2,
@@ -9928,7 +9425,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 11.753,
           y: 12.997,
           width: 4.5,
@@ -10131,7 +9627,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 4.5,
           y: 18,
           width: 6,
@@ -10142,7 +9637,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.75,
           y: 13.75,
           width: 4.5,
@@ -10153,7 +9647,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 18.485,
           y: 17.749,
           width: 4.5,
@@ -10164,7 +9657,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 26.614,
           y: 23.382,
           width: 1.5,
@@ -10175,7 +9667,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.08,
           y: 15.378,
           width: 2.5,
@@ -10186,7 +9677,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45.767,
           y: 12.704,
           width: 2.5,
@@ -10197,7 +9687,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.497,
           y: 7.503,
           width: 2.5,
@@ -10208,7 +9697,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 38.497,
           y: 6.503,
           width: 6,
@@ -10219,7 +9707,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.5,
           y: 23.5,
           width: 6,
@@ -10230,7 +9717,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.75,
           y: 24.25,
           width: 4.5,
@@ -10241,7 +9727,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 37.015,
           y: 22.501,
           width: 4.5,
@@ -10252,7 +9737,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.886,
           y: 19.118,
           width: 1.5,
@@ -10263,7 +9747,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.42,
           y: 27.122,
           width: 2.5,
@@ -10274,7 +9757,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.733,
           y: 29.796,
           width: 2.5,
@@ -10285,7 +9767,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.003,
           y: 34.997,
           width: 2.5,
@@ -10296,7 +9777,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 15.503,
           y: 34.497,
           width: 6,
@@ -10307,7 +9787,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 13.33,
           y: 6.605,
           width: 4.5,
@@ -10318,7 +9797,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 27.348,
           y: 8.488,
           width: 2,
@@ -10329,7 +9807,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 42.17,
           y: 35.395,
           width: 4.5,
@@ -10340,7 +9817,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 30.652,
           y: 33.012,
           width: 2,
@@ -10524,7 +10000,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 49.25,
           y: 12.753,
           width: 4.5,
@@ -10535,7 +10010,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.5,
           y: 7.503,
           width: 2.5,
@@ -10546,7 +10020,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.506,
           y: 20.344,
           width: 4.5,
@@ -10557,7 +10030,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.329,
           y: 26.498,
           width: 1.5,
@@ -10568,7 +10040,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.982,
           y: 35.868,
           width: 6,
@@ -10579,7 +10050,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 39.107,
           y: 32.207,
           width: 6,
@@ -10590,7 +10060,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 24.503,
           y: 10.003,
           width: 2.5,
@@ -10601,7 +10070,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25.003,
           y: 6.503,
           width: 2.5,
@@ -10612,7 +10080,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.25,
           y: 25.247,
           width: 4.5,
@@ -10623,7 +10090,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9,
           y: 34.997,
           width: 2.5,
@@ -10634,7 +10100,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 20.994,
           y: 19.906,
           width: 4.5,
@@ -10645,7 +10110,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 28.171,
           y: 16.002,
           width: 1.5,
@@ -10656,7 +10120,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.018,
           y: 5.132,
           width: 6,
@@ -10667,7 +10130,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 14.893,
           y: 9.293,
           width: 6,
@@ -10678,7 +10140,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.997,
           y: 32.497,
           width: 2.5,
@@ -10689,7 +10150,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.497,
           y: 35.997,
           width: 2.5,
@@ -10700,7 +10160,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 39.783,
           y: 10.953,
           width: 2,
@@ -10711,7 +10170,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 47.75,
           y: 25.003,
           width: 4.5,
@@ -10722,7 +10180,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 18.217,
           y: 30.547,
           width: 2,
@@ -10733,7 +10190,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 7.75,
           y: 16.997,
           width: 4.5,
@@ -10930,7 +10386,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.25,
           y: 16.247,
           width: 4.5,
@@ -10941,7 +10396,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7,
           y: 12.497,
           width: 6,
@@ -10952,7 +10406,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 4.5,
@@ -10963,7 +10416,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 17.5,
           width: 1.5,
@@ -10974,7 +10426,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.5,
           y: 32.5,
           width: 2.5,
@@ -10985,7 +10436,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 32.5,
           width: 6,
@@ -10996,7 +10446,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.5,
           y: 37.003,
           width: 2.5,
@@ -11007,7 +10456,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46,
           y: 37.503,
           width: 2.5,
@@ -11018,7 +10466,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 49.25,
           y: 21.753,
           width: 4.5,
@@ -11029,7 +10476,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47,
           y: 28.503,
           width: 6,
@@ -11040,7 +10486,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.75,
           y: 22.75,
           width: 4.5,
@@ -11051,7 +10496,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 25,
           width: 1.5,
@@ -11062,7 +10506,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52,
           y: 10,
           width: 2.5,
@@ -11073,7 +10516,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 9,
           width: 6,
@@ -11084,7 +10526,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8,
           y: 5.497,
           width: 2.5,
@@ -11095,7 +10536,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.5,
           y: 4.997,
           width: 2.5,
@@ -11106,7 +10546,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 12.756,
           y: 23,
           width: 4.5,
@@ -11117,7 +10556,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 20.682,
           y: 31.411,
           width: 2,
@@ -11128,7 +10566,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 42.744,
           y: 19,
           width: 4.5,
@@ -11139,7 +10576,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 37.318,
           y: 10.089,
           width: 2,
@@ -11321,7 +10757,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29,
           y: 32,
           width: 2.5,
@@ -11332,7 +10767,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.5,
           y: 32.5,
           width: 2.5,
@@ -11343,7 +10777,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.589,
           y: 30.808,
           width: 4.5,
@@ -11354,7 +10787,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.656,
           y: 26.929,
           width: 2.5,
@@ -11365,7 +10797,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.807,
           y: 24.034,
           width: 4.5,
@@ -11376,7 +10807,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.78,
           y: 22.258,
           width: 1.5,
@@ -11387,7 +10817,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.018,
           y: 6.132,
           width: 6,
@@ -11398,7 +10827,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.893,
           y: 10.293,
           width: 6,
@@ -11409,7 +10837,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.5,
           y: 10.5,
           width: 2.5,
@@ -11420,7 +10847,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 25,
           y: 10,
           width: 2.5,
@@ -11431,7 +10857,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 29.193,
           y: 16.716,
           width: 4.5,
@@ -11442,7 +10867,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 23.22,
           y: 20.742,
           width: 1.5,
@@ -11453,7 +10877,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.911,
           y: 7.192,
           width: 4.5,
@@ -11464,7 +10887,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.844,
           y: 15.571,
           width: 2.5,
@@ -11475,7 +10897,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 45.982,
           y: 34.868,
           width: 6,
@@ -11486,7 +10907,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.107,
           y: 31.207,
           width: 6,
@@ -11497,7 +10917,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 20.252,
           y: 33.749,
           width: 2,
@@ -11508,7 +10927,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 9.562,
           y: 19.558,
           width: 4.5,
@@ -11519,7 +10937,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 37.748,
           y: 7.752,
           width: 2,
@@ -11530,7 +10947,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 45.938,
           y: 22.442,
           width: 4.5,
@@ -11719,7 +11135,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.503,
           y: 4.503,
           width: 6,
@@ -11730,7 +11145,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 16.253,
           y: 10.753,
           width: 6,
@@ -11741,7 +11155,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.125,
           y: 23.122,
           width: 4.5,
@@ -11752,7 +11165,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.5,
           y: 16.747,
           width: 1.5,
@@ -11763,7 +11175,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 24.997,
           y: 32,
           width: 2.5,
@@ -11774,7 +11185,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 28.497,
           y: 32.5,
           width: 2.5,
@@ -11785,7 +11195,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.003,
           y: 36,
           width: 2.5,
@@ -11796,7 +11205,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.003,
           y: 28.5,
           width: 6,
@@ -11807,7 +11215,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 39.497,
           y: 36.497,
           width: 6,
@@ -11818,7 +11225,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37.747,
           y: 30.747,
           width: 6,
@@ -11829,7 +11235,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.375,
           y: 17.128,
           width: 4.5,
@@ -11840,7 +11245,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33,
           y: 25.753,
           width: 1.5,
@@ -11851,7 +11255,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.503,
           y: 10.5,
           width: 2.5,
@@ -11862,7 +11265,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29.003,
           y: 10,
           width: 2.5,
@@ -11873,7 +11275,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.497,
           y: 6.5,
           width: 2.5,
@@ -11884,7 +11285,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.997,
           y: 12.5,
           width: 6,
@@ -11895,7 +11295,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 47.75,
           y: 26.003,
           width: 4.5,
@@ -11906,7 +11305,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 17.068,
           y: 30.706,
           width: 2,
@@ -11917,7 +11315,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 7.75,
           y: 15.997,
           width: 4.5,
@@ -11928,7 +11325,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 40.932,
           y: 10.794,
           width: 2,
@@ -12098,7 +11494,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.125,
           y: 23.122,
           width: 4.5,
@@ -12109,7 +11504,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.5,
           y: 16.747,
           width: 1.5,
@@ -12120,7 +11514,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.506,
           y: 3.497,
           width: 4.5,
@@ -12131,7 +11524,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.506,
           y: 3.497,
           width: 6,
@@ -12142,7 +11534,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.503,
           y: 14.003,
           width: 2.5,
@@ -12153,7 +11544,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.003,
           y: 10.503,
           width: 2.5,
@@ -12164,7 +11554,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 4.753,
           y: 25.25,
           width: 6,
@@ -12175,7 +11564,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 15.003,
           y: 27.5,
           width: 2.5,
@@ -12186,7 +11574,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.247,
           y: 16.25,
           width: 6,
@@ -12197,7 +11584,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.497,
           y: 15,
           width: 2.5,
@@ -12208,7 +11594,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.997,
           y: 28.497,
           width: 2.5,
@@ -12219,7 +11604,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.497,
           y: 31.997,
           width: 2.5,
@@ -12230,7 +11614,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 35.994,
           y: 34.503,
           width: 4.5,
@@ -12241,7 +11624,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.494,
           y: 37.503,
           width: 6,
@@ -12252,7 +11634,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.375,
           y: 17.128,
           width: 4.5,
@@ -12263,7 +11644,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33,
           y: 25.753,
           width: 1.5,
@@ -12274,7 +11654,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 22.75,
           y: 33,
           width: 4.5,
@@ -12285,7 +11664,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 14.251,
           y: 35.748,
           width: 2,
@@ -12296,7 +11674,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 32.75,
           y: 9,
           width: 4.5,
@@ -12307,7 +11684,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 43.749,
           y: 5.752,
           width: 2,
@@ -12495,7 +11871,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10.082,
           y: 7.337,
           width: 2.5,
@@ -12506,7 +11881,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8.215,
           y: 4.335,
           width: 2.5,
@@ -12517,7 +11891,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 24.5,
           y: 8.003,
           width: 6,
@@ -12528,7 +11901,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33,
           y: 5.003,
           width: 2.5,
@@ -12539,7 +11911,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.128,
           y: 22.375,
           width: 4.5,
@@ -12550,7 +11921,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.753,
           y: 25,
           width: 1.5,
@@ -12561,7 +11931,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47.247,
           y: 19.247,
           width: 4.5,
@@ -12572,7 +11941,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 44.997,
           y: 25.997,
           width: 6,
@@ -12583,7 +11951,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.418,
           y: 35.163,
           width: 2.5,
@@ -12594,7 +11961,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.285,
           y: 38.165,
           width: 2.5,
@@ -12605,7 +11971,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 29.5,
           y: 33.497,
           width: 6,
@@ -12616,7 +11981,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.5,
           y: 37.497,
           width: 2.5,
@@ -12627,7 +11991,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.372,
           y: 17.875,
           width: 4.5,
@@ -12638,7 +12001,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.747,
           y: 17.5,
           width: 1.5,
@@ -12649,7 +12011,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.253,
           y: 18.753,
           width: 4.5,
@@ -12660,7 +12021,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.003,
           y: 15.003,
           width: 6,
@@ -12671,7 +12031,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 14.897,
           y: 25.268,
           width: 4.5,
@@ -12682,7 +12041,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 13.748,
           y: 34.76,
           width: 2,
@@ -12693,7 +12051,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 44.252,
           y: 6.74,
           width: 2,
@@ -12704,7 +12061,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 40.603,
           y: 16.732,
           width: 4.5,
@@ -12895,7 +12251,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 40.5,
           y: 12.5,
           width: 2.5,
@@ -12906,7 +12261,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37,
           y: 12,
           width: 2.5,
@@ -12917,7 +12271,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.375,
           y: 17.128,
           width: 4.5,
@@ -12928,7 +12281,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33,
           y: 25.753,
           width: 1.5,
@@ -12939,7 +12291,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 42.247,
           y: 33.25,
           width: 6,
@@ -12950,7 +12301,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52.497,
           y: 32,
           width: 2.5,
@@ -12961,7 +12311,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.039,
           y: 6.5,
           width: 4.5,
@@ -12972,7 +12321,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.126,
           y: 11.628,
           width: 6,
@@ -12983,7 +12331,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 17,
           y: 30,
           width: 2.5,
@@ -12994,7 +12341,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 20.5,
           y: 30.5,
           width: 2.5,
@@ -13005,7 +12351,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.125,
           y: 23.122,
           width: 4.5,
@@ -13016,7 +12361,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.5,
           y: 16.747,
           width: 1.5,
@@ -13027,7 +12371,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.753,
           y: 8.25,
           width: 6,
@@ -13038,7 +12381,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.003,
           y: 10.5,
           width: 2.5,
@@ -13049,7 +12391,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.461,
           y: 31.5,
           width: 4.5,
@@ -13060,7 +12401,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 3.874,
           y: 29.372,
           width: 6,
@@ -13071,7 +12411,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 30.75,
           y: 32,
           width: 4.5,
@@ -13082,7 +12421,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 45.009,
           y: 19.991,
           width: 2,
@@ -13093,7 +12431,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 24.75,
           y: 10,
           width: 4.5,
@@ -13104,7 +12441,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 12.991,
           y: 21.509,
           width: 2,
@@ -13289,7 +12625,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11.503,
           y: 10.497,
           width: 4.5,
@@ -13300,7 +12635,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.503,
           y: 10.497,
           width: 6,
@@ -13311,7 +12645,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52.5,
           y: 4.997,
           width: 2.5,
@@ -13322,7 +12655,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 7.997,
           width: 6,
@@ -13333,7 +12665,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.75,
           y: 22.75,
           width: 4.5,
@@ -13344,7 +12675,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 25,
           width: 1.5,
@@ -13355,7 +12685,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41,
           y: 37,
           width: 2.5,
@@ -13366,7 +12695,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44.5,
           y: 37.5,
           width: 2.5,
@@ -13377,7 +12705,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.997,
           y: 27.503,
           width: 4.5,
@@ -13388,7 +12715,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.497,
           y: 30.503,
           width: 6,
@@ -13399,7 +12725,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5,
           y: 37.503,
           width: 2.5,
@@ -13410,7 +12735,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 33.503,
           width: 6,
@@ -13421,7 +12745,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 4.5,
@@ -13432,7 +12755,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 17.5,
           width: 1.5,
@@ -13443,7 +12765,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 16.5,
           y: 5.5,
           width: 2.5,
@@ -13454,7 +12775,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 13,
           y: 5,
           width: 2.5,
@@ -13465,7 +12785,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 27.748,
           y: 7.76,
           width: 2,
@@ -13476,7 +12795,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 43.58,
           y: 17.509,
           width: 4.5,
@@ -13487,7 +12805,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 30.252,
           y: 33.74,
           width: 2,
@@ -13498,7 +12815,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 11.92,
           y: 24.491,
           width: 4.5,
@@ -13689,7 +13005,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.676,
           y: 28.884,
           width: 4.5,
@@ -13700,7 +13015,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.982,
           y: 34.868,
           width: 6,
@@ -13711,7 +13025,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43.996,
           y: 17.267,
           width: 2.5,
@@ -13722,7 +13035,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45.538,
           y: 20.448,
           width: 2.5,
@@ -13733,7 +13045,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 54.5,
           y: 6,
           width: 2.5,
@@ -13744,7 +13055,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46,
           y: 9,
           width: 6,
@@ -13755,7 +13065,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11.824,
           y: 9.116,
           width: 4.5,
@@ -13766,7 +13075,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.018,
           y: 6.132,
           width: 6,
@@ -13777,7 +13085,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 3,
           y: 36.5,
           width: 2.5,
@@ -13788,7 +13095,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8,
           y: 32.5,
           width: 6,
@@ -13799,7 +13105,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.375,
           y: 22.375,
           width: 4.5,
@@ -13810,7 +13115,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 25,
           width: 1.5,
@@ -13821,7 +13125,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.125,
           y: 17.875,
           width: 4.5,
@@ -13832,7 +13135,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 1.5,
@@ -13843,7 +13145,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 13.504,
           y: 25.233,
           width: 2.5,
@@ -13854,7 +13155,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.962,
           y: 22.052,
           width: 2.5,
@@ -13865,7 +13165,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 28.747,
           y: 32,
           width: 4.5,
@@ -13876,7 +13175,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 37.243,
           y: 7.754,
           width: 2,
@@ -13887,7 +13185,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 26.753,
           y: 10,
           width: 4.5,
@@ -13898,7 +13195,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 20.757,
           y: 33.746,
           width: 2,
@@ -14071,7 +13367,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.253,
           y: 23.25,
           width: 6,
@@ -14082,7 +13377,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.503,
           y: 17.5,
           width: 2.5,
@@ -14093,7 +13387,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12,
           y: 34.497,
           width: 2.5,
@@ -14104,7 +13397,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.5,
           y: 37.997,
           width: 2.5,
@@ -14115,7 +13407,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.5,
           y: 2.5,
           width: 4.5,
@@ -14126,7 +13417,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.5,
           y: 10,
           width: 6,
@@ -14137,7 +13427,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.375,
           y: 22.375,
           width: 4.5,
@@ -14148,7 +13437,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 25,
           width: 1.5,
@@ -14159,7 +13447,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.747,
           y: 18.25,
           width: 6,
@@ -14170,7 +13457,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.997,
           y: 25,
           width: 2.5,
@@ -14181,7 +13467,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45.5,
           y: 8.003,
           width: 2.5,
@@ -14192,7 +13477,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46,
           y: 4.503,
           width: 2.5,
@@ -14203,7 +13487,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 36,
           y: 35.5,
           width: 4.5,
@@ -14214,7 +13497,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.5,
           y: 31,
           width: 6,
@@ -14225,7 +13507,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.125,
           y: 17.875,
           width: 4.5,
@@ -14236,7 +13517,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 1.5,
@@ -14247,7 +13527,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 23.75,
           y: 35,
           width: 4.5,
@@ -14258,7 +13537,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 46.749,
           y: 33.748,
           width: 2,
@@ -14269,7 +13547,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 31.75,
           y: 7,
           width: 4.5,
@@ -14280,7 +13557,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 11.251,
           y: 7.751,
           width: 2,
@@ -14483,7 +13759,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 5.5,
           y: 27.997,
           width: 6,
@@ -14494,7 +13769,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9,
           y: 36.997,
           width: 2.5,
@@ -14505,7 +13779,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 14.824,
           y: 8.116,
           width: 4.5,
@@ -14516,7 +13789,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.018,
           y: 5.132,
           width: 6,
@@ -14527,7 +13799,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 21.398,
           y: 37.197,
           width: 2.5,
@@ -14538,7 +13809,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 19.691,
           y: 34.101,
           width: 2.5,
@@ -14549,7 +13819,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.378,
           y: 18.878,
           width: 4.5,
@@ -14560,7 +13829,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.003,
           y: 27.503,
           width: 1.5,
@@ -14571,7 +13839,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.5,
           y: 13.503,
           width: 6,
@@ -14582,7 +13849,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.5,
           y: 5.503,
           width: 2.5,
@@ -14593,7 +13859,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.676,
           y: 29.884,
           width: 4.5,
@@ -14604,7 +13869,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.982,
           y: 35.868,
           width: 6,
@@ -14615,7 +13879,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 36.102,
           y: 5.303,
           width: 2.5,
@@ -14626,7 +13889,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 37.809,
           y: 8.399,
           width: 2.5,
@@ -14637,7 +13899,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.122,
           y: 21.372,
           width: 4.5,
@@ -14648,7 +13909,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.497,
           y: 14.997,
           width: 1.5,
@@ -14659,7 +13919,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 10.009,
           y: 18.991,
           width: 2,
@@ -14670,7 +13929,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 28.75,
           y: 33,
           width: 4.5,
@@ -14681,7 +13939,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 47.991,
           y: 22.509,
           width: 2,
@@ -14692,7 +13949,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 26.75,
           y: 9,
           width: 4.5,
@@ -14880,7 +14136,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21.344,
           y: 24.867,
           width: 4.5,
@@ -14891,7 +14146,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.742,
           y: 18.983,
           width: 1.5,
@@ -14902,7 +14156,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 25.253,
           y: 2.75,
           width: 4.5,
@@ -14913,7 +14166,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 18.503,
           y: 5,
           width: 6,
@@ -14924,7 +14176,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 7.5,
           y: 26.997,
           width: 6,
@@ -14935,7 +14186,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11,
           y: 35.997,
           width: 2.5,
@@ -14946,7 +14196,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.5,
           y: 32.497,
           width: 2.5,
@@ -14957,7 +14206,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48,
           y: 35.997,
           width: 2.5,
@@ -14968,7 +14216,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.156,
           y: 15.383,
           width: 4.5,
@@ -14979,7 +14226,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 32.758,
           y: 23.517,
           width: 1.5,
@@ -14990,7 +14236,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.247,
           y: 35.25,
           width: 4.5,
@@ -15001,7 +14246,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 35.497,
           y: 36,
           width: 6,
@@ -15012,7 +14256,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46.5,
           y: 14.503,
           width: 6,
@@ -15023,7 +14266,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 6.503,
           width: 2.5,
@@ -15034,7 +14276,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 10.003,
           width: 2.5,
@@ -15045,7 +14286,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.5,
           y: 6.503,
           width: 2.5,
@@ -15056,7 +14296,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 19.753,
           y: 14.003,
           width: 4.5,
@@ -15067,7 +14306,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 13.255,
           y: 15.755,
           width: 2,
@@ -15078,7 +14316,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 35.747,
           y: 27.997,
           width: 4.5,
@@ -15089,7 +14326,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 44.745,
           y: 25.746,
           width: 2,
@@ -15286,7 +14522,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50.25,
           y: 22.747,
           width: 4.5,
@@ -15297,7 +14532,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 43.5,
           y: 24.997,
           width: 6,
@@ -15308,7 +14542,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 21.003,
           y: 34.497,
           width: 6,
@@ -15319,7 +14552,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 16.503,
           y: 34.497,
           width: 2.5,
@@ -15330,7 +14562,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 23.944,
           y: 23.693,
           width: 4.5,
@@ -15341,7 +14572,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 20.208,
           y: 18.748,
           width: 1.5,
@@ -15352,7 +14582,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8.316,
           y: 7.086,
           width: 2.5,
@@ -15363,7 +14592,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 6.049,
           y: 4.372,
           width: 2.5,
@@ -15374,7 +14602,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.997,
           y: 7.003,
           width: 6,
@@ -15385,7 +14612,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.997,
           y: 8.003,
           width: 2.5,
@@ -15396,7 +14622,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.25,
           y: 15.253,
           width: 4.5,
@@ -15407,7 +14632,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 10.5,
           y: 16.003,
           width: 6,
@@ -15418,7 +14642,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.556,
           y: 16.557,
           width: 4.5,
@@ -15429,7 +14652,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 38.292,
           y: 23.752,
           width: 1.5,
@@ -15440,7 +14662,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 49.184,
           y: 35.414,
           width: 2.5,
@@ -15451,7 +14672,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 51.451,
           y: 38.128,
           width: 2.5,
@@ -15462,7 +14682,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 26.348,
           y: 8.488,
           width: 2,
@@ -15473,7 +14692,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 12.107,
           y: 28.412,
           width: 4.5,
@@ -15484,7 +14702,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 31.652,
           y: 33.012,
           width: 2,
@@ -15495,7 +14712,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 43.393,
           y: 13.588,
           width: 4.5,
@@ -15686,7 +14902,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.193,
           y: 15.818,
           width: 4.5,
@@ -15697,7 +14912,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.274,
           y: 16.74,
           width: 1.5,
@@ -15708,7 +14922,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 51,
           y: 10,
           width: 2.5,
@@ -15719,7 +14932,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 43,
           y: 9,
           width: 6,
@@ -15730,7 +14942,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.25,
           y: 11.253,
           width: 4.5,
@@ -15741,7 +14952,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11.5,
           y: 12.003,
           width: 6,
@@ -15752,7 +14962,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 35.788,
           y: 7.742,
           width: 2.5,
@@ -15763,7 +14972,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 32.852,
           y: 9.712,
           width: 2.5,
@@ -15774,7 +14982,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.307,
           y: 24.432,
           width: 4.5,
@@ -15785,7 +14992,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 27.226,
           y: 25.76,
           width: 1.5,
@@ -15796,7 +15002,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.5,
           y: 32.5,
           width: 2.5,
@@ -15807,7 +15012,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11,
           y: 32.5,
           width: 6,
@@ -15818,7 +15022,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 49.25,
           y: 26.747,
           width: 4.5,
@@ -15829,7 +15032,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.5,
           y: 28.997,
           width: 6,
@@ -15840,7 +15042,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 21.712,
           y: 34.758,
           width: 2.5,
@@ -15851,7 +15052,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 24.648,
           y: 32.788,
           width: 2.5,
@@ -15862,7 +15062,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 26.489,
           y: 6.254,
           width: 2,
@@ -15873,7 +15072,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 41.271,
           y: 18.568,
           width: 4.5,
@@ -15884,7 +15082,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 31.511,
           y: 35.246,
           width: 2,
@@ -15895,7 +15092,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 14.229,
           y: 23.432,
           width: 4.5,
@@ -16086,7 +15282,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9,
           y: 9,
           width: 4.5,
@@ -16097,7 +15292,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.5,
           y: 4.5,
           width: 6,
@@ -16108,7 +15302,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.024,
           y: 17.707,
           width: 4.5,
@@ -16119,7 +15312,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.477,
           y: 15.804,
           width: 1.5,
@@ -16130,7 +15322,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 30.5,
           y: 4.5,
           width: 2.5,
@@ -16141,7 +15332,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 31,
           y: 8,
           width: 2.5,
@@ -16152,7 +15342,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 52,
           y: 10,
           width: 2.5,
@@ -16163,7 +15352,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44,
           y: 9,
           width: 6,
@@ -16174,7 +15362,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 29,
           width: 4.5,
@@ -16185,7 +15372,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 36.5,
           width: 6,
@@ -16196,7 +15382,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.476,
           y: 22.543,
           width: 4.5,
@@ -16207,7 +15392,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 28.023,
           y: 26.696,
           width: 1.5,
@@ -16218,7 +15402,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 27,
           y: 38,
           width: 2.5,
@@ -16229,7 +15412,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 26.5,
           y: 34.5,
           width: 2.5,
@@ -16240,7 +15422,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 5.5,
           y: 32.5,
           width: 2.5,
@@ -16251,7 +15432,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 32.5,
           width: 6,
@@ -16262,7 +15442,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 36.826,
           y: 34.723,
           width: 2,
@@ -16273,7 +15452,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 40.75,
           y: 18.003,
           width: 4.5,
@@ -16284,7 +15462,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 21.174,
           y: 6.777,
           width: 2,
@@ -16295,7 +15472,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 14.75,
           y: 23.997,
           width: 4.5,
@@ -16480,7 +15656,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 23.611,
           y: 24.001,
           width: 4.5,
@@ -16491,7 +15666,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 22.701,
           y: 17.936,
           width: 1.5,
@@ -16502,7 +15676,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.497,
           y: 30.997,
           width: 4.5,
@@ -16513,7 +15686,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 34.497,
           y: 38.497,
           width: 6,
@@ -16524,7 +15696,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 46.5,
           y: 13.503,
           width: 6,
@@ -16535,7 +15706,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 46.5,
           y: 5.503,
           width: 2.5,
@@ -16546,7 +15716,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45.898,
           y: 30.277,
           width: 2.5,
@@ -16557,7 +15726,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.611,
           y: 28.01,
           width: 2.5,
@@ -16568,7 +15736,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.889,
           y: 16.249,
           width: 4.5,
@@ -16579,7 +15746,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 35.799,
           y: 24.564,
           width: 1.5,
@@ -16590,7 +15756,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 21.003,
           y: 7.003,
           width: 4.5,
@@ -16601,7 +15766,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 19.503,
           y: 2.503,
           width: 6,
@@ -16612,7 +15776,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 7.5,
           y: 27.997,
           width: 6,
@@ -16623,7 +15786,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11,
           y: 36.997,
           width: 2.5,
@@ -16634,7 +15796,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 11.602,
           y: 12.223,
           width: 2.5,
@@ -16645,7 +15806,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8.889,
           y: 14.49,
           width: 2.5,
@@ -16656,7 +15816,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 19.75,
           y: 33,
           width: 4.5,
@@ -16667,7 +15826,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 41.749,
           y: 20.751,
           width: 2,
@@ -16678,7 +15836,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 35.75,
           y: 9,
           width: 4.5,
@@ -16689,7 +15846,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 16.251,
           y: 20.749,
           width: 2,
@@ -16895,7 +16051,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 31.125,
           y: 17.875,
           width: 4.5,
@@ -16906,7 +16061,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 1.5,
@@ -16917,7 +16071,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.497,
           y: 7.5,
           width: 2.5,
@@ -16928,7 +16081,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.497,
           y: 15.5,
           width: 6,
@@ -16939,7 +16091,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48,
           y: 26.497,
           width: 2.5,
@@ -16950,7 +16101,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 47.5,
           y: 22.997,
           width: 2.5,
@@ -16961,7 +16111,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 41.997,
           y: 33.497,
           width: 4.5,
@@ -16972,7 +16121,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 40.497,
           y: 28.997,
           width: 6,
@@ -16983,7 +16131,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.375,
           y: 22.375,
           width: 4.5,
@@ -16994,7 +16141,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 25,
           width: 1.5,
@@ -17005,7 +16151,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 9.003,
           y: 35,
           width: 2.5,
@@ -17016,7 +16161,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 5.503,
           y: 26,
           width: 6,
@@ -17027,7 +16171,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 9.5,
           y: 16.003,
           width: 2.5,
@@ -17038,7 +16181,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 10,
           y: 19.503,
           width: 2.5,
@@ -17049,7 +16191,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.503,
           y: 4.503,
           width: 4.5,
@@ -17060,7 +16201,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 13.503,
           y: 12.003,
           width: 6,
@@ -17071,7 +16211,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 14.75,
           y: 26,
           width: 4.5,
@@ -17082,7 +16221,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 38.745,
           y: 7.745,
           width: 2,
@@ -17093,7 +16231,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 40.75,
           y: 16,
           width: 4.5,
@@ -17104,7 +16241,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 19.255,
           y: 33.754,
           width: 2,
@@ -17301,7 +16437,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.75,
           y: 22.75,
           width: 4.5,
@@ -17312,7 +16447,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 25,
           width: 1.5,
@@ -17323,7 +16457,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 40.997,
           y: 8.503,
           width: 6,
@@ -17334,7 +16467,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 48.997,
           y: 9.503,
           width: 2.5,
@@ -17345,7 +16477,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.253,
           y: 14.247,
           width: 4.5,
@@ -17356,7 +16487,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 11.503,
           y: 14.997,
           width: 6,
@@ -17367,7 +16497,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.843,
           y: 36.753,
           width: 2.5,
@@ -17378,7 +16507,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 44.813,
           y: 34.834,
           width: 2.5,
@@ -17389,7 +16517,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 13.003,
           y: 32.997,
           width: 6,
@@ -17400,7 +16527,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 8.503,
           y: 32.997,
           width: 2.5,
@@ -17411,7 +16537,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 49.247,
           y: 23.753,
           width: 4.5,
@@ -17422,7 +16547,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.497,
           y: 26.003,
           width: 6,
@@ -17433,7 +16557,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 4.5,
@@ -17444,7 +16567,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 17.5,
           width: 1.5,
@@ -17455,7 +16577,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 15.657,
           y: 5.747,
           width: 2.5,
@@ -17466,7 +16587,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.687,
           y: 7.666,
           width: 2.5,
@@ -17477,7 +16597,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 24.641,
           y: 32.506,
           width: 4.5,
@@ -17488,7 +16607,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 12.053,
           y: 25.433,
           width: 2,
@@ -17499,7 +16617,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 30.859,
           y: 9.494,
           width: 4.5,
@@ -17510,7 +16627,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 45.947,
           y: 16.067,
           width: 2,
@@ -17689,7 +16805,6 @@ export const gwTerrain: TerrainConfig = {
       features: [
         {
           type: "l-ruin",
-          label: "ruin",
           x: 48.503,
           y: 23.5,
           width: 2.5,
@@ -17700,7 +16815,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 45.003,
           y: 23,
           width: 2.5,
@@ -17711,7 +16825,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 42.75,
           y: 6.25,
           width: 4.5,
@@ -17722,7 +16835,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 50,
           y: 10,
           width: 2.5,
@@ -17733,7 +16845,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 41.247,
           y: 33.253,
           width: 6,
@@ -17744,7 +16855,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 47.497,
           y: 34.503,
           width: 6,
@@ -17755,7 +16865,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 30.75,
           y: 22.75,
           width: 4.5,
@@ -17766,7 +16875,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 25,
           width: 1.5,
@@ -17777,7 +16885,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 12.75,
           y: 31.75,
           width: 4.5,
@@ -17788,7 +16895,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 7.5,
           y: 32.5,
           width: 2.5,
@@ -17799,7 +16905,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 8.997,
           y: 19,
           width: 2.5,
@@ -17810,7 +16915,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.497,
           y: 19.5,
           width: 2.5,
@@ -17821,7 +16925,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin",
-          label: "ruin",
           x: 12.753,
           y: 8.247,
           width: 6,
@@ -17832,7 +16935,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 6.503,
           y: 6.497,
           width: 6,
@@ -17843,7 +16945,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 24.75,
           y: 17.5,
           width: 4.5,
@@ -17854,7 +16955,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          label: "ruin",
           x: 33.75,
           y: 17.5,
           width: 1.5,
@@ -17865,7 +16965,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 36.01,
           y: 8.498,
           width: 2,
@@ -17876,7 +16975,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 30.747,
           y: 32,
           width: 4.5,
@@ -17887,7 +16985,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "gantry",
-          label: "gantry",
           x: 21.99,
           y: 33.002,
           width: 2,
@@ -17898,7 +16995,6 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "generator",
-          label: "generator",
           x: 24.753,
           y: 10,
           width: 4.5,

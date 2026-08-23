@@ -3,9 +3,9 @@
 // (layouts only — the building templates live in templates-simple.yml, which
 // gen-presets merges back in). Each `area` piece becomes a building
 // placement referencing a gw template; corner-ruin pieces become `l-ruin`
-// features; catwalk pieces are dropped; pipe/barricade pieces become building placements (via
-// feature-to-building.mjs); every other `feature` piece becomes a polygon
-// area_terrain entry (absolute points); is_objective pieces become skull icons
+// features; catwalk pieces are dropped; pipe/barricade pieces become building
+// placements (via feature-to-building.mjs); a piece no converter claims fails
+// the run; is_objective pieces become skull icons
 // (a touching pair of objective pieces collapses to one marker — see
 // objective-icons.mjs). Deterministic + re-runnable.
 //
@@ -55,12 +55,9 @@ const skipped = corpus.rawLayouts
 for (const layout of corpus.missionLayouts) {
   // One classification pass per layout: areas and pipes/barricades become
   // building placements, corner-ruins and generators/gantries become features,
-  // catwalks are dropped, and anything left over becomes an area_terrain
-  // polygon. See scripts/layout-to-placements.mjs.
-  const { templates, features, areaTerrain } = layoutPlacements(
-    layout,
-    corpus.gwTemplates,
-  );
+  // catwalks are dropped, and an unclaimed piece throws. See
+  // scripts/layout-to-placements.mjs.
+  const { templates, features } = layoutPlacements(layout, corpus.gwTemplates);
   const icons = objectiveIcons(layout);
   // 40kdc layout metadata: the deployment pattern (kept for downstream use,
   // currently unrendered) and the mission matchup split into its two
@@ -71,7 +68,6 @@ for (const layout of corpus.missionLayouts) {
     entry.deployment_pattern_id = layout.deployment_pattern_id;
   if (dispositions) entry.dispositions = dispositions;
   entry.templates = templates;
-  if (areaTerrain.length > 0) entry.area_terrain = areaTerrain;
   if (features.length > 0) entry.features = features;
   if (icons.length > 0) entry.icons = icons;
   // A gw.yml layout whose id matches this 40kdc layout is a hand-authored
@@ -83,7 +79,7 @@ for (const layout of corpus.missionLayouts) {
   // (like the demo "1") remain standalone layouts, spread in above.
   const patch = gw.layout?.[layout.id];
   if (patch) {
-    for (const key of ["templates", "features", "area_terrain", "icons"]) {
+    for (const key of ["templates", "features", "icons"]) {
       if (Array.isArray(patch[key])) {
         entry[key] = [...(entry[key] ?? []), ...patch[key]];
       }

@@ -45,35 +45,6 @@ export const baseTheme: Theme = {
     text_outline: { stroke: "white", stroke_width: 0.3, paint_order: "stroke" },
     arrow: { stroke: "black", stroke_width: 0.4 },
   },
-  area_terrain: {
-    default: {
-      fill: "rgba(128,128,128,0.2)",
-      stroke: "#808080",
-      stroke_width: 0.3,
-    },
-    Forest: {
-      fill: "rgba(74,140,60,0.3)",
-      stroke: "#2c5822",
-      stroke_width: 0.3,
-    },
-    Crater: {
-      fill: "rgba(110,69,26,0.3)",
-      stroke: "#6e451a",
-      stroke_width: 0.3,
-    },
-    Rubble: {
-      fill: "rgba(154,160,166,0.3)",
-      stroke: "#5b6068",
-      stroke_width: 0.3,
-    },
-    feature: {
-      fill: "rgba(128,128,128,0.55)",
-      stroke: "#5b6068",
-      stroke_width: 0.3,
-    },
-    pipe: { fill: "#b9772e", stroke: "#6e451a", stroke_width: 0.3 },
-    barricade: { fill: "#c9a86a", stroke: "#7d6233", stroke_width: 0.3 },
-  },
   icon: {
     circle: { fill: "#e8dcc0", stroke: "#33312c", stroke_width: 0.25 },
     glyph: { fill: "#33312c" },

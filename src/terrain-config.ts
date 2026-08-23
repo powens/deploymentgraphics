@@ -1,23 +1,6 @@
 import type { BuildingPlacement, Point, Template } from "./building-coordinates.js";
 
 /**
- * Default width/height (inches) for area terrain placed without an explicit
- * size.
- */
-export const DEFAULT_AREA_TERRAIN_SIZE = 6;
-
-export type AreaTerrain = {
-  shape: "circle" | "polygon";
-  x: number;
-  y: number;
-  width?: number;   // diameter for circles; bounding-box width for polygons
-  height?: number;
-  points?: Point[];  // polygon-only: template-local closed ring
-  label?: string;
-  rotation?: number;
-};
-
-/**
  * A placed icon marker: `type` selects a predefined icon, `pos` is its center
  * (inches). An optional `player` tints the disk with that player's deployment
  * colour; absent leaves the neutral theme.icon disk. `objective_role` carries
@@ -48,16 +31,11 @@ export type FeaturePlacement = {
   rotation?: number;
   color: string;
   mirror?: boolean; // default true
-  // Material category, shared with area_terrain labels (ruin, pipe, generator,
-  // barricade, gantry, catwalk). Currently styling comes from `color`; the
-  // label is carried for consistency with the ported 40kdc pieces.
-  label?: string;
 };
 
 /**
  * One numbered layout: building placements and optional icon markers and
- * terrain features (drawn on top of the buildings). Layouts ported from
- * external data may instead carry `area_terrain` polygons.
+ * terrain features (drawn on top of the buildings).
  */
 export type TerrainLayout = {
   // Building placements for this layout. Named `templates` in the YAML
@@ -65,7 +43,6 @@ export type TerrainLayout = {
   templates: BuildingPlacement[];
   icons?: IconPlacement[];
   features?: FeaturePlacement[];
-  area_terrain?: AreaTerrain[];
   // The two mission dispositions this layout's matchup pairs (e.g.
   // ["Take and Hold", "Purge the Foe"]), ported from the 40kdc
   // `mission_matchup_id`. Absent on layouts with no matchup.
@@ -84,7 +61,6 @@ export type TerrainLayout = {
 export type TerrainConfig = {
   templates: Record<string, Template>;
   layout: Record<string, TerrainLayout>;
-  area_terrain?: AreaTerrain[];
 };
 
 /**

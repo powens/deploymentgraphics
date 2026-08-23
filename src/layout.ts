@@ -1,17 +1,13 @@
 import type { BuildingPlacement } from "./building-coordinates.js";
-import type {
-  AreaTerrain,
-  FeaturePlacement,
-  IconPlacement,
-} from "./terrain-config.js";
+import type { FeaturePlacement, IconPlacement } from "./terrain-config.js";
 import type { FullConfig } from "./types.js";
 
 /**
  * The board pieces a render pass actually draws, with the "is a layout
  * selected?" and "top-level array unioned with the layout's?" rules already
  * applied. `buildings` and `icons` come from the selected layout alone (empty
- * when none is selected); `features` and `areaTerrain` union the board's
- * top-level arrays with the layout's, so they draw with or without a layout.
+ * when none is selected); `features` unions the board's top-level array with
+ * the layout's, so features draw with or without a layout.
  *
  * This is "layout-resolution" — assembling placement arrays — distinct from
  * `Resolve` in CONTEXT.md, which maps a single placement to a `Placed`.
@@ -20,7 +16,6 @@ export type ResolvedLayout = {
   buildings: BuildingPlacement[];
   icons: IconPlacement[];
   features: FeaturePlacement[];
-  areaTerrain: AreaTerrain[];
 };
 
 /**
@@ -35,9 +30,5 @@ export function resolveLayout(config: FullConfig): ResolvedLayout {
     buildings: layout?.templates ?? [],
     icons: layout?.icons ?? [],
     features: [...(config.features ?? []), ...(layout?.features ?? [])],
-    areaTerrain: [
-      ...(config.terrain.area_terrain ?? []),
-      ...(layout?.area_terrain ?? []),
-    ],
   };
 }

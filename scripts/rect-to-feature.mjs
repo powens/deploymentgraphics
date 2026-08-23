@@ -49,7 +49,6 @@ export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
   const rotDeg = toDegrees(Math.atan2(u.y, u.x));
   return {
     type: RECT_FEATURES[piece.template],
-    label: piece.template,
     x: round(c.x - width / 2),
     y: round(c.y - height / 2),
     width: round(width),
