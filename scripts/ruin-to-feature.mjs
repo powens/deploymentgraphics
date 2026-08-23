@@ -26,14 +26,9 @@
 // placement. Every corner-ruin piece carries a whole L footprint.
 
 import { footprintPolygon, resolvePiece } from "./terrain-resolver.mjs";
-import { round } from "./area-to-building.mjs";
-import {
-  boundsCorners,
-  cross,
-  distance,
-  normalizeDegrees,
-  toDegrees,
-} from "../src/geometry.ts";
+import { featureRow } from "./emit-placement.mjs";
+import { boundsCorners, cross, distance, toDegrees } from "../src/geometry.ts";
+import { placedFromPin } from "../src/placement.ts";
 
 /** True for the 40kdc corner-ruin templates (l-ruin family). */
 export const isRuinTemplate = (id) =>
@@ -84,50 +79,32 @@ function lRefIndices(ring) {
  * `l-ruin-mirror` (-1). The rotation maps the chosen variant's local wall
  * vectors onto the arms, and the outer corner is pinned to place it.
  *
- * @returns {{type, x, y, width, height, rotation, color, mirror: false}}
+ * @returns {object} an emitted `features` row (see emit-placement.mjs).
  */
 export function featureFromRefs(Oa, A1, A2) {
-  const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
   const v = { x: A2.x - Oa.x, y: A2.y - Oa.y }; // horizontal-wall arm
   const chirality = cross(Oa, A1, A2);
   const base = chirality > 0 ? "l-ruin" : "l-ruin-mirror";
 
   const h = distance(Oa, A1); // vertical-wall length
   const w = distance(Oa, A2); // horizontal-wall length
-  const uh = { x: u.x / h, y: u.y / h };
-  const vh = { x: v.x / w, y: v.y / w };
-
-  // Rotation R mapping the variant's local wall vectors onto (u, v). Local
-  // vertical wall vec = (0,-1); horizontal = (sh,0) with sh = +1 (l-ruin) or
-  // -1 (mirror). R = [uh vh] * [sv sh]^T.
+  // The rotation R maps the variant's local wall vectors onto the arms. Its
+  // local horizontal wall vector is (sh, 0), sh = +1 (l-ruin) or -1 (mirror),
+  // so R's first column points along the horizontal arm times sh — and since
+  // the arms are perpendicular, R is a rotation and that first column fixes the
+  // whole map. Only the direction matters, so the arm goes into atan2 unscaled.
+  // The placement module takes it from here as an angle.
   const sh = chirality > 0 ? 1 : -1;
-  const R00 = vh.x * sh;
-  const R01 = -uh.x;
-  const R10 = vh.y * sh;
-  const R11 = -uh.y;
-  const rotDeg = toDegrees(Math.atan2(R10, R00));
+  const rotDeg = toDegrees(Math.atan2(v.y * sh, v.x * sh));
 
-  // Place the outer corner: world(O_f) = R*(O_f - ctr) + ctr + (x, y) = Oa.
-  const ctr = { x: w / 2, y: h / 2 };
+  // The variant's own outer corner, pinned to the resolved one. Crossing the
+  // placement seam here is what keeps the centre-pivot convention out of this
+  // file: the fit ends at "this local point lands there, at this rotation".
   const Of = base === "l-ruin" ? { x: 0, y: h } : { x: w, y: h };
-  const dx = Of.x - ctr.x;
-  const dy = Of.y - ctr.y;
-  const rx = R00 * dx + R01 * dy;
-  const ry = R10 * dx + R11 * dy;
-  const x = Oa.x - rx - ctr.x;
-  const y = Oa.y - ry - ctr.y;
-
-  const rotation = normalizeDegrees(rotDeg);
-  return {
-    type: base,
-    x: round(x),
-    y: round(y),
-    width: round(w),
-    height: round(h),
-    rotation: round(rotation),
-    color: "green",
-    mirror: false,
-  };
+  return featureRow(
+    placedFromPin(base, { width: w, height: h }, rotDeg, Of, Oa),
+    "green",
+  );
 }
 
 /** Outer corner + arm ends of a single whole-L corner-ruin piece. */

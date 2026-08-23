@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
+  boundsCorners,
+  distance,
   pointInRing as inRing,
   ringGap,
   ringMismatch,
@@ -7,6 +9,7 @@ import {
 } from "../src/geometry.ts";
 import { placedRing, resolveFeature } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
+import { footprintPolygon } from "./terrain-resolver.mjs";
 import {
   isRuinTemplate,
   isLFootprint,
@@ -24,6 +27,31 @@ const ruinsOf = (L) =>
   );
 
 const CANVAS = { width: 60, height: 44 };
+
+/**
+ * The outer corner of a piece's resolved footprint, restated here rather than
+ * read off the converter: three of the four bbox corners are ring vertices,
+ * and the outer one is diagonally opposite the missing one.
+ *
+ * The rule is applied to the *unrotated* footprint and the answer carried
+ * across as a vertex index, because a rotated piece's resolved bbox is not the
+ * rotated local bbox — the same reason the converter's `lRefIndices` returns
+ * indices. Taking the nearest resolved vertex to the drawn point instead would
+ * let a fit that pinned the wrong corner pass, since every corner of the L is
+ * a ring vertex.
+ */
+const outerCornerOf = (entry) => {
+  const footprint =
+    entry.piece.footprint ?? entry.layout.footprintOf(entry.piece.template);
+  const local = footprintPolygon(footprint);
+  const corners = boundsCorners(local); // TL, TR, BR, BL
+  const at = corners.map((c) => local.findIndex((p) => distance(p, c) < 1e-6));
+  const openIdx = at.indexOf(-1);
+  if (openIdx === -1 || at.filter((i) => i >= 0).length !== 3) {
+    throw new Error("ruin footprint is not an L (expected 3 of 4 bbox corners)");
+  }
+  return entry.layout.resolve(entry.piece)[at[(openIdx + 2) % 4]];
+};
 
 // Absolute outline of a placed l-ruin feature: the lRuin / lRuinMirror wall
 // path drawn through the placement seam, the way makeFeatures draws it. Used to
@@ -105,6 +133,24 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
     expect(placementOf(sample["corner-ruin-right"]).type).toBe("l-ruin-mirror");
     expect(placementOf(sample["corner-ruin-left"]).type).toBe("l-ruin");
   });
+
+  for (const [template, entry] of Object.entries(sample)) {
+    it(`lands the ${template} outer corner on the resolved one`, () => {
+      // What the fit actually promises: the variant's own outer corner ends up
+      // on the piece's. Asserting it through the placement seam — resolve the
+      // emitted placement, draw the local corner through it — checks the pivot
+      // convention rather than a constant measured once and pinned.
+      const placement = placementOf(entry);
+      const { width: w, height: h } = placement;
+      const localOuter =
+        placement.type === "l-ruin" ? { x: 0, y: h } : { x: w, y: h };
+      const [placed] = resolveFeature(placement, CANVAS);
+      const [drawn] = placedRing([localOuter], placed);
+
+      const outer = outerCornerOf(entry);
+      expect(distance(drawn, outer)).toBeLessThan(0.01);
+    });
+  }
 
 });
 

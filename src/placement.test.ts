@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   mirror,
   placeBuildings,
+  placedFromPin,
+  placedRing,
   placedTransform,
   resolveFeature,
   resolvePlacement,
@@ -345,5 +347,72 @@ describe("placedTransform (centre-pivot draw string)", () => {
       rotation: 0,
     };
     expect(placedTransform(placed)).toBe("translate(0 0) rotate(0 2 3)");
+  });
+});
+
+describe("placedRing (drawing a local ring through a Placed)", () => {
+  it("applies the same map placedTransform describes", () => {
+    const placed: Placed = {
+      name: "x",
+      box: { x: 10, y: 8, width: 4, height: 2 },
+      rotation: 90,
+    };
+    // A quarter turn about the box centre (2, 1) sends the local TL (0,0) to
+    // (3, -1), then the translate puts it at (13, 7).
+    const [tl] = placedRing([{ x: 0, y: 0 }], placed);
+    expect(tl.x).toBeCloseTo(13, 12);
+    expect(tl.y).toBeCloseTo(7, 12);
+  });
+
+  it("leaves the box centre where the box centre is", () => {
+    const placed: Placed = {
+      name: "x",
+      box: { x: 10, y: 8, width: 4, height: 2 },
+      rotation: 137,
+    };
+    const [c] = placedRing([{ x: 2, y: 1 }], placed);
+    expect(c.x).toBeCloseTo(12, 12);
+    expect(c.y).toBeCloseTo(9, 12);
+  });
+});
+
+describe("placedFromPin (the last step of every converter fit)", () => {
+  const size = { width: 6, height: 4 };
+
+  it("is the inverse of placedRing for the pinned point", () => {
+    // This is the property that lets a converter be checked at all: it fits a
+    // placement so a known local point lands on a known absolute one, and the
+    // check draws that local point back through the placement.
+    const pin = { x: 0, y: 4 }; // an L-ruin's outer corner
+    const at = { x: 21.5, y: 13.25 };
+    for (const rotation of [0, 37, 90, 180, 271, -45]) {
+      const placed = placedFromPin("l-ruin", size, rotation, pin, at);
+      const [back] = placedRing([pin], placed);
+      expect(back.x, `rotation ${rotation}`).toBeCloseTo(at.x, 10);
+      expect(back.y, `rotation ${rotation}`).toBeCloseTo(at.y, 10);
+    }
+  });
+
+  it("pinning the centre puts the box top-left at centre minus half the size", () => {
+    // The degenerate case rect-to-feature.mjs uses: the rotation term drops
+    // out, because the centre is the pivot.
+    const centre = { x: size.width / 2, y: size.height / 2 };
+    const placed = placedFromPin("generator", size, 47, centre, { x: 30, y: 22 });
+    expect(placed.box.x).toBeCloseTo(27, 12);
+    expect(placed.box.y).toBeCloseTo(20, 12);
+  });
+
+  it("normalises the rotation into [0, 360)", () => {
+    const pin = { x: 0, y: 0 };
+    const at = { x: 0, y: 0 };
+    expect(placedFromPin("x", size, -90, pin, at).rotation).toBe(270);
+    expect(placedFromPin("x", size, 450, pin, at).rotation).toBe(90);
+  });
+
+  it("carries the size through as the box", () => {
+    const placed = placedFromPin("x", size, 0, { x: 0, y: 0 }, { x: 1, y: 2 });
+    expect(placed.box.width).toBe(6);
+    expect(placed.box.height).toBe(4);
+    expect(placed.name).toBe("x");
   });
 });

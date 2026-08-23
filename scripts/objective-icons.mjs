@@ -19,7 +19,7 @@
 // real, but not the rounding-error sliver the figures below the threshold
 // suggest, and the three outliers are what the threshold is absorbing.
 
-import { round } from "./area-to-building.mjs";
+import { round } from "./emit-placement.mjs";
 import { ringGap } from "../src/geometry.ts";
 
 // Footprint gap (inches) at or below which two objective pieces count as one

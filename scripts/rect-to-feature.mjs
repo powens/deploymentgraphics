@@ -12,13 +12,9 @@
 // Parallels scripts/ruin-to-feature.mjs and scripts/area-to-building.mjs.
 
 import { resolvePiece } from "./terrain-resolver.mjs";
-import { round } from "./area-to-building.mjs";
-import {
-  centroid,
-  distance,
-  normalizeDegrees,
-  toDegrees,
-} from "../src/geometry.ts";
+import { featureRow } from "./emit-placement.mjs";
+import { centroid, distance, toDegrees } from "../src/geometry.ts";
+import { placedFromPin } from "../src/placement.ts";
 
 // 40kdc template id -> feature type drawn by src/features.ts.
 const RECT_FEATURES = {
@@ -43,18 +39,14 @@ export const isRectFeatureTemplate = (id) =>
 export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
   const r = resolvePiece(piece, lookupFootprint, getParent);
   const u = { x: r[1].x - r[0].x, y: r[1].y - r[0].y }; // first edge
-  const width = distance(r[0], r[1]);
-  const height = distance(r[1], r[2]);
-  const c = centroid(r);
+  const size = { width: distance(r[0], r[1]), height: distance(r[1], r[2]) };
   const rotDeg = toDegrees(Math.atan2(u.y, u.x));
-  return {
-    type: RECT_FEATURES[piece.template],
-    x: round(c.x - width / 2),
-    y: round(c.y - height / 2),
-    width: round(width),
-    height: round(height),
-    rotation: round(normalizeDegrees(rotDeg)),
-    color: RECT_FEATURE_COLORS[RECT_FEATURES[piece.template]],
-    mirror: false,
-  };
+  const type = RECT_FEATURES[piece.template];
+  // The pinned point is the box centre, which the rectangle's centroid gives
+  // directly — the degenerate case of the same fit ruin-to-feature.mjs uses.
+  const centre = { x: size.width / 2, y: size.height / 2 };
+  return featureRow(
+    placedFromPin(type, size, rotDeg, centre, centroid(r)),
+    RECT_FEATURE_COLORS[type],
+  );
 }
