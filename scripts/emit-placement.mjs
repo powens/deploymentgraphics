@@ -1,11 +1,15 @@
 // Turning a resolved fit into a row combined.yml can hold.
 //
-// The converters each work out where a 40kdc piece goes in their own terms and
-// end at the same place: a `Placed` (see CONTEXT.md), which has to come out as
-// a YAML row. That last step — round to 3dp so the generated file is
-// byte-stable, and spell the box as the `{x, y, width, height, rotation}` a
-// feature placement carries — is the same for all of them, so it lives here
-// rather than in each converter.
+// `round` is the one thing every converter needs: the generated file is checked
+// in, so every number it carries goes to 3dp or the check job sees a diff in
+// the last bits.
+//
+// `featureRow` is for the two converters that end at a `Placed` (see
+// CONTEXT.md) — ruin-to-feature and rect-to-feature. Spelling that box as the
+// `{x, y, width, height, rotation}` a feature placement carries is the same
+// work for both, so it lives here rather than in each. The other two,
+// area-to-building and feature-to-building, emit corner-pin authoring
+// placements and only take `round`.
 
 /** Round to 3 dp; normalise -0 to 0 so combined.yml stays byte-stable. */
 export const round = (n) => {

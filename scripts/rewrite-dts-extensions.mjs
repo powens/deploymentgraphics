@@ -29,20 +29,28 @@ function declarations(dir) {
 // A relative specifier in a `from "…"` clause or a dynamic `import("…")`.
 const SPECIFIER = /((?:from|import)\s*\(?\s*)(["'])(\.[^"']*)\.ts\2/g;
 
+// The check, and deliberately not `SPECIFIER`: re-testing with the regex that
+// just did the replacing can only ever confirm that `replace` replaced what it
+// matched, so it would pass on exactly the case it exists to catch — a clause
+// shape the rewrite does not know about. Any relative `.ts` string left in a
+// declaration is a path that does not exist in `lib/`, whatever holds it.
+// Not global, so there is no `lastIndex` to carry between files.
+const ANY_TS_SPECIFIER = /(["'])\.[^"']*\.ts\1/;
+
 let rewritten = 0;
+const dangling = [];
 for (const path of declarations(libDir)) {
   const source = readFileSync(path, "utf8");
   const fixed = source.replace(SPECIFIER, (_m, lead, quote, base) =>
     `${lead}${quote}${base}.js${quote}`,
   );
-  if (fixed === source) continue;
-  writeFileSync(path, fixed);
-  rewritten++;
+  if (fixed !== source) {
+    writeFileSync(path, fixed);
+    rewritten++;
+  }
+  if (ANY_TS_SPECIFIER.test(fixed)) dangling.push(path);
 }
 
-const dangling = declarations(libDir).filter((path) =>
-  SPECIFIER.test(readFileSync(path, "utf8")),
-);
 if (dangling.length > 0) {
   console.error(`.ts specifiers survived in:\n  ${dangling.join("\n  ")}`);
   process.exit(1);

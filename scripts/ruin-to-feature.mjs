@@ -91,13 +91,12 @@ export function featureFromRefs(Oa, A1, A2) {
   const w = Math.hypot(v.x, v.y); // horizontal-wall length
   // The rotation R maps the variant's local wall vectors onto (u, v). Its
   // local horizontal wall vector is (sh, 0), sh = +1 (l-ruin) or -1 (mirror),
-  // so R's first column is the unit horizontal arm times sh — and since the
-  // arms are perpendicular, R is a rotation and that first column fixes the
-  // whole map. The placement module takes it from here as an angle.
+  // so R's first column points along the horizontal arm times sh — and since
+  // the arms are perpendicular, R is a rotation and that first column fixes the
+  // whole map. Only the direction matters, so the arm goes into atan2 unscaled.
+  // The placement module takes it from here as an angle.
   const sh = cross > 0 ? 1 : -1;
-  const rotDeg = toDegrees(
-    Math.atan2((v.y / w) * sh, (v.x / w) * sh),
-  );
+  const rotDeg = toDegrees(Math.atan2(v.y * sh, v.x * sh));
 
   // The variant's own outer corner, pinned to the resolved one. Crossing the
   // placement seam here is what keeps the centre-pivot convention out of this
