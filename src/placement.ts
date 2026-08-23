@@ -1,3 +1,7 @@
+// `.ts` specifiers: the 40kdc converters load this module under plain Node, and
+// Node's type stripping resolves specifiers literally rather than following the
+// `./foo.js`-means-`./foo.ts` convention the rest of src/ uses. tsc rewrites
+// them back to `.js` on emit — see the tsconfig note.
 import {
   localCorner,
   resolveCorner,
@@ -7,15 +11,15 @@ import {
   type CanvasSize,
   type CornerSpec,
   type Template,
-} from "./building-coordinates.js";
+} from "./building-coordinates.ts";
 import {
   normalizeDegrees,
   rotate,
   toRadians,
   type Point,
   type Ring,
-} from "./geometry.js";
-import type { FeaturePlacement } from "./terrain-config.js";
+} from "./geometry.ts";
+import type { FeaturePlacement } from "./terrain-config.ts";
 
 /** An axis-aligned box in canvas inches; (x,y) is the unrotated top-left. */
 export type Box = { x: number; y: number; width: number; height: number };
@@ -65,6 +69,42 @@ export function placedRing(ring: Ring, placed: Placed): Ring {
     const r = rotate({ x: p.x - cx, y: p.y - cy }, rad);
     return { x: placed.box.x + cx + r.x, y: placed.box.y + cy + r.y };
   });
+}
+
+/**
+ * The `Placed` that lands a template-local point `pin` on the absolute point
+ * `at`, with the box turned `rotation` degrees about its own centre.
+ *
+ * This is the last step of every converter fit, and the only part of the fit
+ * they share. A converter works out *where* a piece goes in its own terms —
+ * three reference points for an L-ruin, a rectangle ring for a generator — and
+ * then has to express that as a centre-pivot box, which is where the pivot
+ * convention gets re-derived and where it can be got wrong. Pinning the box
+ * centre (`pin` = the centre) is the degenerate case, so one function covers
+ * both fits.
+ *
+ * The inverse of `placedRing` for the pinned point: `placedRing([pin], p)` is
+ * `[at]`.
+ */
+export function placedFromPin(
+  name: string,
+  size: { width: number; height: number },
+  rotation: number,
+  pin: Point,
+  at: Point,
+): Placed {
+  const c: Point = { x: size.width / 2, y: size.height / 2 };
+  const offset = rotate({ x: pin.x - c.x, y: pin.y - c.y }, toRadians(rotation));
+  return {
+    name,
+    box: {
+      x: at.x - offset.x - c.x,
+      y: at.y - offset.y - c.y,
+      width: size.width,
+      height: size.height,
+    },
+    rotation: normalizeDegrees(rotation),
+  };
 }
 
 /**

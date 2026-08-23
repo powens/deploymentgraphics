@@ -11,7 +11,7 @@
 // width.
 
 import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
-import { round } from "./area-to-building.mjs";
+import { round } from "./emit-placement.mjs";
 
 const near = (a, b) => Math.abs(a - b) < 0.05;
 

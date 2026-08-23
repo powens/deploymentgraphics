@@ -7,6 +7,7 @@
 // gw template's TL and TR bounding-box corners (mirror:false).
 
 import { footprintPolygon } from "./terrain-resolver.mjs";
+import { round } from "./emit-placement.mjs";
 import {
   bounds,
   centroid,
@@ -14,12 +15,6 @@ import {
   matvec,
   rotationMatrix,
 } from "../src/geometry.ts";
-
-/** Round to 3 dp; normalise -0 to 0 so combined.yml stays byte-stable. */
-export const round = (n) => {
-  const r = Math.round(n * 1000) / 1000;
-  return r === 0 ? 0 : r;
-};
 
 // 40kdc area template id -> gw template + footprint relationship.
 //   exact     : identical dims (lines/pipes).

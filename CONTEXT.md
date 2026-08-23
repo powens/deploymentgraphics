@@ -27,6 +27,13 @@ via `placedTransform` (the single owner of the `translate(x y) rotate(rot cx cy)
 string); features are authored this way too. The corner-pin math lands a template
 origin first, but that intermediate never leaves `resolvePrimary`.
 
+The placement module owns three views of that one convention, so nothing else
+has to spell it: `placedTransform` hands it to the SVG renderer, `placedRing`
+applies it in JavaScript (which is how a fit gets checked), and `placedFromPin`
+inverts it — "put this template-local point *there*, at this rotation" — which
+is the last step of every 40kdc converter fit. The `.mjs` converters cross this
+seam directly; see the `.ts` specifier note in `tsconfig.json` for why they can.
+
 **Mirror** — point-reflect a `Placed` through the canvas centre (`rotation += 180`).
 A piece emits a mirrored copy unless its placement says `mirror: false`; the default
 is *mirror on*. One formula, owned by the placement module.

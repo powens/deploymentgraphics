@@ -106,6 +106,27 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
     expect(placementOf(sample["corner-ruin-left"]).type).toBe("l-ruin");
   });
 
+  for (const [template, entry] of Object.entries(sample)) {
+    it(`lands the ${template} outer corner on the resolved one`, () => {
+      // What the fit actually promises: the variant's own outer corner ends up
+      // on the piece's. Asserting it through the placement seam — resolve the
+      // emitted placement, draw the local corner through it — checks the pivot
+      // convention rather than a constant measured once and pinned.
+      const placement = placementOf(entry);
+      const { width: w, height: h } = placement;
+      const localOuter =
+        placement.type === "l-ruin" ? { x: 0, y: h } : { x: w, y: h };
+      const [placed] = resolveFeature(placement, CANVAS);
+      const [drawn] = placedRing([localOuter], placed);
+
+      const ring = entry.layout.resolve(entry.piece);
+      const nearest = Math.min(
+        ...ring.map((p) => Math.hypot(p.x - drawn.x, p.y - drawn.y)),
+      );
+      expect(nearest).toBeLessThan(0.01);
+    });
+  }
+
 });
 
 // The roofing guard below is the only tripwire for a catwalk seated on a ruin,

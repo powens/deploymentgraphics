@@ -1,4 +1,6 @@
-import { bounds, type Point } from "./geometry.js";
+// `.ts` specifier: the 40kdc converters load this module under plain Node.
+// See the tsconfig note on rewriteRelativeImportExtensions.
+import { bounds, type Point } from "./geometry.ts";
 
 export type Anchor = "TL" | "TR" | "BL" | "BR";
 export type CanvasSize = { width: number; height: number };
