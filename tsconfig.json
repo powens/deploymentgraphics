@@ -9,6 +9,11 @@
     // convention. These two flags let tsc accept that and rewrite it back to
     // `.js` on emit, so the published lib is unchanged. Modules no converter
     // loads keep the `.js` form.
+    //
+    // The rewrite covers the `.js` output only — declarations keep the `.ts`
+    // specifier, which would ship a path that does not exist in `lib/`. The
+    // build runs scripts/rewrite-dts-extensions.mjs afterwards to finish the
+    // job.
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
     "lib": ["ES2021", "DOM"],

@@ -75,8 +75,10 @@ export function placedRing(ring: Ring, placed: Placed): Ring {
  * The `Placed` that lands a template-local point `pin` on the absolute point
  * `at`, with the box turned `rotation` degrees about its own centre.
  *
- * This is the last step of every converter fit, and the only part of the fit
- * they share. A converter works out *where* a piece goes in its own terms —
+ * This is the last step of the two converter fits that build a `Placed` —
+ * `ruin-to-feature` and `rect-to-feature`. (The other two, `area-to-building`
+ * and `feature-to-building`, emit corner-pin authoring placements and never
+ * reach this form.) A converter works out *where* a piece goes in its own terms —
  * three reference points for an L-ruin, a rectangle ring for a generator — and
  * then has to express that as a centre-pivot box, which is where the pivot
  * convention gets re-derived and where it can be got wrong. Pinning the box

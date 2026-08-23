@@ -31,7 +31,8 @@ The placement module owns three views of that one convention, so nothing else
 has to spell it: `placedTransform` hands it to the SVG renderer, `placedRing`
 applies it in JavaScript (which is how a fit gets checked), and `placedFromPin`
 inverts it — "put this template-local point *there*, at this rotation" — which
-is the last step of every 40kdc converter fit. The `.mjs` converters cross this
+is the last step of the 40kdc converter fits that build a `Placed` at all
+(the rest emit corner-pin authoring placements). The `.mjs` converters cross this
 seam directly; see the `.ts` specifier note in `tsconfig.json` for why they can.
 
 **Mirror** — point-reflect a `Placed` through the canvas centre (`rotation += 180`).
