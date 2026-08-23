@@ -11,8 +11,14 @@
 //
 // Parallels scripts/ruin-to-feature.mjs and scripts/area-to-building.mjs.
 
-import { resolvePiece, centroid } from "./terrain-resolver.mjs";
+import { resolvePiece } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
+import {
+  centroid,
+  distance,
+  normalizeDegrees,
+  toDegrees,
+} from "../src/geometry.ts";
 
 // 40kdc template id -> feature type drawn by src/features.ts.
 const RECT_FEATURES = {
@@ -37,10 +43,10 @@ export const isRectFeatureTemplate = (id) =>
 export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
   const r = resolvePiece(piece, lookupFootprint, getParent);
   const u = { x: r[1].x - r[0].x, y: r[1].y - r[0].y }; // first edge
-  const width = Math.hypot(u.x, u.y);
-  const height = Math.hypot(r[2].x - r[1].x, r[2].y - r[1].y);
+  const width = distance(r[0], r[1]);
+  const height = distance(r[1], r[2]);
   const c = centroid(r);
-  const rotDeg = (Math.atan2(u.y, u.x) * 180) / Math.PI;
+  const rotDeg = toDegrees(Math.atan2(u.y, u.x));
   return {
     type: RECT_FEATURES[piece.template],
     label: piece.template,
@@ -48,7 +54,7 @@ export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
     y: round(c.y - height / 2),
     width: round(width),
     height: round(height),
-    rotation: round(((rotDeg % 360) + 360) % 360),
+    rotation: round(normalizeDegrees(rotDeg)),
     color: RECT_FEATURE_COLORS[RECT_FEATURES[piece.template]],
     mirror: false,
   };

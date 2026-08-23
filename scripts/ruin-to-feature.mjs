@@ -27,17 +27,17 @@
 
 import { footprintPolygon, resolvePiece } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
+import {
+  boundsCorners,
+  cross,
+  distance,
+  normalizeDegrees,
+  toDegrees,
+} from "../src/geometry.ts";
 
 /** True for the 40kdc corner-ruin templates (l-ruin family). */
 export const isRuinTemplate = (id) =>
   typeof id === "string" && id.startsWith("corner-");
-
-const bbox = (ring) => ({
-  minX: Math.min(...ring.map((p) => p.x)),
-  maxX: Math.max(...ring.map((p) => p.x)),
-  minY: Math.min(...ring.map((p) => p.y)),
-  maxY: Math.max(...ring.map((p) => p.y)),
-});
 
 /**
  * True when a footprint is an L: exactly three of its four bounding-box corners
@@ -46,15 +46,8 @@ const bbox = (ring) => ({
  */
 export function isLFootprint(footprint) {
   const ring = footprintPolygon(footprint);
-  const { minX, maxX, minY, maxY } = bbox(ring);
-  const corners = [
-    { x: minX, y: minY },
-    { x: maxX, y: minY },
-    { x: maxX, y: maxY },
-    { x: minX, y: maxY },
-  ];
-  const present = corners.filter((c) =>
-    ring.some((p) => Math.hypot(p.x - c.x, p.y - c.y) < 1e-6),
+  const present = boundsCorners(ring).filter((c) =>
+    ring.some((p) => distance(p, c) < 1e-6),
   );
   return present.length === 3;
 }
@@ -67,16 +60,9 @@ export function isLFootprint(footprint) {
  * vertices straight out of resolvePiece — which composes any parent transform.
  */
 function lRefIndices(ring) {
-  const { minX, maxX, minY, maxY } = bbox(ring);
-  // Bounding-box corners in TL, TR, BR, BL order so index+2 is the diagonal.
-  const corners = [
-    { x: minX, y: minY },
-    { x: maxX, y: minY },
-    { x: maxX, y: maxY },
-    { x: minX, y: maxY },
-  ];
-  const idx = corners.map((c) =>
-    ring.findIndex((p) => Math.hypot(p.x - c.x, p.y - c.y) < 1e-6),
+  // boundsCorners is TL, TR, BR, BL, so index + 2 is the diagonal.
+  const idx = boundsCorners(ring).map((c) =>
+    ring.findIndex((p) => distance(p, c) < 1e-6),
   );
   const openIdx = idx.findIndex((i) => i === -1);
   if (openIdx === -1 || idx.filter((i) => i >= 0).length !== 3) {
@@ -102,23 +88,23 @@ function lRefIndices(ring) {
 export function featureFromRefs(Oa, A1, A2) {
   const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
   const v = { x: A2.x - Oa.x, y: A2.y - Oa.y }; // horizontal-wall arm
-  const cross = u.x * v.y - u.y * v.x;
-  const base = cross > 0 ? "l-ruin" : "l-ruin-mirror";
+  const chirality = cross(Oa, A1, A2);
+  const base = chirality > 0 ? "l-ruin" : "l-ruin-mirror";
 
-  const h = Math.hypot(u.x, u.y); // vertical-wall length
-  const w = Math.hypot(v.x, v.y); // horizontal-wall length
+  const h = distance(Oa, A1); // vertical-wall length
+  const w = distance(Oa, A2); // horizontal-wall length
   const uh = { x: u.x / h, y: u.y / h };
   const vh = { x: v.x / w, y: v.y / w };
 
   // Rotation R mapping the variant's local wall vectors onto (u, v). Local
   // vertical wall vec = (0,-1); horizontal = (sh,0) with sh = +1 (l-ruin) or
   // -1 (mirror). R = [uh vh] * [sv sh]^T.
-  const sh = cross > 0 ? 1 : -1;
+  const sh = chirality > 0 ? 1 : -1;
   const R00 = vh.x * sh;
   const R01 = -uh.x;
   const R10 = vh.y * sh;
   const R11 = -uh.y;
-  const rotDeg = (Math.atan2(R10, R00) * 180) / Math.PI;
+  const rotDeg = toDegrees(Math.atan2(R10, R00));
 
   // Place the outer corner: world(O_f) = R*(O_f - ctr) + ctr + (x, y) = Oa.
   const ctr = { x: w / 2, y: h / 2 };
@@ -130,7 +116,7 @@ export function featureFromRefs(Oa, A1, A2) {
   const x = Oa.x - rx - ctr.x;
   const y = Oa.y - ry - ctr.y;
 
-  const rotation = ((rotDeg % 360) + 360) % 360;
+  const rotation = normalizeDegrees(rotDeg);
   return {
     type: base,
     label: "ruin",

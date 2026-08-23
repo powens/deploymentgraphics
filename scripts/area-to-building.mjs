@@ -6,7 +6,14 @@
 // rotation -- which is all the building renderer can reproduce. We then pin the
 // gw template's TL and TR bounding-box corners (mirror:false).
 
-import { footprintPolygon, centroid } from "./terrain-resolver.mjs";
+import { footprintPolygon } from "./terrain-resolver.mjs";
+import {
+  bounds,
+  centroid,
+  matmul,
+  matvec,
+  rotationMatrix,
+} from "../src/geometry.ts";
 
 /** Round to 3 dp; normalise -0 to 0 so combined.yml stays byte-stable. */
 export const round = (n) => {
@@ -28,23 +35,16 @@ const AREA_TO_TEMPLATE = {
   "area-trapezoid": { kind: "trapezoid" },
 };
 
-const matmul = (A, B) => [
-  [A[0][0] * B[0][0] + A[0][1] * B[1][0], A[0][0] * B[0][1] + A[0][1] * B[1][1]],
-  [A[1][0] * B[0][0] + A[1][1] * B[1][0], A[1][0] * B[0][1] + A[1][1] * B[1][1]],
-];
-const matvec = (A, v) => [
-  A[0][0] * v[0] + A[0][1] * v[1],
-  A[1][0] * v[0] + A[1][1] * v[1],
-];
-
-/** Bounding box of a gw template (rectangle width/height or polygon points). */
-const gwBounds = (template) =>
-  template.points
-    ? {
-        width: Math.max(...template.points.map((p) => p.x)),
-        height: Math.max(...template.points.map((p) => p.y)),
-      }
-    : { width: template.width, height: template.height };
+/**
+ * Far-edge coordinates of a gw template's bounding box. A gw polygon's bbox is
+ * required to start at 0,0 (`templateBounds` enforces it at render time), so
+ * its maxima are also its width and height.
+ */
+const gwBounds = (template) => {
+  if (!template.points) return { width: template.width, height: template.height };
+  const { maxX, maxY } = bounds(template.points);
+  return { width: maxX, height: maxY };
+};
 
 // Rigid map G (gw-local -> area-local) as { Glin, Gtrans }. The variant's
 // determinant matches det(M) (i.e. the piece's mirror parity) so that M*G is a
@@ -52,18 +52,18 @@ const gwBounds = (template) =>
 const gMap = (kind, mirrored, Wa, Ha) => {
   if (kind === "exact") {
     return mirrored
-      ? { Glin: [[-1, 0], [0, 1]], Gtrans: [Wa, 0] }
-      : { Glin: [[1, 0], [0, 1]], Gtrans: [0, 0] };
+      ? { Glin: [[-1, 0], [0, 1]], Gtrans: { x: Wa, y: 0 } }
+      : { Glin: [[1, 0], [0, 1]], Gtrans: { x: 0, y: 0 } };
   }
   if (kind === "transpose") {
     return mirrored
-      ? { Glin: [[0, 1], [1, 0]], Gtrans: [0, 0] }
-      : { Glin: [[0, -1], [1, 0]], Gtrans: [Wa, 0] };
+      ? { Glin: [[0, 1], [1, 0]], Gtrans: { x: 0, y: 0 } }
+      : { Glin: [[0, -1], [1, 0]], Gtrans: { x: Wa, y: 0 } };
   }
   // trapezoid
   return mirrored
-    ? { Glin: [[1, 0], [0, -1]], Gtrans: [0, Ha] }
-    : { Glin: [[1, 0], [0, 1]], Gtrans: [0, 0] };
+    ? { Glin: [[1, 0], [0, -1]], Gtrans: { x: 0, y: Ha } }
+    : { Glin: [[1, 0], [0, 1]], Gtrans: { x: 0, y: 0 } };
 };
 
 /**
@@ -87,33 +87,35 @@ export function areaBuildingPlacement(piece, areaFootprint, gwTemplates) {
 
   const ring = footprintPolygon(areaFootprint);
   const c = centroid(ring);
-  const Wa = Math.max(...ring.map((p) => p.x));
-  const Ha = Math.max(...ring.map((p) => p.y));
+  // Wa/Ha are the *far edge coordinates* of the area footprint in its own
+  // frame, not its extents — gMap uses them to name a bbox corner (e.g.
+  // `{ x: Wa, y: 0 }` is the top-right), and a corner is an absolute position.
+  // The two coincide for the named templates, whose footprints start at 0,0,
+  // but not for the inline footprints battlemaster-normalize emits: 450 of
+  // those have a bbox running to -0.48in on one axis.
+  const { maxX: Wa, maxY: Ha } = bounds(ring);
 
-  const theta = ((piece.rotation_degrees ?? 0) * Math.PI) / 180;
-  const cos = Math.cos(theta);
-  const sin = Math.sin(theta);
+  // M = R(theta) * diag(sx, sy)
   const sx = piece.mirror === "horizontal" ? -1 : 1;
   const sy = piece.mirror === "vertical" ? -1 : 1;
-  // M = R(theta) * diag(sx, sy)
-  const M = [
-    [cos * sx, -sin * sy],
-    [sin * sx, cos * sy],
-  ];
+  const M = matmul(rotationMatrix(piece.rotation_degrees ?? 0), [
+    [sx, 0],
+    [0, sy],
+  ]);
 
   const { Glin, Gtrans } = gMap(map.kind, mirrored, Wa, Ha);
   const TgwLin = matmul(M, Glin);
-  const shifted = matvec(M, [Gtrans[0] - c.x, Gtrans[1] - c.y]);
-  const tx = shifted[0] + piece.position.x;
-  const ty = shifted[1] + piece.position.y;
+  const shifted = matvec(M, { x: Gtrans.x - c.x, y: Gtrans.y - c.y });
+  const tx = shifted.x + piece.position.x;
+  const ty = shifted.y + piece.position.y;
 
   const Wg = gwBounds(gwTemplates[type]).width;
-  const tr = matvec(TgwLin, [Wg, 0]); // TL is the origin, so TL_abs = (tx, ty)
+  const tr = matvec(TgwLin, { x: Wg, y: 0 }); // TL is the origin, so TL_abs = (tx, ty)
   return {
     type,
     corners: {
       TL: { x: round(tx), y: round(ty) },
-      TR: { x: round(tr[0] + tx), y: round(tr[1] + ty) },
+      TR: { x: round(tr.x + tx), y: round(tr.y + ty) },
     },
     mirror: false,
   };

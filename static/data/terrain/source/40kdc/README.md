@@ -7,4 +7,4 @@ which resolves every piece to absolute board polygons and writes
 `static/data/terrain/40kdc.yml`.
 
 Do not edit these by hand — re-download from upstream to update, then re-run
-`node scripts/convert-40kdc-terrain.mjs`.
+`pnpm convert:40kdc`.

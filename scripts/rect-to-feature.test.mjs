@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { ringMismatch } from "./terrain-resolver.mjs";
+import { ringMismatch } from "../src/geometry.ts";
+import { placedRing, resolveFeature } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import {
   isRectFeatureTemplate,
@@ -8,31 +9,24 @@ import {
 
 const { layouts, footprintOf } = loadCorpus();
 
-// Absolute outline of a placed rectangle feature: the box corners after
-// makeFeatures' translate(x,y) . rotate(rotation, w/2, h/2). The outline is
+const CANVAS = { width: 60, height: 44 };
+
+// Absolute outline of a placed rectangle feature: the box corners drawn through
+// the placement seam, the way makeFeatures draws them. The outline is
 // reflection-symmetric, so ringMismatch against resolvePiece's ring matches
 // regardless of mirror parity — no mirror variant is needed to compare them.
 function featureFootprint(pl) {
-  const { x, y, width: w, height: h, rotation = 0 } = pl;
+  const { width: w, height: h } = pl;
   const local = [
     { x: 0, y: 0 },
     { x: w, y: 0 },
     { x: w, y: h },
     { x: 0, y: h },
   ];
-  const t = (rotation * Math.PI) / 180;
-  const cos = Math.cos(t);
-  const sin = Math.sin(t);
-  const cx = w / 2;
-  const cy = h / 2;
-  return local.map((p) => {
-    const dx = p.x - cx;
-    const dy = p.y - cy;
-    return {
-      x: dx * cos - dy * sin + cx + x,
-      y: dx * sin + dy * cos + cy + y,
-    };
-  });
+  // Every emitted rect-feature placement is mirror:false, so the primary is
+  // the only `Placed`.
+  const [placed] = resolveFeature(pl, CANVAS);
+  return placedRing(local, placed);
 }
 
 // One representative piece per rectangle-feature template, drawn from the

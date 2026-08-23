@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { ringMismatch } from "./terrain-resolver.mjs";
+import {
+  pointInRing as inRing,
+  ringGap,
+  ringMismatch,
+  ringsOverlap,
+} from "../src/geometry.ts";
+import { placedRing, resolveFeature } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import {
   isRuinTemplate,
@@ -17,11 +23,13 @@ const ruinsOf = (L) =>
     f.type.startsWith("l-ruin"),
   );
 
-// Absolute outline of a placed l-ruin feature (mirrors makeFeatures' transform
-// and the lRuin / lRuinMirror wall paths). Used to check the emitted placement
-// reproduces resolvePiece's footprint.
+const CANVAS = { width: 60, height: 44 };
+
+// Absolute outline of a placed l-ruin feature: the lRuin / lRuinMirror wall
+// path drawn through the placement seam, the way makeFeatures draws it. Used to
+// check the emitted placement reproduces resolvePiece's footprint.
 function featureFootprint(pl) {
-  const { x, y, width: w, height: h } = pl;
+  const { width: w, height: h } = pl;
   const wall = Math.min(0.5, w, h);
   const mirror = pl.type.includes("mirror");
   const local = mirror
@@ -41,103 +49,11 @@ function featureFootprint(pl) {
         { x: w, y: h },
         { x: 0, y: h },
       ];
-  const t = ((pl.rotation ?? 0) * Math.PI) / 180;
-  const cos = Math.cos(t);
-  const sin = Math.sin(t);
-  const cx = w / 2;
-  const cy = h / 2;
-  return local.map((p) => {
-    const dx = p.x - cx;
-    const dy = p.y - cy;
-    return {
-      x: (dx * cos - dy * sin) + cx + x,
-      y: (dx * sin + dy * cos) + cy + y,
-    };
-  });
+  // Every emitted ruin placement is mirror:false, so the primary is the only
+  // `Placed`.
+  const [placed] = resolveFeature(pl, CANVAS);
+  return placedRing(local, placed);
 }
-
-// True when segments pq and rs properly straddle one another. Distance alone
-// cannot see this: for two crossing segments all four endpoint-to-segment
-// distances are strictly positive, so a 7x2in catwalk laid squarely across a
-// 0.5in ruin arm - the literal "resting on it" case the roofing guard below
-// exists to catch - would otherwise read as 0.5in clear, indistinguishable from
-// the 0.498/0.502 population that is genuinely clear of a ruin.
-function segCross(p, q, r, s) {
-  const side = (o, a, b) =>
-    (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
-  const d1 = side(r, s, p);
-  const d2 = side(r, s, q);
-  const d3 = side(p, q, r);
-  const d4 = side(p, q, s);
-  return (d1 > 0) !== (d2 > 0) && (d3 > 0) !== (d4 > 0);
-}
-
-// Smallest distance between two closed rings, 0 when their edges cross, so the
-// roofing guard below can ask whether a catwalk and a ruin actually share
-// ground rather than comparing centroids.
-function ringGap(a, b) {
-  const segGap = (p, q, r, s) => {
-    const near = (u, v, w) => {
-      const vx = v.x - u.x;
-      const vy = v.y - u.y;
-      const len = vx * vx + vy * vy;
-      const t = len
-        ? Math.max(0, Math.min(1, ((w.x - u.x) * vx + (w.y - u.y) * vy) / len))
-        : 0;
-      return Math.hypot(u.x + t * vx - w.x, u.y + t * vy - w.y);
-    };
-    return Math.min(near(p, q, r), near(p, q, s), near(r, s, p), near(r, s, q));
-  };
-  let min = Infinity;
-  for (let i = 0; i < a.length; i++) {
-    const p = a[i];
-    const q = a[(i + 1) % a.length];
-    for (let j = 0; j < b.length; j++) {
-      const r = b[j];
-      const s = b[(j + 1) % b.length];
-      if (segCross(p, q, r, s)) return 0;
-      min = Math.min(min, segGap(p, q, r, s));
-    }
-  }
-  return min;
-}
-
-const inRing = (p, ring) => {
-  let inside = false;
-  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
-    if (
-      ring[i].y > p.y !== ring[j].y > p.y &&
-      p.x <
-        ((ring[j].x - ring[i].x) * (p.y - ring[i].y)) / (ring[j].y - ring[i].y) +
-          ring[i].x
-    ) {
-      inside = !inside;
-    }
-  }
-  return inside;
-};
-
-// Do two closed rings share ground? Vertex containment either way catches
-// nesting and corner overlap; the edge-crossing pass catches the plus-shaped
-// overlap where neither ring has a vertex inside the other.
-const ringsOverlap = (a, b) => {
-  if (a.some((p) => inRing(p, b)) || b.some((p) => inRing(p, a))) return true;
-  for (let i = 0; i < a.length; i++) {
-    for (let j = 0; j < b.length; j++) {
-      if (
-        segCross(
-          a[i],
-          a[(i + 1) % a.length],
-          b[j],
-          b[(j + 1) % b.length],
-        )
-      ) {
-        return true;
-      }
-    }
-  }
-  return false;
-};
 
 // One representative L-ruin piece per corner template, drawn from the source.
 // The piece rides along with its layout, which carries the lookups needed to

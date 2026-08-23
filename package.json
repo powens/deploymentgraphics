@@ -21,7 +21,7 @@
   ],
   "sideEffects": false,
   "engines": {
-    "node": ">=22"
+    "node": ">=22.6"
   },
   "publishConfig": {
     "access": "public",
@@ -42,8 +42,8 @@
     "prepare": "tsc -p tsconfig.build.json",
     "gen:presets": "node scripts/gen-presets.mjs",
     "gen:presets:check": "node scripts/gen-presets.mjs --check",
-    "convert:40kdc": "node scripts/convert-40kdc-terrain.mjs",
-    "convert:40kdc:check": "node scripts/convert-40kdc-terrain.mjs --check",
+    "convert:40kdc": "node --experimental-strip-types scripts/convert-40kdc-terrain.mjs",
+    "convert:40kdc:check": "node --experimental-strip-types scripts/convert-40kdc-terrain.mjs --check",
     "serve": "rollup --config rollup.config.mjs --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",

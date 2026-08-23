@@ -12,46 +12,20 @@
 // expansion); it rides along on the marker. The `home` role renders as the
 // keep/fortress icon, every other role as the neutral skull.
 //
-// Touching is measured as the gap between the two resolved footprint polygons:
-// across the vendored layouts the touching central pairs gap by ~0 (max 0.03in
-// from rounding) while the nearest non-touching pair gaps by 2.83in, so a small
-// threshold separates them cleanly.
+// Touching is measured as the crossing-aware gap between the two resolved
+// footprint polygons (ringGap). Across the vendored layouts: 25 of the 28
+// touching pairs gap by exactly 0, three sit at 0.35-0.38in, and the nearest
+// genuinely-separate pair gaps by 1.98in. So the empty band is (0.38, 1.98) —
+// real, but not the rounding-error sliver the figures below the threshold
+// suggest, and the three outliers are what the threshold is absorbing.
 
 import { round } from "./area-to-building.mjs";
+import { ringGap } from "../src/geometry.ts";
 
 // Footprint gap (inches) at or below which two objective pieces count as one
-// objective. Sits in the empty band between the touching pairs (<=0.03) and the
-// nearest genuinely-separate pair (2.83).
+// objective. Sits in the empty band between the touching pairs (<=0.38) and the
+// nearest genuinely-separate pair (1.98).
 const TOUCH_GAP = 0.5;
-
-/** Distance from point `p` to segment `a`-`b`. */
-function pointSegDistance(p, a, b) {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  const len2 = dx * dx + dy * dy;
-  let t = len2 ? ((p.x - a.x) * dx + (p.y - a.y) * dy) / len2 : 0;
-  t = Math.max(0, Math.min(1, t));
-  return Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy));
-}
-
-/**
- * Smallest distance between the edges of two simple polygons. Zero (or near it)
- * when they touch or overlap. Treats each ring as closed.
- */
-function polygonGap(A, B) {
-  let min = Infinity;
-  for (const p of A) {
-    for (let j = 0; j < B.length; j++) {
-      min = Math.min(min, pointSegDistance(p, B[j], B[(j + 1) % B.length]));
-    }
-  }
-  for (const p of B) {
-    for (let j = 0; j < A.length; j++) {
-      min = Math.min(min, pointSegDistance(p, A[j], A[(j + 1) % A.length]));
-    }
-  }
-  return min;
-}
 
 /**
  * Build the objective markers for a layout. Each `is_objective` piece is one
@@ -73,10 +47,11 @@ export function objectiveIcons(layout) {
   }
   const objectives = layout.pieces.filter((p) => p.is_objective);
   // Resolve each objective to an absolute polygon for the touch test. A piece
-  // without a footprint (no template) degenerates to its single position point,
-  // which never touches anything — it simply stands alone. Every other resolve
-  // failure (a missing parent, an unsupported footprint type) is a data fault
-  // and propagates.
+  // without a footprint (no template) degenerates to a one-point ring, which
+  // `ringGap` still measures — it clusters only if it lands within TOUCH_GAP of
+  // another objective's edge, which no piece in the corpus does. Every other
+  // resolve failure (a missing parent, an unsupported footprint type) is a data
+  // fault and propagates.
   const polys = objectives.map((p) => {
     const footprint = p.footprint ?? layout.footprintOf(p.template);
     return footprint ? layout.resolve(p) : [p.position];
@@ -91,7 +66,7 @@ export function objectiveIcons(layout) {
   };
   for (let i = 0; i < objectives.length; i++) {
     for (let j = i + 1; j < objectives.length; j++) {
-      if (polygonGap(polys[i], polys[j]) <= TOUCH_GAP) {
+      if (ringGap(polys[i], polys[j]) <= TOUCH_GAP) {
         parent[find(i)] = find(j);
       }
     }

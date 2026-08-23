@@ -9,7 +9,10 @@
 // (a touching pair of objective pieces collapses to one marker — see
 // objective-icons.mjs). Deterministic + re-runnable.
 //
-// Run: pnpm convert:40kdc  (or: node scripts/convert-40kdc-terrain.mjs)
+// Run: pnpm convert:40kdc — the script reaches into src/geometry.ts, so it
+// needs --experimental-strip-types, which the package script passes. Bare
+// `node scripts/convert-40kdc-terrain.mjs` only works on Node >=22.18, where
+// stripping is the default.
 
 import { readFileSync, writeFileSync } from "node:fs";
 import * as yaml from "js-yaml";
