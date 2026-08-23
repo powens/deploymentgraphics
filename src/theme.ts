@@ -23,8 +23,6 @@ export type Theme = {
     text_outline: SVGProperties;
     arrow: SVGProperties;
   };
-  /** Keyed by area-terrain `label`; `default` is the fallback. */
-  area_terrain: { default: SVGProperties } & Record<string, SVGProperties>;
   /** Icon markers: `circle` styles the disk + border ring; `glyph` fills the art. */
   icon: { circle: SVGProperties; glyph: SVGProperties };
   /** Terrain features: `palette` keys map to fill+accent; `stroke_width` shared. */

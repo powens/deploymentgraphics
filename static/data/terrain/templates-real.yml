@@ -12,7 +12,7 @@
 # declares an explicit `width`/`height`, so the solid body fills that box at
 # the same size as its templates-simple.yml counterpart, and the small rubble
 # nubbins poke *past* the box edge (the declared box is what placement and the
-# converter's area-terrain mapping line up against, not the nubbin extent).
+# converter line up against, not the nubbin extent).
 #
 # Footprints traced from the official GW terrain templates (40k_docs/templates.pdf):
 # each piece's organic rubble edge is captured as a polygon, then scaled so the

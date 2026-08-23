@@ -29,25 +29,10 @@ const withExtras = (config: FullConfig): FullConfig => ({
     { kind: "text", x: 5, y: 5, text: "Attacker & <defender>" },
     { kind: "arrow", x: 5, y: 6, endX: 20, endY: 12 },
   ],
-  terrain: {
-    ...config.terrain,
-    area_terrain: [
-      { shape: "circle", x: 4, y: 4, width: 8, label: "crater" },
-      {
-        shape: "polygon",
-        x: 20,
-        y: 10,
-        width: 6,
-        height: 4,
-        rotation: 30,
-        points: [
-          { x: 0, y: 0 },
-          { x: 6, y: 0 },
-          { x: 6, y: 4 },
-        ],
-      },
-    ],
-  },
+  features: [
+    { type: "generator", x: 4, y: 4, width: 5, height: 3, color: "teal" },
+    { type: "l-ruin", x: 20, y: 10, width: 6, height: 4, rotation: 30, color: "green" },
+  ],
 });
 
 const cases: [string, FullConfig][] = [
@@ -61,7 +46,7 @@ const cases: [string, FullConfig][] = [
     }),
   ],
   [
-    "objectives, annotations and area terrain",
+    "objectives, annotations and top-level features",
     withExtras(
       buildConfig({
         mission: missions.tipping_point,

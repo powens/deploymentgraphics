@@ -45,9 +45,15 @@ describe("classifyPiece", () => {
     expect(classifyPiece(p, footprintOf)).toBe(PIECE_KINDS.ruinFeature);
   });
 
-  it("types a corner piece with a non-L footprint as area terrain", () => {
-    const p = piece({ template: "corner-bar", footprint: BAR_FOOTPRINT });
-    expect(classifyPiece(p, footprintOf)).toBe(PIECE_KINDS.areaTerrain);
+  it("throws on a corner piece with a non-L footprint", () => {
+    // No converter draws a rotated bar as a ruin, and there is no generic
+    // fallback any more (#182), so this has to fail the pull.
+    const p = piece({
+      id: "bar",
+      template: "corner-bar",
+      footprint: BAR_FOOTPRINT,
+    });
+    expect(() => classifyPiece(p, footprintOf)).toThrow(/matches no converter/);
   });
 
   it("drops catwalk pieces", () => {
@@ -71,9 +77,11 @@ describe("classifyPiece", () => {
     }
   });
 
-  it("falls back to area terrain for an unmapped feature template", () => {
-    const p = piece({ template: "mystery", footprint: BAR_FOOTPRINT });
-    expect(classifyPiece(p, footprintOf)).toBe(PIECE_KINDS.areaTerrain);
+  it("throws on an unmapped feature template, naming the piece", () => {
+    const p = piece({ id: "m1", template: "mystery", footprint: BAR_FOOTPRINT });
+    expect(() => classifyPiece(p, footprintOf)).toThrow(
+      /m1 \(feature\/mystery\) matches no converter/,
+    );
   });
 
   it("throws when a piece matches two kinds", () => {
@@ -89,10 +97,7 @@ describe("layoutPlacements", () => {
 
   it("emits every piece exactly once, dropping only the catwalks", () => {
     for (const layout of missionLayouts) {
-      const { templates, features, areaTerrain } = layoutPlacements(
-        layout,
-        gwTemplates,
-      );
+      const { templates, features } = layoutPlacements(layout, gwTemplates);
       const dropped = layout.pieces.filter(
         (p) => classifyPiece(p, layout.footprintOf) === PIECE_KINDS.dropped,
       );
@@ -101,10 +106,9 @@ describe("layoutPlacements", () => {
       expect(dropped.length, layout.id).toBe(
         layout.pieces.filter((p) => p.template === "catwalk").length,
       );
-      expect(
-        templates.length + features.length + areaTerrain.length,
-        layout.id,
-      ).toBe(layout.pieces.length - dropped.length);
+      expect(templates.length + features.length, layout.id).toBe(
+        layout.pieces.length - dropped.length,
+      );
     }
   });
 
@@ -153,7 +157,7 @@ describe("layoutPlacements", () => {
     }
   });
 
-  it("emits an absolute polygon for an unclassified feature piece", () => {
+  it("fails the whole layout when one piece is unclaimed", () => {
     const layout = withLookups(
       {
         id: "synthetic",
@@ -163,20 +167,8 @@ describe("layoutPlacements", () => {
       },
       footprintOf,
     );
-    const { templates, features, areaTerrain } = layoutPlacements(
-      layout,
-      gwTemplates,
+    expect(() => layoutPlacements(layout, gwTemplates)).toThrow(
+      /m1 \(feature\/mystery\) matches no converter/,
     );
-    expect(templates).toEqual([]);
-    expect(features).toEqual([]);
-    expect(areaTerrain).toEqual([
-      {
-        shape: "polygon",
-        x: 0,
-        y: 0,
-        points: layout.resolve(layout.pieces[0]),
-        label: "feature",
-      },
-    ]);
   });
 });

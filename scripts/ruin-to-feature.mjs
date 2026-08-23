@@ -42,7 +42,8 @@ export const isRuinTemplate = (id) =>
 /**
  * True when a footprint is an L: exactly three of its four bounding-box corners
  * are vertices (the open quadrant's corner is absent). Axis-aligned bars and
- * rotated rectangles fail this and stay as area_terrain.
+ * rotated rectangles fail this, and nothing else claims them, so they fail
+ * the pull (see classifyPiece).
  */
 export function isLFootprint(footprint) {
   const ring = footprintPolygon(footprint);
@@ -83,7 +84,7 @@ function lRefIndices(ring) {
  * `l-ruin-mirror` (-1). The rotation maps the chosen variant's local wall
  * vectors onto the arms, and the outer corner is pinned to place it.
  *
- * @returns {{type, x, y, width, height, rotation, color, label, mirror: false}}
+ * @returns {{type, x, y, width, height, rotation, color, mirror: false}}
  */
 export function featureFromRefs(Oa, A1, A2) {
   const u = { x: A1.x - Oa.x, y: A1.y - Oa.y }; // vertical-wall arm
@@ -119,7 +120,6 @@ export function featureFromRefs(Oa, A1, A2) {
   const rotation = normalizeDegrees(rotDeg);
   return {
     type: base,
-    label: "ruin",
     x: round(x),
     y: round(y),
     width: round(w),

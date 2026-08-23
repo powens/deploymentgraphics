@@ -25,11 +25,8 @@
 # `{ type, x, y, width, height, color }` in inches (`x`/`y` = top-left of the
 # unrotated bounding box), with an optional `rotation` (degrees about the box
 # centre). `color` is a theme.yml palette key: stone, rust, sand, green,
-# gunmetal, teal, indigo, bone. An optional `label` records the material
-# category shared with area_terrain (ruin, pipe, generator, barricade,
-# gantry, catwalk); it is
-# carried for consistency with the ported 40kdc pieces and does not affect
-# styling, which comes from `color`. Features are drawn on top of the buildings.
+# gunmetal, teal, indigo, bone — it is what styles the piece. Features are
+# drawn on top of the buildings.
 
 layout:
   1:
@@ -75,7 +72,6 @@ layout:
       # freely. They set `mirror: false` so each shows once; omit that (or set
       # it true) to also get a copy point-reflected through the board centre.
       - type: l-ruin
-        label: ruin
         x: 10.5
         y: 24.5
         width: 7
@@ -85,7 +81,6 @@ layout:
         mirror: true
 
       - type: l-ruin-roof
-        label: ruin
         x: 43
         y: 3
         width: 5
@@ -94,7 +89,6 @@ layout:
         mirror: false
 
       - type: generator
-        label: generator
         x: 28
         y: 21.5
         width: 5
@@ -103,7 +97,6 @@ layout:
         color: teal
         mirror: false
       - type: pipe
-        label: pipe
         x: 33
         y: 15
         width: 6

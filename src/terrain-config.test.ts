@@ -20,16 +20,6 @@ describe("mergeTerrain", () => {
       },
     });
   });
-
-  it("carries top-level area_terrain from the layouts file", () => {
-    const merged = mergeTerrain(
-      { templates: {} },
-      { layout: {}, area_terrain: [{ shape: "circle", x: 1, y: 2, width: 6 }] },
-    );
-    expect(merged.area_terrain).toEqual([
-      { shape: "circle", x: 1, y: 2, width: 6 },
-    ]);
-  });
 });
 
 // Canvas size taken from static/data/base.yml (`size:`).

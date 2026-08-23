@@ -21,7 +21,6 @@ function configWith(over: Partial<FullConfig> = {}): FullConfig {
           features: [
             { type: "l-ruin", x: 1, y: 1, width: 3, height: 3, color: "rust" },
           ],
-          area_terrain: [{ shape: "circle", x: 2, y: 2 }],
         },
       },
     },
@@ -59,7 +58,6 @@ describe("resolveLayout", () => {
     expect(r.buildings).toEqual([]);
     expect(r.icons).toEqual([]);
     expect(r.features).toEqual([]);
-    expect(r.areaTerrain).toEqual([]);
   });
 
   it("unions top-level features before the layout's features", () => {
@@ -72,22 +70,13 @@ describe("resolveLayout", () => {
     expect(r.features.map((f) => f.type)).toEqual(["generator", "l-ruin"]);
   });
 
-  it("unions top-level terrain area before the layout's area terrain", () => {
-    const config = configWith();
-    config.terrain.area_terrain = [{ shape: "polygon", x: 9, y: 9, points: [] }];
-    const r = resolveLayout(config);
-    expect(r.areaTerrain.map((a) => a.shape)).toEqual(["polygon", "circle"]);
-  });
-
-  it("still surfaces top-level features and area when no layout is selected", () => {
+  it("still surfaces top-level features when no layout is selected", () => {
     const config = configWith();
     config.terrain.layout_name = "99";
     config.features = [
       { type: "generator", x: 0, y: 0, width: 2, height: 2, color: "gunmetal" },
     ];
-    config.terrain.area_terrain = [{ shape: "circle", x: 1, y: 1 }];
     const r = resolveLayout(config);
     expect(r.features).toHaveLength(1);
-    expect(r.areaTerrain).toHaveLength(1);
   });
 });

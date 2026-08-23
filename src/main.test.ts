@@ -108,56 +108,6 @@ describe("makeDeploymentZone styling", () => {
 });
 
 
-describe("makeAreaTerrain", () => {
-  it("renders area terrain circle when config has area_terrain", () => {
-    const cfg = buildMinimalConfig();
-    cfg.terrain.area_terrain = [
-      { shape: "circle", x: 10, y: 10, width: 6, label: "Forest" },
-    ];
-    const svg = makeMissionCard(cfg);
-    const circles = svg.querySelectorAll("#area-terrain circle");
-    expect(circles.length).toBe(1);
-    expect(circles[0].getAttribute("cx")).toBe("13"); // x + r = 10 + 3
-    expect(circles[0].getAttribute("cy")).toBe("13");
-    expect(circles[0].getAttribute("r")).toBe("3");
-  });
-
-  it("renders area terrain polygon when config has area_terrain polygon", () => {
-    const cfg = buildMinimalConfig();
-    cfg.terrain.area_terrain = [
-      {
-        shape: "polygon",
-        x: 5,
-        y: 5,
-        points: [{ x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 3 }, { x: 0, y: 3 }],
-        label: "Rubble",
-      },
-    ];
-    const svg = makeMissionCard(cfg);
-    const polygons = svg.querySelectorAll("#area-terrain polygon");
-    expect(polygons.length).toBe(1);
-    expect(polygons[0].getAttribute("points")).toBe("5,5 9,5 9,8 5,8");
-  });
-
-  it("skips area terrain group when terrain has no area_terrain", () => {
-    const cfg = buildMinimalConfig();
-    const svg = makeMissionCard(cfg);
-    const group = svg.querySelector("#area-terrain");
-    expect(group).toBeNull();
-  });
-
-  it("falls back to area_terrain.default for an unknown label", () => {
-    const cfg = buildMinimalConfig();
-    cfg.terrain.area_terrain = [
-      { shape: "circle", x: 0, y: 0, width: 6, label: "Nonexistent" },
-    ];
-    const svg = makeMissionCard(cfg);
-    expect(
-      svg.querySelector("#area-terrain circle")?.getAttribute("fill"),
-    ).toBe("rgba(128,128,128,0.2)");
-  });
-});
-
 describe("makeAnnotations", () => {
   it("renders text annotation when config has annotations", () => {
     const config = buildMinimalConfig();
@@ -232,30 +182,6 @@ describe("makeFeatures integration", () => {
     ];
     const svg = makeMissionCard(config);
     expect(svg.querySelector("defs #feature-generator-5x3")).not.toBeNull();
-  });
-
-  it("renders area terrain on top of buildings", () => {
-    // 40kdc feature pieces (l-ruins, pipes, ...) are emitted as area_terrain
-    // and sit on top of the area pieces, which render as opaque buildings.
-    // Area terrain must therefore draw after the buildings group.
-    const config = buildMinimalConfig();
-    (config.terrain.layout["1"] as { area_terrain?: unknown }).area_terrain = [
-      {
-        shape: "polygon",
-        x: 0,
-        y: 0,
-        points: [
-          { x: 0, y: 0 },
-          { x: 5, y: 0 },
-          { x: 5, y: 5 },
-        ],
-        label: "ruin",
-      },
-    ];
-    const svg = makeMissionCard(config);
-    expect(svg.querySelector("#area-terrain")).not.toBeNull();
-    const ids = [...svg.children].map((c) => c.getAttribute("id"));
-    expect(ids.indexOf("area-terrain")).toBeGreaterThan(ids.indexOf("buildings"));
   });
 
   it("mirrors a feature through the board centre by default", () => {

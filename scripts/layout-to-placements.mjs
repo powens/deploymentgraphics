@@ -11,7 +11,7 @@
 // feature-to-building) stay where they are - this module only decides which one
 // each piece goes to.
 
-import { areaBuildingPlacement, round } from "./area-to-building.mjs";
+import { areaBuildingPlacement } from "./area-to-building.mjs";
 import {
   isLFootprint,
   isRuinTemplate,
@@ -38,8 +38,6 @@ export const PIECE_KINDS = Object.freeze({
   featureBuilding: "feature-building",
   /** catwalk: consumed and not emitted (see the CLAIMS note below). */
   dropped: "dropped",
-  /** anything else -> a generic `feature` area_terrain polygon. */
-  areaTerrain: "area-terrain",
 });
 
 // Predicates in one table so the disjointness check below is over the same list
@@ -49,7 +47,7 @@ const CLAIMS = [
   [
     PIECE_KINDS.ruinFeature,
     // Only a whole-L corner footprint becomes a ruin; any other corner piece
-    // falls through to area_terrain.
+    // is unclaimed, and `classifyPiece` throws on it.
     (piece, footprintOf) =>
       isRuinTemplate(piece.template) &&
       isLFootprint(piece.footprint ?? footprintOf(piece.template)),
@@ -78,7 +76,7 @@ const CLAIMS = [
  * @param {(id: string) => object | undefined} footprintOf - corpus footprint
  *   lookup, used to test a corner piece's footprint for the L shape.
  * @returns {string} one of PIECE_KINDS.
- * @throws if two converters would claim the same piece.
+ * @throws if two converters would claim the same piece, or if none does.
  */
 export function classifyPiece(piece, footprintOf) {
   const kinds = CLAIMS.filter(([, claims]) => claims(piece, footprintOf)).map(
@@ -90,7 +88,21 @@ export function classifyPiece(piece, footprintOf) {
         `matches more than one kind: ${kinds.join(", ")}`,
     );
   }
-  return kinds[0] ?? PIECE_KINDS.areaTerrain;
+  if (kinds.length === 0) {
+    // There used to be an `area_terrain` fallback here, drawing an unclaimed
+    // piece as a translucent zone. Every piece in the corpus is claimed by a
+    // converter (720 area-buildings, 720 ruins, 270 feature-buildings, 180
+    // rect-features, 90 dropped catwalks), so the fallback emitted nothing and
+    // the whole draw path behind it was dead — see #182. An unclaimed piece is
+    // now an upstream shape this pipeline has not been taught, which should
+    // fail the pull rather than silently become a grey blob.
+    throw new Error(
+      `piece ${piece.id ?? "?"} (${piece.piece_type}/${piece.template}) ` +
+        `matches no converter; teach one to claim it or add it to CLAIMS ` +
+        `as explicitly dropped`,
+    );
+  }
+  return kinds[0];
 }
 
 /**
@@ -103,14 +115,13 @@ export function classifyPiece(piece, footprintOf) {
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @param {object} gwTemplates - the hand-authored building templates, read to
  *   size `area` placements.
- * @returns {{ templates: object[], features: object[], areaTerrain: object[] }}
+ * @returns {{ templates: object[], features: object[] }}
  */
 export function layoutPlacements(layout, gwTemplates) {
   const areaBuildings = [];
   const featureBuildings = [];
   const ruinFeatures = [];
   const rectFeatures = [];
-  const areaTerrain = [];
 
   for (const piece of layout.pieces) {
     const kind = classifyPiece(piece, layout.footprintOf);
@@ -141,20 +152,8 @@ export function layoutPlacements(layout, gwTemplates) {
         break;
       case PIECE_KINDS.dropped:
         break;
-      case PIECE_KINDS.areaTerrain:
-        areaTerrain.push({
-          shape: "polygon",
-          x: 0,
-          y: 0,
-          points: layout
-            .resolve(piece)
-            .map((p) => ({ x: round(p.x), y: round(p.y) })),
-          // One generic zone type, coloured by theme.area_terrain.feature.
-          label: "feature",
-        });
-        break;
       // Every kind is handled above: a new PIECE_KINDS entry without a case
-      // here is a miscategorisation, not a fallback to area_terrain.
+      // here is a miscategorisation, not something to draw generically.
       default:
         throw new Error(`unhandled piece kind ${kind}`);
     }
@@ -163,6 +162,5 @@ export function layoutPlacements(layout, gwTemplates) {
   return {
     templates: [...areaBuildings, ...featureBuildings],
     features: [...ruinFeatures, ...rectFeatures],
-    areaTerrain,
   };
 }

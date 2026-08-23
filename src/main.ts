@@ -11,10 +11,6 @@ import {
 } from "./svg-backend.js";
 import { toPoint } from "./building-coordinates.js";
 import { baseTheme } from "./presets/theme.js";
-import {
-  DEFAULT_AREA_TERRAIN_SIZE,
-  type AreaTerrain,
-} from "./terrain-config.js";
 import { resolveLayout, type ResolvedLayout } from "./layout.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig, SVGProperties } from "./types.js";
@@ -204,44 +200,6 @@ function makeGrid(
   return group;
 }
 
-function makeAreaTerrain(
-  doc: SvgDocument,
-  items: AreaTerrain[],
-  theme: Theme,
-): SvgNode | null {
-  if (items.length === 0) return null;
-  const group = doc.createElement("g");
-  group.setAttribute("id", "area-terrain");
-  for (const item of items) {
-    const style =
-      theme.area_terrain[item.label ?? ""] ?? theme.area_terrain.default;
-    let shape: SvgNode;
-    if (item.shape === "circle") {
-      const r = (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
-      shape = doc.createElement("circle");
-      shape.setAttribute("cx", `${item.x + r}`);
-      shape.setAttribute("cy", `${item.y + r}`);
-      shape.setAttribute("r", `${r}`);
-    } else {
-      const pts = (item.points ?? [])
-        .map((raw) => toPoint(raw, "area_terrain points"))
-        .map((p) => `${item.x + p.x},${item.y + p.y}`)
-        .join(" ");
-      shape = doc.createElement("polygon");
-      shape.setAttribute("points", pts);
-    }
-    applyAttributes(shape, style);
-    if (item.rotation) {
-      const cx = item.x + (item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
-      const cy =
-        item.y + (item.height ?? item.width ?? DEFAULT_AREA_TERRAIN_SIZE) / 2;
-      shape.setAttribute("transform", `rotate(${item.rotation} ${cx} ${cy})`);
-    }
-    group.appendChild(shape);
-  }
-  return group;
-}
-
 /** Numbered objective markers sit on top of zones, terrain, and buildings. */
 const OBJECTIVE_RADIUS = 1.5;
 
@@ -334,8 +292,8 @@ function buildTree(
   }
 
   // Resolve the selected layout once: its buildings/icons (empty when no
-  // layout is selected) plus features/area-terrain unioned with the board's
-  // top-level arrays. Every layout-dependent pass below reads from it.
+  // layout is selected) plus features unioned with the board's top-level
+  // array. Every layout-dependent pass below reads from it.
   const layout = resolveLayout(config);
   const canvas = {
     width: config.base.size.width,
@@ -375,14 +333,9 @@ function buildTree(
     ),
   );
 
-  // Area terrain draws after buildings: imported 40kdc area pieces render as
-  // opaque buildings, and the smaller feature pieces (l-ruins, pipes, ...) are
-  // emitted as area_terrain that sits on top of them.
-  const areaTerrain = makeAreaTerrain(doc, layout.areaTerrain, theme);
-  if (areaTerrain) {
-    svg.appendChild(areaTerrain);
-  }
-
+  // Features draw after buildings: the imported 40kdc area pieces render as
+  // opaque buildings, and the smaller pieces (l-ruins, generators, gantries)
+  // sit on top of them.
   if (layout.features.length > 0) {
     svg.appendChild(makeFeatures(doc, layout.features, theme, canvas));
   }

@@ -41,12 +41,12 @@ building:
     default:
       stroke: black
       stroke_width: &building-stroke 0.2
-      fill: &stone-grey "#808080"
+      fill: "#808080"
       opacity: 1
     # Ported 40kdc pipes (rust) and barricades (sand). The rust/sand fills are
-    # anchored here and aliased by area_terrain + feature.palette below; their
-    # darker accents are anchored in area_terrain (Crater, barricade). Both take a
-    # black outline (like the buildings) so they read as defined pieces.
+    # anchored here and aliased by feature.palette below, which also holds their
+    # darker accents. Both take a black outline (like the buildings) so they
+    # read as defined pieces.
     pipe:             { fill: &rust-fill "#b9772e", stroke: black, stroke_width: *building-stroke }
     barricade:        { fill: &sand-fill "#c9a86a", stroke: black, stroke_width: *building-stroke }
 
@@ -78,44 +78,6 @@ annotation:
     stroke: black
     stroke_width: 0.4
 
-area_terrain:
-  # Each material's hue is defined once (as a feature.palette entry or an anchor)
-  # and shared between its feature and its area-terrain footprint: Forest ↔ green,
-  # Rubble ↔ stone, Crater ↔ rust, pipe/barricade ↔ rust/sand. The translucent
-  # fills repeat that hue's rgb with alpha (rgba can't alias a hex literal).
-  default:
-    fill: "rgba(128,128,128,0.2)" # stone-grey #808080
-    stroke: *stone-grey
-    stroke_width: 0.3
-  Forest:
-    fill: "rgba(74,140,60,0.3)" # green-fill #4a8c3c
-    stroke: &green-accent "#2c5822"
-    stroke_width: 0.3
-  Crater:
-    fill: "rgba(110,69,26,0.3)" # rust-accent #6e451a
-    stroke: &rust-accent "#6e451a"
-    stroke_width: 0.3
-  Rubble:
-    fill: "rgba(154,160,166,0.3)" # stone-light #9aa0a6
-    stroke: &stone-dark "#5b6068"
-    stroke_width: 0.3
-  # `feature` is the fallback for any unconsumed area piece. Pipes/barricades
-  # are now building placements (see building.template above), but these
-  # pipe/barricade labels remain as harmless fallbacks for any hand-authored
-  # layout still using them, re-pointed to the rust/sand anchors.
-  feature:
-    fill: "rgba(128,128,128,0.55)" # stone-grey #808080
-    stroke: *stone-dark
-    stroke_width: 0.3
-  pipe:
-    fill: *rust-fill
-    stroke: *rust-accent
-    stroke_width: 0.3
-  barricade:
-    fill: *sand-fill
-    stroke: &sand-accent "#7d6233"
-    stroke_width: 0.3
-
 icon:
   circle:
     fill: &bone-fill "#e8dcc0"
@@ -133,10 +95,10 @@ feature:
   # left in this palette (green ruins, rust pipes, sand barricades, teal
   # generators) and stays clear of the deployment zones' red and sage.
   palette:
-    stone: { fill: &stone-light "#9aa0a6", accent: *stone-dark }
-    rust: { fill: *rust-fill, accent: *rust-accent }
-    sand: { fill: *sand-fill, accent: *sand-accent }
-    green: { fill: "#4a8c3c", accent: *green-accent }
+    stone: { fill: "#9aa0a6", accent: &stone-dark "#5b6068" }
+    rust: { fill: *rust-fill, accent: "#6e451a" }
+    sand: { fill: *sand-fill, accent: "#7d6233" }
+    green: { fill: "#4a8c3c", accent: "#2c5822" }
     gunmetal: { fill: *stone-dark, accent: "#3f444a" }
     teal: { fill: "#2f6b73", accent: "#1a3d42" }
     indigo: { fill: "#4a5aa8", accent: "#2c3566" }

@@ -9,8 +9,8 @@ interface, seam, depth, adapter) lives in the architecture-review tooling, not h
 human authors it in YAML. Two authoring shapes exist:
 - *corner-pin* (buildings): pin one or two named template corners (TL/TR/BL/BR) to
   inward distances from a canvas corner; rotation is *derived* from two corners.
-- *box* (features, area terrain): a top-left `{x, y}`, a `{width, height}` box, and
-  a `rotation` taken about the box centre.
+- *box* (features): a top-left `{x, y}`, a `{width, height}` box, and a
+  `rotation` taken about the box centre.
 
 **Placed** — the *canonical resolved form* of a placement, ready to render: a
 template/feature name, a box `{x, y, width, height}` (top-left of the unrotated
@@ -35,9 +35,9 @@ is *mirror on*. One formula, owned by the placement module.
 (TL/TR/BL/BR) and mirroring are all measured against it.
 
 **Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
-pass draws into a `ResolvedLayout` (buildings, icons, features, area-terrain).
-Buildings and icons come from the selected layout alone (empty arrays when none
-is selected); features and area-terrain are unioned with the board's top-level
-arrays. Distinct from **Resolve** above: that maps one placement to a `Placed`;
-this assembles placement *arrays* and applies the "is a layout selected / union
-with top-level" rules in one place.
+pass draws into a `ResolvedLayout` (buildings, icons, features). Buildings and
+icons come from the selected layout alone (empty arrays when none is selected);
+features are unioned with the board's top-level array. Distinct from
+**Resolve** above: that maps one placement to a `Placed`; this assembles
+placement *arrays* and applies the "is a layout selected / union with
+top-level" rules in one place.
