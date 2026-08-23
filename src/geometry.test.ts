@@ -220,6 +220,17 @@ describe("segmentsCross", () => {
       segmentsCross(h[0], h[1], { x: 0, y: 0 }, { x: 0, y: 3 }),
     ).toBe(false);
   });
+
+  it("is false for a T-junction, whichever way the stem points", () => {
+    // An endpoint resting on the other segment's interior does not straddle
+    // it. Reading the sign as `d > 0` folds the zero in with the negatives,
+    // which answers the two mirror-image Ts differently — and that asymmetry
+    // reaches `ringsOverlap`, where a touching pair would then read true or
+    // false depending only on which side of the contact it sits.
+    const stem = { x: 2, y: 0 };
+    expect(segmentsCross(h[0], h[1], stem, { x: 2, y: 2 })).toBe(false);
+    expect(segmentsCross(h[0], h[1], stem, { x: 2, y: -2 })).toBe(false);
+  });
 });
 
 describe("ringGap", () => {

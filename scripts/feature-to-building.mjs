@@ -12,6 +12,7 @@
 
 import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./area-to-building.mjs";
+import { distance } from "../src/geometry.ts";
 
 const near = (a, b) => Math.abs(a - b) < 0.05;
 
@@ -22,10 +23,7 @@ const near = (a, b) => Math.abs(a - b) < 0.05;
 function classifyFeature(template, footprint) {
   const ring = footprintPolygon(footprint);
   const long = Math.max(
-    ...ring.map((p, i) => {
-      const q = ring[(i + 1) % ring.length];
-      return Math.hypot(q.x - p.x, q.y - p.y);
-    }),
+    ...ring.map((p, i) => distance(p, ring[(i + 1) % ring.length])),
   );
   if (template === "pipe" && near(long, 5.5)) return { name: "pipe", width: 5.5 };
   if (template === "barricade" && ring.length === 8) {
@@ -63,7 +61,7 @@ export function featureBuildingPlacement(piece, lookupFootprint, getParent) {
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i];
     const b = ring[(i + 1) % ring.length];
-    if (near(Math.hypot(b.x - a.x, b.y - a.y), width)) {
+    if (near(distance(a, b), width)) {
       return {
         type: name,
         corners: {

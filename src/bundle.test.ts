@@ -23,6 +23,16 @@ const appSource = readFileSync(
   "utf8",
 );
 
+/**
+ * Read as text for the same reason `app.js` is: importing the config would
+ * drag rollup's plugins in, and it lives outside `rootDir` so `tsc` would
+ * refuse it.
+ */
+const rollupConfigSource = readFileSync(
+  fileURLToPath(new URL("../rollup.config.mjs", import.meta.url)),
+  "utf8",
+);
+
 /** The names `static/app.js` imports from `./bundle.js`. */
 function importedFromBundle(source: string): string[] {
   const block = /import\s*\{([^}]*)\}\s*from\s*["']\.\/bundle\.js["']/.exec(source);
@@ -34,6 +44,15 @@ function importedFromBundle(source: string): string[] {
 }
 
 describe("the demo bundle entry", () => {
+  it("is what rollup builds dist/bundle.js from", () => {
+    // The two checks below compare this module against `app.js`; neither
+    // notices if the build stops using it. Nothing else in the repo names
+    // `src/bundle.ts`, so repointing (or renaming) rollup's entry would leave
+    // build, lint, type-check and this file green while `dist/bundle.js` again
+    // stops providing the exports `app.js` asks for.
+    expect(rollupConfigSource).toMatch(/input:\s*["']src\/bundle\.ts["']/);
+  });
+
   it("exports everything static/app.js imports", () => {
     const imported = importedFromBundle(appSource).sort();
     // Not a subset check: the demo entry exists only to serve `app.js`, so an

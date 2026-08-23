@@ -261,11 +261,17 @@ export function pointSegmentDistance(p: Point, a: Point, b: Point): number {
  * indistinguishable from a piece genuinely standing 0.5in away.
  */
 export function segmentsCross(p: Point, q: Point, r: Point, s: Point): boolean {
-  const d1 = cross(r, s, p);
-  const d2 = cross(r, s, q);
-  const d3 = cross(p, q, r);
-  const d4 = cross(p, q, s);
-  return d1 > 0 !== d2 > 0 && d3 > 0 !== d4 > 0;
+  // Strictly opposite, so a zero — an endpoint sitting on the other segment's
+  // line — reads as "does not straddle". Comparing `d > 0` alone would fold
+  // zero in with the negatives, which makes a T-junction answer depend on
+  // which side of the crossbar the stem points: `segmentsCross((0,0), (4,0),
+  // (2,0), (2,2))` would read true and its mirror image false.
+  const straddles = (u: number, v: number) =>
+    (u > 0 && v < 0) || (u < 0 && v > 0);
+  return (
+    straddles(cross(r, s, p), cross(r, s, q)) &&
+    straddles(cross(p, q, r), cross(p, q, s))
+  );
 }
 
 /**

@@ -47,10 +47,11 @@ export function objectiveIcons(layout) {
   }
   const objectives = layout.pieces.filter((p) => p.is_objective);
   // Resolve each objective to an absolute polygon for the touch test. A piece
-  // without a footprint (no template) degenerates to its single position point,
-  // which never touches anything — it simply stands alone. Every other resolve
-  // failure (a missing parent, an unsupported footprint type) is a data fault
-  // and propagates.
+  // without a footprint (no template) degenerates to a one-point ring, which
+  // `ringGap` still measures — it clusters only if it lands within TOUCH_GAP of
+  // another objective's edge, which no piece in the corpus does. Every other
+  // resolve failure (a missing parent, an unsupported footprint type) is a data
+  // fault and propagates.
   const polys = objectives.map((p) => {
     const footprint = p.footprint ?? layout.footprintOf(p.template);
     return footprint ? layout.resolve(p) : [p.position];

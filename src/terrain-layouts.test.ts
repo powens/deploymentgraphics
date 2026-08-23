@@ -26,16 +26,33 @@ import { missions } from "./presets/missions.js";
 
 const layoutNames = Object.keys(gwTerrain.layout);
 
-/** Renders through the string backend, which needs no DOM. */
-const render = (layout: string) =>
-  renderMissionCardToString(
-    buildConfig({ mission: missions.dawn_of_war, layout }),
-  );
+/**
+ * Renders through the string backend, which needs no DOM. Memoised: both
+ * assertions below run over the same 46 layouts, and rendering each one twice
+ * buys nothing.
+ */
+const markupCache = new Map<string, string>();
+const render = (layout: string): string => {
+  let markup = markupCache.get(layout);
+  if (markup === undefined) {
+    markup = renderMissionCardToString(
+      buildConfig({ mission: missions.dawn_of_war, layout }),
+    );
+    markupCache.set(layout, markup);
+  }
+  return markup;
+};
 
 /**
- * How many `<use>` elements a `<prefix>-<n>` counter emitted. Counting rather
- * than probing for `-0` is what makes this a tripwire: a converter that drops
- * all but the first placement of a kind still emits `building-0`.
+ * How many `<use>` elements a `<prefix>-<n>` counter emitted.
+ *
+ * What counting buys is a check on the *renderer*: a pass that silently skips
+ * placements (a wrong `length > 0` guard, a mirror expansion that stopped
+ * expanding) still emits `building-0`, so probing for the first id would miss
+ * it. It is not a guard against the converters dropping placements — the
+ * expected counts below are derived from the same generated `gwTerrain`, so a
+ * shrunken layout shrinks both sides. Dropped *layouts* are caught by the
+ * corpus-size pin; dropped pieces within a layout are not caught here.
  *
  * The `\d+` suffix is what separates placements from defs — `injectFeatureDefs`
  * and `injectIconDefs` emit `feature-<type>-<w>x<h>` and `icon-<type>` ids into
@@ -67,6 +84,18 @@ describe("every bundled terrain layout", () => {
   it.each(layoutNames)("%s draws every piece it declares", (name) => {
     const layout = gwTerrain.layout[name];
     const markup = render(name);
+
+    // A `<use>` counts as drawn only if its def is actually in the document:
+    // counting ids alone would pass a card whose every reference dangled and
+    // which therefore renders blank. (`area_terrain` shapes carry no ids and
+    // are not covered by either check; the bundled corpus declares none.)
+    const ids = new Set(
+      [...markup.matchAll(/id="([^"]+)"/g)].map((m) => m[1]),
+    );
+    const dangling = [
+      ...new Set([...markup.matchAll(/href="#([^"]+)"/g)].map((m) => m[1])),
+    ].filter((href) => !ids.has(href));
+    expect(dangling).toEqual([]);
 
     expect({
       buildings: drawn(markup, "building"),
