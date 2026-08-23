@@ -7,8 +7,10 @@
 // renderer emits, evaluates it on each template's distinctive local points
 // (bbox corners plus polygon vertices, so a nubbin that pokes past the declared
 // box is covered), and snapshots the ABSOLUTE canvas positions. Anything that
-// moves a building on the canvas — placement, mirroring, or the shape of the
-// transform itself — surfaces here as a snapshot diff.
+// moves a building on the canvas — placement or mirroring — surfaces here as a
+// snapshot diff. A change to the shape of the transform itself fails earlier,
+// in the parse: the pivot is mandatory, so a pivot-less `rotate(deg)` throws
+// `unparsable transform` rather than producing a diff.
 import { describe, it, expect } from "vitest";
 import { makeBuildings } from "./buildings";
 import { templateBounds, type Template } from "./building-coordinates";
