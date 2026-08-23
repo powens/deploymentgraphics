@@ -32,11 +32,32 @@ const render = (layout: string) =>
     buildConfig({ mission: missions.dawn_of_war, layout }),
   );
 
+/**
+ * How many `<use>` elements a `<prefix>-<n>` counter emitted. Counting rather
+ * than probing for `-0` is what makes this a tripwire: a converter that drops
+ * all but the first placement of a kind still emits `building-0`.
+ *
+ * The `\d+` suffix is what separates placements from defs — `injectFeatureDefs`
+ * and `injectIconDefs` emit `feature-<type>-<w>x<h>` and `icon-<type>` ids into
+ * the same document.
+ */
+const drawn = (markup: string, prefix: string) =>
+  markup.match(new RegExp(`id="${prefix}-\\d+"`, "g"))?.length ?? 0;
+
+/**
+ * Placements draw twice unless `mirror: false` — the same default `withMirror`
+ * applies in `placement.ts`. Icons never mirror, so they are counted directly.
+ */
+const expanded = (placements: { mirror?: boolean }[] | undefined) =>
+  (placements ?? []).reduce((n, p) => n + (p.mirror === false ? 1 : 2), 0);
+
 describe("every bundled terrain layout", () => {
-  it("ships more than the handful the renderer tests name", () => {
-    // Guards the suite below against silently covering nothing if the preset
-    // ever regenerates empty.
-    expect(layoutNames.length).toBeGreaterThan(40);
+  it("ships the whole bundled corpus", () => {
+    // Pinned exactly, not as a lower bound: the suite below only covers what
+    // this list holds, so a converter that silently drops layouts would
+    // otherwise shrink the coverage without failing anything. Update the
+    // number deliberately when the 40kdc corpus gains or loses a layout.
+    expect(layoutNames.length).toBe(46);
   });
 
   it.each(layoutNames)("%s renders", (name) => {
@@ -47,19 +68,14 @@ describe("every bundled terrain layout", () => {
     const layout = gwTerrain.layout[name];
     const markup = render(name);
 
-    // Each placement emits at least one `<use>` (two when mirrored), so a
-    // declared piece that draws nothing shows up as a missing id.
-    const drawn = (prefix: string) =>
-      markup.includes(`id="${prefix}-0"`);
-
     expect({
-      buildings: drawn("building"),
-      icons: drawn("icon"),
-      features: drawn("feature"),
+      buildings: drawn(markup, "building"),
+      icons: drawn(markup, "icon"),
+      features: drawn(markup, "feature"),
     }).toEqual({
-      buildings: (layout.templates?.length ?? 0) > 0,
-      icons: (layout.icons?.length ?? 0) > 0,
-      features: (layout.features?.length ?? 0) > 0,
+      buildings: expanded(layout.templates),
+      icons: layout.icons?.length ?? 0,
+      features: expanded(layout.features),
     });
   });
 });
