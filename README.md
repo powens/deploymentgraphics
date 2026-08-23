@@ -42,12 +42,19 @@ const svg = makeMissionCard(
 );
 ```
 
-Everything is also exported from the package root, so a single import
+The presets are also exported from the package root, so a single import
 works too:
 
 ```ts
 import { makeMissionCard, buildConfig, missions } from "deploymentgraphics";
 ```
+
+The root exports the two renderers, the presets, and the types of the
+config they consume — `makeMissionCard`, `renderMissionCardToString`,
+`buildConfig`, `missions` (and each mission by name), `gwTerrain`,
+`gwTemplatesReal`, `baseConfig`, `baseTheme`, and the `FullConfig` type
+graph. The geometry, placement and SVG-backend primitives the renderers
+are built from are implementation and are not published.
 
 ### Server-side rendering
 

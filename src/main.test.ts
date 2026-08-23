@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
-import { injectMissionCard, makeMissionCard } from "./main";
+import { makeMissionCard } from "./main";
 import { baseTheme } from "./presets/theme.js";
 import type { FullConfig } from "./types";
 
@@ -72,17 +72,6 @@ describe("makeHalfwayLines draw flag", () => {
     } as FullConfig;
     const svg = makeMissionCard(noLines);
     expect(svg.querySelectorAll("line").length).toBe(0);
-  });
-});
-
-describe("injectMissionCard", () => {
-  it("appends the mission card to the root element", () => {
-    const root = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "svg",
-    );
-    injectMissionCard(root, config);
-    expect(root.querySelector("svg")).not.toBeNull();
   });
 });
 

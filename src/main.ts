@@ -446,12 +446,3 @@ export function renderMissionCardToString(
   if (height !== undefined) svg.setAttribute("height", `${height}`);
   return serializeSvg(svg);
 }
-
-export function injectMissionCard(
-  rootElement: SVGElement,
-  config: FullConfig,
-  theme: Theme = baseTheme,
-) {
-  const missionCard = makeMissionCard(config, theme);
-  rootElement.appendChild(missionCard);
-}
