@@ -74,6 +74,7 @@ export type {
   Template,
 } from "./building-coordinates.js";
 export type {
+  AreaTerrain,
   FeaturePlacement,
   IconPlacement,
   TerrainConfig,

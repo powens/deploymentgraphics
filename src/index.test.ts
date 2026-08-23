@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
 import * as pkg from "./index.js";
 import * as presets from "./presets/index.js";
@@ -72,6 +74,28 @@ describe("the package root", () => {
     ]) {
       expect(pkg).not.toHaveProperty(name);
     }
+  });
+});
+
+/**
+ * The subpaths `package.json` publishes, and which this file therefore has to
+ * pin. Listed rather than derived, so the assertion below is a tripwire: a
+ * third entry point added to `exports` fails here until someone comes back and
+ * guards its surface too.
+ */
+const GUARDED_SUBPATHS = [".", "./presets"];
+
+describe("the published entry points", () => {
+  it("are all pinned by this file", () => {
+    const manifest = JSON.parse(
+      readFileSync(
+        fileURLToPath(new URL("../package.json", import.meta.url)),
+        "utf8",
+      ),
+    ) as { exports: Record<string, unknown> };
+    expect(Object.keys(manifest.exports).sort()).toEqual(
+      [...GUARDED_SUBPATHS].sort(),
+    );
   });
 });
 
