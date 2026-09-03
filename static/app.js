@@ -12,30 +12,19 @@ import {
   controlsFromSearch,
   controlsToSearch,
   defaultControls,
+  readControlsFromDom,
   sanitizeControls,
   searchHasControls,
+  writeControlsToDom,
 } from "./bundle.js";
 import { loadState, saveState } from "./state.js";
 
 // The nine controls are spelled once, in `src/viewer-controls.ts`: every
-// default, allowlist and element id below is read off `controlSpec` rather than
-// restated here. Only the option *labels* are the app's own, since they are
-// presentation. The two dispositions + layout resolve to a deployment via the
-// event matrix, which selects the Deployment dropdown; that dropdown can also
-// be set directly.
-const SPEC = new Map(controlSpec.map((row) => [row.key, row]));
-
-function allowed(key) {
-  return SPEC.get(key).allowed;
-}
-
-const DISPOSITIONS = allowed("da").map((id) => ({ id, label: id }));
-const LAYOUT_OPTIONS = allowed("lay").map((id) => ({ id, label: id }));
-const MISSIONS = allowed("m").map((id) => ({ id, label: missions[id].name }));
-const TERRAINS = allowed("t").map((id) => ({
-  id,
-  label: `GW Layout ${id}`,
-}));
+// default, allowlist, element id and DOM read or write below comes off
+// `controlSpec` rather than being restated here. Only the option *labels* are
+// the app's own, since they are presentation. The two dispositions + layout
+// resolve to a deployment via the event matrix, which selects the Deployment
+// dropdown; that dropdown can also be set directly.
 
 // YAML files never change within a session, so cache by URL. The promise
 // (not the result) is cached, which also dedupes concurrent fetches.
@@ -102,31 +91,20 @@ function downloadBlob(blob, filename) {
 
 // --- DOM references -------------------------------------------------------
 
-const dispositionASelector = document.getElementById("disposition-a");
-const dispositionBSelector = document.getElementById("disposition-b");
-const layoutSelector = document.getElementById("layout");
-const deploymentSelector = document.getElementById("deployment");
-const terrainSelector = document.getElementById("terrain");
-const templatesSelector = document.getElementById("templates");
-const rotationSelector = document.getElementById("rotation");
-const showGrid = document.getElementById("show-grid");
-const showTerritory = document.getElementById("show-territory");
-// Changing a disposition or the layout re-derives the deployment; the other
-// controls (the deployment dropdown included) just re-render.
-const derivedFromControls = [
-  dispositionASelector,
-  dispositionBSelector,
-  layoutSelector,
-];
-const controlEls = [
-  ...derivedFromControls,
-  deploymentSelector,
-  terrainSelector,
-  templatesSelector,
-  rotationSelector,
-  showGrid,
-  showTerritory,
-];
+const SPEC = new Map(controlSpec.map((row) => [row.key, row]));
+
+function controlEl(key) {
+  return document.getElementById(SPEC.get(key).elementId);
+}
+
+// Every control element, in spec order — the ids are the spec's, not the app's.
+const controlEls = controlSpec.map((row) => controlEl(row.key));
+// Changing a disposition or the layout re-derives the deployment and terrain;
+// the other controls (those two dropdowns included) just re-render. The two
+// named below are the only ones the app addresses individually.
+const derivedFromControls = ["da", "db", "lay"].map((key) => controlEl(key));
+const deploymentSelector = controlEl("m");
+const terrainSelector = controlEl("t");
 
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
@@ -145,45 +123,30 @@ const resetButton = document.getElementById("reset-controls");
 
 // --- Controls -------------------------------------------------------------
 
-function populateSelect(select, items) {
-  for (const { id, label } of items) {
+// Option labels are presentation, so they stay here; the option *values* come
+// off each row's allowlist, which is what keeps the dropdowns, the URL and the
+// underlying YAML from drifting. Rows marked `staticOptions` carry their
+// <option>s in index.html instead, and `static/index.test.js` holds that
+// markup to the same value set.
+const OPTION_LABEL = {
+  da: (id) => id,
+  db: (id) => id,
+  lay: (id) => id,
+  m: (id) => missions[id].name,
+  t: (id) => `GW Layout ${id}`,
+};
+
+for (const row of controlSpec) {
+  if (row.kind !== "select" || row.staticOptions) {
+    continue;
+  }
+  const select = controlEl(row.key);
+  for (const id of row.allowed) {
     const option = document.createElement("option");
     option.value = id;
-    option.textContent = label;
+    option.textContent = OPTION_LABEL[row.key](id);
     select.appendChild(option);
   }
-}
-
-populateSelect(dispositionASelector, DISPOSITIONS);
-populateSelect(dispositionBSelector, DISPOSITIONS);
-populateSelect(layoutSelector, LAYOUT_OPTIONS);
-populateSelect(deploymentSelector, MISSIONS);
-populateSelect(terrainSelector, TERRAINS);
-
-function controlState() {
-  return {
-    da: dispositionASelector.value,
-    db: dispositionBSelector.value,
-    lay: layoutSelector.value,
-    m: deploymentSelector.value,
-    t: terrainSelector.value,
-    tpl: templatesSelector.value,
-    grid: showGrid.checked,
-    territory: showTerritory.checked,
-    rot: rotationSelector.value,
-  };
-}
-
-function applyControls(controls) {
-  dispositionASelector.value = controls.da;
-  dispositionBSelector.value = controls.db;
-  layoutSelector.value = controls.lay;
-  deploymentSelector.value = controls.m;
-  terrainSelector.value = controls.t;
-  templatesSelector.value = controls.tpl;
-  showGrid.checked = controls.grid;
-  showTerritory.checked = controls.territory;
-  rotationSelector.value = controls.rot;
 }
 
 // "controls" — the dropdowns drive the render. "yaml" — the editor text
@@ -244,7 +207,7 @@ async function renderFromControls() {
   setExportEnabled(false);
   setStageMessage("Rendering…");
   try {
-    const controls = controlState();
+    const controls = readControlsFromDom(document);
     const config = await configFromControls(controls);
     if (generation !== renderGeneration) {
       return;
@@ -311,7 +274,7 @@ async function openYamlTab() {
   }
   // In controls mode, refill the editor with the current merged config.
   try {
-    const config = await configFromControls(controlState());
+    const config = await configFromControls(readControlsFromDom(document));
     // The user may have started editing during the fetch, promoting the
     // mode to yaml — in that case keep their edits, do not overwrite them.
     if (mode === "yaml") {
@@ -340,7 +303,8 @@ function activateTab(name) {
 function syncUrl() {
   // In yaml mode keep the URL bare: it cannot carry the override, and a
   // bare URL lets a reload fall through to the localStorage-restored state.
-  const query = mode === "yaml" ? "" : controlsToSearch(controlState());
+  const query =
+    mode === "yaml" ? "" : controlsToSearch(readControlsFromDom(document));
   window.history.replaceState(
     null,
     "",
@@ -351,7 +315,7 @@ function syncUrl() {
 function persist() {
   saveState({
     mode,
-    controls: controlState(),
+    controls: readControlsFromDom(document),
     yaml: mode === "yaml" ? yamlEditor.value : null,
   });
 }
@@ -369,7 +333,7 @@ function onControlChange() {
 // disposition pair + deployment; cells the 40kdc source does not cover fall
 // back to the demo layout "1". Both dropdowns remain overridable directly.
 function onDerivedControlChange() {
-  const controls = controlState();
+  const controls = readControlsFromDom(document);
   const missionId = resolvedMissionId(controls);
   deploymentSelector.value = missionId;
   terrainSelector.value =
@@ -422,7 +386,7 @@ function filenameStem() {
   if (mode === "yaml") {
     return "deployment-graphics";
   }
-  const controls = controlState();
+  const controls = readControlsFromDom(document);
   return `${controls.m.replace(/_/g, "-")}-layout-${controls.lay}`;
 }
 
@@ -533,17 +497,17 @@ function start() {
   const fromUrl = searchHasControls(window.location.search);
   if (fromUrl) {
     // An explicit URL (e.g. a shared link) wins over any saved state.
-    applyControls(controlsFromSearch(window.location.search));
+    writeControlsToDom(document, controlsFromSearch(window.location.search));
   } else {
     const saved = loadState();
     if (saved) {
-      applyControls(sanitizeControls(saved.controls));
+      writeControlsToDom(document, sanitizeControls(saved.controls));
       if (saved.mode === "yaml" && typeof saved.yaml === "string") {
         mode = "yaml";
         yamlEditor.value = saved.yaml;
       }
     } else {
-      applyControls(defaultControls());
+      writeControlsToDom(document, defaultControls());
     }
   }
 

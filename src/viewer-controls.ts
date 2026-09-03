@@ -7,9 +7,10 @@
  * rows rather than restated. Adding a control is one row.
  *
  * Reached by the demo app through `bundle.ts`, not a published entry point:
- * only this repo's demo has controls. Nothing here touches `window` — the URL
- * functions take and return a search string, so the app keeps the one
- * `location.search` read and the one `history.replaceState` call.
+ * only this repo's demo has controls. Nothing here reaches for a global: the
+ * URL functions take and return a search string, and the DOM functions take
+ * their root, so the app keeps the one `location.search` read, the one
+ * `history.replaceState` call and the one naming of `document`.
  */
 import { dispositions, type Layout } from "./event-matrix.js";
 import { eventMatrix } from "./presets/event-matrix.js";
@@ -253,4 +254,65 @@ export function controlsFromSearch(search: string): Controls {
 export function searchHasControls(search: string): boolean {
   const params = new URLSearchParams(search);
   return controlSpec.some((row) => params.has(row.key));
+}
+
+/**
+ * Where the controls live: a document, or any element containing them. Looked
+ * up with `querySelector` rather than `getElementById` so a plain container
+ * works as a root too, which is what lets the tests build one.
+ */
+export type ControlsRoot = Document | Element;
+
+/**
+ * The element a row is bound to, by id. A missing element is a broken markup
+ * contract, not a value to coerce: `static/index.test.js` holds `index.html`
+ * to the spec so it fails there rather than in the browser.
+ */
+function controlElement(root: ControlsRoot, row: ControlRow): HTMLElement {
+  const element = root.querySelector<HTMLElement>(`#${row.elementId}`);
+  if (element === null) {
+    throw new Error(`Control "${row.key}" has no element #${row.elementId}`);
+  }
+  return element;
+}
+
+/**
+ * Reads the nine controls out of a DOM subtree, sanitized — the DOM is an
+ * input like any other. A `<select>` set to a value it has no `<option>` for
+ * reads back as the empty string, so sanitizing is what makes this the
+ * inverse of {@link writeControlsToDom} rather than nearly so.
+ *
+ * Throws if any control's element is absent.
+ */
+export function readControlsFromDom(root: ControlsRoot): Controls {
+  const raw: Record<string, unknown> = {};
+  for (const row of controlSpec) {
+    const element = controlElement(root, row);
+    raw[row.key] =
+      row.kind === "checkbox"
+        ? (element as HTMLInputElement).checked
+        : (element as HTMLSelectElement).value;
+  }
+  return sanitizeControls(raw);
+}
+
+/**
+ * Writes the nine controls into a DOM subtree, replacing what is there — every
+ * row is assigned, so nothing survives from a previous state.
+ *
+ * Throws if any control's element is absent.
+ */
+export function writeControlsToDom(
+  root: ControlsRoot,
+  controls: Controls,
+): void {
+  const values = controls as ControlValues;
+  for (const row of controlSpec) {
+    const element = controlElement(root, row);
+    if (row.kind === "checkbox") {
+      (element as HTMLInputElement).checked = values[row.key] === true;
+    } else {
+      (element as HTMLSelectElement).value = String(values[row.key]);
+    }
+  }
 }

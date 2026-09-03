@@ -17,8 +17,10 @@ export {
   controlsFromSearch,
   controlsToSearch,
   defaultControls,
+  readControlsFromDom,
   sanitizeControls,
   searchHasControls,
+  writeControlsToDom,
 } from "./viewer-controls.js";
 export { buildConfig } from "./presets/build-config.js";
 export { eventMatrix } from "./presets/event-matrix.js";
