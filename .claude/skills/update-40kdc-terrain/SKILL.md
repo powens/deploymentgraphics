@@ -64,6 +64,9 @@ Past pulls carried non-obvious payloads:
 - **Layout ids are not stable.** The battlemaster-11e re-source renamed all 45
   (`take-and-hold-mirror-1` → `bm-take-vs-take-01`). What *is* stable is
   `mission_matchup_id` + `variant`, so pair old and new layouts on that, never on the id.
+  A rename is also a **breaking change to the published API** — `gwTerrain.layout` is keyed
+  by these ids and `buildConfig({ layout })` selects by that key — so it needs a `CHANGELOG.md`
+  entry with the full old → new table, derived from that same matchup+variant pairing.
   A rename breaks every test that hard-codes a layout as a fixture
   (`scripts/{objective-icons,layout-to-placements,ruin-to-feature}.test.mjs`,
   `src/render-to-string.test.ts`, `scripts/render-sample.mjs`). Re-point them at the same
@@ -114,6 +117,13 @@ It throws loudly rather than guessing on:
   be byte-identical to `co` — same footprint, walls, thickness and roof flag — and simply
   takes `co`'s row). A part with no legacy counterpart at all can be registered
   `{ drop: true }`, as `ruin-part` is.
+- **Two drawings of one part** — a *test* failure (`registers a canonical drawing wherever
+  upstream ships a part twice`). `partOf` collapses the hashes onto one legacy row but
+  `partExtent` does not: it reads whichever drawing the feature names, so a model upstream
+  draws twice emits at two sizes. Upstream ships `ab` twice — identical `walls`, a roof
+  redrawn 0.25in wider — and 2 of its 90 ruins came out wide before this was registered.
+  Pick the drawing whose roof stays inside its own walls, add it to `PART_CANONICAL`, and
+  confirm the emitted rectangle against the W table.
 - **Inline piece footprint on a composite** (`… carries an inline footprint; composite
   retemplating … would discard it`) — upstream attached a per-piece footprint (currently
   only seen on `kotc-colosseum`) to a composite area piece. That would silently disagree
@@ -123,13 +133,24 @@ It throws loudly rather than guessing on:
   would drop it`) — this guard has already earned itself once. Upstream started shipping a
   feature-level `mirror`, which is exactly the axis `K` controls; without the guard it would
   have been dropped in silence and emitted a child of the wrong chirality while every test
-  still passed. Handle the field, don't widen `FEATURE_KEYS` to silence it.
+  still passed. Handle the field, don't widen `FEATURE_KEYS` to silence it. `mirror` also
+  carries an anchor trap: on a mirrored feature upstream's `position` is not the roof centre
+  it is everywhere else, and `mirrorAnchorFix` corrects it. The registration suite cannot
+  catch a wrong reading — it builds its truth piece through the same rule — so check a
+  mirrored part against its unmirrored sibling composite and against containment in its own
+  parent outline. See W2.
 - **Unregistered composite footprint variant** — not a throw, but a *test* failure in
   `scripts/battlemaster-registration.test.mjs`. Add the rigid transform to `VARIANT`.
   A `VARIANT` entry no longer has to be self-inverse (`Triangle#12` is `R270`); the
   normalizer takes a real `orthoInverse`, and what the test pins is only that `V` is
   orthogonal — plus which entry is the non-self-inverse one, so a "simplification" back to
-  `matvec(V, …)` can't pass unnoticed.
+  `matvec(V, …)` can't pass unnoticed. The check is relative — every composite against its
+  class's lowest-id reference — so the references themselves are pinned separately in
+  `CLASS_REFERENCE`. If a pull adds a composite that sorts ahead of one, or re-registers a
+  whole class, that table has to move with it; do not "fix" it to match without deriving
+  the new `V` against the pre-pull corpus first. Fitting the archetype to upstream's traced
+  outline is not the oracle here — it prefers the other reflection for four of the six
+  classes (the numbers are in `VARIANT`'s header).
 
 ### Deriving a new part's registration
 

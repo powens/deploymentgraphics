@@ -187,7 +187,11 @@ export const SIZE_CLASS = {
 // model exactly.)
 //
 // Legacy bbox (under its turn) against the upstream part's rectangle (W), which
-// is what F above is reading. `cd` is omitted: it is `co`'s row exactly.
+// is what F above is reading. Thirteen rows: the eight parts whose roof is
+// centred on their extent plus the five big L-ruins. `cd` is omitted - it is
+// `co`'s row exactly - and `ab` is one row although upstream draws it twice,
+// because only the registered drawing is read (see PART_CANONICAL); the other
+// would read 4x4.5 here.
 //
 //   part          legacy   upstream   delta
 //   ab            5x4.5    3.75x4.5   +1.25  0        L-shaped: legacy polygon
@@ -361,10 +365,29 @@ const FLIP_ANTIDIAG = [
 // footprints. Upstream now ships each composite as an individually traced
 // outline of 167-348 vertices rather than a copy of one of five archetype
 // polygons, so a composite footprint no longer equals its archetype under any
-// rigid map - it only resembles it, to ~0.4in, which is far too loose to pick an
-// orientation: `area-large` and `area-medium` are near-centrosymmetric, and
-// fitting them to their composites prefers the wrong answer outright (it reads
-// R180.FX for SmallRect#8 where the corpus says R0, unanimously).
+// rigid map - it only resembles it. Fitting the archetype to the outline is not
+// a loose oracle that happens to tie, though, and it should not be described as
+// one: it discriminates sharply, and for four of the six classes it discriminates
+// sharply in favour of the *other* reflection. Shape-distance of each class's
+// reference outline against its archetype, over the eight rigid maps:
+//
+//   class          best fit        registered      runner-up
+//   BigRect        R180.FX  0.114  R180     0.552  R0       0.411
+//   LongLine       R0.FX    0.084  R0       0.590  R0       0.590
+//   LongLineTower  R0       0.084  R0.FX    0.590  R0.FX    0.590
+//   ShortLine      R180     0.069  R180     0.069  R0       0.288
+//   SmallRect      R180.FX  0.071  R0       0.265  R0       0.265
+//   Triangle       R90.FX   0.706  R90.FX   0.706  R270.FX  2.537
+//
+// So the emitted area polygon is drawn at the reflection of upstream's own
+// re-traced outline for 42 of the 52 composites, by a 4-7x margin - not a tie
+// broken the other way. Containment cannot referee it (all four reflections of
+// an archetype hold the same children), and the fit above is not evidence the
+// port is mirrored: it is evidence the coarse legacy polygons and upstream's
+// traces disagree about chirality, and the pre-pull *rendering* is what this
+// repo has to keep. Recorded here in full because the numbers look like an
+// argument against the table until you have them, and the next maintainer should
+// not have to re-derive them to find that out.
 //
 // So V is measured against the pre-pull corpus instead, the same oracle
 // PART_TO_TEMPLATE is calibrated against. Pair each new area with the pre-pull
@@ -455,6 +478,34 @@ const PART_PREFIX = "bm-part-";
 // the model rather than on the drawing.
 const HASH_SUFFIX = /-[0-9a-f]{10}$/;
 
+/**
+ * The one drawing of a part that its model is read from, for the part names
+ * upstream ships more than one of.
+ *
+ * `ab` is the only such name today, and its two ids are the same model: their
+ * `walls` - the polyline the whole extent is measured from - are byte-identical,
+ * and only the roof rectangle differs. `b2b36df6fb` draws it 0.25in wider and
+ * shifted, poking out past the wall at x = 0, where `68b696d07f` keeps it inside.
+ * Since `partExtent` unions roof with walls, taking each id at face value gives
+ * the same model two sizes: 4x4.5 and 3.75x4.5, so 2 of the 90 `ab` ruins in the
+ * corpus emitted a quarter-inch wider than the other 88 and than the pre-pull
+ * corpus. `partAnchorShift` split the same way, 0.5 against 0.625.
+ *
+ * This is the rule `cd` already follows from the other direction - it is `co`'s
+ * row exactly, so identical input produces identical output. A roof that
+ * overhangs its own walls cannot be told from a barrier's (whose centreline
+ * genuinely runs along one edge) by geometry alone, so the choice is registered
+ * rather than derived, the way VARIANT is. `battlemaster-registration.test.mjs`
+ * fails if a later pull ships a second drawing of any other part without one.
+ */
+export const PART_CANONICAL = {
+  ab: "bm-part-ab-68b696d07f",
+};
+
+/** The template id a part's model should be read from. See PART_CANONICAL. */
+export const canonicalPartId = (templateId) =>
+  PART_CANONICAL[partOf(templateId)] ?? templateId;
+
 /** True for an upstream Battlemaster composite area template. */
 export const isCompositeTemplate = (id) =>
   typeof id === "string" && id.startsWith(COMPOSITE_PREFIX);
@@ -542,7 +593,7 @@ export function bboxSize(footprint) {
  * The second change is the anchor, and it is the one that is invisible until you
  * measure containment. `position` still means the centre of the footprint - but
  * the footprint is now the roof, so `position` now anchors the *roof's* centre
- * where it used to anchor the extent's. For the six parts whose roof is centred
+ * where it used to anchor the extent's. For the eight parts whose roof is centred
  * on their extent (`corner`, `small-l`, `small-l-flip`, `generator`, `tower`,
  * `pipes`, and both barriers) that is the same point and nothing changes. For
  * the five big L-ruins it is not: the offset runs to (1.25, 1.5)in, and anchoring
@@ -552,6 +603,38 @@ export function bboxSize(footprint) {
  *
  * A part with no walls at all (`ruin-part`, which this module drops) has no
  * extent to read and falls back to its own footprint.
+ *
+ * W2: the same pull also started expressing the other hand of a part with a
+ * feature-level `mirror`, and on a mirrored feature `position` does not read the
+ * roof centre the way it does everywhere else. Upstream ships exactly one today,
+ * the generator in `bm-composite-smallrect-generator-updown-flip-3db57df624`, and
+ * four independent measurements agree on where it belongs:
+ *
+ *   - Its unmirrored sibling `...-updown-bfbe6a06e7` is the same composite drawn
+ *     the other way: all 167 outline vertices map onto each other exactly under
+ *     x -> 6.003 - x. So the two features' roof centres must negate about that
+ *     axis, and the sibling reads position.x = +0.066281 - which makes the flip's
+ *     -0.066281, not the -4.566281 upstream stores.
+ *   - -4.566281 + 4.5 = -0.066281 to the last bit, and 4.5in is exactly the
+ *     generator's own roof width; nothing else in the corpus is off by it.
+ *   - Placed as upstream writes it, the generator hangs 3.7in outside its own
+ *     parent outline. Corrected, it sits inside, roughly centred.
+ *   - The pre-pull corpus put both generators of `bm-purge-vs-recon-01` 4.500in
+ *     from where the uncorrected anchor lands them - the only exactly-4.5in
+ *     movement anywhere in the 900-feature old/new comparison.
+ *
+ * The correction is (I - S) . roofCentre under the feature's own rotation, where
+ * S is the feature's mirror alone: zero unless the feature carries one, so it
+ * reaches that generator and nothing else. It is not expressible as a change of
+ * anchor convention - no single `t + Mf . x` places the roof centre at
+ * `position` when Mf is proper and at `position + 2 . roofCentre` when it is not
+ * - which reads as an exporter bug upstream rather than a convention we had
+ * misread. With one instance to calibrate against, (I - S) . roofCentre cannot be
+ * told apart from a rule in the roof's *width*: the generator's roof starts at
+ * x = 0, so its width and twice its centre are the same 4.5in. A second mirrored
+ * part would separate them, and `parts sit inside the composite that contains
+ * them` in `battlemaster-registration.test.mjs` is what would notice - it reads
+ * 3.747in on this one with the correction removed.
  */
 function extentBounds(part) {
   const roof = footprintPolygon(part.footprint);
@@ -568,6 +651,26 @@ export function partExtent(part) {
     width: b.maxX - b.minX,
     height: b.maxY - b.minY,
   };
+}
+
+/**
+ * The composite-frame correction from what `position` reads on a *mirrored*
+ * feature to where the part's roof centre actually sits. See W2 above.
+ *
+ * (I - S) . roofCentre, raised into the composite frame by the feature's own
+ * rotation - S alone, not the feature's whole map. The distinction is the whole
+ * content of the function: a rotation is not what upstream mis-anchors, so
+ * reading the correction off `pieceMatrix` instead would fire on all 96 rotated
+ * features as well as the one mirrored one. It is exactly zero whenever the
+ * feature carries no `mirror`, which is 903 of the corpus's 904.
+ */
+export function mirrorAnchorFix(part, feature) {
+  const roof = boundsCentre(footprintPolygon(part.footprint));
+  const reflected = matvec(mirrorMatrix(feature), roof);
+  return matvec(rotationMatrix(feature.rotation_degrees ?? 0), {
+    x: roof.x - reflected.x,
+    y: roof.y - reflected.y,
+  });
 }
 
 /**
@@ -674,15 +777,18 @@ export function anchorOffset(footprint) {
   return { x: c.x - b.x, y: c.y - b.y };
 }
 
+/** The piece's own mirror, on its own: diag(sx, sy). */
+export function mirrorMatrix(piece) {
+  return piece.mirror === "horizontal"
+    ? FLIP_X
+    : piece.mirror === "vertical"
+      ? FLIP_Y
+      : IDENTITY;
+}
+
 /** The piece's own linear map: R(rotation_degrees) . diag(sx, sy). */
 export function pieceMatrix(piece) {
-  const S =
-    piece.mirror === "horizontal"
-      ? FLIP_X
-      : piece.mirror === "vertical"
-        ? FLIP_Y
-        : IDENTITY;
-  return matmul(rotationMatrix(piece.rotation_degrees ?? 0), S);
+  return matmul(rotationMatrix(piece.rotation_degrees ?? 0), mirrorMatrix(piece));
 }
 
 /**
@@ -768,10 +874,13 @@ export function normalizeLayout(layout, templatesById) {
       // the emitted corpus entirely - see its entry in PART_TO_TEMPLATE.
       if (drop) continue;
       const legacy = templatesById.get(template);
-      const upstream = templatesById.get(feature.template);
+      // Not `feature.template`: where upstream draws one model twice, every
+      // drawing of it emits from the registered one. See PART_CANONICAL.
+      const upstreamId = canonicalPartId(feature.template);
+      const upstream = templatesById.get(upstreamId);
       for (const [id, t] of [
         [template, legacy],
-        [feature.template, upstream],
+        [upstreamId, upstream],
       ]) {
         if (!t) {
           throw new Error(
@@ -828,10 +937,13 @@ export function normalizeLayout(layout, templatesById) {
       // W: `feature.position` anchors the roof's centre; step to the extent's
       // centre in the part's own frame before undoing V, so the emitted child
       // occupies the space upstream's model does rather than its roof's.
+      // W2: on a *mirrored* feature `position` does not read the roof centre at
+      // all - it is out by the part's own roof width. See mirrorAnchorFix.
       const shift = matvec(Mf, partAnchorShift(upstream));
+      const fix = mirrorAnchorFix(upstream, feature);
       const anchor = matvec(Vinv, {
-        x: feature.position.x + shift.x,
-        y: feature.position.y + shift.y,
+        x: feature.position.x + fix.x + shift.x,
+        y: feature.position.y + fix.y + shift.y,
       });
       const child = {
         id: `${piece.id}-${feature.id}`,

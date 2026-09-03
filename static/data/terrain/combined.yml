@@ -8738,7 +8738,7 @@ layout:
         mirror: false
       - type: generator
         x: 43.747
-        'y': 24.503
+        'y': 29.003
         width: 4.5
         height: 2
         rotation: 270
@@ -8746,7 +8746,7 @@ layout:
         mirror: false
       - type: generator
         x: 11.753
-        'y': 17.497
+        'y': 12.997
         width: 4.5
         height: 2
         rotation: 90
@@ -12581,10 +12581,10 @@ layout:
         color: green
         mirror: false
       - type: l-ruin-mirror
-        x: 24.25
-        'y': 22.25
+        x: 24.375
+        'y': 22.375
         width: 4.5
-        height: 4
+        height: 3.75
         rotation: 90
         color: green
         mirror: false
@@ -12597,10 +12597,10 @@ layout:
         color: green
         mirror: false
       - type: l-ruin-mirror
-        x: 31.25
-        'y': 17.75
+        x: 31.125
+        'y': 17.875
         width: 4.5
-        height: 4
+        height: 3.75
         rotation: 270
         color: green
         mirror: false

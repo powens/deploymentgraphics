@@ -11,6 +11,9 @@ import {
   bboxSize,
   partExtent,
   partAnchorShift,
+  mirrorAnchorFix,
+  PART_CANONICAL,
+  canonicalPartId,
   orthoInverse,
 } from "./battlemaster-normalize.mjs";
 import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
@@ -23,6 +26,7 @@ import {
   det,
   matmul,
   matvec,
+  pointInRing,
   pointSegmentDistance,
   ringMismatch,
   rotationMatrix as rotation,
@@ -78,15 +82,23 @@ const centred = (ring) => {
  * so the two only line up after `partAnchorShift`. Both this and the emitted
  * child therefore describe the same rectangle, which is what lets the
  * assertions below compare them directly.
+ *
+ * This reads `position` through the same two corrections the module does, so on
+ * its own it cannot tell a wrong reading from a right one - both sides would
+ * move together. `parts sit inside the composite that contains them` below is the
+ * check that does not share that blind spot: it measures the part against
+ * upstream's own traced polygon, which no anchor rule of ours takes part in.
  */
 const upstreamPart = (feature, part, areaId) => {
-  const shift = matvec(pieceMatrix(feature), partAnchorShift(part));
+  const Mf = pieceMatrix(feature);
+  const shift = matvec(Mf, partAnchorShift(part));
+  const fix = mirrorAnchorFix(part, feature);
   return {
     id: "truth",
     footprint: partExtent(part),
     position: {
-      x: feature.position.x + shift.x,
-      y: feature.position.y + shift.y,
+      x: feature.position.x + fix.x + shift.x,
+      y: feature.position.y + fix.y + shift.y,
     },
     rotation_degrees: feature.rotation_degrees ?? 0,
     ...(feature.mirror ? { mirror: feature.mirror } : {}),
@@ -94,8 +106,38 @@ const upstreamPart = (feature, part, areaId) => {
   };
 };
 
+/** The eight rigid maps a composite footprint can sit under, by name. */
+const CANDIDATES = Object.fromEntries(
+  [0, 90, 180, 270].flatMap((d) => [
+    [`R${d}`, rotation(d)],
+    [`R${d}.FX`, matmul(rotation(d), FLIP_X)],
+  ]),
+);
+
+/** Name one of CANDIDATES from its matrix. */
+const nameOfVariant = (V) =>
+  Object.entries(CANDIDATES).find(([, M]) =>
+    M.every((row, i) => row.every((x, j) => Math.abs(x - V[i][j]) < 1e-9)),
+  )?.[0];
+
+/**
+ * Each size class's reference composite - lowest id in the class - and the
+ * orientation it is registered at. The absolute half of the rigid-variant check
+ * below; see the comment there for why it is pinned rather than derived.
+ */
+const CLASS_REFERENCE = {
+  BigRect: ["bm-composite-bigrect-cd-ef-01-19f1adc57b", "R180"],
+  LongLine: ["bm-composite-longline-tower-3be6fa3536", "R0"],
+  LongLineTower: ["bm-composite-longlinetower-flip-06c4f02941", "R0.FX"],
+  ShortLine: ["bm-composite-shortline-barrier-348db27c93", "R180"],
+  SmallRect: ["bm-composite-smallrect-generator-44c45681fa", "R0"],
+  Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", "R90.FX"],
+};
+
 const corpus = loadCorpus();
 const { templatesById: byId, gwTemplates, footprintOf } = corpus;
+/** The drawing a feature's model is read from, through PART_CANONICAL. */
+const upstreamPartOf = (feature) => byId.get(canonicalPartId(feature.template));
 // This suite is the one place that reads both frames: it checks the normalized
 // layouts against the upstream ones they were derived from, so it takes the
 // raw layouts alongside `missionLayouts`. Both come out of the corpus in
@@ -116,6 +158,36 @@ describe("registration tables", () => {
     }
     expect([...classes].sort()).toEqual(Object.keys(SIZE_CLASS).sort());
     expect([...parts].sort()).toEqual(Object.keys(PART_TO_TEMPLATE).sort());
+  });
+
+  // The re-source content-hashes every template id, so one model can arrive as
+  // several drawings and `partOf` deliberately collapses them onto one legacy
+  // row. `partExtent` does not collapse with it: it reads whichever drawing the
+  // feature names, so two drawings of one model silently emit two sizes unless
+  // one of them is registered. Two ids reached `ab` in this pull and 2 of its 90
+  // ruins came out a quarter-inch wide before PART_CANONICAL. Fail on the next
+  // one rather than on its geometry.
+  it("registers a canonical drawing wherever upstream ships a part twice", () => {
+    const drawings = {};
+    for (const t of byId.values()) {
+      if (!String(t.id).startsWith("bm-part-")) continue;
+      (drawings[partOf(t.id)] ??= []).push(t.id);
+    }
+    const doubled = Object.entries(drawings)
+      .filter(([, ids]) => ids.length > 1)
+      .map(([part]) => part);
+    expect(doubled.sort()).toEqual(Object.keys(PART_CANONICAL).sort());
+    for (const [part, id] of Object.entries(PART_CANONICAL)) {
+      expect(drawings[part], `PART_CANONICAL.${part}`).toContain(id);
+      // What makes them one model rather than two: the walls the extent is
+      // measured from are identical, and only the roof was redrawn.
+      const walls = JSON.stringify(byId.get(id).walls);
+      for (const other of drawings[part]) {
+        expect(JSON.stringify(byId.get(other).walls), `${part} ${other}`).toEqual(
+          walls,
+        );
+      }
+    }
   });
 
   it("targets legacy templates that still exist upstream", () => {
@@ -192,20 +264,35 @@ describe("registration tables", () => {
   // the first assertion; one that is a known shape at an unregistered
   // orientation fails the second.
   it("accounts for every composite footprint as a registered rigid variant", () => {
-    const CANDIDATES = Object.fromEntries(
-      [0, 90, 180, 270].flatMap((d) => [
-        [`R${d}`, rotation(d)],
-        [`R${d}.FX`, matmul(rotation(d), FLIP_X)],
-      ]),
-    );
     const composites = [...byId.values()].filter((t) => isCompositeTemplate(t.id));
     const byClass = {};
     for (const c of composites) (byClass[classOf(c)] ??= []).push(c);
 
     for (const [cls, members] of Object.entries(byClass)) {
+      // Sorted, not source order: the reference is half of what CLASS_REFERENCE
+      // pins, so it cannot be allowed to move when upstream reorders the file.
+      members.sort((a, b) => (a.id < b.id ? -1 : 1));
       const ref = members[0];
       const refRing = centred(footprintPolygon(ref.footprint));
       const refV = VARIANT[ref.id] ?? IDENTITY;
+      // The check below is relative: it fixes every composite in a class against
+      // that class's reference, and says nothing at all about the reference
+      // itself. On its own that leaves a whole class free to be registered a
+      // quarter-turn or a reflection out with every assertion still green - and
+      // for LongLineTower, whose single composite is its own reference, it
+      // degenerates to `V === V`. So the references are pinned outright.
+      //
+      // The pin is a characterization, and it has to be: V is derived by vote
+      // against the pre-pull corpus (see VARIANT), which no longer exists to
+      // re-derive it from inside a test, and fitting the coarse archetype to
+      // upstream's re-traced outline is not a substitute - it prefers the other
+      // reflection for three of these six classes (see VARIANT's header). What
+      // it buys is that re-registering a class stops being invisible: it fails
+      // here instead of moving combined.yml in silence. That is the same job
+      // EXPECTED_HAND does below.
+      const [refId, refName] = CLASS_REFERENCE[cls] ?? [];
+      expect(ref.id, `${cls} reference`).toEqual(refId);
+      expect(nameOfVariant(refV), `${cls} reference orientation`).toEqual(refName);
       for (const c of members) {
         const ring = centred(footprintPolygon(c.footprint));
         const fits = Object.entries(CANDIDATES)
@@ -370,7 +457,7 @@ describe("normalized layouts conform to upstream geometry", () => {
         // point, and pin the emitted piece to it too.
         const want = centroid(
           resolvePiece(
-            upstreamPart(feature, byId.get(feature.template), areaId),
+            upstreamPart(feature, upstreamPartOf(feature), areaId),
             footprintOf,
             srcParent,
           ),
@@ -450,7 +537,7 @@ describe("normalized layouts conform to upstream geometry", () => {
           expect(ring.length, `${child.id} (${part})`).toBe(6);
           // Q turns the legacy drawing into the part's frame, so a quarter-turn
           // swaps which upstream side each legacy axis has to match.
-          const want = bboxSize(partExtent(byId.get(feature.template)));
+          const want = bboxSize(partExtent(upstreamPartOf(feature)));
           const quarter = PART_TO_TEMPLATE[part].turn % 180 !== 0;
           const got = bboxSize(child.footprint);
           expect(
@@ -461,11 +548,11 @@ describe("normalized layouts conform to upstream geometry", () => {
         }
         // Upstream's model extent, which since the re-source has to be rebuilt
         // from the roof and the walls together rather than read off `footprint`.
-        expect(child.footprint).toEqual(partExtent(byId.get(feature.template)));
+        expect(child.footprint).toEqual(partExtent(upstreamPartOf(feature)));
         // Same footprint, same frame: the emitted child must land on upstream's
         // outline vertex for vertex, not merely near it.
         const truth = resolvePiece(
-          upstreamPart(feature, byId.get(feature.template), areaId),
+          upstreamPart(feature, upstreamPartOf(feature), areaId),
           footprintOf,
           srcParent,
         );
@@ -618,6 +705,70 @@ describe("normalized layouts conform to upstream geometry", () => {
   });
 });
 
+// Upstream's own composite outline is the one frame in this file that no rule of
+// ours takes part in: it is a 167-348 vertex trace of the real model, shipped
+// alongside the parts it contains. So it is the only check here that can catch a
+// misread anchor - `upstreamPart` above reads `position` through the same
+// corrections `normalizeLayout` does, and would agree with a wrong one.
+//
+// It has already earned that: the mirrored generator hung 3.7in out of its own
+// parent before `mirrorAnchorFix`, with the whole suite green.
+describe("parts sit inside the composite that contains them", () => {
+  // Two, both `ab` in the same Triangle footprint, at 2.870in. Verified as
+  // upstream's own: bm-recon-vs-assets-01 reproduces the pre-pull corpus exactly
+  // there, so the port is carrying the overhang across rather than causing it.
+  const KNOWN_OVERHANG = {
+    "bm-composite-triangle-ab-corner-02-4b8322162e/feature-1": 2.871,
+    "bm-composite-triangle-ab-corner-02-8d39f1ed78/feature-1": 2.871,
+  };
+
+  it("keeps every part's model within its composite's traced outline", () => {
+    for (const composite of byId.values()) {
+      if (!isCompositeTemplate(composite.id)) continue;
+      const ring = footprintPolygon(composite.footprint);
+      // Feature positions are measured from the composite's area centroid - the
+      // same anchor resolvePiece places the area on.
+      const origin = centroid(ring);
+      for (const feature of composite.features ?? []) {
+        const part = upstreamPartOf(feature);
+        const Mf = pieceMatrix(feature);
+        const shift = matvec(Mf, partAnchorShift(part));
+        const fix = mirrorAnchorFix(part, feature);
+        const c = {
+          x: origin.x + feature.position.x + fix.x + shift.x,
+          y: origin.y + feature.position.y + fix.y + shift.y,
+        };
+        const { width, height } = bboxSize(partExtent(part));
+        const corners = [
+          [-1, -1],
+          [1, -1],
+          [1, 1],
+          [-1, 1],
+        ].map(([sx, sy]) => {
+          const v = matvec(Mf, { x: (sx * width) / 2, y: (sy * height) / 2 });
+          return { x: c.x + v.x, y: c.y + v.y };
+        });
+        const out = Math.max(
+          0,
+          ...corners
+            .filter((p) => !pointInRing(p, ring))
+            .map((p) =>
+              Math.min(
+                ...ring.map((_, i) =>
+                  pointSegmentDistance(p, ring[i], ring[(i + 1) % ring.length]),
+                ),
+              ),
+            ),
+        );
+        const key = `${composite.id}/${feature.id}`;
+        // 0.01in absorbs the trace: eight parts sit up to 0.0015in proud of an
+        // outline drawn round them by hand. Everything else is exactly inside.
+        expect(out, key).toBeLessThan(KNOWN_OVERHANG[key] ?? 0.01);
+      }
+    }
+  });
+});
+
 describe("board invariants", () => {
   it("keeps every resolved vertex on the 60x44 board", () => {
     for (const layout of normalized) {
@@ -635,7 +786,7 @@ describe("board invariants", () => {
 
   it("is 180-degree rotationally symmetric about the board centre", () => {
     let worst = 0;
-    const loose = { area: 0, feature: 0 };
+    let worstAt = "";
     for (const layout of normalized) {
       const getParent = layout.parentOf;
       const pts = layout.pieces.map((p) => ({
@@ -649,18 +800,20 @@ describe("board invariants", () => {
             .filter((b) => b.kind === a.kind)
             .map((b) => Math.hypot(b.c.x - target.x, b.c.y - target.y)),
         );
-        worst = Math.max(worst, d);
-        if (d > 0.25) loose[a.kind]++;
+        if (d > worst) {
+          worst = d;
+          worstAt = `${layout.id} ${a.kind}`;
+        }
       }
     }
-    // Upstream's own residual asymmetry: 0.707in on 4 areas and 8 features,
-    // concentrated in bm-disrupt-vs-disrupt-01 and
-    // bm-recon-vs-recon-02 (0.354in point-symmetry slip in
-    // upstream's own data). Reproducing it is correct — this repo renders
-    // upstream's data faithfully — but if a failure ever lands here, diff
-    // against those two layout ids first before assuming a regression.
-    expect(worst).toBeLessThan(1.0);
-    expect(loose.area).toBeLessThanOrEqual(4);
-    expect(loose.feature).toBeLessThanOrEqual(8);
+    // 0.0229in, on bm-take-vs-recon-03, and 44 of the 45 layouts are exactly
+    // symmetric. This bound is the one board-level check that a piece has moved
+    // and nothing else noticed, so it is set just clear of that residual rather
+    // than at a round number: the misread mirror anchor this suite missed once
+    // put two generators 4.5in out, and every candidate for the next such bug is
+    // similarly far above the noise. If a re-pull lands a failure here, diff the
+    // named layout against upstream before assuming the port regressed -
+    // upstream's own data has carried point-symmetry slips before.
+    expect(worst, worstAt).toBeLessThan(0.05);
   });
 });
