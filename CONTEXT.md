@@ -49,3 +49,20 @@ features are unioned with the board's top-level array. Distinct from
 **Resolve** above: that maps one placement to a `Placed`; this assembles
 placement *arrays* and applies the "is a layout selected / union with
 top-level" rules in one place.
+
+**Controls** — the authoring form the *viewer* presents: the nine fields a
+visitor picks in the browser (two dispositions, layout, deployment, terrain
+layout, template set, rotation, and the grid/territory toggles). The browser
+counterpart of a **Placement**'s YAML — one authoring form, **resolved** into a
+`FullConfig` by `buildConfig`. `src/viewer-controls.ts` holds the single
+spelling of the set: one row per control (key, element id, kind, default,
+allowed values), with the URL form, the stored form, the DOM form and the
+coercion of untrusted input all *derived* from those rows rather than restated.
+Adding a control is one row.
+
+The URL carries only controls that differ from their default — which is why
+`grid=1` and `territory=0` are one rule, not two special cases. Two of the nine
+reach the renderer as config overrides (`grid`, `territory`); the rest select
+which YAML the viewer fetches, except `rot`, which post-processes the rendered
+card. Viewer-only: the controls reach the demo through `bundle.ts`, and the
+published package has no concept of them.

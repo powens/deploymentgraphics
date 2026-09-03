@@ -6,41 +6,36 @@ import {
   missions,
   gwTerrain,
   eventMatrix,
-  dispositions,
   resolveMission,
   resolveTerrainLayout,
-} from "./bundle.js";
-import {
-  DEFAULT_CONTROLS,
-  LAYOUTS,
-  clearUrl,
-  loadState,
-  readControlsFromUrl,
+  controlSpec,
+  controlsFromSearch,
+  controlsToSearch,
+  defaultControls,
   sanitizeControls,
-  saveState,
-  urlHasControls,
-  writeControlsToUrl,
-} from "./state.js";
+  searchHasControls,
+} from "./bundle.js";
+import { loadState, saveState } from "./state.js";
 
-// Dropdown options derive from the generated presets in the bundle, which are
-// generated from the YAML (see scripts/gen-presets.mjs). The persistence
-// allowlists derive from these in turn, so options, allowlists, and the
-// underlying YAML can never drift apart. The two dispositions + layout resolve
-// to a deployment via the event matrix, which selects the Deployment dropdown;
-// that dropdown can also be set directly.
-const DISPOSITIONS = dispositions(eventMatrix).map((id) => ({ id, label: id }));
-const LAYOUT_OPTIONS = LAYOUTS.map((id) => ({ id, label: id }));
-const MISSIONS = Object.entries(missions).map(([id, m]) => ({
-  id,
-  label: m.name,
-}));
-const TERRAINS = Object.keys(gwTerrain.layout).map((id) => ({
+// The nine controls are spelled once, in `src/viewer-controls.ts`: every
+// default, allowlist and element id below is read off `controlSpec` rather than
+// restated here. Only the option *labels* are the app's own, since they are
+// presentation. The two dispositions + layout resolve to a deployment via the
+// event matrix, which selects the Deployment dropdown; that dropdown can also
+// be set directly.
+const SPEC = new Map(controlSpec.map((row) => [row.key, row]));
+
+function allowed(key) {
+  return SPEC.get(key).allowed;
+}
+
+const DISPOSITIONS = allowed("da").map((id) => ({ id, label: id }));
+const LAYOUT_OPTIONS = allowed("lay").map((id) => ({ id, label: id }));
+const MISSIONS = allowed("m").map((id) => ({ id, label: missions[id].name }));
+const TERRAINS = allowed("t").map((id) => ({
   id,
   label: `GW Layout ${id}`,
 }));
-const DISPOSITION_IDS = DISPOSITIONS.map((d) => d.id);
-const MISSION_IDS = MISSIONS.map((m) => m.id);
-const TERRAIN_IDS = TERRAINS.map((t) => t.id);
 
 // YAML files never change within a session, so cache by URL. The promise
 // (not the result) is cached, which also dedupes concurrent fetches.
@@ -345,11 +340,12 @@ function activateTab(name) {
 function syncUrl() {
   // In yaml mode keep the URL bare: it cannot carry the override, and a
   // bare URL lets a reload fall through to the localStorage-restored state.
-  if (mode === "yaml") {
-    clearUrl();
-  } else {
-    writeControlsToUrl(controlState());
-  }
+  const query = mode === "yaml" ? "" : controlsToSearch(controlState());
+  window.history.replaceState(
+    null,
+    "",
+    query ? `?${query}` : window.location.pathname,
+  );
 }
 
 function persist() {
@@ -534,27 +530,20 @@ document.addEventListener("keydown", (event) => {
 function start() {
   setExportEnabled(false);
 
-  const fromUrl = urlHasControls();
+  const fromUrl = searchHasControls(window.location.search);
   if (fromUrl) {
     // An explicit URL (e.g. a shared link) wins over any saved state.
-    applyControls(readControlsFromUrl(DISPOSITION_IDS, MISSION_IDS, TERRAIN_IDS));
+    applyControls(controlsFromSearch(window.location.search));
   } else {
     const saved = loadState();
     if (saved) {
-      applyControls(
-        sanitizeControls(
-          saved.controls,
-          DISPOSITION_IDS,
-          MISSION_IDS,
-          TERRAIN_IDS,
-        ),
-      );
+      applyControls(sanitizeControls(saved.controls));
       if (saved.mode === "yaml" && typeof saved.yaml === "string") {
         mode = "yaml";
         yamlEditor.value = saved.yaml;
       }
     } else {
-      applyControls(DEFAULT_CONTROLS);
+      applyControls(defaultControls());
     }
   }
 
