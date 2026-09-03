@@ -92,7 +92,7 @@ describe("classifyPiece", () => {
 
 describe("layoutPlacements", () => {
   const L = missionLayouts.find(
-    (l) => l.id === "purge-the-foe-vs-purge-the-foe-2",
+    (l) => l.id === "bm-purge-vs-purge-02",
   );
 
   it("emits every piece exactly once, dropping only the catwalks", () => {

@@ -41,7 +41,7 @@ const cases: [string, FullConfig][] = [
     "a masked-centre mission with grid and a terrain layout",
     buildConfig({
       mission: missions.search_and_destroy,
-      layout: "take-and-hold-mirror-3",
+      layout: "bm-take-vs-take-03",
       grid: true,
     }),
   ],

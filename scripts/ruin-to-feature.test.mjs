@@ -209,7 +209,7 @@ describe("roofing guard geometry", () => {
 
 describe("ruins over the corpus", () => {
   it("emits an l-ruin or l-ruin-mirror for every corner piece", () => {
-    const L = layouts.find((l) => l.id === "purge-the-foe-vs-purge-the-foe-2");
+    const L = layouts.find((l) => l.id === "bm-purge-vs-purge-02");
     const features = ruinsOf(L);
     expect(features.length).toBe(
       L.pieces.filter((p) => isRuinTemplate(p.template)).length,

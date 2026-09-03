@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { normalizeLayout } from "./battlemaster-normalize.mjs";
+import {
+  normalizeLayout,
+  partAnchorShift,
+  partExtent,
+  pieceMatrix,
+} from "./battlemaster-normalize.mjs";
+import { matvec } from "../src/geometry.ts";
 
 // A minimal stand-in for the vendored data: one composite whose footprint is
 // byte-identical to `area-short-line` (so VARIANT is identity), carrying two
@@ -7,6 +13,12 @@ import { normalizeLayout } from "./battlemaster-normalize.mjs";
 // legacy templates they map onto, which normalizeLayout reads to compute each
 // child's anchor offset. Both footprints are copied verbatim from
 // terrain-templates.json.
+//
+// The upstream parts here carry a bare `footprint` and no `walls`, which is the
+// pre-battlemaster-11e shape of the data. partExtent falls back to `footprint`
+// and partAnchorShift to zero for such a part, so these fixtures go on
+// exercising the mapping rules (F, Z, K, Q, S) in isolation. The `walls` path
+// those two functions exist for is pinned separately at the end of this file.
 const templatesById = new Map([
   [
     "corner-short",
@@ -27,9 +39,9 @@ const templatesById = new Map([
     },
   ],
   [
-    "bm-bm-terrain-11e-1-part-small-l",
+    "bm-part-small-l-a5777aceb2",
     {
-      id: "bm-bm-terrain-11e-1-part-small-l",
+      id: "bm-part-small-l-a5777aceb2",
       footprint: { type: "rectangle", width: 1.5, height: 2.5 },
     },
   ],
@@ -37,9 +49,9 @@ const templatesById = new Map([
   // `tower` takes upstream's footprint (2x2.5) over this one, so both are here.
   ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
   [
-    "bm-bm-terrain-11e-1-part-tower",
+    "bm-part-tower-ddab4cb687",
     {
-      id: "bm-bm-terrain-11e-1-part-tower",
+      id: "bm-part-tower-ddab4cb687",
       footprint: { type: "rectangle", width: 2, height: 2.5 },
     },
   ],
@@ -49,23 +61,23 @@ const templatesById = new Map([
   // terrain-templates.json.
   ["generator", { id: "generator", footprint: { type: "rectangle", width: 3, height: 4 } }],
   [
-    "bm-bm-terrain-11e-1-part-generator",
+    "bm-part-generator-2aeba08b62",
     {
-      id: "bm-bm-terrain-11e-1-part-generator",
+      id: "bm-part-generator-2aeba08b62",
       footprint: { type: "rectangle", width: 4.5, height: 2 },
     },
   ],
   [
-    "bm-bm-terrain-11e-1-composite-31-m0-p0",
+    "bm-composite-shortline-31-bbbbbbbbbb",
     {
-      id: "bm-bm-terrain-11e-1-composite-31-m0-p0",
-      name: "Battlemaster SL 31",
+      id: "bm-composite-shortline-31-bbbbbbbbbb",
+      name: "Battlemaster ShortLine 31",
       kind: "area",
       footprint: { type: "polygon", points: [] },
       features: [
         {
           id: "feature-1",
-          template: "bm-bm-terrain-11e-1-part-generator",
+          template: "bm-part-generator-2aeba08b62",
           position: { x: 2, y: -1 },
           rotation_degrees: 90,
         },
@@ -73,22 +85,22 @@ const templatesById = new Map([
     },
   ],
   [
-    "bm-bm-terrain-11e-1-composite-30-m0-p0",
+    "bm-composite-shortline-30-aaaaaaaaaa",
     {
-      id: "bm-bm-terrain-11e-1-composite-30-m0-p0",
-      name: "Battlemaster SL 30",
+      id: "bm-composite-shortline-30-aaaaaaaaaa",
+      name: "Battlemaster ShortLine 30",
       kind: "area",
       footprint: { type: "polygon", points: [] },
       features: [
         {
           id: "feature-1",
-          template: "bm-bm-terrain-11e-1-part-small-l",
+          template: "bm-part-small-l-a5777aceb2",
           position: { x: 1.5, y: -0.25 },
           rotation_degrees: 90,
         },
         {
           id: "feature-2",
-          template: "bm-bm-terrain-11e-1-part-tower",
+          template: "bm-part-tower-ddab4cb687",
           position: { x: -1.5, y: 0.25 },
         },
       ],
@@ -100,7 +112,7 @@ const layoutWith = (piece) => ({
   id: "fixture",
   mission_matchup_id: "m",
   pieces: [{ id: "area-01", name: "Battlemaster area 01", piece_type: "area",
-             template: "bm-bm-terrain-11e-1-composite-30-m0-p0",
+             template: "bm-composite-shortline-30-aaaaaaaaaa",
              position: { x: 10, y: 20 }, ...piece }],
 });
 
@@ -155,7 +167,7 @@ describe("normalizeLayout", () => {
   it("carries upstream's own footprint for the generator part", () => {
     const out = normalizeLayout(
       layoutWith({
-        template: "bm-bm-terrain-11e-1-composite-31-m0-p0",
+        template: "bm-composite-shortline-31-bbbbbbbbbb",
         rotation_degrees: 0,
       }),
       templatesById,
@@ -198,8 +210,8 @@ describe("normalizeLayout", () => {
     // not 0.4. That has to throw rather than emit a piece that is not upstream's
     // size after all.
     const bad = new Map(templatesById);
-    bad.set("bm-bm-terrain-11e-1-part-small-l", {
-      id: "bm-bm-terrain-11e-1-part-small-l",
+    bad.set("bm-part-small-l-a5777aceb2", {
+      id: "bm-part-small-l-a5777aceb2",
       footprint: { type: "rectangle", width: 0.4, height: 2.5 },
     });
     expect(() =>
@@ -259,12 +271,12 @@ describe("normalizeLayout", () => {
   });
 
   it("folds a registered rigid variant into the area's own transform", () => {
-    const trTemplates = new Map([
+    const templates = new Map([
       [
-        "bm-bm-terrain-11e-1-composite-23-m1-p2",
+        "bm-composite-bigrect-cd-ef-01-19f1adc57b",
         {
-          id: "bm-bm-terrain-11e-1-composite-23-m1-p2",
-          name: "Battlemaster TR 23",
+          id: "bm-composite-bigrect-cd-ef-01-19f1adc57b",
+          name: "Battlemaster BigRect CD EF 01",
           footprint: { type: "polygon", points: [] },
           features: [],
         },
@@ -274,13 +286,13 @@ describe("normalizeLayout", () => {
       {
         id: "fixture",
         pieces: [{ id: "area-01", piece_type: "area",
-                   template: "bm-bm-terrain-11e-1-composite-23-m1-p2",
+                   template: "bm-composite-bigrect-cd-ef-01-19f1adc57b",
                    position: { x: 0, y: 0 }, rotation_degrees: 30 }],
       },
-      trTemplates,
+      templates,
     );
     // V is a 180-degree rotation, so it lands entirely in rotation_degrees.
-    expect(out.pieces[0].template).toBe("area-trapezoid");
+    expect(out.pieces[0].template).toBe("area-large");
     expect(out.pieces[0].rotation_degrees).toBe(210);
     expect("mirror" in out.pieces[0]).toBe(false);
   });
@@ -295,34 +307,165 @@ describe("normalizeLayout", () => {
   });
 
   it("throws on an unhandled composite feature field", () => {
-    // `mirror` is the one that matters: it is how upstream would express the
-    // other hand of a part, K would not see it, and the registration test
-    // recomputes K from the same rule, so a dropped `mirror` would sail
-    // through every other assertion in this file.
-    const withMirror = new Map([
-      ["bm-bm-terrain-11e-1-composite-30-m0-p0", {
-        id: "bm-bm-terrain-11e-1-composite-30-m0-p0",
-        name: "Battlemaster SL 30",
-        features: [{ id: "f", template: "bm-bm-terrain-11e-1-part-pipes",
-                     position: { x: 0, y: 0 }, mirror: "horizontal" }],
+    // `mirror` used to be this test's subject; upstream started shipping one and
+    // the module now handles it (see "applies a feature's own mirror" below). An
+    // inline `footprint` takes its place as the field that would be dropped in
+    // silence - it would lose to the template's under F/Z, so the part would
+    // quietly draw at the wrong size.
+    const withFootprint = new Map([
+      ["bm-composite-shortline-30-aaaaaaaaaa", {
+        id: "bm-composite-shortline-30-aaaaaaaaaa",
+        name: "Battlemaster ShortLine 30",
+        features: [{ id: "f", template: "bm-part-pipes-fc0edd53ea",
+                     position: { x: 0, y: 0 },
+                     footprint: { type: "rectangle", width: 1, height: 1 } }],
       }],
     ]);
     expect(() =>
-      normalizeLayout(layoutWith({ rotation_degrees: 0 }), withMirror),
-    ).toThrow(/unhandled field `mirror`/);
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), withFootprint),
+    ).toThrow(/unhandled field `footprint`/);
   });
 
   it("throws on an unmapped part", () => {
     const bad = new Map([
-      ["bm-bm-terrain-11e-1-composite-30-m0-p0", {
-        id: "bm-bm-terrain-11e-1-composite-30-m0-p0",
-        name: "Battlemaster SL 30",
-        features: [{ id: "f", template: "bm-bm-terrain-11e-1-part-obelisk",
+      ["bm-composite-shortline-30-aaaaaaaaaa", {
+        id: "bm-composite-shortline-30-aaaaaaaaaa",
+        name: "Battlemaster ShortLine 30",
+        features: [{ id: "f", template: "bm-part-obelisk-0123456789",
                      position: { x: 0, y: 0 } }],
       }],
     ]);
     expect(() =>
       normalizeLayout(layoutWith({ rotation_degrees: 0 }), bad),
     ).toThrow(/obelisk/);
+  });
+});
+
+// The battlemaster-11e re-source split a part's old `footprint` rectangle in
+// two: `footprint` became the roofed area and the rest of the model moved into
+// `walls`. Both the *size* and the *anchor* have to be put back, and the anchor
+// is the one nothing else in this file would catch - a wrong extent shows up as
+// a wrong footprint, but a wrong anchor only shows up as a part drifting out of
+// its own parent.
+describe("partExtent / partAnchorShift", () => {
+  // An L-ruin shaped part: the roof is one corner of the model, the walls run
+  // out to the model's full extent.
+  const walled = {
+    id: "bm-part-tower-ddab4cb687",
+    footprint: {
+      type: "polygon",
+      points: [
+        { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 2, y: -2 }, { x: 0, y: -2 },
+      ],
+    },
+    walls: [{ points: [{ x: 0, y: 0 }, { x: 0, y: -3 }], thickness: 0.5 }],
+  };
+
+  it("reads the extent from the roof and the walls together", () => {
+    // Roof alone is 2x2 and the wall centreline alone is 0x3; the model is
+    // neither. Taking the union gives 2x3.
+    expect(partExtent(walled)).toEqual({ type: "rectangle", width: 2, height: 3 });
+  });
+
+  it("measures the anchor shift from the roof centre to the extent centre", () => {
+    // Roof centre (1, -1), extent centre (1, -1.5).
+    expect(partAnchorShift(walled)).toEqual({ x: 0, y: -0.5 });
+  });
+
+  it("falls back to the footprint for a part with no walls", () => {
+    const bare = { id: "x", footprint: { type: "rectangle", width: 4, height: 1 } };
+    expect(partExtent(bare)).toEqual(bare.footprint);
+    expect(partAnchorShift(bare)).toEqual({ x: 0, y: 0 });
+  });
+
+  it("anchors a child on its extent centre, not its roof centre", () => {
+    const templates = new Map([
+      ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
+      ["bm-part-tower-ddab4cb687", walled],
+      ["bm-composite-shortline-90-cccccccccc", {
+        id: "bm-composite-shortline-90-cccccccccc",
+        name: "Battlemaster ShortLine 90",
+        footprint: { type: "polygon", points: [] },
+        features: [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
+                     position: { x: 3, y: 7 } }],
+      }],
+    ]);
+    const out = normalizeLayout(
+      { id: "fixture", pieces: [{ id: "area-01", piece_type: "area",
+          template: "bm-composite-shortline-90-cccccccccc",
+          position: { x: 0, y: 0 } }] },
+      templates,
+    );
+    const child = out.pieces[1];
+    // `tower` is an upstreamFootprint part, so it draws at the extent - 2x3, not
+    // the roof's 2x2 and not the legacy gantry's own 2x2.
+    expect(child.footprint).toEqual({ type: "rectangle", width: 2, height: 3 });
+    // ...and sits half an inch below where `position` alone would put it,
+    // because `position` names the roof's centre.
+    expect(child.position).toEqual({ x: 3, y: 6.5 });
+  });
+});
+
+describe("fields the re-source introduced", () => {
+  const templates = new Map([
+    ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
+    ["bm-part-tower-ddab4cb687", {
+      id: "bm-part-tower-ddab4cb687",
+      footprint: { type: "rectangle", width: 2, height: 2.5 },
+    }],
+    ["bm-part-ruin-part-50523bac4f", {
+      id: "bm-part-ruin-part-50523bac4f",
+      footprint: { type: "rectangle", width: 1, height: 1 },
+    }],
+  ]);
+  const composite = (id, name, features) =>
+    new Map([...templates, [id, { id, name, footprint: { type: "polygon", points: [] }, features }]]);
+  const run = (id, name, features, piece = {}) =>
+    normalizeLayout(
+      { id: "fixture", pieces: [{ id: "area-01", piece_type: "area", template: id,
+                                  position: { x: 0, y: 0 }, ...piece }] },
+      composite(id, name, features),
+    );
+
+  it("applies a feature's own mirror, and cancels it in K", () => {
+    // Upstream ships one composite whose feature carries a `mirror`. It is the
+    // same axis K controls, so P has to cancel the feature's parity as well as
+    // the parent's: `tower` is flip:false, so its emitted hand must stay proper.
+    const out = run(
+      "bm-composite-shortline-91-dddddddddd", "Battlemaster ShortLine 91",
+      [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
+         position: { x: 0, y: 0 }, mirror: "horizontal" }],
+    );
+    const child = out.pieces[1];
+    // A = FLIP_X . FLIP_Y = R(180): proper, so no mirror survives onto the child.
+    expect("mirror" in child).toBe(false);
+    expect(child.rotation_degrees).toBe(180);
+  });
+
+  it("emits no child for a part registered as dropped", () => {
+    const out = run(
+      "bm-composite-shortline-92-eeeeeeeeee", "Battlemaster ShortLine 92",
+      [{ id: "feature-1", template: "bm-part-ruin-part-50523bac4f",
+         position: { x: 1, y: 1 } }],
+    );
+    expect(out.pieces.map((p) => p.piece_type)).toEqual(["area"]);
+  });
+
+  it("anchors children through a variant that is not self-inverse", () => {
+    // Triangle#12 registers R270, the first variant that is not its own inverse.
+    // The child's anchor has to undo V with a real inverse: whatever V is, the
+    // child must resolve to the same point upstream's feature does, which with
+    // an unrotated parent is `feature.position` itself.
+    const id = "bm-composite-triangle-ab-corner-flip-e300f1fbc2";
+    const out = run(id, "Battlemaster Triangle AB Corner flip",
+      [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
+         position: { x: 4, y: 1 } }]);
+    const [area, child] = out.pieces;
+    expect(area.template).toBe("area-trapezoid");
+    const placed = matvec(pieceMatrix(area), child.position);
+    expect(placed.x).toBeCloseTo(4, 10);
+    expect(placed.y).toBeCloseTo(1, 10);
+    // Applying V instead of its inverse would land on R(180) . (4, 1).
+    expect(child.position).not.toEqual({ x: 4, y: 1 });
   });
 });
