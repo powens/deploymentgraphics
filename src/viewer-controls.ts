@@ -93,9 +93,17 @@ export type ControlRow = SelectRow | CheckboxRow;
 // allowlist below is read on each sanitize.
 const DISPOSITION_IDS = dispositions(eventMatrix);
 
-// Layout variants within a disposition pairing. Typed against `Layout` so the
-// array and the union cannot drift apart without a compile error.
-const LAYOUT_IDS: readonly Layout[] = ["A", "B", "C"];
+// Layout variants within a disposition pairing. Keyed by `Layout` so the list
+// and the union cannot drift apart in *either* direction: dropping a variant
+// from the union leaves an excess key here, and adding one leaves the `Record`
+// incomplete. A bare `readonly Layout[]` annotation only catches the first,
+// and the second is the quiet one — a new variant missing from the dropdown
+// and sanitized out of its own URLs, with nothing failing to say so.
+const LAYOUT_IDS = Object.keys({
+  A: null,
+  B: null,
+  C: null,
+} satisfies Record<Layout, null>) as readonly Layout[];
 
 // Building-template set: the illustrative shapes or the detailed GW footprints.
 // Each value is the `templates-<value>.yml` filename stem.
@@ -231,6 +239,22 @@ export function controlsToSearch(controls: Controls): string {
 }
 
 /**
+ * A flag's URL form. `"1"` and `"0"` are the only spellings
+ * {@link controlsToSearch} writes; anything else — a hand-written
+ * `?territory=true`, a param left empty — takes the row's default rather than
+ * reading as off, so such a link still shows what it always showed.
+ */
+function checkboxFromParam(value: string, fallback: boolean): boolean {
+  if (value === "1") {
+    return true;
+  }
+  if (value === "0") {
+    return false;
+  }
+  return fallback;
+}
+
+/**
  * Reads controls out of a query string, sanitized. An absent param takes its
  * default, which is what makes {@link controlsToSearch}'s omissions round-trip.
  */
@@ -242,7 +266,8 @@ export function controlsFromSearch(search: string): Controls {
     if (value === null) {
       continue;
     }
-    raw[row.key] = row.kind === "checkbox" ? value === "1" : value;
+    raw[row.key] =
+      row.kind === "checkbox" ? checkboxFromParam(value, row.default) : value;
   }
   return sanitizeControls(raw);
 }

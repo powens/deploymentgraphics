@@ -125,23 +125,28 @@ const resetButton = document.getElementById("reset-controls");
 // underlying YAML from drifting. Rows marked `staticOptions` carry their
 // <option>s in index.html instead, and `static/index.test.js` holds that
 // markup to the same value set.
+//
+// A control the map says nothing about labels its options with their own
+// values, which is what `da`, `db` and `lay` want anyway. Without that
+// fallback, adding a select row to the spec throws here at load — before a
+// single listener is wired, so the page comes up blank — rather than showing
+// a plain dropdown.
 const OPTION_LABEL = {
-  da: (id) => id,
-  db: (id) => id,
-  lay: (id) => id,
   m: (id) => missions[id].name,
   t: (id) => `GW Layout ${id}`,
 };
+const identity = (id) => id;
 
 for (const row of controlSpec) {
   if (row.kind !== "select" || row.staticOptions) {
     continue;
   }
   const select = controlEl(row.key);
+  const label = OPTION_LABEL[row.key] ?? identity;
   for (const id of row.allowed) {
     const option = document.createElement("option");
     option.value = id;
-    option.textContent = OPTION_LABEL[row.key](id);
+    option.textContent = label(id);
     select.appendChild(option);
   }
 }

@@ -3,7 +3,7 @@
 build:
 	pnpm run build
 
-.PHONY:
+.PHONY: build-gh-pages
 build-gh-pages:
 	pnpm run build-gh
 	cp -r static/* dist/

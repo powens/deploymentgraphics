@@ -53,6 +53,11 @@ describe("controlSpec", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
+  it("offers every layout variant the union spells, in order", () => {
+    const lay = controlSpec.find((row) => row.key === "lay");
+    expect(lay?.kind === "select" && lay.allowed).toEqual(["A", "B", "C"]);
+  });
+
   it("gives every select at least two values to choose between", () => {
     for (const row of controlSpec) {
       if (row.kind === "select") {
@@ -162,6 +167,15 @@ describe("controlsFromSearch", () => {
     expect(controlsFromSearch("grid=0").grid).toBe(false);
     expect(controlsFromSearch("territory=0").territory).toBe(false);
     expect(controlsFromSearch("territory=1").territory).toBe(true);
+  });
+
+  it("keeps a flag's default for a spelling it never wrote", () => {
+    // Hand-written links. `?territory=true` and `?territory=` drew the
+    // territory line before the spec owned this parse, and still do.
+    expect(controlsFromSearch("territory=true").territory).toBe(true);
+    expect(controlsFromSearch("territory=").territory).toBe(true);
+    expect(controlsFromSearch("grid=true").grid).toBe(false);
+    expect(controlsFromSearch("grid=").grid).toBe(false);
   });
 
   it("sanitizes what the URL carries", () => {
