@@ -7,6 +7,9 @@ build:
 build-gh-pages:
 	pnpm run build-gh
 	cp -r static/* dist/
+	# static/ holds the demo's own tests (index.test.js, state.test.js);
+	# they are not part of the site and must not be published with it.
+	rm -f dist/*.test.js
 
 .PHONY: pull-terrain
 pull-terrain:

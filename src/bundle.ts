@@ -14,12 +14,9 @@ export { mergeTerrain } from "./terrain-config.js";
 export { resolveMission, resolveTerrainLayout } from "./event-matrix.js";
 export {
   controlSpec,
-  controlsFromSearch,
   controlsToSearch,
-  defaultControls,
+  initialControls,
   readControlsFromDom,
-  sanitizeControls,
-  searchHasControls,
   writeControlsToDom,
 } from "./viewer-controls.js";
 export { buildConfig } from "./presets/build-config.js";

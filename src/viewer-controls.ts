@@ -248,12 +248,86 @@ export function controlsFromSearch(search: string): Controls {
 }
 
 /**
- * True when the query string explicitly carries any control. An explicit URL
- * (a shared link) takes precedence over saved state.
+ * True when the query string explicitly carries any control — the test that
+ * makes a URL a shared link rather than a bare page load. Private: the only
+ * thing that turns on the answer is {@link initialControls}'s precedence rule,
+ * and a caller asking the question separately could only get that rule wrong.
  */
-export function searchHasControls(search: string): boolean {
+function searchHasControls(search: string): boolean {
   const params = new URLSearchParams(search);
   return controlSpec.some((row) => params.has(row.key));
+}
+
+/** What a page load should come up showing, and whether to persist it. */
+export interface InitialControls {
+  /** The controls to write into the DOM. */
+  readonly controls: Controls;
+  /** Which editor drives the render. */
+  readonly mode: "controls" | "yaml";
+  /**
+   * Text for the YAML editor, or null to leave the editor as the markup has
+   * it. Non-null exactly when `mode` is `"yaml"`.
+   */
+  readonly yaml: string | null;
+  /**
+   * Whether this state should be written back to storage on load.
+   *
+   * False for a URL-driven load: following someone's link must not overwrite
+   * the visitor's own saved session. Their later edits persist as usual.
+   */
+  readonly persist: boolean;
+}
+
+/**
+ * Resolves a page load's starting state from the only two places one can come
+ * from: the query string, and whatever storage handed back.
+ *
+ * Two rules live here, and they are why this is a function rather than a
+ * branch in the app's `start()`:
+ *
+ * 1. **An explicit URL wins.** A query string carrying any control is a shared
+ *    link, and it beats saved state outright — including a saved YAML
+ *    override, which a URL cannot express.
+ * 2. **A URL-driven load is read-only for storage.** See `persist`.
+ *
+ * `saved` is untrusted — any shape, including null — so every field is either
+ * validated here or run through {@link sanitizeControls}.
+ */
+export function initialControls({
+  search,
+  saved,
+}: {
+  search: string;
+  saved: unknown;
+}): InitialControls {
+  if (searchHasControls(search)) {
+    return {
+      controls: controlsFromSearch(search),
+      mode: "controls",
+      yaml: null,
+      persist: false,
+    };
+  }
+  if (saved === null || typeof saved !== "object") {
+    return {
+      controls: defaultControls(),
+      mode: "controls",
+      yaml: null,
+      persist: true,
+    };
+  }
+  const blob = saved as { controls?: unknown; mode?: unknown; yaml?: unknown };
+  // The saved mode counts only when there is a string to put in the editor: a
+  // blob whose `yaml` is missing or null comes up in controls mode rather than
+  // in a yaml mode with nothing to render.
+  const yaml =
+    blob.mode === "yaml" && typeof blob.yaml === "string" ? blob.yaml : null;
+  return {
+    controls: sanitizeControls(blob.controls),
+    mode: yaml === null ? "controls" : "yaml",
+    yaml,
+    persist: true,
+  };
 }
 
 /**

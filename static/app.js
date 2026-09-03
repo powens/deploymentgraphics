@@ -9,12 +9,9 @@ import {
   resolveMission,
   resolveTerrainLayout,
   controlSpec,
-  controlsFromSearch,
   controlsToSearch,
-  defaultControls,
+  initialControls,
   readControlsFromDom,
-  sanitizeControls,
-  searchHasControls,
   writeControlsToDom,
 } from "./bundle.js";
 import { loadState, saveState } from "./state.js";
@@ -150,7 +147,8 @@ for (const row of controlSpec) {
 }
 
 // "controls" — the dropdowns drive the render. "yaml" — the editor text
-// does. The first edit of the YAML textarea promotes the mode to "yaml".
+// does. The first edit of the YAML textarea promotes the mode to "yaml";
+// `start()` resolves the mode a page load comes up in.
 let mode = "controls";
 
 // --- Rendering ------------------------------------------------------------
@@ -494,29 +492,22 @@ document.addEventListener("keydown", (event) => {
 function start() {
   setExportEnabled(false);
 
-  const fromUrl = searchHasControls(window.location.search);
-  if (fromUrl) {
-    // An explicit URL (e.g. a shared link) wins over any saved state.
-    writeControlsToDom(document, controlsFromSearch(window.location.search));
-  } else {
-    const saved = loadState();
-    if (saved) {
-      writeControlsToDom(document, sanitizeControls(saved.controls));
-      if (saved.mode === "yaml" && typeof saved.yaml === "string") {
-        mode = "yaml";
-        yamlEditor.value = saved.yaml;
-      }
-    } else {
-      writeControlsToDom(document, defaultControls());
-    }
+  // Which of the URL and the saved session wins, and whether the result may be
+  // written back, are `initialControls`' rules — this is where they are
+  // applied to the page.
+  const initial = initialControls({
+    search: window.location.search,
+    saved: loadState(),
+  });
+  writeControlsToDom(document, initial.controls);
+  mode = initial.mode;
+  if (initial.yaml !== null) {
+    yamlEditor.value = initial.yaml;
   }
 
   updateModeUi();
   syncUrl();
-  // A URL-driven load is read-only for persistence: it must not overwrite
-  // the visitor's saved session (which may hold a YAML override). Their
-  // own later edits still persist normally.
-  if (!fromUrl) {
+  if (initial.persist) {
     persist();
   }
 
