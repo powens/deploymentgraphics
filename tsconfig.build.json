@@ -5,14 +5,19 @@
     "sourceMap": false,
     "declaration": true
   },
-  // bundle.ts is the demo app's rollup entry, not a published one — it would
-  // otherwise ship a lib/bundle.d.ts naming symbols the package does not export.
+  // Demo-app modules, not published ones. bundle.ts is the rollup entry — it
+  // would otherwise ship a lib/bundle.d.ts naming symbols the package does not
+  // export — and viewer-controls.ts is the browser demo's control set, which
+  // nothing under the package's two entry points imports. Publishing it would
+  // ship a DOM-typed module (plus its pull of the generated presets) that a
+  // consumer cannot reach.
   "exclude": [
     "node_modules",
     "dist",
     "lib",
     "static",
     "src/bundle.ts",
+    "src/viewer-controls.ts",
     "**/*.test.ts"
   ]
 }

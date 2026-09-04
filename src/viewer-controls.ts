@@ -57,8 +57,10 @@ export interface Controls {
 
 /**
  * Control values indexed by key. The spec is a heterogeneous array, so a row
- * cannot recover the precise {@link Controls} field types; `viewer-controls.test.ts`
- * pins the key set and the defaults instead.
+ * cannot recover the precise {@link Controls} field types — that last step stays
+ * a cast, and `viewer-controls.test.ts` pins the defaults. The *key set* does
+ * not: {@link SpecValues} is checked against this type, so the spec covering
+ * every {@link ControlKey} is a compile-time guarantee rather than a test's.
  */
 type ControlValues = Record<ControlKey, string | boolean>;
 
@@ -112,13 +114,12 @@ const TEMPLATE_SETS = ["simple", "real"];
 // Canvas rotation in degrees, as strings (the `<select>` values).
 const ROTATIONS = ["0", "90", "-90"];
 
-/**
- * The nine controls, in URL-param order.
- *
- * Every allowlist derives from the generated presets or from a type in this
- * repo, so options, validation and the underlying YAML cannot drift apart.
- */
-export const controlSpec: readonly ControlRow[] = [
+// The rows themselves, kept as a literal tuple so each `key` survives as its
+// own literal type. `controlSpec` below re-exports them under the wider
+// `readonly ControlRow[]`, which is what every caller wants but which also
+// widens every `key` back to the whole union — erasing exactly the information
+// `SpecKey` needs.
+const controlRows = [
   // Take and Hold vs Take and Hold, layout B -> dawn_of_war (the previous
   // default mission), so the initial render is unchanged.
   {
@@ -181,11 +182,35 @@ export const controlSpec: readonly ControlRow[] = [
     allowed: ROTATIONS,
     staticOptions: true,
   },
-];
+] as const satisfies readonly ControlRow[];
 
+/**
+ * The nine controls, in URL-param order.
+ *
+ * Every allowlist derives from the generated presets or from a type in this
+ * repo, so options, validation and the underlying YAML cannot drift apart.
+ */
+export const controlSpec: readonly ControlRow[] = controlRows;
+
+/** The keys {@link controlRows} actually carries a row for. */
+type SpecKey = (typeof controlRows)[number]["key"];
+
+/**
+ * The spec's own value record — the same shape as {@link ControlValues}, but
+ * built from the keys the spec *has* rather than the keys it is supposed to
+ * have, so the two can be compared. Every `satisfies ControlValues` below is
+ * that comparison.
+ */
+type SpecValues = Record<SpecKey, string | boolean>;
+
+// `satisfies ControlValues` is the load-bearing half: it fails the moment a key
+// joins `ControlKey` without a matching spec row. That is the quiet direction —
+// the `satisfies readonly ControlRow[]` above already rejects a row naming a key
+// the union does not have, but nothing rejected the reverse, and the two casts
+// here would hand back an object missing that field while typed as having it.
 const DEFAULTS = Object.fromEntries(
-  controlSpec.map((row) => [row.key, row.default]),
-) as ControlValues as Controls;
+  controlRows.map((row) => [row.key, row.default]),
+) as SpecValues satisfies ControlValues as Controls;
 
 /** The nine defaults, as a fresh object. */
 export function defaultControls(): Controls {
@@ -200,7 +225,10 @@ export function defaultControls(): Controls {
  */
 export function sanitizeControls(input: unknown): Controls {
   const source = (input ?? {}) as Record<string, unknown>;
-  const out: Partial<ControlValues> = {};
+  const out: Partial<SpecValues> = {};
+  // `controlSpec`, not `controlRows`: the widened rows are what the allowlist
+  // membership test wants — the literal tuple types `lay`'s `allowed` as
+  // `readonly Layout[]`, which no plain string can be tested against.
   for (const row of controlSpec) {
     const value = source[row.key];
     if (row.kind === "checkbox") {
@@ -211,7 +239,7 @@ export function sanitizeControls(input: unknown): Controls {
       out[row.key] = row.allowed.includes(text) ? text : row.default;
     }
   }
-  return out as ControlValues as Controls;
+  return out as SpecValues satisfies ControlValues as Controls;
 }
 
 /**
