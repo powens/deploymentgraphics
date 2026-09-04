@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   type ControlRow,
   type Controls,
+  controlElement,
   controlSpec,
   defaultControls,
   readControlsFromDom,
@@ -131,6 +132,29 @@ describe("writeControlsToDom", () => {
     root.querySelector("#show-grid")!.remove();
     expect(() => writeControlsToDom(root, defaultControls())).toThrow(
       'Control "grid" has no element #show-grid',
+    );
+  });
+});
+
+describe("controlElement", () => {
+  // Exported for `static/app.js`, which binds its own references off the spec
+  // and would otherwise reach for `getElementById` and get a silent `null` —
+  // one that surfaces as a blank page during module evaluation rather than as
+  // a named error. The two functions above are covered through their own
+  // entry points; these pin the seam the app uses directly.
+  it("returns the element every row is bound to", () => {
+    const root = panel();
+    for (const row of controlSpec) {
+      expect(controlElement(root, row).id).toBe(row.elementId);
+    }
+  });
+
+  it("names the control and the element when one is missing", () => {
+    const root = panel();
+    const row = controlSpec.find((candidate) => candidate.key === "m")!;
+    root.querySelector(`#${row.elementId}`)!.remove();
+    expect(() => controlElement(root, row)).toThrow(
+      'Control "m" has no element #deployment',
     );
   });
 });

@@ -8,6 +8,7 @@ import {
   eventMatrix,
   resolveMission,
   resolveTerrainLayout,
+  controlElement,
   controlSpec,
   controlsToSearch,
   initialControls,
@@ -90,18 +91,19 @@ function downloadBlob(blob, filename) {
 
 const SPEC = new Map(controlSpec.map((row) => [row.key, row]));
 
+// Through the spec's own lookup, so markup drift throws naming the control
+// that drifted. A bare `getElementById` would hand back `null` here and blow
+// up further down — at `appendChild` or `addEventListener`, both of which run
+// during module evaluation, so the visitor gets a blank page.
 function controlEl(key) {
-  return document.getElementById(SPEC.get(key).elementId);
+  return controlElement(document, SPEC.get(key));
 }
 
 // Every control element, in spec order — the ids are the spec's, not the app's.
 const controlEls = controlSpec.map((row) => controlEl(row.key));
 // Changing a disposition or the layout re-derives the deployment and terrain;
-// the other controls (those two dropdowns included) just re-render. The two
-// named below are the only ones the app addresses individually.
+// the other controls (those two dropdowns included) just re-render.
 const derivedFromControls = ["da", "db", "lay"].map((key) => controlEl(key));
-const deploymentSelector = controlEl("m");
-const terrainSelector = controlEl("t");
 
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
@@ -331,17 +333,40 @@ function onControlChange() {
   renderFromControls();
 }
 
+// A derived value comes off the event matrix or the terrain layouts, not off
+// the row's own allowlist, so the dropdown may have no <option> for it. A
+// <select> ignores such a value silently, leaving the dropdown blank while
+// `readControlsFromDom` substitutes the row's default — the card, the URL and
+// localStorage would then all disagree with what the visitor sees. Read the
+// value back and throw instead: drift between the generated presets belongs
+// on the stage, where a failed render already reports.
+function setDerivedControl(key, value) {
+  const el = controlEl(key);
+  el.value = value;
+  if (el.value !== value) {
+    throw new Error(`Control "${key}" has no option "${value}"`);
+  }
+}
+
 // A disposition/layout change re-derives the deployment and terrain dropdowns,
 // then renders. The terrain layout is matched from combined.yml on the
 // disposition pair + deployment; cells the 40kdc source does not cover fall
-// back to the demo layout "1". Both dropdowns remain overridable directly.
+// back to the terrain row's own default. Both dropdowns remain overridable
+// directly.
 function onDerivedControlChange() {
   const controls = readControlsFromDom(document);
   const missionId = resolvedMissionId(controls);
-  deploymentSelector.value = missionId;
-  terrainSelector.value =
+  const layoutId =
     resolveTerrainLayout(gwTerrain.layout, controls.da, controls.db, missionId) ??
-    "1";
+    SPEC.get("t").default;
+  try {
+    setDerivedControl("m", missionId);
+    setDerivedControl("t", layoutId);
+  } catch (error) {
+    setExportEnabled(false);
+    setStageMessage(error.message, true);
+    return;
+  }
   onControlChange();
 }
 

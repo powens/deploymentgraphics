@@ -13,6 +13,7 @@ export { makeMissionCard } from "./main.js";
 export { mergeTerrain } from "./terrain-config.js";
 export { resolveMission, resolveTerrainLayout } from "./event-matrix.js";
 export {
+  controlElement,
   controlSpec,
   controlsToSearch,
   initialControls,

@@ -108,7 +108,9 @@ const LAYOUT_IDS = Object.keys({
 } satisfies Record<Layout, null>) as readonly Layout[];
 
 // Building-template set: the illustrative shapes or the detailed GW footprints.
-// Each value is the `templates-<value>.yml` filename stem.
+// Each value is the `templates-<value>.yml` filename stem, so renaming or
+// dropping one of those files leaves a dropdown entry that 404s at render
+// time — nothing here can see the `static/data/terrain/` directory.
 const TEMPLATE_SETS = ["simple", "real"];
 
 // Canvas rotation in degrees, as strings (the `<select>` values).
@@ -187,8 +189,11 @@ const controlRows = [
 /**
  * The nine controls, in URL-param order.
  *
- * Every allowlist derives from the generated presets or from a type in this
- * repo, so options, validation and the underlying YAML cannot drift apart.
+ * Every allowlist that *has* a referent in this repo derives from it — the
+ * generated presets or a type — so options, validation and the underlying
+ * YAML cannot drift apart. `TEMPLATE_SETS` and `ROTATIONS` are the two
+ * literals: the first names files this module cannot see, the second has no
+ * referent to drift from.
  */
 export const controlSpec: readonly ControlRow[] = controlRows;
 
@@ -394,8 +399,17 @@ export type ControlsRoot = Document | Element;
  * The element a row is bound to, by id. A missing element is a broken markup
  * contract, not a value to coerce: `static/index.test.js` holds `index.html`
  * to the spec so it fails there rather than in the browser.
+ *
+ * Exported because the app binds its own references the same way — a bare
+ * `getElementById` there would hand back `null` and fail somewhere later,
+ * with a blank page and no mention of which control drifted.
+ *
+ * @throws if the root has no element with the row's id.
  */
-function controlElement(root: ControlsRoot, row: ControlRow): HTMLElement {
+export function controlElement(
+  root: ControlsRoot,
+  row: ControlRow,
+): HTMLElement {
   const element = root.querySelector<HTMLElement>(`#${row.elementId}`);
   if (element === null) {
     throw new Error(`Control "${row.key}" has no element #${row.elementId}`);

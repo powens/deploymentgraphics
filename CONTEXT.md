@@ -61,8 +61,9 @@ coercion of untrusted input all *derived* from those rows rather than restated.
 Adding a control is one row.
 
 The URL carries only controls that differ from their default — which is why
-`grid=1` and `territory=0` are one rule, not two special cases. Two of the nine
-reach the renderer as config overrides (`grid`, `territory`); the rest select
-which YAML the viewer fetches, except `rot`, which post-processes the rendered
-card. Viewer-only: the controls reach the demo through `bundle.ts`, and the
-published package has no concept of them.
+`grid=1` and `territory=0` are one rule, not two special cases. Three of the
+nine reach the renderer through `buildConfig` (`grid`, `territory`, and `t` as
+its `layout`); `m` and `tpl` name which YAML the viewer fetches; `da`, `db` and
+`lay` name nothing directly — they derive `m` and `t` through the event matrix;
+and `rot` post-processes the rendered card. Viewer-only: the controls reach the
+demo through `bundle.ts`, and the published package has no concept of them.
