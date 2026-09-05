@@ -483,37 +483,40 @@
 
       <div class="control">
         <label class="control-label" for="disposition-a">Disposition A</label>
-        <!-- Options are populated by app.js (see DISPOSITIONS). -->
+        <!-- Empty by design: app.js fills the options from `controlSpec`, and
+             static/index.test.js fails if any land here instead. -->
         <select id="disposition-a" class="field"></select>
       </div>
 
       <div class="control">
         <label class="control-label" for="disposition-b">Disposition B</label>
-        <!-- Options are populated by app.js (see DISPOSITIONS). -->
+        <!-- Options are populated by app.js; see #disposition-a. -->
         <select id="disposition-b" class="field"></select>
       </div>
 
       <div class="control">
         <label class="control-label" for="layout">Layout</label>
-        <!-- Options are populated by app.js (see LAYOUT_OPTIONS). -->
+        <!-- Options are populated by app.js; see #disposition-a. -->
         <select id="layout" class="field"></select>
       </div>
 
       <div class="control push-right">
         <label class="control-label" for="deployment">Deployment</label>
-        <!-- Options are populated by app.js (see MISSIONS). Changing the
+        <!-- Options are populated by app.js; see #disposition-a. Changing the
              dispositions/layout sets this; it can also be overridden directly. -->
         <select id="deployment" class="field"></select>
       </div>
 
       <div class="control">
         <label class="control-label" for="terrain">Terrain</label>
-        <!-- Options are populated by app.js (see TERRAINS). -->
+        <!-- Options are populated by app.js; see #disposition-a. -->
         <select id="terrain" class="field"></select>
       </div>
 
       <div class="control">
         <label class="control-label" for="templates">Templates</label>
+        <!-- These options are the markup's own (`staticOptions` in
+             `controlSpec`); index.test.js holds the two value sets equal. -->
         <select id="templates" class="field">
           <option value="simple">Simple</option>
           <option value="real" selected>Detailed</option>
@@ -522,6 +525,7 @@
 
       <div class="control">
         <label class="control-label" for="rotation">Rotation</label>
+        <!-- The markup's own options; see #templates. -->
         <select id="rotation" class="field">
           <option value="0">0°</option>
           <option value="90">90°</option>

@@ -2,7 +2,12 @@ import serve from "rollup-plugin-serve";
 import { autoReload } from "rollup-plugin-auto-reload";
 import typescript from "@rollup/plugin-typescript";
 
-const tsPlugin = () => typescript({ tsconfig: "./tsconfig.json" });
+// `declaration: false` overrides tsconfig.json, which turns declarations on for
+// the editor and for `pnpm run build:lib`. The demo build's outDir is dist/, and
+// make-gh-pages.yml uploads that directory wholesale — so leaving it on scatters
+// a .d.ts for every compiled module (tests included) across the published site.
+const tsPlugin = () =>
+  typescript({ tsconfig: "./tsconfig.json", declaration: false });
 const isWatch = process.env.ROLLUP_WATCH === "true";
 
 export default [

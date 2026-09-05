@@ -3,10 +3,15 @@
 build:
 	pnpm run build
 
-.PHONY:
+.PHONY: build-gh-pages
 build-gh-pages:
 	pnpm run build-gh
 	cp -r static/* dist/
+	# static/ holds the demo's own tests (index.test.js, state.test.js); they
+	# are not part of the site and must not be published with it. The compiled
+	# side of the same rule lives in rollup.config.mjs, which turns off the
+	# declaration emit that would otherwise drop a .d.ts per module into dist/.
+	rm -f dist/*.test.js
 
 .PHONY: pull-terrain
 pull-terrain:
