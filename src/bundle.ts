@@ -24,11 +24,11 @@ export {
   controlsToSearch,
   initialControls,
   readControlsFromDom,
+  terrainForTemplateSet,
   writeControlsToDom,
 } from "./viewer-controls.js";
 export { buildConfig } from "./presets/build-config.js";
 export { baseConfig } from "./presets/base.js";
 export { eventMatrix } from "./presets/event-matrix.js";
 export { gwTerrain } from "./presets/terrain.js";
-export { gwTemplatesReal } from "./presets/templates-real.js";
 export { missions } from "./presets/missions.js";

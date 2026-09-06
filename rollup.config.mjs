@@ -15,7 +15,8 @@ export default [
   {
     // bundle.ts is the demo app's entry, separate from the package's public
     // entry (index.ts). It re-exports the renderer plus the generated presets
-    // (missions, gwTerrain, gwTemplatesReal, baseConfig) that static/app.js
+    // (missions, gwTerrain, baseConfig, and — through `viewer-controls.ts` —
+    // the detailed footprints behind the `tpl` control) that static/app.js
     // both drives its dropdowns from and renders — so the app ships no YAML
     // and fetches none — plus the event matrix and js-yaml, which the app
     // needs and the package deliberately does not publish.

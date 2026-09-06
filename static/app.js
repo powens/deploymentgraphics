@@ -4,7 +4,6 @@ import {
   baseConfig,
   missions,
   gwTerrain,
-  gwTemplatesReal,
   yaml,
   eventMatrix,
   resolveMission,
@@ -14,6 +13,7 @@ import {
   controlsToSearch,
   initialControls,
   readControlsFromDom,
+  terrainForTemplateSet,
   writeControlsToDom,
 } from "./bundle.js";
 import { loadState, saveState } from "./state.js";
@@ -38,17 +38,14 @@ function resolvedMissionId(controls) {
 // the source of truth for authoring; the app reads the compiled form, so the
 // site ships no YAML and parses none.
 //
-// `gwTerrain` carries the simple templates already merged with the layouts.
-// Spreading `gwTemplatesReal` over it swaps in the detailed GW footprints —
-// both sets declare the same template box for every shared name, so a layout
-// renders against either. The spread runs in this direction, templates last:
-// the other way round the layouts object would put its own templates back.
+// The `tpl` value is not read here: which terrain a template set means is
+// spelled beside the dropdown's value list in `src/viewer-controls.ts`, so a
+// new set cannot reach the dropdown without also reaching the assembly.
 function configFromControls(controls) {
   return buildConfig({
     mission: missions[controls.m],
     base: baseConfig,
-    terrain:
-      controls.tpl === "real" ? { ...gwTerrain, ...gwTemplatesReal } : gwTerrain,
+    terrain: terrainForTemplateSet(controls.tpl),
     layout: controls.t,
     grid: controls.grid,
     territory: controls.territory,
@@ -188,9 +185,9 @@ function rotateCard(svg, deg) {
 // for a stale result to land late, which is what the generation counter this
 // function used to carry was guarding against.
 function renderFromControls() {
-  // No card to export until this render finishes successfully.
+  // No card to export until this render finishes successfully. No progress
+  // message either: assembly never yields, so nothing could observe one.
   setExportEnabled(false);
-  setStageMessage("Rendering…");
   try {
     const controls = readControlsFromDom(document);
     const config = configFromControls(controls);

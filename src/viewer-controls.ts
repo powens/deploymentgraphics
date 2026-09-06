@@ -16,6 +16,8 @@ import { dispositions, type Layout } from "./event-matrix.js";
 import { eventMatrix } from "./presets/event-matrix.js";
 import { missions } from "./presets/missions.js";
 import { gwTerrain } from "./presets/terrain.js";
+import { gwTemplatesReal } from "./presets/templates-real.js";
+import type { TerrainConfig } from "./terrain-config.js";
 
 /** A control key: both the URL param name and the {@link Controls} field name. */
 export type ControlKey =
@@ -108,10 +110,38 @@ const LAYOUT_IDS = Object.keys({
 } satisfies Record<Layout, null>) as readonly Layout[];
 
 // Building-template set: the illustrative shapes or the detailed GW footprints.
-// Each value is the `templates-<value>.yml` filename stem, so renaming or
-// dropping one of those files leaves a dropdown entry that 404s at render
-// time — nothing here can see the `static/data/terrain/` directory.
-const TEMPLATE_SETS = ["simple", "real"];
+// Keyed by set id so the dropdown's values and the terrain each one *means*
+// have one owner. The viewer used to fetch `templates-<value>.yml`, which made
+// a set the assembly did not know about a visible 404 on the stage; rendering
+// from bundled presets, the same mistake would quietly render the simple
+// templates instead. Adding a set is one line here, and that line is both the
+// dropdown option and the terrain it selects.
+//
+// `gwTerrain` carries the simple templates already merged with the layouts.
+// Spreading `gwTemplatesReal` over it swaps in the detailed GW footprints —
+// both sets declare the same template box for every shared name, so a layout
+// renders against either. Templates last: the other way round the layouts
+// object would put its own templates back.
+const TEMPLATE_TERRAIN = {
+  simple: gwTerrain,
+  real: { ...gwTerrain, ...gwTemplatesReal },
+} satisfies Record<string, TerrainConfig>;
+
+const TEMPLATE_SETS = Object.keys(TEMPLATE_TERRAIN);
+
+/**
+ * The terrain a `tpl` control value names.
+ *
+ * Throws rather than falling back: {@link readControlsFromDom} sanitizes `tpl`
+ * against {@link controlSpec}, so an unknown value reaching here is a bug in
+ * the caller rather than untrusted input — and the render path turns the throw
+ * into a stage message, the way the old fetch's 404 was.
+ */
+export function terrainForTemplateSet(tpl: string): TerrainConfig {
+  const terrain = TEMPLATE_TERRAIN[tpl as keyof typeof TEMPLATE_TERRAIN];
+  if (!terrain) throw new Error(`unknown building-template set: ${tpl}`);
+  return terrain;
+}
 
 // Canvas rotation in degrees, as strings (the `<select>` values).
 const ROTATIONS = ["0", "90", "-90"];
@@ -191,8 +221,7 @@ const controlRows = [
  *
  * Every allowlist that *has* a referent in this repo derives from it — the
  * generated presets or a type — so options, validation and the underlying
- * YAML cannot drift apart. `TEMPLATE_SETS` and `ROTATIONS` are the two
- * literals: the first names files this module cannot see, the second has no
+ * YAML cannot drift apart. `ROTATIONS` is the one literal left: it has no
  * referent to drift from.
  */
 export const controlSpec: readonly ControlRow[] = controlRows;
