@@ -59,7 +59,6 @@ describe("the package root", () => {
       "placedTransform",
       "mirror",
       "resolveLayout",
-      "mergeTerrain",
       "serializeSvg",
       "applyAttributes",
       "VirtualSvgElement",

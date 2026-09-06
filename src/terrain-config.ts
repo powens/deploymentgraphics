@@ -63,21 +63,6 @@ export type TerrainConfig = {
   layout: Record<string, TerrainLayout>;
 };
 
-/**
- * Reunites the two halves of a terrain config into one `TerrainConfig`: a
- * templates file (`templates-simple.yml` or `templates-real.yml`) and a layouts
- * file (`combined.yml`). The two are authored separately — both template files
- * define the same template names, so any layout renders against either set —
- * and this is the single place they come together. Used by the browser app and
- * mirrored by `gen:presets` for the bundled `gwTerrain`.
- */
-export function mergeTerrain(
-  templates: Pick<TerrainConfig, "templates">,
-  layouts: Omit<TerrainConfig, "templates">,
-): TerrainConfig {
-  return { ...templates, ...layouts };
-}
-
 // The pieces of a selected layout are assembled by `resolveLayout` in
 // `layout.ts` (which unions them with the board's top-level arrays), not by
 // per-piece accessors here.

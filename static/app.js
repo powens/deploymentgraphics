@@ -1,10 +1,11 @@
-/* global jsyaml */
 import {
   makeMissionCard,
   buildConfig,
-  mergeTerrain,
+  baseConfig,
   missions,
   gwTerrain,
+  gwTemplatesReal,
+  yaml,
   eventMatrix,
   resolveMission,
   resolveTerrainLayout,
@@ -24,52 +25,30 @@ import { loadState, saveState } from "./state.js";
 // resolve to a deployment via the event matrix, which selects the Deployment
 // dropdown; that dropdown can also be set directly.
 
-// YAML files never change within a session, so cache by URL. The promise
-// (not the result) is cached, which also dedupes concurrent fetches.
-const yamlCache = new Map();
-
-function fetchYaml(url) {
-  let pending = yamlCache.get(url);
-  if (!pending) {
-    pending = (async () => {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Failed to load ${url} (${response.status})`);
-      }
-      return jsyaml.load(await response.text());
-    })();
-    // Drop failed fetches from the cache so a later redraw can retry.
-    pending.catch(() => yamlCache.delete(url));
-    yamlCache.set(url, pending);
-  }
-  return pending;
-}
-
 // The deployment a disposition pairing + layout maps to, used to drive the
 // Deployment dropdown (which the user may then override directly).
 function resolvedMissionId(controls) {
   return resolveMission(eventMatrix, controls.da, controls.db, controls.lay);
 }
 
-// Fetch the four YAML slices for the current controls and assemble them with
-// the renderer's own `buildConfig` — the same seam the bundled presets use, so
-// the app and the library can never drift on assembly. Templates live in
-// templates-simple.yml (illustrative) or templates-real.yml (detailed GW
-// footprints), selected by the Templates control; combined.yml holds the demo
-// layout + the ported 40kdc layouts. `mergeTerrain` is the one place the two
-// terrain files reunite — both template files share the same names, so any
-// layout renders against either set.
-async function configFromControls(controls) {
-  const [mission, base, terrainTemplates, terrainLayouts] = await Promise.all([
-    fetchYaml(`./data/deployment/${controls.m}.yml`),
-    fetchYaml("./data/base.yml"),
-    fetchYaml(`./data/terrain/templates-${controls.tpl}.yml`),
-    fetchYaml("./data/terrain/combined.yml"),
-  ]);
+// Assemble the config for the current controls from the bundled presets, with
+// the renderer's own `buildConfig` — the same seam the package documents, so
+// the app and the library can never drift on assembly. `gen-presets.mjs`
+// compiles every slice below from the YAML under `static/data/`, which stays
+// the source of truth for authoring; the app reads the compiled form, so the
+// site ships no YAML and parses none.
+//
+// `gwTerrain` carries the simple templates already merged with the layouts.
+// Spreading `gwTemplatesReal` over it swaps in the detailed GW footprints —
+// both sets declare the same template box for every shared name, so a layout
+// renders against either. The spread runs in this direction, templates last:
+// the other way round the layouts object would put its own templates back.
+function configFromControls(controls) {
   return buildConfig({
-    mission,
-    base,
-    terrain: mergeTerrain(terrainTemplates, terrainLayouts),
+    mission: missions[controls.m],
+    base: baseConfig,
+    terrain:
+      controls.tpl === "real" ? { ...gwTerrain, ...gwTemplatesReal } : gwTerrain,
     layout: controls.t,
     grid: controls.grid,
     territory: controls.territory,
@@ -204,39 +183,32 @@ function rotateCard(svg, deg) {
   return svg;
 }
 
-let renderGeneration = 0;
-
-async function renderFromControls() {
-  const generation = ++renderGeneration;
+// Assembly is synchronous — the presets are already in memory — so a render
+// runs start to finish before the next event is handled. There is no window
+// for a stale result to land late, which is what the generation counter this
+// function used to carry was guarding against.
+function renderFromControls() {
   // No card to export until this render finishes successfully.
   setExportEnabled(false);
   setStageMessage("Rendering…");
   try {
     const controls = readControlsFromDom(document);
-    const config = await configFromControls(controls);
-    if (generation !== renderGeneration) {
-      return;
-    }
+    const config = configFromControls(controls);
     // makeMissionCard builds off-DOM: a throw never blanks the stage.
     const card = rotateCard(makeMissionCard(config), Number(controls.rot));
     stage.replaceChildren(card);
     setExportEnabled(true);
   } catch (error) {
-    if (generation !== renderGeneration) {
-      return;
-    }
     setStageMessage(error.message, true);
   }
 }
 
 function renderFromYaml() {
-  // Cancel any in-flight controls render so its result cannot land late.
-  ++renderGeneration;
   // Export is not touched on the error paths below: a bad edit keeps the
   // last good render on the stage, and that card stays exportable.
   let config;
   try {
-    config = jsyaml.load(yamlEditor.value);
+    config = yaml.load(yamlEditor.value);
   } catch (error) {
     setYamlError(error.message);
     return;
@@ -269,9 +241,8 @@ function updateModeUi() {
   copyLinkButton.disabled = yamlMode;
 }
 
-async function openYamlTab() {
-  // Clear any error left over from a previous yaml session up front, so it
-  // does not linger above the editor while the config below is fetched.
+function openYamlTab() {
+  // Clear any error left over from a previous yaml session.
   setYamlError(null);
   // In yaml mode the editor already holds the user's edits — keep them.
   if (mode === "yaml") {
@@ -279,13 +250,7 @@ async function openYamlTab() {
   }
   // In controls mode, refill the editor with the current merged config.
   try {
-    const config = await configFromControls(readControlsFromDom(document));
-    // The user may have started editing during the fetch, promoting the
-    // mode to yaml — in that case keep their edits, do not overwrite them.
-    if (mode === "yaml") {
-      return;
-    }
-    yamlEditor.value = jsyaml.dump(config);
+    yamlEditor.value = yaml.dump(configFromControls(readControlsFromDom(document)));
     setYamlError(null);
   } catch (error) {
     setYamlError(error.message);
