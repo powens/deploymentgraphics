@@ -113,8 +113,8 @@ export function classifyPiece(piece, footprintOf) {
  * generators/gantries) rather than the interleaving of the source piece list.
  *
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
- * @param {object} gwTemplates - the hand-authored building templates, read to
- *   size `area` placements.
+ * @param {object} gwTemplates - the hand-authored building templates, read for
+ *   the **Template box** that sizes `area` and pipe/barricade placements.
  * @returns {{ templates: object[], features: object[] }}
  */
 export function layoutPlacements(layout, gwTemplates) {
@@ -137,7 +137,12 @@ export function layoutPlacements(layout, gwTemplates) {
         break;
       case PIECE_KINDS.featureBuilding:
         featureBuildings.push(
-          featureBuildingPlacement(piece, layout.footprintOf, layout.parentOf),
+          featureBuildingPlacement(
+            piece,
+            layout.footprintOf,
+            gwTemplates,
+            layout.parentOf,
+          ),
         );
         break;
       case PIECE_KINDS.ruinFeature:

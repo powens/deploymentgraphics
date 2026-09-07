@@ -8,6 +8,7 @@
 
 import { footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
+import { templateBounds } from "../src/building-coordinates.ts";
 import {
   bounds,
   centroid,
@@ -28,17 +29,6 @@ const AREA_TO_TEMPLATE = {
   "area-short-line": { kind: "exact", gw: "small-pipes" },
   // gw template chosen dynamically by handedness: shoe / shoe-mirror.
   "area-trapezoid": { kind: "trapezoid" },
-};
-
-/**
- * Far-edge coordinates of a gw template's bounding box. A gw polygon's bbox is
- * required to start at 0,0 (`templateBounds` enforces it at render time), so
- * its maxima are also its width and height.
- */
-const gwBounds = (template) => {
-  if (!template.points) return { width: template.width, height: template.height };
-  const { maxX, maxY } = bounds(template.points);
-  return { width: maxX, height: maxY };
 };
 
 // Rigid map G (gw-local -> area-local) as { Glin, Gtrans }. The variant's
@@ -104,7 +94,11 @@ export function areaBuildingPlacement(piece, areaFootprint, gwTemplates) {
   const tx = shifted.x + piece.position.x;
   const ty = shifted.y + piece.position.y;
 
-  const Wg = gwBounds(gwTemplates[type]).width;
+  // The gw template's own placement box, from the module that owns it. A
+  // declared box wins over the traced geometry, which is what keeps the pins
+  // valid against templates-real.yml as well as templates-simple.yml (see the
+  // Template box note in CONTEXT.md).
+  const Wg = templateBounds(gwTemplates[type], type).width;
   const tr = matvec(TgwLin, { x: Wg, y: 0 }); // TL is the origin, so TL_abs = (tx, ty)
   return {
     type,
