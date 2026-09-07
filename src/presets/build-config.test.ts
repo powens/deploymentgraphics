@@ -1,7 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from "vitest";
 import { makeMissionCard } from "../main.js";
-import { mergeTerrain } from "../terrain-config.js";
 import { baseConfig } from "./base.js";
 import { buildConfig } from "./build-config.js";
 import { missions } from "./missions.js";
@@ -33,10 +32,10 @@ describe("buildConfig", () => {
     expect(config.base).toBe(baseConfig);
   });
 
-  // The browser app assembles its config this way — mergeTerrain feeding
+  // The browser app assembles its config this way — a terrain config feeding
   // buildConfig — and serialises the result to the raw-YAML tab, so the shape
   // is user-visible. Guard it against drift.
-  it("assembles the browser app's FullConfig shape from merged terrain", () => {
+  it("assembles the browser app's FullConfig shape from a terrain config", () => {
     const mission = missions.dawn_of_war;
     const base = {
       size: { width: 60, height: 44 },
@@ -45,10 +44,10 @@ describe("buildConfig", () => {
       building: { draw: true },
       grid: { draw: false },
     };
-    const terrain = mergeTerrain(
-      { templates: { "4x6": { width: 4, height: 6 } } },
-      { layout: { "1": { templates: [] } } },
-    );
+    const terrain = {
+      templates: { "4x6": { width: 4, height: 6 } },
+      layout: { "1": { templates: [] } },
+    };
 
     const config = buildConfig({ mission, terrain, base, layout: "1", grid: true });
 

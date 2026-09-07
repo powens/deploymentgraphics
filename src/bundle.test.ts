@@ -60,11 +60,23 @@ describe("the demo bundle entry", () => {
     expect(Object.keys(bundle).sort()).toEqual(imported);
   });
 
+  it("leaves static/app.js no runtime data fetch", () => {
+    // Every config slice the app renders from — mission, base, templates and
+    // layouts — is compiled into `src/presets/` by `gen-presets.mjs` and
+    // reaches the app through this entry. Fetching the same YAML again at
+    // runtime shipped it twice (356KB of `combined.yml` beside a bundle that
+    // already held it) and put a YAML parse on the render path. `fetch` is
+    // the shape that regression comes back in, and nothing else would catch
+    // it: `app.js` is untyped, unlinted and imported by no test.
+    expect(appSource).not.toMatch(/\bfetch\s*\(/);
+  });
+
   it("stays narrower than a barrel", () => {
     // `bundle.ts` deliberately reaches past the published interface — the demo
-    // merges terrain files at fetch time and drives dropdowns from the event
-    // matrix. That licence is for those pieces, not for re-exporting the
-    // renderer's internals wholesale.
+    // drives dropdowns from the event matrix, and its editor tab needs a YAML
+    // parser. That licence is for those pieces, not for re-exporting the
+    // renderer's internals wholesale. `baseConfig` left this list when the app
+    // stopped fetching base.yml: it now renders from the preset.
     for (const name of [
       "renderMissionCardToString",
       "resolveLayout",
@@ -73,7 +85,6 @@ describe("the demo bundle entry", () => {
       "serializeSvg",
       "virtualSvgDocument",
       "baseTheme",
-      "baseConfig",
     ]) {
       expect(bundle).not.toHaveProperty(name);
     }

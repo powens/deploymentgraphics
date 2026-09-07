@@ -120,7 +120,7 @@ describe("layoutPlacements", () => {
         areaBuildingPlacement(p, L.footprintOf(p.template), gwTemplates),
       ),
       ...of(PIECE_KINDS.featureBuilding).map((p) =>
-        featureBuildingPlacement(p, L.footprintOf, L.parentOf),
+        featureBuildingPlacement(p, L.footprintOf, gwTemplates, L.parentOf),
       ),
     ]);
     expect(layoutPlacements(L, gwTemplates).features).toEqual([

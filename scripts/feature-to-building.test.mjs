@@ -64,7 +64,12 @@ const sameSet = (a, b) => {
 };
 
 const roundTrip = (piece, getParent) => {
-  const placement = featureBuildingPlacement(piece, lookupFootprint, getParent);
+  const placement = featureBuildingPlacement(
+    piece,
+    lookupFootprint,
+    TEMPLATES,
+    getParent,
+  );
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1); // mirror:false -> single placement

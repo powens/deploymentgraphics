@@ -2,25 +2,8 @@ import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
-import { mergeTerrain, type TerrainConfig } from "./terrain-config";
+import { type TerrainConfig } from "./terrain-config";
 import { resolvePlacement } from "./placement";
-
-describe("mergeTerrain", () => {
-  it("reunites a templates file and a layouts file into one TerrainConfig", () => {
-    const templates = { templates: { "4x6": { width: 4, height: 6 } } };
-    const layouts = {
-      layout: {
-        "1": { templates: [{ type: "4x6", corners: { TL: { x: 0, y: 0 } } }] },
-      },
-    };
-    expect(mergeTerrain(templates, layouts)).toEqual({
-      templates: { "4x6": { width: 4, height: 6 } },
-      layout: {
-        "1": { templates: [{ type: "4x6", corners: { TL: { x: 0, y: 0 } } }] },
-      },
-    });
-  });
-});
 
 // Canvas size taken from static/data/base.yml (`size:`).
 const CANVAS = { width: 60, height: 44 };

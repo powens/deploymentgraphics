@@ -8,6 +8,7 @@ import { missions } from "./missions.js";
 import { gwTerrain } from "./terrain.js";
 import { gwTemplatesReal } from "./templates-real.js";
 import { baseTheme } from "./theme.js";
+import { templateBounds, type Template } from "../building-coordinates.js";
 
 type Point = { x: number; y: number };
 
@@ -87,5 +88,45 @@ describe("templates-real shoe / shoe-mirror", () => {
       ),
     );
     expect(worst).toBeLessThan(1e-9);
+  });
+});
+
+// The **Template box** (CONTEXT.md) of a shared name must be the same in both
+// template files. Two things rest on it: consumers swapping `gwTemplatesReal`
+// onto `gwTerrain`, and the 40kdc converters, which compute combined.yml's
+// corner pins against templates-simple.yml while the viewer may render them
+// against either set. The boxes agree today only because both files say so —
+// the traced geometry does not, and must not be asked: templates-real declares
+// a box on six polygons whose points run past it (`shoe` declares 8x11.5 and
+// traces to 8.03x11.89), which is exactly the protruding-nubbin case
+// `templateBounds` exists to arbitrate.
+describe("templates-simple and templates-real agree on the Template box", () => {
+  const templatesOf = (relPath: string): Record<string, Template> =>
+    (loadYaml(relPath) as { templates: Record<string, Template> }).templates;
+
+  const simple = templatesOf("terrain/templates-simple.yml");
+  const real = templatesOf("terrain/templates-real.yml");
+  const shared = Object.keys(simple).filter((name) => name in real);
+
+  it("share at least the templates the 40kdc converters pin against", () => {
+    // Guards the loop below against silently passing on an empty set.
+    expect(shared).toEqual(
+      expect.arrayContaining([
+        "large-area",
+        "small-area",
+        "large-pipes",
+        "small-pipes",
+        "shoe",
+        "shoe-mirror",
+        "pipe",
+        "barricade",
+      ]),
+    );
+  });
+
+  it.each(shared)("%s declares the same box in both files", (name) => {
+    expect(templateBounds(real[name], name)).toEqual(
+      templateBounds(simple[name], name),
+    );
   });
 });

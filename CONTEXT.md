@@ -21,6 +21,21 @@ cx cy)`. The single representation behind the placement module's seam.
 **Resolve** — map an authoring placement to one or more `Placed` (corner-pin → box
 for buildings; identity for already-box features). The forward direction.
 
+**Template box** — a building template's placement box: the `{width, height}` a
+corner-pin **Placement** pins its TL/TR/BL/BR against, and the box a resulting
+**Placed** carries. `templateBounds` is its single owner. A template may
+*declare* the box, in which case the declared box wins and the drawn geometry
+may protrude past it — the detailed GW footprints do exactly this (`shoe`
+declares 8x11.5 and traces to 8.03x11.89). Without a declared box it is derived
+from the points, which must start at 0,0.
+
+Nothing measures the geometry itself to answer this: the renderer,
+`resolvePrimary`, and the 40kdc converters all ask `templateBounds`. That is
+what keeps the two template sets swappable — `templates-simple.yml` and
+`templates-real.yml` declare the same box for every shared name, which
+`presets/presets.test.ts` pins, so a layout's corner pins (computed against
+simple) render correctly against either.
+
 **Centre-pivot** — the `Placed` convention, and the only pivot convention in the
 codebase: rotation is taken about the box centre. Every renderer draws this way
 via `placedTransform` (the single owner of the `translate(x y) rotate(rot cx cy)`
@@ -63,7 +78,9 @@ Adding a control is one row.
 The URL carries only controls that differ from their default — which is why
 `grid=1` and `territory=0` are one rule, not two special cases. Three of the
 nine reach the renderer through `buildConfig` (`grid`, `territory`, and `t` as
-its `layout`); `m` and `tpl` name which YAML the viewer fetches; `da`, `db` and
-`lay` name nothing directly — they derive `m` and `t` through the event matrix;
-and `rot` post-processes the rendered card. Viewer-only: the controls reach the
+its `layout`); `m` and `tpl` name bundled presets — a key in `missions`, and a
+building-template set `viewer-controls.ts` resolves to a `TerrainConfig` (the
+viewer fetches nothing at runtime); `da`, `db` and `lay` name nothing directly
+— they derive `m` and `t` through the event matrix; and `rot` post-processes
+the rendered card. Viewer-only: the controls reach the
 demo through `bundle.ts`, and the published package has no concept of them.

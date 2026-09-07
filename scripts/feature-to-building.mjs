@@ -1,8 +1,9 @@
 // Converts 40kdc `pipe` and `barricade` feature pieces into building-template
 // placements. Parallels scripts/area-to-building.mjs and scripts/rect-to-feature.mjs.
 //
-// A pipe piece (5.5" rectangle) maps to the `pipe` template; a barricade piece
-// (an 8-vertex polygon) maps to `barricade`. A piece resolves (via resolvePiece,
+// A pipe piece maps to the `pipe` template; a barricade piece (an 8-vertex
+// polygon) maps to `barricade`. Each template's pinned edge is its own
+// **Template box** width, read through `templateBounds`. A piece resolves (via resolvePiece,
 // which composes any parent-area transform and the piece's own rotation) to an
 // absolute polygon in footprint-vertex order. Neither piece is mirrored, and
 // each shape is reflection-symmetric or a rectangle, so a single non-mirrored
@@ -12,22 +13,41 @@
 
 import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
+import { templateBounds } from "../src/building-coordinates.ts";
 import { distance } from "../src/geometry.ts";
 
 const near = (a, b) => Math.abs(a - b) < 0.05;
 
 /**
  * Pick the building template that reproduces a pipe/barricade footprint.
+ *
+ * The pinned edge is the gw template's own **Template box** width (see
+ * CONTEXT.md), read through `templateBounds` rather than restated here: the
+ * check then asks whether upstream still matches the template we actually pin,
+ * and cannot drift from it.
+ *
+ * @param {string} template - the 40kdc template id.
+ * @param {object} footprint - the piece's footprint.
+ * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
  * @returns {{ name: string, width: number }} template name + its TL->TR edge.
  */
-function classifyFeature(template, footprint) {
+function classifyFeature(template, footprint, gwTemplates) {
   const ring = footprintPolygon(footprint);
   const long = Math.max(
     ...ring.map((p, i) => distance(p, ring[(i + 1) % ring.length])),
   );
-  if (template === "pipe" && near(long, 5.5)) return { name: "pipe", width: 5.5 };
-  if (template === "barricade" && ring.length === 8) {
-    return { name: "barricade", width: 3.5 };
+  const widthOf = (name) => templateBounds(gwTemplates[name], name).width;
+  if (template === "pipe") {
+    const width = widthOf("pipe");
+    if (near(long, width)) return { name: "pipe", width };
+  }
+  if (template === "barricade") {
+    const width = widthOf("barricade");
+    // Two guards, catching two different upstream regressions: the vertex count
+    // a reshaped barricade, the long edge a resized one.
+    if (ring.length === 8 && near(long, width)) {
+      return { name: "barricade", width };
+    }
   }
   throw new Error(
     `no building template for ${template} footprint ` +
@@ -45,17 +65,23 @@ export const isFeatureBuildingTemplate = (id) =>
  *   `rotation_degrees`, optional `parent_area_id`, and either `footprint` or a
  *   named template resolved via `lookupFootprint`.
  * @param {(id: string) => object | undefined} lookupFootprint
+ * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
  * @param {(id: string) => object | undefined} [getParent]
  * @returns {{ type: string, corners: object, mirror: false }}
  */
-export function featureBuildingPlacement(piece, lookupFootprint, getParent) {
+export function featureBuildingPlacement(
+  piece,
+  lookupFootprint,
+  gwTemplates,
+  getParent,
+) {
   const footprint = piece.footprint ?? lookupFootprint(piece.template);
   if (!footprint) {
     throw new Error(
       `piece ${piece.id ?? "?"} has no footprint or known template`,
     );
   }
-  const { name, width } = classifyFeature(piece.template, footprint);
+  const { name, width } = classifyFeature(piece.template, footprint, gwTemplates);
   const ring = resolvePiece(piece, lookupFootprint, getParent);
   // Pin the resolved edge whose length matches the template width as TL->TR.
   for (let i = 0; i < ring.length; i++) {
