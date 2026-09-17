@@ -168,16 +168,35 @@ geometry.
 
 ### W — the extent, and the anchor
 
-Upstream's part `footprint` is **the roofed area, not the model**. The rest of the model
-lives in `walls` (a polyline per wall, with a thickness). `partExtent` reconstructs the
+This part of upstream's schema has changed twice, and `partExtent`/`partAnchorShift` handle
+both versions. **Current (since 40kdc-data `39661875`):** part `footprint` is the model's
+extent again. The roof lives in `upper_floor.footprint`, and a composite feature's
+`position` anchors the extent's centre. With this schema the union below equals the
+footprint and the shift is zero for every part. The pull that brought this change moved
+36 feature positions by 1.0–1.5in and redrew 7 part footprints. Across all of that,
+`combined.yml` changed in only one place: a real upstream edit to `bm-disrupt-vs-disrupt-01`,
+described below. That is what a schema change our code already handles looks like: large
+source diffs, and an output diff only where upstream actually moved terrain. If a later pull
+moves positions *without* also changing `footprint`, the anchor is being applied twice.
+Check containment.
+
+That one real edit moved the central pair (`area-05`/`area-11`) by (−0.25, +0.25)in. It also
+moved the merged centre objective to (29.75, 22.25), because `objectiveIcons` averages the
+pieces' positions. That is correct: upstream's own `objective.position` values for the pair
+average to exactly (29.75, 22.25), and they did before the pull too. Upstream allowlists
+the pair as deliberately asymmetric (`SOURCE_ASYMMETRIC_TWIN_PAIRS`), and so does our
+symmetry test (`SOURCE_ASYMMETRIC_AREAS`).
+
+**Previous (the re-source):** `footprint` was **the roofed area, not the model**. The rest of the model
+lived in `walls` (a polyline per wall, with a thickness). `partExtent` reconstructs the
 extent as the bounding box of the roof polygon **unioned with the wall centrelines** — that
 reproduces the pre-re-source rectangle exactly, which is what let every `turn`, flip bit and
 the F/Z rules survive the re-source untouched. Take the union and not either alone: walls
 alone lose a barrier's whole 0.5in depth (its centreline runs along one edge of its
 footprint, not down its middle), and the roof alone is a corner of an L-ruin.
 
-The half of this that hides: **`position` anchors the centre of the *roof***, so for the
-five big L-ruins it is up to (1.25, 1.5)in off the model's centre. `partAnchorShift` is that
+The half of this that hides: **`position` anchored the centre of the *roof***, so for the
+five big L-ruins it was up to (1.25, 1.5)in off the model's centre. `partAnchorShift` is that
 offset. Nothing in the suite catches it directly — it shows up only as children drifting out
 of their own parents, so use the containment check below.
 
@@ -285,6 +304,11 @@ this skill, both of which describe upstream's schema and go stale the moment it 
 - Editing `combined.yml` or the source JSON by hand — both are generated / re-pulled. Edit
   `templates-simple.yml`, `templates-real.yml`, `gw.yml`, or fix upstream.
 - Re-pointing a renamed layout fixture without re-checking the property it was chosen for.
-- Reading a part's `footprint` as its extent — it is the roof. Use `partExtent`.
+- Reading a part's `footprint` as its extent directly. It is the extent today, but it
+  was the roof for a while. Use `partExtent`, which reads both.
+- Widening the 180° symmetry bound when a pull breaks it. Diff that layout against
+  upstream first. If upstream made the asymmetry on purpose (it keeps its own list in
+  `SOURCE_ASYMMETRIC_TWIN_PAIRS` in `tools/src/derive-keystones.ts`), add the pieces to
+  `SOURCE_ASYMMETRIC_AREAS` in the registration test instead.
 - Comparing an emitted area against upstream's outline with `ringMismatch`.
 - Guessing a new part's `turn`/`flip`, or picking them from a bounding-box aspect ratio.

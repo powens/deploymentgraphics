@@ -2472,7 +2472,7 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "shoe",
-          corners: { TL: { x: 27.88, y: 29.008 }, TR: { x: 23.64, y: 22.224 } },
+          corners: { TL: { x: 27.63, y: 29.258 }, TR: { x: 23.39, y: 22.474 } },
           mirror: false,
         },
         {
@@ -2517,7 +2517,7 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "shoe",
-          corners: { TL: { x: 32.12, y: 14.992 }, TR: { x: 36.36, y: 21.776 } },
+          corners: { TL: { x: 31.87, y: 15.242 }, TR: { x: 36.11, y: 22.026 } },
           mirror: false,
         },
         {
@@ -2620,8 +2620,8 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          x: 26.057,
-          y: 23.784,
+          x: 25.807,
+          y: 24.034,
           width: 4.5,
           height: 3.75,
           rotation: 58,
@@ -2630,8 +2630,8 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          x: 35.03,
-          y: 22.008,
+          x: 34.78,
+          y: 22.258,
           width: 1.5,
           height: 1.5,
           rotation: 328,
@@ -2700,8 +2700,8 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          x: 29.443,
-          y: 16.466,
+          x: 29.193,
+          y: 16.716,
           width: 4.5,
           height: 3.75,
           rotation: 238,
@@ -2710,8 +2710,8 @@ export const gwTerrain: TerrainConfig = {
         },
         {
           type: "l-ruin-mirror",
-          x: 23.47,
-          y: 20.492,
+          x: 23.22,
+          y: 20.742,
           width: 1.5,
           height: 1.5,
           rotation: 148,
@@ -2800,7 +2800,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
+        {
+          type: "skull",
+          pos: { x: 29.75, y: 22.25 },
+          objective_role: "center",
+        },
         {
           type: "skull",
           pos: { x: 13.121, y: 10.768 },
