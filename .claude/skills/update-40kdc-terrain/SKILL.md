@@ -173,10 +173,19 @@ both versions. **Current (since 40kdc-data `39661875`):** part `footprint` is th
 extent again. The roof lives in `upper_floor.footprint`, and a composite feature's
 `position` anchors the extent's centre. With this schema the union below equals the
 footprint and the shift is zero for every part. The pull that brought this change moved
-36 feature positions by 1.0–1.5in and redrew 7 part footprints, and `combined.yml`
-still came out byte-identical. That is what a schema change our code already handles
-looks like: large source diffs, no output diff. If a later pull moves positions *without*
-also changing `footprint`, the anchor is being applied twice. Check containment.
+36 feature positions by 1.0–1.5in and redrew 7 part footprints. Across all of that,
+`combined.yml` changed in only one place: a real upstream edit to `bm-disrupt-vs-disrupt-01`,
+described below. That is what a schema change our code already handles looks like: large
+source diffs, and an output diff only where upstream actually moved terrain. If a later pull
+moves positions *without* also changing `footprint`, the anchor is being applied twice.
+Check containment.
+
+That one real edit moved the central pair (`area-05`/`area-11`) by (−0.25, +0.25)in. It also
+moved the merged centre objective to (29.75, 22.25), because `objectiveIcons` averages the
+pieces' positions. That is correct: upstream's own `objective.position` values for the pair
+average to exactly (29.75, 22.25), and they did before the pull too. Upstream allowlists
+the pair as deliberately asymmetric (`SOURCE_ASYMMETRIC_TWIN_PAIRS`), and so does our
+symmetry test (`SOURCE_ASYMMETRIC_AREAS`).
 
 **Previous (the re-source):** `footprint` was **the roofed area, not the model**. The rest of the model
 lived in `walls` (a polyline per wall, with a thickness). `partExtent` reconstructs the

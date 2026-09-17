@@ -4,7 +4,8 @@
 // objective is often built from TWO pieces whose footprints touch (a pair of
 // `area-trapezoid` "shoe" halves, or a pair of `area-medium`/`area-large`
 // pieces). Those represent ONE objective and so collapse to a single marker at
-// the pair's midpoint (which lands on the board centre). Pieces whose
+// the pair's midpoint (usually the board centre; `bm-disrupt-vs-disrupt-01`'s
+// pair sits 0.35in off it, as upstream's own objective positions do). Pieces whose
 // footprints sit clearly apart each keep their own marker — even when, by
 // symmetry, their midpoint is also the board centre.
 //
