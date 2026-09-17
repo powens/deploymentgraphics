@@ -60,12 +60,14 @@ import {
 //       `rotation_degrees` is copied from upstream verbatim, so without Q those
 //       seven render turned.
 //
-//   W - a part's model extent, which upstream stopped shipping directly: its
-//       `footprint` is now the roofed area, and the rest of the model lives in
-//       `walls`. F, Z and S below all mean the extent wherever they say
-//       "upstream's rectangle", and `partExtent` is what reconstructs it. See
-//       that function for why it is the union of the two and not either alone,
-//       and for the anchor half of the same change.
+//   W - a part's model extent. The re-source briefly stopped shipping it
+//       directly - `footprint` became the roofed area, the rest of the model
+//       lived only in `walls` - and upstream restored it in 40kdc-data 39661875,
+//       moving the roof to `upper_floor`. F, Z and S below all mean the extent
+//       wherever they say "upstream's rectangle", and `partExtent` is what
+//       reads it, robust to either schema. See that function for why it is the
+//       union of the two and not either alone, and for the anchor half of the
+//       same change.
 //
 //   F - substituting the legacy footprint is only sound where that polygon says
 //       something upstream's does not. Upstream's own drawing of a part is a
@@ -101,8 +103,9 @@ import {
 //       polygons are L-shaped, so their centroid sits up to (1, 1)in inside
 //       their bbox centre. S re-anchors the substituted polygon by that offset,
 //       otherwise every L-shaped part lands ~1in off upstream's placement.
-//       Since the re-source that footprint is the *roof*, so the point S has to
-//       land on is `partAnchorShift` away from `position` rather than on it.
+//       While that footprint was the *roof*, the point S has to land on was
+//       `partAnchorShift` away from `position` rather than on it; that shift is
+//       zero again now that `footprint` is the extent.
 //
 // Q, S, V and the flip bits are all measured against the pre-pull corpus (the
 // legacy-vocabulary layouts this repo shipped at f1d98fb, immediately before
@@ -491,6 +494,11 @@ const HASH_SUFFIX = /-[0-9a-f]{10}$/;
  * corpus emitted a quarter-inch wider than the other 88 and than the pre-pull
  * corpus. `partAnchorShift` split the same way, 0.5 against 0.625.
  *
+ * Since 40kdc-data 39661875 both ids ship the same 3.75x4.5 `footprint` (the
+ * differing roof moved to `upper_floor`), so the two drawings now emit alike
+ * either way. The registration stays: it costs nothing and holds if upstream's
+ * drawings diverge again.
+ *
  * This is the rule `cd` already follows from the other direction - it is `co`'s
  * row exactly, so identical input produces identical output. A roof that
  * overhangs its own walls cannot be told from a barrier's (whose centreline
@@ -604,6 +612,15 @@ export function bboxSize(footprint) {
  * A part with no walls at all (`ruin-part`, which this module drops) has no
  * extent to read and falls back to its own footprint.
  *
+ * W1: upstream then undid the schema half of this (40kdc-data 39661875, "Render
+ * Battlemaster ruin walls"). `footprint` is the model extent again, the roof
+ * moved to `upper_floor.footprint`, and composite features' `position` moved to
+ * the extent's centre by exactly the offset `partAnchorShift` used to supply.
+ * Against that schema the union above is the footprint itself and the shift is
+ * zero for every part, so the emitted corpus came through the pull unchanged
+ * with no code change. Both are kept because they read either schema correctly;
+ * nothing here reads `upper_floor`.
+ *
  * W2: the same pull also started expressing the other hand of a part with a
  * feature-level `mirror`, and on a mirrored feature `position` does not read the
  * roof centre the way it does everywhere else. Upstream ships exactly one today,
@@ -674,9 +691,10 @@ export function mirrorAnchorFix(part, feature) {
 }
 
 /**
- * The part-frame vector from the roof centre `position` anchors to the centre of
- * the extent `partExtent` returns. Zero for every part whose roof is centred on
- * its model; up to (1.25, 1.5)in for the big L-ruins. See W above.
+ * The part-frame vector from the footprint centre `position` anchors to the
+ * centre of the extent `partExtent` returns. Zero for every part since upstream
+ * made `footprint` the extent again; up to (1.25, 1.5)in for the big L-ruins
+ * while it was the roof. See W and W1 above.
  */
 export function partAnchorShift(part) {
   if (!part.walls?.length) return { x: 0, y: 0 };

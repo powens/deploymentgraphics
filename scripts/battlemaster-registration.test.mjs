@@ -784,16 +784,29 @@ describe("board invariants", () => {
     }
   });
 
+  // Areas upstream deliberately ships off-symmetric, with their children. Both
+  // pieces of `bm-disrupt-vs-disrupt-01`'s central pair sit (-0.25, +0.25)in
+  // off their twin pose - 0.707in apart - and upstream registers the pair as a
+  // Battlemaster editor nudge it preserves on purpose
+  // (SOURCE_ASYMMETRIC_TWIN_PAIRS in its tools/src/derive-keystones.ts, since
+  // 40kdc-data 39661875). Mirror that list here; don't widen the bound for it.
+  const SOURCE_ASYMMETRIC_AREAS = {
+    "bm-disrupt-vs-disrupt-01": ["area-05", "area-11"],
+  };
+
   it("is 180-degree rotationally symmetric about the board centre", () => {
     let worst = 0;
     let worstAt = "";
     for (const layout of normalized) {
       const getParent = layout.parentOf;
+      const exempt = SOURCE_ASYMMETRIC_AREAS[layout.id] ?? [];
       const pts = layout.pieces.map((p) => ({
+        exempt: exempt.includes(p.parent_area_id ?? p.id),
         kind: p.piece_type,
         c: centroid(resolvePiece(p, footprintOf, getParent)),
       }));
       for (const a of pts) {
+        if (a.exempt) continue;
         const target = { x: 60 - a.c.x, y: 44 - a.c.y };
         const d = Math.min(
           ...pts
