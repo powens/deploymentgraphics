@@ -47,8 +47,9 @@ export type TerrainLayout = {
   // ["Take and Hold", "Purge the Foe"]), ported from the 40kdc
   // `mission_matchup_id`. Absent on layouts with no matchup.
   dispositions?: string[];
-  // The 40kdc `deployment_pattern_id` (e.g. "hammer-and-anvil"). Carried for
-  // downstream use; currently unread by the renderer.
+  // The 40kdc `deployment_pattern_id` (e.g. "hammer-and-anvil"). The renderer
+  // never reads it; `resolveTerrainLayout` joins on it, with `dispositions`, to
+  // pick the layout for a mission pairing.
   deployment_pattern_id?: string;
 };
 

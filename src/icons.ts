@@ -20,7 +20,7 @@ export type IconShape =
  * art into the box (the circle is never transformed, so its border stays in
  * inches).
  */
-export type IconDef = {
+type IconDef = {
   circle: { cx: number; cy: number; r: number };
   glyph: { transform?: string; body: IconShape[]; cutouts?: IconShape[] };
 };
@@ -62,7 +62,7 @@ const fortress: IconDef = {
   },
 };
 
-export const icons: Record<string, IconDef> = { skull, fortress };
+const icons: Record<string, IconDef> = { skull, fortress };
 
 export function makeShape(doc: SvgDocument, shape: IconShape): SvgNode {
   switch (shape.tag) {

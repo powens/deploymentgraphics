@@ -20,7 +20,7 @@ import { gwTemplatesReal } from "./presets/templates-real.js";
 import type { TerrainConfig } from "./terrain-config.js";
 
 /** A control key: both the URL param name and the {@link Controls} field name. */
-export type ControlKey =
+type ControlKey =
   | "da"
   | "db"
   | "lay"

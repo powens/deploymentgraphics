@@ -25,7 +25,7 @@ export interface SvgDocument {
 }
 
 /** A real SVG DOM element, usable wherever the renderer wants an `SvgNode`. */
-export type BrowserSvgNode = SVGElement & SvgNode;
+type BrowserSvgNode = SVGElement & SvgNode;
 
 /** The browser backend, narrowed to the DOM nodes it actually hands back. */
 export interface BrowserSvgDocument extends SvgDocument {

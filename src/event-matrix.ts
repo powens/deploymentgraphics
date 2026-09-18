@@ -12,7 +12,7 @@
 export type Layout = "A" | "B" | "C";
 
 /** One disposition pairing: per-disposition mission and per-layout deployment. */
-export interface EventMatrixEntry {
+interface EventMatrixEntry {
   /** Each disposition's primary mission for this pairing. */
   missions: Record<string, string>;
   /** The deployment (a mission/deployment id) used by each layout. */
