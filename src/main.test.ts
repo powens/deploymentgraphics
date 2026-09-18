@@ -201,7 +201,7 @@ describe("makeFeatures integration", () => {
   it("renders features declared in the selected layout", () => {
     const config = buildMinimalConfig();
     config.terrain.layout["1"].features = [
-      { type: "pipe", x: 5, y: 5, width: 6, height: 2, color: "rust", mirror: false },
+      { type: "gantry", x: 5, y: 5, width: 6, height: 2, color: "indigo", mirror: false },
     ];
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#features")!.childNodes.length).toBe(1);
@@ -213,7 +213,7 @@ describe("makeFeatures integration", () => {
       { type: "generator", x: 1, y: 1, width: 5, height: 3, color: "gunmetal", mirror: false },
     ];
     config.terrain.layout["1"].features = [
-      { type: "pipe", x: 5, y: 5, width: 6, height: 2, color: "rust", mirror: false },
+      { type: "gantry", x: 5, y: 5, width: 6, height: 2, color: "indigo", mirror: false },
     ];
     const svg = makeMissionCard(config);
     expect(svg.querySelector("#features")!.childNodes.length).toBe(2);

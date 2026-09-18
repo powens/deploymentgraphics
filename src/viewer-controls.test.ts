@@ -9,6 +9,8 @@ import {
   type ControlRow,
   type Controls,
 } from "./viewer-controls";
+import { resolveTerrainLayout } from "./event-matrix";
+import { gwTerrain } from "./presets/terrain";
 
 /**
  * The control set, pinned. Changing it is a persisted-shape change: bump
@@ -69,18 +71,23 @@ describe("controlSpec", () => {
 });
 
 describe("defaultControls", () => {
-  it("is the previous default render", () => {
+  it("is Take and Hold vs Take and Hold, layout B", () => {
     expect(defaultControls()).toEqual({
       da: "Take and Hold",
       db: "Take and Hold",
       lay: "B",
       m: "dawn_of_war",
-      t: "1",
+      t: "bm-take-vs-take-02",
       tpl: "real",
       grid: false,
       territory: true,
       rot: "0",
     });
+  });
+
+  it("draws the terrain layout its own pairing resolves to", () => {
+    const d = defaultControls();
+    expect(resolveTerrainLayout(gwTerrain.layout, d.da, d.db, d.m)).toBe(d.t);
   });
 
   it("hands out a fresh object", () => {
@@ -179,7 +186,7 @@ describe("controlsFromSearch", () => {
   });
 
   it("sanitizes what the URL carries", () => {
-    expect(controlsFromSearch("t=no-such-layout").t).toBe("1");
+    expect(controlsFromSearch("t=no-such-layout").t).toBe("bm-take-vs-take-02");
   });
 });
 
@@ -223,11 +230,11 @@ describe("initialControls", () => {
   it("restores a saved session, and lets it persist", () => {
     const initial = initialControls({
       search: "",
-      saved: savedSession({ controls: { t: "1", grid: true } }),
+      saved: savedSession({ controls: { t: "bm-take-vs-take-01", grid: true } }),
     });
     expect(initial.controls).toEqual({
       ...defaultControls(),
-      t: "1",
+      t: "bm-take-vs-take-01",
       grid: true,
     });
     expect(initial.mode).toBe("controls");
@@ -240,7 +247,7 @@ describe("initialControls", () => {
       search: "",
       saved: savedSession({ controls: { t: "no-such-layout", grid: "yes" } }),
     });
-    expect(initial.controls.t).toBe("1");
+    expect(initial.controls.t).toBe("bm-take-vs-take-02");
     expect(initial.controls.grid).toBe(false);
   });
 

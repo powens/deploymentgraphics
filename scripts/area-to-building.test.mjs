@@ -3,7 +3,7 @@ import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 
-// gw.yml templates referenced by the converter (subset, incl. shoe-mirror).
+// templates-simple.yml templates referenced by the converter (subset, incl. shoe-mirror).
 const GW_TEMPLATES = {
   "large-area": { width: 7, height: 11.5 },
   "small-area": { width: 4, height: 6 },

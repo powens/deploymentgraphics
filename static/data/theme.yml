@@ -1,5 +1,5 @@
 # All SVG visual properties live here — the single, opinionated theme.
-# Geometry (deployment/*.yml, terrain/gw.yml) and behaviour (base.yml draw
+# Geometry (deployment/*.yml, terrain/*.yml) and behaviour (base.yml draw
 # flags) carry no styling. snake_case keys are converted to kebab-case SVG
 # attributes; a key already in kebab-case (e.g. vector-effect) passes through
 # unchanged.

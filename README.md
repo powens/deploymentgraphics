@@ -35,7 +35,7 @@ overrides:
 const svg = makeMissionCard(
   buildConfig({
     mission: missions.search_and_destroy,
-    layout: "1", // draw terrain layout 1
+    layout: "bm-take-vs-take-03", // a battlemaster layout; search_and_destroy
     grid: true,
     territory: false,
   }),
@@ -97,7 +97,8 @@ YAML parsing or file IO at runtime:
   `crucible_of_battle`, `hammer_and_anvil`, `search_and_destroy`,
   `sweeping_engagement`, `tipping_point`). Each is also exported by name
   (`dawnOfWar`, …).
-- `gwTerrain` — building templates and two numbered layouts.
+- `gwTerrain` — building templates and the 45 battlemaster mission layouts
+  ported from 40kdc, keyed by layout id (`bm-take-vs-take-01`, …).
 - `baseConfig` — default board size (60×44 inches) and styling.
 - `buildConfig(options)` — merges a mission, terrain, and base into the
   `FullConfig` that `makeMissionCard` consumes.

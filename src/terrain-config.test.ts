@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import * as yaml from "js-yaml";
 import { type TerrainConfig } from "./terrain-config";
 import { resolvePlacement } from "./placement";
+import { features } from "./features";
 
 // Canvas size taken from static/data/base.yml (`size:`).
 const CANVAS = { width: 60, height: 44 };
@@ -12,52 +13,30 @@ const terrainUrl = (file: string) =>
 const loadTerrainYaml = (file: string) =>
   yaml.load(readFileSync(terrainUrl(file), "utf8")) as Partial<TerrainConfig>;
 
-describe("placeholder gw.yml", () => {
-  // gw.yml carries layouts only; templates live in templates-simple.yml. Merge
-  // them as gen-presets does to get a complete TerrainConfig for resolution.
-  const gwTerrain = {
+describe("combined.yml", () => {
+  // combined.yml carries layouts only; templates live in templates-simple.yml.
+  // Merge them as gen-presets does to get a complete TerrainConfig.
+  const terrain = {
     ...loadTerrainYaml("templates-simple.yml"),
-    ...loadTerrainYaml("gw.yml"),
+    ...loadTerrainYaml("combined.yml"),
   } as TerrainConfig;
 
-  it("defines the demo layout 1 (plus any 40kdc patch overlays)", () => {
-    // gw.yml carries the standalone demo layout "1"; it may also carry
-    // additive patch entries whose ids match a ported 40kdc layout (see
-    // convert-40kdc-terrain.mjs), so "1" is present but need not be the only key.
-    expect(Object.keys(gwTerrain.layout)).toContain("1");
-  });
-
   it("every building in every layout resolves without throwing", () => {
-    for (const [name, layout] of Object.entries(gwTerrain.layout)) {
-      // Patch overlays may carry only `features`, so guard the templates list.
-      for (const placement of layout.templates ?? []) {
+    for (const [name, layout] of Object.entries(terrain.layout)) {
+      for (const placement of layout.templates) {
         expect(
-          () => resolvePlacement(placement, gwTerrain.templates, CANVAS),
+          () => resolvePlacement(placement, terrain.templates, CANVAS),
           `layout ${name}, building type ${placement.type}`,
         ).not.toThrow();
       }
     }
   });
 
-  it("tags the two demo fortresses with opposite players", () => {
-    const icons = gwTerrain.layout["1"].icons ?? [];
-    const players = icons
-      .filter((i) => i.type === "fortress")
-      .map((i) => i.player);
-    expect(players).toContain("attacker");
-    expect(players).toContain("defender");
-  });
-
-  it("demos every feature type with a known palette colour", () => {
-    const features = gwTerrain.layout["1"].features ?? [];
-    const types = features.map((f) => f.type).sort();
-    expect(types).toEqual(["generator", "l-ruin", "l-ruin-roof", "pipe"]);
-    const palette = [
-      "stone", "rust", "sand", "green", "gunmetal", "bone", "teal", "indigo",
-    ];
-    for (const f of features) {
-      expect(palette, `feature ${f.type} colour`).toContain(f.color);
+  it("every feature has a draw function", () => {
+    for (const [name, layout] of Object.entries(terrain.layout)) {
+      for (const f of layout.features ?? []) {
+        expect(features, `layout ${name}`).toHaveProperty([f.type]);
+      }
     }
   });
 });
-

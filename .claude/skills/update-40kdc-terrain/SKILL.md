@@ -83,14 +83,9 @@ Past pulls carried non-obvious payloads:
   counts per layout** is the signature of a genuine upstream edit (the boards are
   180°-symmetric, so a moved piece moves in a pair); movement spread uniformly across every
   use of one composite is the signature of a bug in *our* transform.
-- **gw.yml patch overlays survive the re-pull.** A `gw.yml` entry whose id matches a ported
-  40kdc layout is an *additive patch* (its array fields append to the generated entry), used
-  to fill upstream content gaps durably. Don't edit the vendored source JSON to fix a piece —
-  it gets clobbered on the next pull. The mechanism is still fully supported, but there is
-  currently no live example: the one overlay this repo ever carried
-  (`disruption-vs-purge-the-foe-3`) was retired during the battlemaster-11e migration
-  because upstream filled the gap it used to patch. Note a patch is keyed by layout id, so
-  an id rename silently orphans it — check `gw.yml` against the new ids after a re-source.
+- **Fix upstream, not the vendored JSON.** Every layout is generated from the source JSON;
+  there is no hand-authored overlay. Editing the vendored files to fix a piece gets clobbered
+  on the next pull.
 
 ## The normalizer
 
@@ -228,7 +223,7 @@ to pick the `barricade` template, so its polygon is load-bearing beyond its bbox
 ### Don't reintroduce a proximity heuristic for catwalk roofing
 
 `ruin-to-feature.mjs` emits plain `l-ruin` everywhere and only *drops* catwalks; the `-roof`
-variants stay reachable for hand-authored `gw.yml` layouts. Upstream ships `pipes` as its own
+feature variants were deleted in #201 once nothing produced them. Upstream ships `pipes` as its own
 standalone composite, so no catwalk is ever a sibling of a ruin part, and no catwalk overlaps
 or bridges one anywhere in the corpus. This was a centroid-distance threshold
 (`ROOF_DISTANCE`) that had to be re-tuned every time a ruin was resized, and it was selecting
@@ -302,7 +297,7 @@ this skill, both of which describe upstream's schema and go stale the moment it 
 - Running `make update-terrain` and stopping — presets are now stale. Run `pnpm gen:presets`.
 - Treating a skipped `kotc`-style layout or a new `game_version` field as a regression.
 - Editing `combined.yml` or the source JSON by hand — both are generated / re-pulled. Edit
-  `templates-simple.yml`, `templates-real.yml`, `gw.yml`, or fix upstream.
+  `templates-simple.yml`, `templates-real.yml`, the converters, or fix upstream.
 - Re-pointing a renamed layout fixture without re-checking the property it was chosen for.
 - Reading a part's `footprint` as its extent directly. It is the extent today, but it
   was the roof for a while. Use `partExtent`, which reads both.

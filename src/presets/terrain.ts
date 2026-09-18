@@ -3,7 +3,7 @@
 
 import type { TerrainConfig } from "../terrain-config.js";
 
-/** Built-in templates and layouts (gw.yml demo + ported 40kdc pieces). */
+/** Built-in templates and the ported 40kdc battlemaster layouts. */
 export const gwTerrain: TerrainConfig = {
   templates: {
     "large-area": { width: 7, height: 11.5 },
@@ -41,77 +41,6 @@ export const gwTerrain: TerrainConfig = {
     },
   },
   layout: {
-    "1": {
-      templates: [
-        {
-          type: "large-pipes",
-          corners: { BL: { x: 12, y: 6 }, TL: { x: 14.5, y: 6 } },
-        },
-        {
-          type: "large-area",
-          corners: { TL: { x: 18.5, y: 0 }, TR: { x: 25.5, y: 0 } },
-        },
-        { type: "large-area", corners: { TR: { x: 17, y: 19.5 } } },
-        {
-          type: "small-pipes",
-          corners: { BL: { x: 17, y: 31 }, TL: { x: 19, y: 31 } },
-        },
-        { type: "small-pipes", corners: { BL: { x: 11, y: 39 } } },
-        { type: "shoe", corners: { TL: { x: 25, y: 16.25 } } },
-        { type: "small-area", corners: { BL: { x: 19.5, y: 44 } } },
-        {
-          type: "small-area",
-          corners: { BR: { x: 23.5, y: 38 }, TR: { x: 29.5, y: 38 } },
-        },
-      ],
-      icons: [
-        { type: "skull", pos: { x: 30, y: 22 } },
-        { type: "fortress", pos: { x: 46.5, y: 19 }, player: "defender" },
-        { type: "fortress", pos: { x: 13.5, y: 25 }, player: "attacker" },
-        { type: "skull", pos: { x: 22, y: 5 } },
-        { type: "skull", pos: { x: 38, y: 39 } },
-      ],
-      features: [
-        {
-          type: "l-ruin",
-          x: 10.5,
-          y: 24.5,
-          width: 7,
-          height: 5,
-          rotation: -90,
-          color: "green",
-          mirror: true,
-        },
-        {
-          type: "l-ruin-roof",
-          x: 43,
-          y: 3,
-          width: 5,
-          height: 7,
-          color: "green",
-          mirror: false,
-        },
-        {
-          type: "generator",
-          x: 28,
-          y: 21.5,
-          width: 5,
-          height: 3,
-          rotation: 90,
-          color: "teal",
-          mirror: false,
-        },
-        {
-          type: "pipe",
-          x: 33,
-          y: 15,
-          width: 6,
-          height: 2,
-          color: "rust",
-          mirror: false,
-        },
-      ],
-    },
     "bm-assets-vs-assets-01": {
       deployment_pattern_id: "sweeping-engagement",
       dispositions: ["Priority Assets", "Priority Assets"],

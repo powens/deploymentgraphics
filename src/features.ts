@@ -48,57 +48,6 @@ const generator: FeatureDraw = (w, h) => {
   return { body: [{ tag: "rect", x: 0, y: 0, width: w, height: h }], accent };
 };
 
-// Pipe: a thin capsule tube running down the centre of the box (rounded ends,
-// radius = half the tube thickness) sitting on a few small linear supports —
-// short struts that cross the tube and extend off both sides to the box edges,
-// like trestle legs. The radius is capped at half the width so a pipe resized
-// taller than it is wide stays a valid shape rather than producing negative
-// path coordinates.
-const pipe: FeatureDraw = (w, h) => {
-  const tube = h * 0.46; // thin pipe band, vertically centred
-  const top = (h - tube) / 2;
-  const bot = top + tube;
-  const r = Math.min(tube / 2, w / 2);
-  const d =
-    `M${r} ${top} L${w - r} ${top} A${r} ${r} 0 0 1 ${w - r} ${bot} ` +
-    `L${r} ${bot} A${r} ${r} 0 0 1 ${r} ${top} Z`;
-  const supportW = Math.max(0.15, tube * 0.4);
-  const start = Math.min(w * 0.2, w / 2);
-  const end = w - start;
-  const supports = Math.max(2, Math.min(5, Math.round(w / 2)));
-  const accent: IconShape[] = [];
-  for (let i = 0; i < supports; i++) {
-    const cx = start + ((end - start) * i) / (supports - 1);
-    const x = Math.min(Math.max(cx, supportW / 2), w - supportW / 2);
-    accent.push({ tag: "rect", x: x - supportW / 2, y: 0, width: supportW, height: h });
-  }
-  return { body: [{ tag: "path", d }], accent };
-};
-
-// L-ruin with a corner roof: the same two l-ruin walls (left + bottom, rubble
-// and all) plus a right-triangular floor/ceiling slab tucked into the inner
-// corner where they meet. The roof's right angle sits at the walls' inner
-// corner (so it rests against their inner faces rather than overlapping them);
-// its legs run two-thirds up and along the open span, and an accent beam hugs
-// the hypotenuse so the slab reads as a raised platform edge.
-const lRuinRoof: FeatureDraw = (w, h) => {
-  const base = lRuin(w, h);
-  const wall = Math.min(0.5, w, h);
-  const cx = wall; // inner corner x (right of the left wall)
-  const cy = h - wall; // inner corner y (top of the bottom wall)
-  const lw = ((w - wall) * 2) / 3;
-  const lh = ((h - wall) * 2) / 3;
-  const roof = `M${cx} ${cy - lh} V${cy} H${cx + lw} Z`;
-  const t = Math.min(0.4, lw * 0.3, lh * 0.3);
-  const beam =
-    `M${cx} ${cy - lh} L${cx + lw} ${cy} ` +
-    `L${cx + lw - t} ${cy} L${cx} ${cy - lh + t} Z`;
-  return {
-    body: [...base.body, { tag: "path", d: roof }],
-    accent: [...base.accent, { tag: "path", d: beam }],
-  };
-};
-
 // Horizontal mirror of `lRuin` (reflected across x = w/2): the outer corner
 // sits bottom-right with walls along the right and bottom edges. Needed for the
 // opposite-chirality 40kdc corner ruins (balanced-right, corner-right), which a
@@ -155,10 +104,8 @@ const gantry: FeatureDraw = (w, h) => {
 export const features: Record<string, FeatureDraw> = {
   "l-ruin": lRuin,
   "l-ruin-mirror": lRuinMirror,
-  "l-ruin-roof": lRuinRoof,
   generator,
   gantry,
-  pipe,
 };
 
 /** Deterministic def id for a feature shape, keyed by type + bounding box. */

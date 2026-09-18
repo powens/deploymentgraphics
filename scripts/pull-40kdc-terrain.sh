@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Pulls the upstream 40kdc-data terrain JSON (templates + layouts) into the
 # vendored source dir static/data/terrain/source/40kdc/. These files are the
-# input to scripts/convert-40kdc-terrain.mjs (pnpm convert:40kdc), which merges
-# them with gw.yml into static/data/terrain/combined.yml.
+# input to scripts/convert-40kdc-terrain.mjs (pnpm convert:40kdc), which writes
+# static/data/terrain/combined.yml from them.
 #
 # Run: scripts/pull-40kdc-terrain.sh  (or: make pull-terrain)
 set -euo pipefail

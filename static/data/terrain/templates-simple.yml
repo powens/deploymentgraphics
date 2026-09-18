@@ -6,8 +6,8 @@
 # (`points`: a closed ring of template-local { x, y } inches, bounding box
 # starting at 0,0; width/height derived).
 #
-# Layouts reference these by name (a building's `type:`) — see gw.yml and the
-# ported 40kdc layouts in combined.yml. This file is the single source of the
+# Layouts reference these by name (a building's `type:`) — see the ported
+# 40kdc layouts in combined.yml. This file is the single source of the
 # template definitions: combined.yml carries layouts only, and gen:presets
 # merges this file with combined.yml to build the gwTerrain preset.
 
