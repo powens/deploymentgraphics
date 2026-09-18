@@ -66,8 +66,6 @@ export type {
   BuildingPlacement,
   CanvasSize,
   CornerSpec,
-  PathSegment,
-  PathTemplate,
   Point,
   PolygonTemplate,
   RectTemplate,

@@ -66,7 +66,6 @@ describe("the package root", () => {
       "virtualSvgDocument",
       "injectTemplateDefs",
       "makeBuildings",
-      "segmentsToPathData",
       "eventMatrixKey",
       "resolveMission",
       "resolveTerrainLayout",

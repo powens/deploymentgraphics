@@ -10,14 +10,13 @@ const doc = browserSvgDocument();
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 describe("feature draw functions", () => {
-  it("registers the seven feature types", () => {
+  it("registers the six feature types", () => {
     expect(Object.keys(features).sort()).toEqual([
       "gantry",
       "generator",
       "l-ruin",
       "l-ruin-mirror",
       "l-ruin-roof",
-      "l-ruin-roof-mirror",
       "pipe",
     ]);
   });
@@ -45,16 +44,6 @@ describe("feature draw functions", () => {
     const wall = Math.min(0.5, w, h);
     expect(base.d).toContain(`H${wall}`);
     expect(mir.d).toContain(`H${w - wall}`);
-  });
-
-  it("gives the roof-mirror the same wall outline as l-ruin-mirror", () => {
-    const w = 5;
-    const h = 7;
-    const ruin = features["l-ruin-mirror"](w, h);
-    const roof = features["l-ruin-roof-mirror"](w, h);
-    // The roof variant adds the slab + beam on top of the same two walls.
-    expect(roof.body[0]).toEqual(ruin.body[0]);
-    expect(roof.body.length).toBe(ruin.body.length + 1);
   });
 
   it("returns a non-empty body at canonical and odd sizes", () => {

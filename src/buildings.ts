@@ -4,49 +4,14 @@ import {
   toPoint,
   type BuildingPlacement,
   type CanvasSize,
-  type PathSegment,
-  type Point,
   type Template,
 } from "./building-coordinates.js";
 import { placeBuildings, placedTransform } from "./placement.js";
 import type { SVGProperties } from "./types.js";
 
 /**
- * Builds the SVG path `d` data for a closed footprint: a move to `start`,
- * one command per segment (line / quadratic / cubic Bézier), then `Z`.
- */
-export function segmentsToPathData(
-  start: Point,
-  segments: PathSegment[],
-): string {
-  const s = toPoint(start, "path start");
-  let d = `M ${s.x} ${s.y}`;
-  for (const segment of segments) {
-    if ("line" in segment) {
-      const p = toPoint(segment.line, "path line");
-      d += ` L ${p.x} ${p.y}`;
-    } else if ("quad" in segment) {
-      const quad = toPoint(segment.quad, "path quad");
-      const control = toPoint(segment.control, "path quad control");
-      d += ` Q ${control.x} ${control.y} ${quad.x} ${quad.y}`;
-    } else if ("cubic" in segment) {
-      const cubic = toPoint(segment.cubic, "path cubic");
-      const c0 = toPoint(segment.controls[0], "path cubic control 0");
-      const c1 = toPoint(segment.controls[1], "path cubic control 1");
-      d += ` C ${c0.x} ${c0.y} ${c1.x} ${c1.y} ${cubic.x} ${cubic.y}`;
-    } else {
-      throw new Error(
-        `unrecognized path segment: ${JSON.stringify(segment)}`,
-      );
-    }
-  }
-  return `${d} Z`;
-}
-
-/**
- * Appends one shape definition per template into `defs`: a `<path>` for a
- * curved path template, a `<polygon>` for a polygon, a `<rect>` for a
- * rectangle. Each carries the id `template-<name>` so a building `<use>`
+ * Appends one shape definition per template into `defs`: a `<polygon>` for a
+ * polygon, a `<rect>` for a rectangle. Each carries the id `template-<name>` so a building `<use>`
  * can reference it.
  */
 export function injectTemplateDefs(
@@ -57,13 +22,7 @@ export function injectTemplateDefs(
 ): void {
   for (const [name, template] of Object.entries(templates)) {
     let shape: SvgNode;
-    if ("segments" in template) {
-      shape = doc.createElement("path");
-      shape.setAttribute(
-        "d",
-        segmentsToPathData(template.start, template.segments),
-      );
-    } else if ("points" in template) {
+    if ("points" in template) {
       shape = doc.createElement("polygon");
       shape.setAttribute(
         "points",

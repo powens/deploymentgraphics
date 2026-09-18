@@ -1,10 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { resolveCorner, templateBounds, toPoint } from "./building-coordinates";
-import type {
-  PolygonTemplate,
-  PathTemplate,
-  Template,
-} from "./building-coordinates";
+import type { PolygonTemplate } from "./building-coordinates";
 
 const canvas = { width: 60, height: 44 };
 
@@ -115,56 +111,6 @@ describe("templateBounds", () => {
     expect(() => templateBounds(poly, "poly")).toThrow(
       /positive width and height/i,
     );
-  });
-});
-
-describe("templateBounds with a path template", () => {
-  const pathTemplate: PathTemplate = {
-    width: 8,
-    height: 8,
-    start: { x: 4, y: 0 },
-    segments: [
-      { cubic: { x: 8, y: 4 }, controls: [{ x: 6, y: 0 }, { x: 8, y: 2 }] },
-      { line: { x: 4, y: 8 } },
-      { quad: { x: 0, y: 4 }, control: { x: 0, y: 8 } },
-      { line: { x: 4, y: 0 } },
-    ],
-  };
-
-  it("returns the declared size for a path template", () => {
-    expect(templateBounds(pathTemplate, "path")).toEqual({
-      width: 8,
-      height: 8,
-    });
-  });
-
-  it("throws on a non-positive width or height", () => {
-    expect(() => templateBounds({ ...pathTemplate, width: 0 }, "path")).toThrow(
-      /positive width and height/i,
-    );
-  });
-
-  it("throws when start is missing", () => {
-    const noStart = {
-      width: 8,
-      height: 8,
-      segments: pathTemplate.segments,
-    } as unknown as Template;
-    expect(() => templateBounds(noStart, "path")).toThrow(/path start/i);
-  });
-
-  it("throws when start is not a 2-number point", () => {
-    const badStart = { ...pathTemplate, start: {} } as unknown as Template;
-    expect(() => templateBounds(badStart, "path")).toThrow(/path start/i);
-  });
-
-  it("throws on fewer than 2 segments", () => {
-    expect(() =>
-      templateBounds(
-        { ...pathTemplate, segments: [{ line: { x: 4, y: 0 } }] },
-        "path",
-      ),
-    ).toThrow(/at least 2 segments/i);
   });
 });
 

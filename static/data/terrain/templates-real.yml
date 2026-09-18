@@ -5,9 +5,8 @@
 # picks one at runtime (the Templates control), and gen:presets uses
 # templates-simple.yml for the bundled preset.
 #
-# A template is a rectangle (`width`/`height`), a polygon footprint
-# (`points`: a closed ring of template-local { x, y } inches), or a curved path
-# footprint (`start` plus `segments` of line/quad/cubic Béziers). A polygon's
+# A template is a rectangle (`width`/`height`) or a polygon footprint
+# (`points`: a closed ring of template-local { x, y } inches). A polygon's
 # bounding box is normally derived from its points; here each polygon also
 # declares an explicit `width`/`height`, so the solid body fills that box at
 # the same size as its templates-simple.yml counterpart, and the small rubble

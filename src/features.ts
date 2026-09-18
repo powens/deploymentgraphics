@@ -118,26 +118,6 @@ const lRuinMirror: FeatureDraw = (w, h) => {
   };
 };
 
-// Horizontal mirror of `lRuinRoof`: the same right+bottom walls as
-// `lRuinMirror` plus the roof slab tucked into the bottom-right inner corner.
-const lRuinRoofMirror: FeatureDraw = (w, h) => {
-  const base = lRuinMirror(w, h);
-  const wall = Math.min(0.5, w, h);
-  const cx = w - wall; // inner corner x (left of the right wall)
-  const cy = h - wall; // inner corner y (top of the bottom wall)
-  const lw = ((w - wall) * 2) / 3;
-  const lh = ((h - wall) * 2) / 3;
-  const roof = `M${cx} ${cy - lh} V${cy} H${cx - lw} Z`;
-  const t = Math.min(0.4, lw * 0.3, lh * 0.3);
-  const beam =
-    `M${cx} ${cy - lh} L${cx - lw} ${cy} ` +
-    `L${cx - lw + t} ${cy} L${cx} ${cy - lh + t} Z`;
-  return {
-    body: [...base.body, { tag: "path", d: roof }],
-    accent: [...base.accent, { tag: "path", d: beam }],
-  };
-};
-
 // Gantry: a square deck (body) with an X cross-brace and four corner posts on
 // top (accent), reading as a braced raised platform. The two brace beams are
 // thin quads along the deck's diagonals; their thickness and the post radius
@@ -176,7 +156,6 @@ export const features: Record<string, FeatureDraw> = {
   "l-ruin": lRuin,
   "l-ruin-mirror": lRuinMirror,
   "l-ruin-roof": lRuinRoof,
-  "l-ruin-roof-mirror": lRuinRoofMirror,
   generator,
   gantry,
   pipe,

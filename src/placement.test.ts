@@ -10,7 +10,6 @@ import {
   type Placed,
 } from "./placement";
 import type {
-  PathTemplate,
   PolygonTemplate,
   Template,
 } from "./building-coordinates";
@@ -216,37 +215,6 @@ describe("resolvePlacement with a polygon template", () => {
         canvas,
       ),
     ).toThrow(/template edge/i);
-  });
-});
-
-describe("resolvePlacement with a path template", () => {
-  const pathTemplates: Record<string, PathTemplate> = {
-    bastion: {
-      width: 8,
-      height: 8,
-      start: { x: 4, y: 0 },
-      segments: [
-        { cubic: { x: 8, y: 4 }, controls: [{ x: 6, y: 0 }, { x: 8, y: 2 }] },
-        { cubic: { x: 4, y: 8 }, controls: [{ x: 8, y: 6 }, { x: 6, y: 8 }] },
-        { cubic: { x: 0, y: 4 }, controls: [{ x: 2, y: 8 }, { x: 0, y: 6 }] },
-        { cubic: { x: 4, y: 0 }, controls: [{ x: 0, y: 2 }, { x: 2, y: 0 }] },
-      ],
-    },
-  };
-
-  it("places a path template by pinning its declared bounding-box corners", () => {
-    // The declared bbox is 8x8, so TL->TR must span 8.
-    const result = resolvePlacement(
-      { type: "bastion", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 18, y: 5 } } },
-      pathTemplates,
-      canvas,
-    );
-    expect(result).toHaveLength(1);
-    expect(result[0]).toEqual({
-      name: "bastion",
-      box: { x: 10, y: 5, width: 8, height: 8 },
-      rotation: 0,
-    });
   });
 });
 
