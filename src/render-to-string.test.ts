@@ -50,7 +50,7 @@ const cases: [string, FullConfig][] = [
     withExtras(
       buildConfig({
         mission: missions.tipping_point,
-        layout: "1",
+        layout: "bm-take-vs-take-01",
         territory: false,
       }),
     ),

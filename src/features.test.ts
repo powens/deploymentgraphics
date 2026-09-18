@@ -10,14 +10,12 @@ const doc = browserSvgDocument();
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 describe("feature draw functions", () => {
-  it("registers the six feature types", () => {
+  it("registers the four feature types", () => {
     expect(Object.keys(features).sort()).toEqual([
       "gantry",
       "generator",
       "l-ruin",
       "l-ruin-mirror",
-      "l-ruin-roof",
-      "pipe",
     ]);
   });
 
@@ -53,11 +51,6 @@ describe("feature draw functions", () => {
     }
   });
 
-  it("keeps the pipe path valid (no negative coords) when taller than wide", () => {
-    const path = features.pipe(1.5, 4).body[0];
-    if (path.tag !== "path") throw new Error("expected a path body");
-    expect(path.d).not.toMatch(/-\d/);
-  });
 });
 
 describe("makeFeatures", () => {
@@ -79,7 +72,7 @@ describe("makeFeatures", () => {
     const g = asElement(
       makeFeatures(
         doc,
-        [place(), place({ type: "pipe", color: "rust" })],
+        [place(), place({ type: "gantry", color: "indigo" })],
         baseTheme,
         CANVAS,
       ),

@@ -8,9 +8,9 @@
 // trick used in area-to-building.mjs). Which pieces reach this converter -
 // and that catwalks reach none - is decided in layout-to-placements.mjs.
 //
-// No ruin is emitted as a `-roof` variant. Those types still exist and still
-// render (gw.yml hand-authors one), but nothing in the battlemaster corpus says
-// a catwalk rests on a ruin, so this converter has no grounds to pick one.
+// No ruin is emitted with a roof: nothing in the battlemaster corpus says a
+// catwalk rests on a ruin, so this converter has no grounds to draw one (and
+// the `l-ruin-roof` feature types were deleted in #201 for that reason).
 // Upstream ships `pipes` as its own standalone composite - composite-03 and
 // composite-30, whose only child is the pipes part - never as a child of a ruin
 // composite, and measured over all 45 mission layouts no catwalk overlaps a

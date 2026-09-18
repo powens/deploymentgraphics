@@ -1,4 +1,5 @@
-// Converts a 40kdc `area` piece into a gw.yml building-template placement.
+// Converts a 40kdc `area` piece into a templates-simple.yml building-template
+// placement.
 // The piece's own affine transform (centre on centroid -> mirror -> rotate ->
 // translate, matching terrain-resolver.mjs) is composed with a fixed rigid map
 // G (gw-local -> area-local). The G variant is chosen so its determinant

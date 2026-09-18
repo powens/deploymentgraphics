@@ -186,7 +186,9 @@ const controlRows = [
     key: "t",
     elementId: "terrain",
     kind: "select",
-    default: "1",
+    // The layout the default pairing above resolves to (Take and Hold vs Take
+    // and Hold on dawn_of_war), so the first render agrees with the dropdowns.
+    default: "bm-take-vs-take-02",
     allowed: Object.keys(gwTerrain.layout),
   },
   // Default to the detailed GW footprints; the illustrative "simple" set is opt-in.

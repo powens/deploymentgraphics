@@ -14,9 +14,9 @@ selects by that key, so `layout: "take-and-hold-mirror-3"` no longer resolves.
 
 The rename is upstream's: the 40kdc source re-exported its whole corpus under new
 ids, and this package passes them through rather than minting its own. No aliases
-are provided — pick the new id from the table below. The hand-authored demo
-layout `"1"` and the `templates-simple` layouts (`large-area`, `small-area`,
-`small-pipes`, `large-pipes`, `shoe-mirror`) are unaffected.
+are provided — pick the new id from the table below. The `templates-simple`
+layouts (`large-area`, `small-area`, `small-pipes`, `large-pipes`,
+`shoe-mirror`) are unaffected.
 
 The 15 matchups × 3 variants set is intact and the pairing is 1:1 — each row is
 the same matchup at the same variant index. Some matchup names swapped sides in
@@ -70,6 +70,14 @@ naming change only: the two dispositions on the layout are unchanged.
 | `take-and-hold-vs-reconnaissance-1`    | `bm-take-vs-recon-01` |
 | `take-and-hold-vs-reconnaissance-2`    | `bm-take-vs-recon-02` |
 | `take-and-hold-vs-reconnaissance-3`    | `bm-take-vs-recon-03` |
+**The demo layout `"1"` is removed; `gwTerrain` holds only the battlemaster
+layouts.** It was the one hand-authored layout (from `gw.yml`, now deleted),
+so `buildConfig({ layout: "1" })` now draws no terrain. Pick a 40kdc id instead,
+e.g. `bm-take-vs-take-02`, which the demo viewer now opens on. With it go the
+`l-ruin-roof` and `pipe` **feature** types, which only that layout used: a
+`FeaturePlacement` naming either now throws `unknown feature type`. (The `pipe`
+*building template*, which the battlemaster pipes use, is unchanged.)
+
 **`PathTemplate` and `PathSegment` are removed.** A building template is now a
 rectangle or a polygon; the curved-path form (`start` plus `segments`) is gone,
 along with its renderer. No template in either bundled set had used it since the

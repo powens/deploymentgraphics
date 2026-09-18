@@ -221,8 +221,7 @@ describe("ruins over the corpus", () => {
 
   it("emits no -roof variant, because no catwalk rests on a ruin", () => {
     // The corpus has no catwalk-on-ruin relation to read, in the data or in the
-    // geometry, so the converter emits plain l-ruin everywhere. (`l-ruin-roof`
-    // is still a live feature type - gw.yml hand-authors one.)
+    // geometry, so the converter emits plain l-ruin everywhere.
     //
     // Upstream ships `pipes` as its own standalone composite - composite-03 and
     // composite-30, each with the pipes part as its only child - so a catwalk is
@@ -284,7 +283,8 @@ describe("ruins over the corpus", () => {
 
   it("emits 16 whole-L ruins for every mission layout", () => {
     // Upstream filled the two variants that used to be short (12 each), so the
-    // corpus is now uniform - this is what retires the gw.yml patch overlay.
+    // corpus is now uniform - this is what retired the hand-authored patch
+    // overlay that used to fill the gap.
     for (const L of missionLayouts) {
       expect(ruinsOf(L).length, L.id).toBe(16);
     }

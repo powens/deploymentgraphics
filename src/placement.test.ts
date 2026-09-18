@@ -268,11 +268,11 @@ describe("mirror", () => {
 describe("resolveFeature", () => {
   it("treats the placement as the primary box and mirror-expands it", () => {
     const result = resolveFeature(
-      { type: "pipe", x: 12, y: 6, width: 10, height: 2.5, rotation: 45, color: "rust" },
+      { type: "gantry", x: 12, y: 6, width: 10, height: 2.5, rotation: 45, color: "indigo" },
       canvas,
     );
     expect(result[0]).toEqual({
-      name: "pipe",
+      name: "gantry",
       box: { x: 12, y: 6, width: 10, height: 2.5 },
       rotation: 45,
     });

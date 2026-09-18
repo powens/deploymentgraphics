@@ -74,7 +74,7 @@ describe("every bundled terrain layout", () => {
     // this list holds, so a converter that silently drops layouts would
     // otherwise shrink the coverage without failing anything. Update the
     // number deliberately when the 40kdc corpus gains or loses a layout.
-    expect(layoutNames.length).toBe(46);
+    expect(layoutNames.length).toBe(45);
   });
 
   it.each(layoutNames)("%s renders", (name) => {
