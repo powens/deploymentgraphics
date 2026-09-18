@@ -24,7 +24,7 @@ import {
 import type { FeaturePlacement } from "./terrain-config.ts";
 
 /** An axis-aligned box in canvas inches; (x,y) is the unrotated top-left. */
-export type Box = { x: number; y: number; width: number; height: number };
+type Box = { x: number; y: number; width: number; height: number };
 
 /**
  * The canonical resolved form of any board piece: an unrotated bounding box

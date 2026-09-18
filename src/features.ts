@@ -6,7 +6,7 @@ import type { FeaturePlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 
 /** A feature's geometry, split by how it is painted (see `makeFeatures`). */
-export type FeatureArt = { body: IconShape[]; accent: IconShape[] };
+type FeatureArt = { body: IconShape[]; accent: IconShape[] };
 
 /** Maps a bounding box (inches) to feature geometry in local 0..w / 0..h. */
 export type FeatureDraw = (w: number, h: number) => FeatureArt;
