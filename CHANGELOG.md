@@ -70,6 +70,11 @@ naming change only: the two dispositions on the layout are unchanged.
 | `take-and-hold-vs-reconnaissance-1`    | `bm-take-vs-recon-01` |
 | `take-and-hold-vs-reconnaissance-2`    | `bm-take-vs-recon-02` |
 | `take-and-hold-vs-reconnaissance-3`    | `bm-take-vs-recon-03` |
+**`IconPlacement.objective_role` is removed.** The converter used it to choose
+between the fortress and skull icons, then copied it onto every objective marker,
+where nothing read it. The icon `type` already records the only distinction it
+drew (`home` → `fortress`).
+
 **The demo layout `"1"` is removed; `gwTerrain` holds only the battlemaster
 layouts.** It was the one hand-authored layout (from `gw.yml`, now deleted),
 so `buildConfig({ layout: "1" })` now draws no terrain. Pick a 40kdc id instead,

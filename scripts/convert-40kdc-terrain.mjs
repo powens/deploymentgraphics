@@ -38,9 +38,9 @@ const out = { layout: {} };
 // layout with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
 // separate feature; excluding them keeps `make update-terrain` re-runnable and
 // auto-skips any future fan variant (also matchup-less) rather than throwing on
-// an unmapped template. Reading `corpus.missionLayouts` (rather than filtering
-// `corpus.layouts`) is what keeps that true: the corpus normalizes the mission
-// set without ever normalizing the layouts skipped here.
+// an unmapped template. `corpus.missionLayouts` is what keeps that true: the
+// corpus normalizes the mission set without ever normalizing the layouts
+// skipped here.
 const skipped = corpus.rawLayouts
   .filter((l) => !l.mission_matchup_id)
   .map((l) => l.id);

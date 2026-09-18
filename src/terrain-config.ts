@@ -3,16 +3,12 @@ import type { BuildingPlacement, Point, Template } from "./building-coordinates.
 /**
  * A placed icon marker: `type` selects a predefined icon, `pos` is its center
  * (inches). An optional `player` tints the disk with that player's deployment
- * colour; absent leaves the neutral theme.icon disk. `objective_role` carries
- * the ported 40kdc objective role (center / home / expansion) for markers
- * derived from objective pieces; it selects the icon (home → fortress) at
- * conversion time and is retained for any downstream use.
+ * colour; absent leaves the neutral theme.icon disk.
  */
 export type IconPlacement = {
   type: string;
   pos: Point;
   player?: "attacker" | "defender";
-  objective_role?: "center" | "home" | "expansion";
 };
 
 /**

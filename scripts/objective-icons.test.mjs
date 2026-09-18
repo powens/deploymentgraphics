@@ -1,8 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { objectiveIcons } from "./objective-icons.mjs";
 import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
+import { round } from "./emit-placement.mjs";
 
-const { layout: layoutById, footprintOf } = loadCorpus();
+const { missionLayouts, footprintOf } = loadCorpus();
+const layoutById = (id) => missionLayouts.find((l) => l.id === id);
 
 const iconsFor = (id) => objectiveIcons(layoutById(id));
 
@@ -26,22 +28,24 @@ describe("objectiveIcons", () => {
     expect(icons).toHaveLength(6);
   });
 
-  it("carries each piece's objective_role through to its marker", () => {
-    // Every objective in this layout is a `center`/`home`/`expansion` pair;
-    // after the touching `center` pair collapses, the five markers expose the
-    // roles 1×center + 2×home + 2×expansion.
-    const icons = iconsFor("bm-take-vs-take-01");
-    const roles = icons.map((i) => i.objective_role).sort();
-    expect(roles).toEqual(["center", "expansion", "expansion", "home", "home"]);
-  });
-
   it("renders home objectives with the fortress (home) icon, others with skull", () => {
-    const icons = iconsFor("bm-take-vs-take-01");
-    for (const icon of icons) {
-      const expected = icon.objective_role === "home" ? "fortress" : "skull";
-      expect(icon.type).toBe(expected);
-    }
-    expect(icons.filter((i) => i.type === "fortress")).toHaveLength(2);
+    // After the touching `center` pair collapses, this layout's five markers
+    // are 1×center + 2×home + 2×expansion. The fortresses sit exactly on the
+    // two `home` pieces (at the converter's 3dp); the markers carry no role.
+    const layout = layoutById("bm-take-vs-take-01");
+    const icons = objectiveIcons(layout);
+    const at = (p) => `${round(p.x)},${round(p.y)}`;
+    const homes = layout.pieces
+      .filter((p) => p.is_objective && p.objective_role === "home")
+      .map((p) => at(p.position))
+      .sort();
+    const fortresses = icons
+      .filter((i) => i.type === "fortress")
+      .map((i) => at(i.pos))
+      .sort();
+    expect(fortresses).toEqual(homes);
+    expect(icons.filter((i) => i.type === "skull")).toHaveLength(3);
+    for (const icon of icons) expect(icon).not.toHaveProperty("objective_role");
   });
 
   it("refuses a layout whose lookups were lost to a spread", () => {

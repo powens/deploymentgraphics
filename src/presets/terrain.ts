@@ -401,27 +401,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 7.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 9.725, y: 14.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 36.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.275, y: 29.576 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 50.275, y: 7.576 } },
+        { type: "skull", pos: { x: 9.725, y: 14.424 } },
+        { type: "fortress", pos: { x: 9.725, y: 36.424 } },
+        { type: "skull", pos: { x: 50.275, y: 29.576 } },
       ],
     },
     "bm-assets-vs-assets-02": {
@@ -796,27 +780,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 50.424, y: 10.778 },
-          objective_role: "home",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.576, y: 33.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 45.873, y: 33.329 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 14.127, y: 10.671 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 50.424, y: 10.778 } },
+        { type: "fortress", pos: { x: 9.576, y: 33.222 } },
+        { type: "skull", pos: { x: 45.873, y: 33.329 } },
+        { type: "skull", pos: { x: 14.127, y: 10.671 } },
       ],
     },
     "bm-assets-vs-assets-03": {
@@ -1200,27 +1168,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 10.424, y: 34.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 40.222, y: 36.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.576, y: 9.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 19.778, y: 7.576 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 10.424, y: 34.222 } },
+        { type: "skull", pos: { x: 40.222, y: 36.424 } },
+        { type: "fortress", pos: { x: 49.576, y: 9.778 } },
+        { type: "skull", pos: { x: 19.778, y: 7.576 } },
       ],
     },
     "bm-disrupt-vs-assets-01": {
@@ -1577,27 +1529,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 7.576 },
-          objective_role: "home",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 10.725, y: 13.576 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 49.275, y: 30.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 36.424 },
-          objective_role: "home",
-        },
+        { type: "fortress", pos: { x: 50.275, y: 7.576 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 10.725, y: 13.576 } },
+        { type: "skull", pos: { x: 49.275, y: 30.424 } },
+        { type: "fortress", pos: { x: 9.725, y: 36.424 } },
       ],
     },
     "bm-disrupt-vs-assets-02": {
@@ -1957,27 +1893,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 47.275, y: 17.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 40.222, y: 36.576 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 12.725, y: 26.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 19.778, y: 7.424 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 47.275, y: 17.576 } },
+        { type: "skull", pos: { x: 40.222, y: 36.576 } },
+        { type: "fortress", pos: { x: 12.725, y: 26.424 } },
+        { type: "skull", pos: { x: 19.778, y: 7.424 } },
       ],
     },
     "bm-disrupt-vs-assets-03": {
@@ -2340,27 +2260,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 47.569, y: 33.03 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 12.431, y: 10.97 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 50.222, y: 8.427 },
-          objective_role: "home",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.778, y: 35.573 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 47.569, y: 33.03 } },
+        { type: "skull", pos: { x: 12.431, y: 10.97 } },
+        { type: "fortress", pos: { x: 50.222, y: 8.427 } },
+        { type: "fortress", pos: { x: 9.778, y: 35.573 } },
       ],
     },
     "bm-disrupt-vs-disrupt-01": {
@@ -2729,31 +2633,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 29.75, y: 22.25 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 13.121, y: 10.768 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.089, y: 32.205 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 46.879, y: 33.232 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.911, y: 11.795 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 29.75, y: 22.25 } },
+        { type: "skull", pos: { x: 13.121, y: 10.768 } },
+        { type: "fortress", pos: { x: 10.089, y: 32.205 } },
+        { type: "skull", pos: { x: 46.879, y: 33.232 } },
+        { type: "fortress", pos: { x: 49.911, y: 11.795 } },
       ],
     },
     "bm-disrupt-vs-disrupt-02": {
@@ -3137,27 +3021,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 42.576, y: 34.222 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 8.424, y: 32.275 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 17.424, y: 9.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 51.576, y: 11.725 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 42.576, y: 34.222 } },
+        { type: "fortress", pos: { x: 8.424, y: 32.275 } },
+        { type: "skull", pos: { x: 17.424, y: 9.778 } },
+        { type: "fortress", pos: { x: 51.576, y: 11.725 } },
       ],
     },
     "bm-disrupt-vs-disrupt-03": {
@@ -3529,27 +3397,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 10.725, y: 35.424 },
-          objective_role: "home",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 51.424, y: 27.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 8.576, y: 16.222 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 10.725, y: 35.424 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 51.424, y: 27.778 } },
+        { type: "fortress", pos: { x: 49.275, y: 8.576 } },
+        { type: "skull", pos: { x: 8.576, y: 16.222 } },
       ],
     },
     "bm-disrupt-vs-recon-01": {
@@ -3912,36 +3764,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 48.222, y: 17.427 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 41.222, y: 36.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 24.74, y: 19.902 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.778, y: 26.573 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 35.26, y: 24.098 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 18.778, y: 7.576 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 48.222, y: 17.427 } },
+        { type: "skull", pos: { x: 41.222, y: 36.424 } },
+        { type: "skull", pos: { x: 24.74, y: 19.902 } },
+        { type: "fortress", pos: { x: 11.778, y: 26.573 } },
+        { type: "skull", pos: { x: 35.26, y: 24.098 } },
+        { type: "skull", pos: { x: 18.778, y: 7.576 } },
       ],
     },
     "bm-disrupt-vs-recon-02": {
@@ -4313,36 +4141,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 48.222, y: 7.427 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 25.365, y: 15.936 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.334, y: 24.7 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.778, y: 36.573 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.635, y: 28.064 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 9.666, y: 19.3 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 48.222, y: 7.427 } },
+        { type: "skull", pos: { x: 25.365, y: 15.936 } },
+        { type: "skull", pos: { x: 50.334, y: 24.7 } },
+        { type: "fortress", pos: { x: 11.778, y: 36.573 } },
+        { type: "skull", pos: { x: 34.635, y: 28.064 } },
+        { type: "skull", pos: { x: 9.666, y: 19.3 } },
       ],
     },
     "bm-disrupt-vs-recon-03": {
@@ -4708,36 +4512,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 44.275, y: 6.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.936, y: 21.138 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.51, y: 32.182 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 15.725, y: 37.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 25.064, y: 22.862 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 9.49, y: 11.818 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 44.275, y: 6.576 } },
+        { type: "skull", pos: { x: 34.936, y: 21.138 } },
+        { type: "skull", pos: { x: 50.51, y: 32.182 } },
+        { type: "fortress", pos: { x: 15.725, y: 37.424 } },
+        { type: "skull", pos: { x: 25.064, y: 22.862 } },
+        { type: "skull", pos: { x: 9.49, y: 11.818 } },
       ],
     },
     "bm-purge-vs-assets-01": {
@@ -5106,36 +4886,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 33.753, y: 24.374 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.222, y: 27.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 16.725, y: 36.073 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 26.247, y: 19.626 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 9.778, y: 16.576 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 43.275, y: 7.927 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 33.753, y: 24.374 } },
+        { type: "skull", pos: { x: 50.222, y: 27.424 } },
+        { type: "fortress", pos: { x: 16.725, y: 36.073 } },
+        { type: "skull", pos: { x: 26.247, y: 19.626 } },
+        { type: "skull", pos: { x: 9.778, y: 16.576 } },
+        { type: "fortress", pos: { x: 43.275, y: 7.927 } },
       ],
     },
     "bm-purge-vs-assets-02": {
@@ -5501,36 +5257,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 28.535, y: 18.24 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 42.424, y: 34.275 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 31.465, y: 25.76 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 17.576, y: 9.725 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 28.535, y: 18.24 } },
+        { type: "skull", pos: { x: 42.424, y: 34.275 } },
+        { type: "fortress", pos: { x: 50.275, y: 8.576 } },
+        { type: "fortress", pos: { x: 9.725, y: 35.424 } },
+        { type: "skull", pos: { x: 31.465, y: 25.76 } },
+        { type: "skull", pos: { x: 17.576, y: 9.725 } },
       ],
     },
     "bm-purge-vs-assets-03": {
@@ -5896,36 +5628,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 12.427, y: 20.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 22.576, y: 7.725 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 31.854, y: 17.803 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 47.573, y: 23.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 37.424, y: 36.275 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 28.146, y: 26.197 },
-          objective_role: "center",
-        },
+        { type: "fortress", pos: { x: 12.427, y: 20.778 } },
+        { type: "skull", pos: { x: 22.576, y: 7.725 } },
+        { type: "skull", pos: { x: 31.854, y: 17.803 } },
+        { type: "fortress", pos: { x: 47.573, y: 23.222 } },
+        { type: "skull", pos: { x: 37.424, y: 36.275 } },
+        { type: "skull", pos: { x: 28.146, y: 26.197 } },
       ],
     },
     "bm-purge-vs-disrupt-01": {
@@ -6294,36 +6002,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 49.275, y: 9.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 46.429, y: 34.27 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 35.97, y: 23.688 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.725, y: 34.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 13.571, y: 9.73 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 24.03, y: 20.312 },
-          objective_role: "center",
-        },
+        { type: "fortress", pos: { x: 49.275, y: 9.576 } },
+        { type: "skull", pos: { x: 46.429, y: 34.27 } },
+        { type: "skull", pos: { x: 35.97, y: 23.688 } },
+        { type: "fortress", pos: { x: 10.725, y: 34.424 } },
+        { type: "skull", pos: { x: 13.571, y: 9.73 } },
+        { type: "skull", pos: { x: 24.03, y: 20.312 } },
       ],
     },
     "bm-purge-vs-disrupt-02": {
@@ -6689,36 +6373,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 48.275, y: 17.427 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 42.424, y: 34.275 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.305, y: 22.441 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.725, y: 26.573 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 17.576, y: 9.725 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 25.695, y: 21.559 },
-          objective_role: "center",
-        },
+        { type: "fortress", pos: { x: 48.275, y: 17.427 } },
+        { type: "skull", pos: { x: 42.424, y: 34.275 } },
+        { type: "skull", pos: { x: 34.305, y: 22.441 } },
+        { type: "fortress", pos: { x: 11.725, y: 26.573 } },
+        { type: "skull", pos: { x: 17.576, y: 9.725 } },
+        { type: "skull", pos: { x: 25.695, y: 21.559 } },
       ],
     },
     "bm-purge-vs-disrupt-03": {
@@ -7090,36 +6750,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 49.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 33.908, y: 25.694 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.086, y: 25.188 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 26.092, y: 18.306 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 9.914, y: 18.812 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 49.275, y: 8.576 } },
+        { type: "skull", pos: { x: 33.908, y: 25.694 } },
+        { type: "skull", pos: { x: 50.086, y: 25.188 } },
+        { type: "fortress", pos: { x: 10.725, y: 35.424 } },
+        { type: "skull", pos: { x: 26.092, y: 18.306 } },
+        { type: "skull", pos: { x: 9.914, y: 18.812 } },
       ],
     },
     "bm-purge-vs-purge-01": {
@@ -7488,36 +7124,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 6.975, y: 10.069 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 23.222, y: 17.427 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 36.778, y: 26.573 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 53.025, y: 33.931 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 35.424 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 6.975, y: 10.069 } },
+        { type: "skull", pos: { x: 23.222, y: 17.427 } },
+        { type: "fortress", pos: { x: 50.275, y: 8.576 } },
+        { type: "skull", pos: { x: 36.778, y: 26.573 } },
+        { type: "skull", pos: { x: 53.025, y: 33.931 } },
+        { type: "fortress", pos: { x: 9.725, y: 35.424 } },
       ],
     },
     "bm-purge-vs-purge-02": {
@@ -7883,36 +7495,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 11.86, y: 31.461 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 17.427, y: 7.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 48.14, y: 12.539 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 42.573, y: 36.222 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 29.424, y: 11.778 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 30.576, y: 32.222 },
-          objective_role: "center",
-        },
+        { type: "fortress", pos: { x: 11.86, y: 31.461 } },
+        { type: "skull", pos: { x: 17.427, y: 7.778 } },
+        { type: "fortress", pos: { x: 48.14, y: 12.539 } },
+        { type: "skull", pos: { x: 42.573, y: 36.222 } },
+        { type: "skull", pos: { x: 29.424, y: 11.778 } },
+        { type: "skull", pos: { x: 30.576, y: 32.222 } },
       ],
     },
     "bm-purge-vs-purge-03": {
@@ -8287,36 +7875,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 52.681, y: 30.025 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 36.573, y: 23.725 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 7.319, y: 13.975 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 23.427, y: 20.275 },
-          objective_role: "center",
-        },
+        { type: "fortress", pos: { x: 9.725, y: 35.424 } },
+        { type: "skull", pos: { x: 52.681, y: 30.025 } },
+        { type: "skull", pos: { x: 36.573, y: 23.725 } },
+        { type: "fortress", pos: { x: 50.275, y: 8.576 } },
+        { type: "skull", pos: { x: 7.319, y: 13.975 } },
+        { type: "skull", pos: { x: 23.427, y: 20.275 } },
       ],
     },
     "bm-purge-vs-recon-01": {
@@ -8694,36 +8258,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 35.222, y: 36.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 48.424, y: 18.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 36.067, y: 22.365 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.576, y: 25.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 23.933, y: 21.635 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 24.778, y: 7.576 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 35.222, y: 36.424 } },
+        { type: "fortress", pos: { x: 48.424, y: 18.778 } },
+        { type: "skull", pos: { x: 36.067, y: 22.365 } },
+        { type: "fortress", pos: { x: 11.576, y: 25.222 } },
+        { type: "skull", pos: { x: 23.933, y: 21.635 } },
+        { type: "skull", pos: { x: 24.778, y: 7.576 } },
       ],
     },
     "bm-purge-vs-recon-02": {
@@ -9095,36 +8635,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 9.725, y: 17.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 23.971, y: 23.124 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 39.222, y: 6.427 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.275, y: 26.576 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 36.029, y: 20.876 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 20.778, y: 37.573 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 9.725, y: 17.424 } },
+        { type: "skull", pos: { x: 23.971, y: 23.124 } },
+        { type: "fortress", pos: { x: 39.222, y: 6.427 } },
+        { type: "skull", pos: { x: 50.275, y: 26.576 } },
+        { type: "skull", pos: { x: 36.029, y: 20.876 } },
+        { type: "fortress", pos: { x: 20.778, y: 37.573 } },
       ],
     },
     "bm-purge-vs-recon-03": {
@@ -9499,36 +9015,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 51.424, y: 12.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 35.099, y: 22.627 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 44.928, y: 33.126 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 8.576, y: 31.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 24.901, y: 21.373 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 15.072, y: 10.874 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 51.424, y: 12.778 } },
+        { type: "skull", pos: { x: 35.099, y: 22.627 } },
+        { type: "skull", pos: { x: 44.928, y: 33.126 } },
+        { type: "fortress", pos: { x: 8.576, y: 31.222 } },
+        { type: "skull", pos: { x: 24.901, y: 21.373 } },
+        { type: "skull", pos: { x: 15.072, y: 10.874 } },
       ],
     },
     "bm-recon-vs-assets-01": {
@@ -9906,27 +9398,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 10.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 47.524, y: 33.345 },
-          objective_role: "expansion",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 33.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 12.476, y: 10.655 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 50.275, y: 10.576 } },
+        { type: "skull", pos: { x: 47.524, y: 33.345 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 9.725, y: 33.424 } },
+        { type: "skull", pos: { x: 12.476, y: 10.655 } },
       ],
     },
     "bm-recon-vs-assets-02": {
@@ -10298,27 +9774,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 43.424, y: 33.278 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.573, y: 11.725 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 16.576, y: 10.722 },
-          objective_role: "expansion",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 10.427, y: 32.275 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 43.424, y: 33.278 } },
+        { type: "fortress", pos: { x: 49.573, y: 11.725 } },
+        { type: "skull", pos: { x: 16.576, y: 10.722 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 10.427, y: 32.275 } },
       ],
     },
     "bm-recon-vs-assets-03": {
@@ -10684,27 +10144,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 48.275, y: 8.576 },
-          objective_role: "home",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 9.778, y: 12.576 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.222, y: 31.424 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 48.275, y: 8.576 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 9.778, y: 12.576 } },
+        { type: "fortress", pos: { x: 11.725, y: 35.424 } },
+        { type: "skull", pos: { x: 50.222, y: 31.424 } },
       ],
     },
     "bm-recon-vs-recon-01": {
@@ -11070,36 +10514,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 8.576, y: 16.222 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 51.424, y: 27.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 32.635, y: 26.064 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 27.365, y: 17.936 },
-          objective_role: "center",
-        },
+        { type: "skull", pos: { x: 8.576, y: 16.222 } },
+        { type: "fortress", pos: { x: 10.725, y: 35.424 } },
+        { type: "skull", pos: { x: 51.424, y: 27.778 } },
+        { type: "skull", pos: { x: 32.635, y: 26.064 } },
+        { type: "fortress", pos: { x: 49.275, y: 8.576 } },
+        { type: "skull", pos: { x: 27.365, y: 17.936 } },
       ],
     },
     "bm-recon-vs-recon-02": {
@@ -11474,36 +10894,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 13.121, y: 10.768 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.911, y: 11.795 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 46.879, y: 33.232 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.753, y: 21.57 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.089, y: 32.205 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 25.247, y: 22.43 },
-          objective_role: "center",
-        },
+        { type: "skull", pos: { x: 13.121, y: 10.768 } },
+        { type: "fortress", pos: { x: 49.911, y: 11.795 } },
+        { type: "skull", pos: { x: 46.879, y: 33.232 } },
+        { type: "skull", pos: { x: 34.753, y: 21.57 } },
+        { type: "fortress", pos: { x: 10.089, y: 32.205 } },
+        { type: "skull", pos: { x: 25.247, y: 22.43 } },
       ],
     },
     "bm-recon-vs-recon-03": {
@@ -11887,36 +11283,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 17.427, y: 9.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 25.966, y: 22.544 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 8.427, y: 32.275 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 42.573, y: 34.222 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 51.573, y: 11.725 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.034, y: 21.456 },
-          objective_role: "center",
-        },
+        { type: "skull", pos: { x: 17.427, y: 9.778 } },
+        { type: "skull", pos: { x: 25.966, y: 22.544 } },
+        { type: "fortress", pos: { x: 8.427, y: 32.275 } },
+        { type: "skull", pos: { x: 42.573, y: 34.222 } },
+        { type: "fortress", pos: { x: 51.573, y: 11.725 } },
+        { type: "skull", pos: { x: 34.034, y: 21.456 } },
       ],
     },
     "bm-take-vs-disrupt-01": {
@@ -12294,27 +11666,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 10.778, y: 13.573 },
-          objective_role: "expansion",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 49.222, y: 30.427 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.275, y: 7.576 },
-          objective_role: "home",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.725, y: 36.424 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 10.778, y: 13.573 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 49.222, y: 30.427 } },
+        { type: "fortress", pos: { x: 49.275, y: 7.576 } },
+        { type: "fortress", pos: { x: 10.725, y: 36.424 } },
       ],
     },
     "bm-take-vs-disrupt-02": {
@@ -12692,27 +12048,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 46.879, y: 33.232 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 50.275, y: 8.576 },
-          objective_role: "home",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 13.121, y: 10.768 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.725, y: 35.424 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 46.879, y: 33.232 } },
+        { type: "fortress", pos: { x: 50.275, y: 8.576 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 13.121, y: 10.768 } },
+        { type: "fortress", pos: { x: 9.725, y: 35.424 } },
       ],
     },
     "bm-take-vs-disrupt-03": {
@@ -13078,27 +12418,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 13.427, y: 22.275 },
-          objective_role: "home",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 46.573, y: 21.725 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 37.424, y: 36.275 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 22.576, y: 7.725 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 13.427, y: 22.275 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 46.573, y: 21.725 } },
+        { type: "skull", pos: { x: 37.424, y: 36.275 } },
+        { type: "skull", pos: { x: 22.576, y: 7.725 } },
       ],
     },
     "bm-take-vs-prio-01": {
@@ -13479,36 +12803,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 8.576, y: 33.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 15.121, y: 9.768 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 24.067, y: 22.365 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 51.424, y: 10.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 44.879, y: 34.232 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 35.933, y: 21.635 },
-          objective_role: "center",
-        },
+        { type: "fortress", pos: { x: 8.576, y: 33.222 } },
+        { type: "skull", pos: { x: 15.121, y: 9.768 } },
+        { type: "skull", pos: { x: 24.067, y: 22.365 } },
+        { type: "fortress", pos: { x: 51.424, y: 10.778 } },
+        { type: "skull", pos: { x: 44.879, y: 34.232 } },
+        { type: "skull", pos: { x: 35.933, y: 21.635 } },
       ],
     },
     "bm-take-vs-prio-02": {
@@ -13889,36 +13189,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 24.905, y: 25.649 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.576, y: 32.222 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 35.095, y: 18.351 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.424, y: 11.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 35.225, y: 37.424 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 24.775, y: 6.576 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 24.905, y: 25.649 } },
+        { type: "fortress", pos: { x: 10.576, y: 32.222 } },
+        { type: "skull", pos: { x: 35.095, y: 18.351 } },
+        { type: "fortress", pos: { x: 49.424, y: 11.778 } },
+        { type: "skull", pos: { x: 35.225, y: 37.424 } },
+        { type: "skull", pos: { x: 24.775, y: 6.576 } },
       ],
     },
     "bm-take-vs-prio-03": {
@@ -14287,36 +13563,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 50.275, y: 26.573 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 21.778, y: 37.573 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 23.974, y: 21.35 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 38.222, y: 6.427 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 9.725, y: 17.427 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 36.026, y: 22.65 },
-          objective_role: "center",
-        },
+        { type: "skull", pos: { x: 50.275, y: 26.573 } },
+        { type: "fortress", pos: { x: 21.778, y: 37.573 } },
+        { type: "skull", pos: { x: 23.974, y: 21.35 } },
+        { type: "fortress", pos: { x: 38.222, y: 6.427 } },
+        { type: "skull", pos: { x: 9.725, y: 17.427 } },
+        { type: "skull", pos: { x: 36.026, y: 22.65 } },
       ],
     },
     "bm-take-vs-purge-01": {
@@ -14682,36 +13934,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 25.975, y: 18.446 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 48.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 10.725, y: 13.427 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.025, y: 25.554 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 49.275, y: 30.573 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 25.975, y: 18.446 } },
+        { type: "fortress", pos: { x: 48.275, y: 8.576 } },
+        { type: "skull", pos: { x: 10.725, y: 13.427 } },
+        { type: "skull", pos: { x: 34.025, y: 25.554 } },
+        { type: "fortress", pos: { x: 11.725, y: 35.424 } },
+        { type: "skull", pos: { x: 49.275, y: 30.573 } },
       ],
     },
     "bm-take-vs-purge-02": {
@@ -15086,36 +14314,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 10.576, y: 9.725 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 25.976, y: 19.707 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 49.424, y: 34.275 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 34.024, y: 24.293 },
-          objective_role: "center",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.725, y: 35.424 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 10.576, y: 9.725 } },
+        { type: "skull", pos: { x: 25.976, y: 19.707 } },
+        { type: "fortress", pos: { x: 49.275, y: 8.576 } },
+        { type: "skull", pos: { x: 49.424, y: 34.275 } },
+        { type: "skull", pos: { x: 34.024, y: 24.293 } },
+        { type: "fortress", pos: { x: 10.725, y: 35.424 } },
       ],
     },
     "bm-take-vs-purge-03": {
@@ -15484,36 +14688,12 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "skull",
-          pos: { x: 26.134, y: 24.191 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 37.573, y: 36.222 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 49.424, y: 10.778 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 33.866, y: 19.809 },
-          objective_role: "center",
-        },
-        {
-          type: "skull",
-          pos: { x: 22.427, y: 7.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 10.576, y: 33.222 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 26.134, y: 24.191 } },
+        { type: "skull", pos: { x: 37.573, y: 36.222 } },
+        { type: "fortress", pos: { x: 49.424, y: 10.778 } },
+        { type: "skull", pos: { x: 33.866, y: 19.809 } },
+        { type: "skull", pos: { x: 22.427, y: 7.778 } },
+        { type: "fortress", pos: { x: 10.576, y: 33.222 } },
       ],
     },
     "bm-take-vs-recon-01": {
@@ -15894,27 +15074,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 51.573, y: 12.725 },
-          objective_role: "home",
-        },
-        {
-          type: "fortress",
-          pos: { x: 8.427, y: 31.275 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 16.427, y: 9.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "skull",
-          pos: { x: 43.573, y: 34.222 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 51.573, y: 12.725 } },
+        { type: "fortress", pos: { x: 8.427, y: 31.275 } },
+        { type: "skull", pos: { x: 16.427, y: 9.778 } },
+        { type: "skull", pos: { x: 43.573, y: 34.222 } },
       ],
     },
     "bm-take-vs-recon-02": {
@@ -16295,27 +15459,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 46.222, y: 7.927 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 10.778, y: 16.573 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 13.778, y: 36.073 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 49.222, y: 27.427 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 46.222, y: 7.927 } },
+        { type: "skull", pos: { x: 10.778, y: 16.573 } },
+        { type: "fortress", pos: { x: 13.778, y: 36.073 } },
+        { type: "skull", pos: { x: 49.222, y: 27.427 } },
       ],
     },
     "bm-take-vs-recon-03": {
@@ -16693,27 +15841,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        {
-          type: "fortress",
-          pos: { x: 48.275, y: 8.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 46.646, y: 34.408 },
-          objective_role: "expansion",
-        },
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "fortress",
-          pos: { x: 11.725, y: 35.424 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 13.354, y: 9.592 },
-          objective_role: "expansion",
-        },
+        { type: "fortress", pos: { x: 48.275, y: 8.576 } },
+        { type: "skull", pos: { x: 46.646, y: 34.408 } },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "fortress", pos: { x: 11.725, y: 35.424 } },
+        { type: "skull", pos: { x: 13.354, y: 9.592 } },
       ],
     },
     "bm-take-vs-take-01": {
@@ -17073,27 +16205,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 18.781, y: 6.573 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 11.778, y: 26.424 },
-          objective_role: "home",
-        },
-        {
-          type: "fortress",
-          pos: { x: 48.222, y: 17.576 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 41.219, y: 37.427 },
-          objective_role: "expansion",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 18.781, y: 6.573 } },
+        { type: "fortress", pos: { x: 11.778, y: 26.424 } },
+        { type: "fortress", pos: { x: 48.222, y: 17.576 } },
+        { type: "skull", pos: { x: 41.219, y: 37.427 } },
       ],
     },
     "bm-take-vs-take-02": {
@@ -17462,27 +16578,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 9.427, y: 18.778 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 29.725, y: 7.427 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 50.573, y: 25.222 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 30.275, y: 36.573 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 9.427, y: 18.778 } },
+        { type: "fortress", pos: { x: 29.725, y: 7.427 } },
+        { type: "skull", pos: { x: 50.573, y: 25.222 } },
+        { type: "fortress", pos: { x: 30.275, y: 36.573 } },
       ],
     },
     "bm-take-vs-take-03": {
@@ -17866,27 +16966,11 @@ export const gwTerrain: TerrainConfig = {
         },
       ],
       icons: [
-        { type: "skull", pos: { x: 30, y: 22 }, objective_role: "center" },
-        {
-          type: "skull",
-          pos: { x: 47.776, y: 33.655 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 50.463, y: 10.451 },
-          objective_role: "home",
-        },
-        {
-          type: "skull",
-          pos: { x: 12.224, y: 10.345 },
-          objective_role: "expansion",
-        },
-        {
-          type: "fortress",
-          pos: { x: 9.537, y: 33.549 },
-          objective_role: "home",
-        },
+        { type: "skull", pos: { x: 30, y: 22 } },
+        { type: "skull", pos: { x: 47.776, y: 33.655 } },
+        { type: "fortress", pos: { x: 50.463, y: 10.451 } },
+        { type: "skull", pos: { x: 12.224, y: 10.345 } },
+        { type: "fortress", pos: { x: 9.537, y: 33.549 } },
       ],
     },
   },
