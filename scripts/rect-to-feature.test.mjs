@@ -7,7 +7,7 @@ import {
   rectFeaturePlacement,
 } from "./rect-to-feature.mjs";
 
-const { layouts, footprintOf } = loadCorpus();
+const { missionLayouts, footprintOf } = loadCorpus();
 
 const CANVAS = { width: 60, height: 44 };
 
@@ -33,7 +33,7 @@ function featureFootprint(pl) {
 // source. The piece rides along with its layout, which carries the lookups
 // needed to resolve it.
 const sample = {};
-for (const L of layouts) {
+for (const L of missionLayouts) {
   for (const p of L.pieces) {
     if (!isRectFeatureTemplate(p.template)) continue;
     sample[p.template] ??= { piece: p, layout: L };

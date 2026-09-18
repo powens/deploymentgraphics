@@ -10,8 +10,8 @@
 // symmetry, their midpoint is also the board centre.
 //
 // Each source objective carries an `objective_role` (center / home /
-// expansion); it rides along on the marker. The `home` role renders as the
-// keep/fortress icon, every other role as the neutral skull.
+// expansion). It picks the icon - `home` renders as the keep/fortress, every
+// other role as the neutral skull - and is not carried onto the marker.
 //
 // Touching is measured as the crossing-aware gap between the two resolved
 // footprint polygons (ringGap). Across the vendored layouts: 25 of the 28
@@ -34,7 +34,7 @@ const TOUCH_GAP = 0.5;
  * as a single marker at the average of their positions.
  *
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
- * @returns {Array<{ type: "skull", pos: { x: number, y: number } }>}
+ * @returns {Array<{ type: "skull" | "fortress", pos: { x: number, y: number } }>}
  */
 export function objectiveIcons(layout) {
   // A layout derived by spreading (`{ ...layout, pieces }`) loses the
@@ -89,13 +89,10 @@ export function objectiveIcons(layout) {
     const x = positions.reduce((s, p) => s + p.x, 0) / n;
     const y = positions.reduce((s, p) => s + p.y, 0) / n;
     // The "home" objective renders as the keep/fortress icon; every other role
-    // keeps the neutral skull. The role rides along on the marker for any
-    // downstream (e.g. theme) use.
-    const marker = {
+    // keeps the neutral skull.
+    return {
       type: role === "home" ? "fortress" : "skull",
       pos: { x: round(x), y: round(y) },
     };
-    if (role) marker.objective_role = role;
-    return marker;
   });
 }

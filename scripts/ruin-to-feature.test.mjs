@@ -17,7 +17,7 @@ import {
 } from "./ruin-to-feature.mjs";
 import { layoutPlacements } from "./layout-to-placements.mjs";
 
-const { layouts, missionLayouts, footprintOf, gwTemplates } = loadCorpus();
+const { missionLayouts, footprintOf, gwTemplates } = loadCorpus();
 
 // The ruins one layout emits, read back off the single classification pass that
 // decides which pieces are ruins (scripts/layout-to-placements.mjs).
@@ -87,7 +87,7 @@ function featureFootprint(pl) {
 // The piece rides along with its layout, which carries the lookups needed to
 // resolve it.
 const sample = {};
-for (const L of layouts) {
+for (const L of missionLayouts) {
   for (const p of L.pieces) {
     if (!isRuinTemplate(p.template)) continue;
     const fp = p.footprint ?? footprintOf(p.template);
@@ -209,7 +209,7 @@ describe("roofing guard geometry", () => {
 
 describe("ruins over the corpus", () => {
   it("emits an l-ruin or l-ruin-mirror for every corner piece", () => {
-    const L = layouts.find((l) => l.id === "bm-purge-vs-purge-02");
+    const L = missionLayouts.find((l) => l.id === "bm-purge-vs-purge-02");
     const features = ruinsOf(L);
     expect(features.length).toBe(
       L.pieces.filter((p) => isRuinTemplate(p.template)).length,
