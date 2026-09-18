@@ -2,11 +2,9 @@
 # These shapes are illustrative, not official GW shapes — replace them
 # when transcribing real terrain.
 #
-# A template is a rectangle (`width`/`height`), a polygon footprint
+# A template is a rectangle (`width`/`height`) or a polygon footprint
 # (`points`: a closed ring of template-local { x, y } inches, bounding box
-# starting at 0,0; width/height derived), or a curved path footprint
-# (`start` plus `segments` of line/quad/cubic Béziers, with a declared
-# `width`/`height` bounding box).
+# starting at 0,0; width/height derived).
 #
 # Layouts reference these by name (a building's `type:`) — see gw.yml and the
 # ported 40kdc layouts in combined.yml. This file is the single source of the

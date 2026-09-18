@@ -62,55 +62,19 @@ export type RectTemplate = { width: number; height: number };
  */
 export type PolygonTemplate = { points: Point[]; width?: number; height?: number };
 
-/** One segment of a path footprint: a line, quadratic, or cubic Bézier. */
-export type PathSegment =
-  | { line: Point }
-  | { quad: Point; control: Point }
-  | { cubic: Point; controls: [Point, Point] };
+/** A building template — a rectangle or a polygon. */
+export type Template = RectTemplate | PolygonTemplate;
 
 /**
- * A freeform curved footprint: a `start` point and an ordered list of
- * segments (the path auto-closes back to `start`). Its bounding box is
- * declared, not derived from the geometry.
- */
-export type PathTemplate = {
-  width: number;
-  height: number;
-  start: Point;
-  segments: PathSegment[];
-};
-
-/** A building template — a rectangle, a polygon, or a curved path. */
-export type Template = RectTemplate | PolygonTemplate | PathTemplate;
-
-/**
- * The bounding-box size of a template. A rectangle and a path return their
- * stored/declared size; a polygon's size is derived from its points (the
+ * The bounding-box size of a template. A rectangle returns its stored size; a
+ * polygon returns its declared size, or else one derived from its points (the
  * bbox origin is required to be 0,0, so width/height are the maximum x/y).
- * Throws when a template is not a valid rectangle, polygon, or path.
+ * Throws when a template is not a valid rectangle or polygon.
  */
 export function templateBounds(
   template: Template,
   name: string,
 ): { width: number; height: number } {
-  if ("segments" in template) {
-    const { width, height, start, segments } = template;
-    if (
-      typeof width !== "number" ||
-      width <= 0 ||
-      typeof height !== "number" ||
-      height <= 0
-    ) {
-      throw new Error(
-        `template ${name}: path needs a positive width and height`,
-      );
-    }
-    toPoint(start, `template ${name}: path start`);
-    if (!Array.isArray(segments) || segments.length < 2) {
-      throw new Error(`template ${name}: path needs at least 2 segments`);
-    }
-    return { width, height };
-  }
   if ("points" in template) {
     const { points } = template;
     if (!Array.isArray(points) || points.length < 3) {
@@ -147,8 +111,7 @@ export function templateBounds(
     return { width: template.width, height: template.height };
   }
   throw new Error(
-    `template ${name}: must define width/height, polygon points, or ` +
-      `path segments`,
+    `template ${name}: must define width/height or polygon points`,
   );
 }
 

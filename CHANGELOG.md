@@ -70,6 +70,12 @@ naming change only: the two dispositions on the layout are unchanged.
 | `take-and-hold-vs-reconnaissance-1`    | `bm-take-vs-recon-01` |
 | `take-and-hold-vs-reconnaissance-2`    | `bm-take-vs-recon-02` |
 | `take-and-hold-vs-reconnaissance-3`    | `bm-take-vs-recon-03` |
+**`PathTemplate` and `PathSegment` are removed.** A building template is now a
+rectangle or a polygon; the curved-path form (`start` plus `segments`) is gone,
+along with its renderer. No template in either bundled set had used it since the
+last one was dropped in #116, and nothing the 40kdc converter emits produces one.
+Trace a curved footprint as a polygon instead.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's

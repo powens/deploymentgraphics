@@ -9,7 +9,6 @@ export const ICON_SIZE = 4;
 
 export type IconShape =
   | { tag: "circle"; cx: number; cy: number; r: number }
-  | { tag: "ellipse"; cx: number; cy: number; rx: number; ry: number }
   | { tag: "rect"; x: number; y: number; width: number; height: number }
   | { tag: "path"; d: string };
 
@@ -71,14 +70,6 @@ export function makeShape(doc: SvgDocument, shape: IconShape): SvgNode {
       el.setAttribute("cx", `${shape.cx}`);
       el.setAttribute("cy", `${shape.cy}`);
       el.setAttribute("r", `${shape.r}`);
-      return el;
-    }
-    case "ellipse": {
-      const el = doc.createElement("ellipse");
-      el.setAttribute("cx", `${shape.cx}`);
-      el.setAttribute("cy", `${shape.cy}`);
-      el.setAttribute("rx", `${shape.rx}`);
-      el.setAttribute("ry", `${shape.ry}`);
       return el;
     }
     case "rect": {

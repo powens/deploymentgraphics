@@ -1,15 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
-import {
-  makeBuildings,
-  injectTemplateDefs,
-  segmentsToPathData,
-} from "./buildings";
-import type {
-  Point,
-  PathSegment,
-  PathTemplate,
-} from "./building-coordinates";
+import { makeBuildings, injectTemplateDefs } from "./buildings";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
 
 const doc = browserSvgDocument();
@@ -187,78 +178,3 @@ describe("polygon templates", () => {
   });
 });
 
-describe("path templates", () => {
-  const start: Point = { x: 0, y: 0 };
-  const segments: PathSegment[] = [
-    { line: { x: 4, y: 0 } },
-    { quad: { x: 4, y: 4 }, control: { x: 6, y: 2 } },
-    { cubic: { x: 0, y: 4 }, controls: [{ x: 3, y: 6 }, { x: 1, y: 5 }] },
-  ];
-
-  it("segmentsToPathData builds an M/L/Q/C/Z path string", () => {
-    expect(segmentsToPathData(start, segments)).toBe(
-      "M 0 0 L 4 0 Q 6 2 4 4 C 3 6 1 5 0 4 Z",
-    );
-  });
-
-  it("segmentsToPathData throws on an unrecognized segment", () => {
-    expect(() =>
-      segmentsToPathData(start, [{ bogus: { x: 1, y: 1 } }] as unknown as PathSegment[]),
-    ).toThrow(/unrecognized/i);
-  });
-
-  it("throws on a legacy array start (not {x, y})", () => {
-    expect(() =>
-      segmentsToPathData([4, 0] as unknown as Point, [
-        { line: { x: 4, y: 8 } },
-      ]),
-    ).toThrow(/expected \{ x, y \}/i);
-  });
-
-  it("injectTemplateDefs emits a <path> for a path template", () => {
-    const defs = doc.createElement("defs");
-    const templates: Record<string, PathTemplate> = {
-      bastion: { width: 4, height: 4, start, segments },
-    };
-    injectTemplateDefs(doc, templates, defs);
-    const path = defs.querySelector("#template-bastion");
-    expect(path).not.toBeNull();
-    expect(path!.tagName).toBe("path");
-    expect(path!.getAttribute("d")).toBe(
-      "M 0 0 L 4 0 Q 6 2 4 4 C 3 6 1 5 0 4 Z",
-    );
-  });
-
-  it("injectTemplateDefs applies svg properties to a path template", () => {
-    const defs = doc.createElement("defs");
-    const templates: Record<string, PathTemplate> = {
-      bastion: { width: 4, height: 4, start, segments },
-    };
-    injectTemplateDefs(doc, templates, defs, () => ({ fill: "#808080" }));
-    expect(defs.querySelector("#template-bastion")!.getAttribute("fill")).toBe(
-      "#808080",
-    );
-  });
-
-  it("makeBuildings emits a <use> referencing a path template", () => {
-    const templates: Record<string, PathTemplate> = {
-      bastion: {
-        width: 8,
-        height: 8,
-        start: { x: 0, y: 0 },
-        segments: [{ line: { x: 8, y: 0 } }, { line: { x: 8, y: 8 } }, { line: { x: 0, y: 8 } }],
-      },
-    };
-    const group = asElement(
-      makeBuildings(
-        doc,
-        [{ type: "bastion", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 18, y: 5 } } }],
-        templates,
-        canvas,
-      ),
-    );
-    expect(group.querySelector("use")!.getAttribute("href")).toBe(
-      "#template-bastion",
-    );
-  });
-});
