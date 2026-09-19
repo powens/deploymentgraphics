@@ -9,7 +9,7 @@ function buildMinimalConfig(): FullConfig {
     base: {
       size: { width: 60, height: 44 },
       half_way_lines: { draw: true },
-      building: { draw: true },
+      territory: { draw: true },
       grid: { draw: false },
     },
     terrain: {
@@ -23,11 +23,10 @@ function buildMinimalConfig(): FullConfig {
     },
     deployment: {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 10 }] },
       defender: { deployment_zone: [{ x: 0, y: 44 }, { x: 60, y: 44 }, { x: 60, y: 34 }] },
     },
-  } as unknown as FullConfig;
+  };
 }
 
 const config = buildMinimalConfig();
@@ -258,7 +257,6 @@ describe("makeDeploymentZone rendering", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }] },
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }] },
     };
@@ -271,7 +269,6 @@ describe("makeDeploymentZone rendering", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }], mask_center: 9 },
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }], mask_center: 9 },
     };
@@ -295,7 +292,6 @@ describe("makeDeploymentZone rendering", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }] },
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }] },
     };
@@ -315,18 +311,16 @@ describe("territory divider", () => {
         size: { width: 60, height: 44 },
         half_way_lines: { draw: false },
         territory: { draw },
-        building: { draw: false },
         grid: { draw: false },
       },
       terrain: { layout_name: "1", templates: {}, layout: { "1": { templates: [] } } },
       deployment: {
         name: "Test",
-        home_edge: "long",
         ...(territory ? { territory } : {}),
         attacker: { deployment_zone: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 10 }] },
         defender: { deployment_zone: [{ x: 0, y: 44 }, { x: 60, y: 44 }, { x: 60, y: 34 }] },
       },
-    } as unknown as FullConfig;
+    };
   }
 
   const line = { start: { x: 0, y: 0 }, end: { x: 60, y: 44 } };

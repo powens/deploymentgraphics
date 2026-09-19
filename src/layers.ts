@@ -69,6 +69,18 @@ export interface Layer {
 /** A layer plus its presence rule: written once, read by both halves. */
 type LayerRow = Layer & { readonly draws: boolean };
 
+/**
+ * Read one of `BaseConfig`'s `{ draw?: boolean }` toggles.
+ *
+ * An absent `draw` means something different per toggle - half-way lines and
+ * the territory line default on, the grid defaults off - and it used to be
+ * spelled three different ways in three places, one of them optional-chaining
+ * through fields `FullConfig` declares required. Each row names its own default
+ * here instead, beside the layer the toggle gates.
+ */
+const drawn = (toggle: { draw?: boolean }, whenAbsent: boolean): boolean =>
+  toggle.draw ?? whenAbsent;
+
 function deploymentZone(
   doc: SvgDocument,
   config: FullConfig,
@@ -301,13 +313,12 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
     // Grid first so it sits behind everything else.
     {
       id: "grid",
-      draws: config?.base?.grid?.draw === true,
+      draws: drawn(config.base.grid, false),
       draw: (doc) => grid(doc, config, theme),
     },
     {
-      // Absent `draw` defaults to on; only an explicit `false` suppresses.
       id: "half-way-lines",
-      draws: config.base.half_way_lines.draw !== false,
+      draws: drawn(config.base.half_way_lines, true),
       draw: (doc) => halfwayLines(doc, config, theme),
     },
     {
@@ -315,7 +326,7 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
       id: "territory",
       draws:
         Boolean(config.deployment.territory) &&
-        config.base.territory.draw !== false,
+        drawn(config.base.territory, true),
       draw: (doc) => territoryLine(doc, config, theme),
     },
     {

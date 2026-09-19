@@ -8,7 +8,7 @@ function configWith(over: Partial<FullConfig> = {}): FullConfig {
     base: {
       size: { width: 60, height: 44 },
       half_way_lines: {},
-      building: {},
+      territory: {},
       grid: {},
     },
     terrain: {
@@ -26,12 +26,11 @@ function configWith(over: Partial<FullConfig> = {}): FullConfig {
     },
     deployment: {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [] },
       defender: { deployment_zone: [] },
     },
     ...over,
-  } as unknown as FullConfig;
+  };
 }
 
 describe("resolveLayout", () => {
@@ -67,7 +66,7 @@ describe("resolveLayout", () => {
     ];
     const r = resolveLayout(config);
     // top-level first, then the layout's — order matters for draw order.
-    expect(r.features.map((f: { type: string }) => f.type)).toEqual(["generator", "l-ruin"]);
+    expect(r.features.map((f) => f.type)).toEqual(["generator", "l-ruin"]);
   });
 
   it("still surfaces top-level features when no layout is selected", () => {

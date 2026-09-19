@@ -89,6 +89,18 @@ along with its renderer. No template in either bundled set had used it since the
 last one was dropped in #116, and nothing the 40kdc converter emits produces one.
 Trace a curved footprint as a polygon instead.
 
+**`FullConfig` drops two fields the renderer never read.**
+
+- `base.building.draw` is gone from `BaseConfig`. Nothing has ever read it: the
+  bundled `baseConfig` shipped `building: { draw: false }` while every card drew
+  its buildings, so the published type documented a toggle that did not exist.
+  A hand-built config that still sets it is now a type error; delete the key.
+- `deployment.home_edge` is gone from `DeploymentConfig`, and from the six
+  bundled missions with it. It named the board edge a player deploys from —
+  real mission information, but nothing in the render path consulted it, so a
+  consumer hand-building a `FullConfig` had to supply a value that did nothing.
+  If you were reading it off a bundled mission, carry your own table.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's
