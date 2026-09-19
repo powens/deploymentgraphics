@@ -5,10 +5,41 @@ import {
   partExtent,
   pieceMatrix,
 } from "./battlemaster-normalize.mjs";
-import { matvec } from "../src/geometry.ts";
+import { FLIP_X, IDENTITY, matvec, rotationMatrix } from "../src/geometry.ts";
 
-// A minimal stand-in for the vendored data: one composite whose footprint is
-// byte-identical to `area-short-line` (so VARIANT is identity), carrying two
+// `variantOf` fits each composite against its class's pinned reference, so a
+// fixture table has to carry that reference. These stand in for upstream's
+// traced outlines: the fit needs a shape with no rigid self-symmetry, which an
+// L has, and nothing else - a fixture composite drawn as the reference under
+// the rigid map W comes out registered at `W . refV`.
+const REF_RING = [
+  { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 1 },
+  { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 0, y: 2 },
+];
+const ringUnder = (M) => ({
+  type: "polygon",
+  points: REF_RING.map((p) => matvec(M, p)),
+});
+const REFERENCE = {
+  // Pinned at R180, so a footprint drawn at R180 fits at W = R180 and comes
+  // out at the identity - which is what every ShortLine fixture below wants.
+  ShortLine: ["bm-composite-shortline-barrier-348db27c93", rotationMatrix(180)],
+  // Pinned at R90.FX, so a footprint drawn at R0.FX comes out at
+  // FLIP_X . R90.FX = R270 - the one registered variant that is not its own
+  // inverse, which "anchors children through a variant that is not
+  // self-inverse" below is about.
+  Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", FLIP_X],
+};
+/** The class reference entry a fixture table needs, for `cls`. */
+const referenceEntry = (cls) => {
+  const [id] = REFERENCE[cls];
+  return [id, { id, name: `Battlemaster ${cls} reference`, footprint: ringUnder(IDENTITY) }];
+};
+/** The footprint a fixture composite of `cls` carries to be registered. */
+const fixtureFootprint = (cls) => ringUnder(REFERENCE[cls][1]);
+
+// A minimal stand-in for the vendored data: one composite registered at the
+// identity (see REFERENCE above), carrying two
 // parts - one that needs a chirality flip and one that does not - plus the two
 // legacy templates they map onto, which normalizeLayout reads to compute each
 // child's anchor offset. Both footprints are copied verbatim from
@@ -73,7 +104,7 @@ const templatesById = new Map([
       id: "bm-composite-shortline-31-bbbbbbbbbb",
       name: "Battlemaster ShortLine 31",
       kind: "area",
-      footprint: { type: "polygon", points: [] },
+      footprint: fixtureFootprint("ShortLine"),
       features: [
         {
           id: "feature-1",
@@ -90,7 +121,7 @@ const templatesById = new Map([
       id: "bm-composite-shortline-30-aaaaaaaaaa",
       name: "Battlemaster ShortLine 30",
       kind: "area",
-      footprint: { type: "polygon", points: [] },
+      footprint: fixtureFootprint("ShortLine"),
       features: [
         {
           id: "feature-1",
@@ -106,6 +137,7 @@ const templatesById = new Map([
       ],
     },
   ],
+  referenceEntry("ShortLine"),
 ]);
 
 const layoutWith = (piece) => ({
@@ -313,9 +345,11 @@ describe("normalizeLayout", () => {
     // silence - it would lose to the template's under F/Z, so the part would
     // quietly draw at the wrong size.
     const withFootprint = new Map([
+      referenceEntry("ShortLine"),
       ["bm-composite-shortline-30-aaaaaaaaaa", {
         id: "bm-composite-shortline-30-aaaaaaaaaa",
         name: "Battlemaster ShortLine 30",
+        footprint: fixtureFootprint("ShortLine"),
         features: [{ id: "f", template: "bm-part-pipes-fc0edd53ea",
                      position: { x: 0, y: 0 },
                      footprint: { type: "rectangle", width: 1, height: 1 } }],
@@ -328,9 +362,11 @@ describe("normalizeLayout", () => {
 
   it("throws on an unmapped part", () => {
     const bad = new Map([
+      referenceEntry("ShortLine"),
       ["bm-composite-shortline-30-aaaaaaaaaa", {
         id: "bm-composite-shortline-30-aaaaaaaaaa",
         name: "Battlemaster ShortLine 30",
+        footprint: fixtureFootprint("ShortLine"),
         features: [{ id: "f", template: "bm-part-obelisk-0123456789",
                      position: { x: 0, y: 0 } }],
       }],
@@ -382,10 +418,11 @@ describe("partExtent / partAnchorShift", () => {
     const templates = new Map([
       ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
       ["bm-part-tower-ddab4cb687", walled],
+      referenceEntry("ShortLine"),
       ["bm-composite-shortline-90-cccccccccc", {
         id: "bm-composite-shortline-90-cccccccccc",
         name: "Battlemaster ShortLine 90",
-        footprint: { type: "polygon", points: [] },
+        footprint: fixtureFootprint("ShortLine"),
         features: [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
                      position: { x: 3, y: 7 } }],
       }],
@@ -418,8 +455,14 @@ describe("fields the re-source introduced", () => {
       footprint: { type: "rectangle", width: 1, height: 1 },
     }],
   ]);
-  const composite = (id, name, features) =>
-    new Map([...templates, [id, { id, name, footprint: { type: "polygon", points: [] }, features }]]);
+  const composite = (id, name, features) => {
+    const cls = name.split(" ")[1];
+    return new Map([
+      ...templates,
+      referenceEntry(cls),
+      [id, { id, name, footprint: fixtureFootprint(cls), features }],
+    ]);
+  };
   const run = (id, name, features, piece = {}) =>
     normalizeLayout(
       { id: "fixture", pieces: [{ id: "area-01", piece_type: "area", template: id,
@@ -452,7 +495,8 @@ describe("fields the re-source introduced", () => {
   });
 
   it("anchors children through a variant that is not self-inverse", () => {
-    // Triangle#12 registers R270, the first variant that is not its own inverse.
+    // The `-flip` Triangle registers R270, the one variant that is not its own
+    // inverse.
     // The child's anchor has to undo V with a real inverse: whatever V is, the
     // child must resolve to the same point upstream's feature does, which with
     // an unrotated parent is `feature.position` itself.
