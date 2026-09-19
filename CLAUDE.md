@@ -12,10 +12,11 @@ pnpm lint && pnpm type-check   # CI does NOT type-check; run it yourself
 pnpm gen:presets[:check]       # static/data/*.yml -> src/presets/*.ts
 pnpm convert:40kdc[:check]     # vendored 40kdc JSON -> static/data/terrain/combined.yml
 make serve                     # demo with live reload (serves static/ over dist/)
+pnpm build                     # demo bundle -> dist/bundle.js (CI's "build" step)
 pnpm build:lib                 # publishable lib/ (tsc + scripts/rewrite-dts-extensions.mjs)
 ```
 
-CI order: convert:40kdc:check, gen:presets:check, lint, test, build.
+CI order: convert:40kdc:check, gen:presets:check, lint, test, build (the demo bundle, not build:lib).
 
 ## Layout
 
