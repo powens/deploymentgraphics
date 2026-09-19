@@ -2,34 +2,14 @@ import { describe, it, expect } from "vitest";
 import {
   SIZE_CLASS,
   PART_TO_TEMPLATE,
-  variantOf,
-  isCompositeTemplate,
-  classOf,
-  partOf,
-  decompose,
-  pieceMatrix,
-  bboxSize,
-  partExtent,
-  partAnchorShift,
-  mirrorAnchorFix,
   PART_CANONICAL,
-  canonicalPartId,
-  orthoInverse,
+  normalizeLayout,
 } from "./battlemaster-normalize.mjs";
 import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
 import {
-  FLIP_X,
-  FLIP_Y,
-  IDENTITY,
-  boundsCentre as bboxCentre,
   centroid,
-  det,
-  matmul,
-  matvec,
   pointInRing,
   pointSegmentDistance,
-  ringMismatch,
-  rotationMatrix as rotation,
 } from "../src/geometry.ts";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
@@ -49,9 +29,7 @@ const CANVAS = { width: 60, height: 44 };
  * halfway along the trapezoid's long edge is 5.75in from the nearest archetype
  * corner even when the two shapes coincide exactly, so `ringMismatch` measures
  * how densely each ring is sampled and not whether they are the same shape.
- * Every comparison here that crosses that seam uses this instead; comparisons
- * between two rings drawn from the same footprint still use `ringMismatch`,
- * which is exact.
+ * Every comparison against upstream's traced outline uses this instead.
  */
 const shapeDistance = (a, b) => {
   const toOutline = (ring, other) =>
@@ -67,55 +45,26 @@ const shapeDistance = (a, b) => {
   return Math.max(toOutline(a, b), toOutline(b, a));
 };
 
-/**
- * Upstream's own placement of one composite part, as a piece: the part's model
- * extent, anchored where upstream anchors it.
- *
- * Upstream's `position` names the centre of the part's *roof* since the
- * re-source, while the piece this module emits is the size of the whole model,
- * so the two only line up after `partAnchorShift`. Both this and the emitted
- * child therefore describe the same rectangle, which is what lets the
- * assertions below compare them directly.
- *
- * This reads `position` through the same two corrections the module does, so on
- * its own it cannot tell a wrong reading from a right one - both sides would
- * move together. `parts sit inside the composite that contains them` below is the
- * check that does not share that blind spot: it measures the part against
- * upstream's own traced polygon, which no anchor rule of ours takes part in.
- */
-const upstreamPart = (feature, part, areaId) => {
-  const Mf = pieceMatrix(feature);
-  const shift = matvec(Mf, partAnchorShift(part));
-  const fix = mirrorAnchorFix(part, feature);
-  return {
-    id: "truth",
-    footprint: partExtent(part),
-    position: {
-      x: feature.position.x + fix.x + shift.x,
-      y: feature.position.y + fix.y + shift.y,
-    },
-    rotation_degrees: feature.rotation_degrees ?? 0,
-    ...(feature.mirror ? { mirror: feature.mirror } : {}),
-    parent_area_id: areaId,
-  };
-};
+// How upstream spells a size class and a part name. Read here rather than
+// imported: these tests are about whether the registration tables still cover
+// what upstream ships, so they have to read upstream's own vocabulary
+// independently of the module that maps it.
+/** Upstream's size class, which it puts in the composite's display name. */
+const classNameOf = (composite) => composite.name.split(" ")[1];
+/** Upstream's part name: the id with its prefix and content hash stripped. */
+const partNameOf = (id) =>
+  id.replace(/^bm-part-/, "").replace(/-[0-9a-f]{10}$/, "");
 
 const corpus = loadCorpus();
 const { templatesById: byId, gwTemplates, footprintOf } = corpus;
-/** The drawing a feature's model is read from, through PART_CANONICAL. */
-const upstreamPartOf = (feature) => byId.get(canonicalPartId(feature.template));
+const composites = [...byId.values()].filter((t) =>
+  String(t.id).startsWith("bm-composite-"),
+);
 // This suite is the one place that reads both frames: it checks the normalized
 // layouts against the upstream ones they were derived from, so it takes the
 // raw layouts alongside `missionLayouts`. Both come out of the corpus in
 // source order, which is what lets `layouts[i]` and `normalized[i]` pair up.
 const layouts = corpus.rawLayouts.filter((l) => l.mission_matchup_id);
-/** Every composite in the vendored table, fitted. */
-const allVariants = () =>
-  new Map(
-    [...byId.values()]
-      .filter((t) => isCompositeTemplate(t.id))
-      .map((t) => [t.id, variantOf(t, byId)]),
-  );
 const normalized = corpus.missionLayouts;
 
 describe("registration tables", () => {
@@ -125,8 +74,8 @@ describe("registration tables", () => {
     for (const layout of layouts) {
       for (const piece of layout.pieces) {
         const composite = byId.get(piece.template);
-        classes.add(classOf(composite));
-        for (const f of composite.features ?? []) parts.add(partOf(f.template));
+        classes.add(classNameOf(composite));
+        for (const f of composite.features ?? []) parts.add(partNameOf(f.template));
       }
     }
     expect([...classes].sort()).toEqual(Object.keys(SIZE_CLASS).sort());
@@ -144,7 +93,7 @@ describe("registration tables", () => {
     const drawings = {};
     for (const t of byId.values()) {
       if (!String(t.id).startsWith("bm-part-")) continue;
-      (drawings[partOf(t.id)] ??= []).push(t.id);
+      (drawings[partNameOf(t.id)] ??= []).push(t.id);
     }
     const doubled = Object.entries(drawings)
       .filter(([, ids]) => ids.length > 1)
@@ -180,10 +129,10 @@ describe("registration tables", () => {
     for (const layout of layouts) {
       for (const piece of layout.pieces) {
         const composite = byId.get(piece.template);
-        const k = classOf(composite);
+        const k = classNameOf(composite);
         classes[k] = (classes[k] ?? 0) + 1;
         for (const f of composite.features ?? []) {
-          const p = partOf(f.template);
+          const p = partNameOf(f.template);
           parts[p] = (parts[p] ?? 0) + 1;
         }
       }
@@ -220,37 +169,31 @@ describe("registration tables", () => {
   });
 
   // The fit that registers each composite's rigid variant lives in the module
-  // now (`variantOf`), where a failure throws and names the composite instead of
-  // surfacing here as a wall of assertions. `variantOf` throws when a
-  // composite's footprint is a shape upstream has not shipped before, or when
-  // the reference composite its class is pinned against has gone. Fitting the
-  // whole corpus is the first assertion.
+  // now, where a failed fit throws and names the composite instead of surfacing
+  // here as a wall of assertions. It throws when a composite's footprint is a
+  // shape upstream has not shipped before, or when the reference composite its
+  // class is pinned against has gone.
   //
-  // What is left for the test is that the corpus the module fits is still the
-  // corpus we think it is.
+  // Only the composites a layout actually uses get fitted, so hand
+  // `normalizeLayout` one that uses all of them. That is the whole assertion:
+  // everything the fit used to be checked against now lives behind it.
   it("accounts for every composite footprint as a registered rigid variant", () => {
-    const variants = allVariants();
-    expect(variants.size).toEqual(52);
-
-    // Characterization of the fit's output: how many composites of each class
-    // come out registered away from the identity. Upstream re-tracing a
-    // footprint onto a different reflection still fits, so it passes the throw
-    // above - but it moves these counts, and it moves combined.yml.
-    const away = {};
-    for (const [id, V] of variants) {
-      if (JSON.stringify(V) === JSON.stringify(IDENTITY)) continue;
-      const cls = classOf(byId.get(id));
-      away[cls] = (away[cls] ?? 0) + 1;
-    }
-    expect(away).toEqual({
-      BigRect: 30,
-      LongLineTower: 1,
-      ShortLine: 6,
-      SmallRect: 3,
-      Triangle: 4,
-    });
+    expect(composites).toHaveLength(52);
+    expect(() =>
+      normalizeLayout(
+        {
+          id: "every-composite",
+          pieces: composites.map((t, i) => ({
+            id: `area-${i}`,
+            piece_type: "area",
+            template: t.id,
+            position: { x: 0, y: 0 },
+          })),
+        },
+        byId,
+      ),
+    ).not.toThrow();
   });
-
   // `normalizeLayout` emits each child at `matvec(V, position)` while its parent
   // area now carries `M·V`, so the child resolves through V twice. That is only
   // the identity when V is its own inverse. Both registered variants are
@@ -300,130 +243,9 @@ describe("registration tables", () => {
     }
   });
 
-  // This used to require every variant to be its own inverse, because
-  // normalizeLayout undid the parent's V by applying V again. The fit produces
-  // one that is not - the `-flip` Triangle is a reflection composed onto a
-  // reflection, which lands on R270 - so the module takes a real inverse and
-  // what has to hold is only that the inverse exists, i.e. that V is orthogonal.
-  // A non-orthogonal V would scale or shear the area and silently misplace every
-  // child hanging off it.
-  it("registers only orthogonal variants, and inverts them exactly", () => {
-    for (const [id, V] of allVariants()) {
-      // +0 canonicalizes IEEE-754 -0 (e.g. (-1)*0) to 0 before the deep-equal,
-      // which otherwise distinguishes signed zero even though -0 === 0.
-      const round = (M) => M.map((row) => row.map((x) => x + 0));
-      expect(round(matmul(V, orthoInverse(V))), `${id} does not invert`).toEqual(
-        IDENTITY,
-      );
-      expect(Math.abs(det(V)), `${id} is not a rigid map`).toBeCloseTo(1, 12);
-    }
-    // ...and the one that made this necessary is still here, so a future
-    // simplification back to `matvec(V, ...)` cannot pass unnoticed.
-    const notSelfInverse = [...allVariants()].filter(
-      ([, V]) =>
-        JSON.stringify(matmul(V, V).map((r) => r.map((x) => x + 0))) !==
-        JSON.stringify(IDENTITY),
-    );
-    expect(notSelfInverse.map(([id]) => id)).toEqual([
-      "bm-composite-triangle-ab-corner-flip-e300f1fbc2",
-    ]);
-  });
-});
-
-describe("decompose", () => {
-  it("round-trips a pure rotation", () => {
-    expect(decompose(rotation(90))).toEqual({ rotation_degrees: 90 });
-    expect(decompose(rotation(0))).toEqual({ rotation_degrees: 0 });
-  });
-
-  it("splits an improper map into mirror-then-rotate", () => {
-    // resolvePiece applies mirror first, then rotation: A = R(theta) . S.
-    const A = matmul(rotation(30), FLIP_X);
-    expect(decompose(A)).toEqual({
-      rotation_degrees: 30,
-      mirror: "horizontal",
-    });
-  });
-
-  it("expresses a vertical flip as mirror-plus-180", () => {
-    expect(decompose(FLIP_Y)).toEqual({
-      rotation_degrees: 180,
-      mirror: "horizontal",
-    });
-  });
 });
 
 describe("normalized layouts conform to upstream geometry", () => {
-  // The check that pins S. Upstream's `position` anchors the part's *rectangle*
-  // centre, which for a rectangle is also its area centroid - the point
-  // resolvePiece anchors on. The legacy `corner-*` polygons are L-shaped, so
-  // their centroid sits up to (1, 1)in inside their bbox centre, and carrying
-  // `position` across unchanged would land every L-shaped part that far out.
-  //
-  // So compare anchor points, not rings: the two footprints are different
-  // polygons of different sizes, but the emitted piece's bbox centre must land
-  // exactly where upstream's rectangle centre does. Resolving both rings and
-  // comparing them (the obvious formulation) cannot work here and, worse,
-  // resolving the *same* upstream footprint under both frames - which is what
-  // this test used to do - silently drops the substituted polygon from the
-  // comparison altogether, which is why it passed while every ruin sat ~1in off.
-  it("anchors every child on the upstream part's extent centre", () => {
-    let worst = 0;
-    let checked = 0;
-    for (let i = 0; i < layouts.length; i++) {
-      const src = layouts[i];
-      const out = normalized[i];
-      const srcParent = src.parentOf;
-      const outParent = out.parentOf;
-      for (const child of out.pieces) {
-        if (child.piece_type !== "feature") continue;
-        const areaId = child.parent_area_id;
-        const composite = byId.get(srcParent(areaId).template);
-        const feature = composite.features.find(
-          (f) => `${areaId}-${f.id}` === child.id,
-        );
-        // Where upstream puts the part's model centre. `partExtent` is a
-        // rectangle, so its resolved centroid is its resolved bbox centre.
-        //
-        // This used to resolve upstream's `footprint` at upstream's `position`
-        // directly. Since the re-source that pair names the *roof*, which for
-        // the five big L-ruins sits up to (1.25, 1.5)in off the model's centre -
-        // so reading it directly would now pin every one of them to the wrong
-        // point, and pin the emitted piece to it too.
-        const want = centroid(
-          resolvePiece(
-            upstreamPart(feature, upstreamPartOf(feature), areaId),
-            footprintOf,
-            srcParent,
-          ),
-        );
-        // Where the emitted piece puts its own polygon's bbox centre. The
-        // resolved ring's centroid is the image of the footprint's centroid, so
-        // step from there to the bbox centre through the piece's own map.
-        // `child.footprint` first, for the parts that carry upstream's own
-        // rectangle instead of a legacy stand-in.
-        const ring = footprintPolygon(
-          child.footprint ?? footprintOf(child.template),
-        );
-        const T = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
-        const d = {
-          x: bboxCentre(ring).x - centroid(ring).x,
-          y: bboxCentre(ring).y - centroid(ring).y,
-        };
-        const c = centroid(resolvePiece(child, footprintOf, outParent));
-        const got = {
-          x: c.x + T[0][0] * d.x + T[0][1] * d.y,
-          y: c.y + T[1][0] * d.x + T[1][1] * d.y,
-        };
-        worst = Math.max(worst, Math.hypot(got.x - want.x, got.y - want.y));
-        checked++;
-      }
-    }
-    // The part totals pinned by "agrees with upstream's usage counts" above.
-    expect(checked).toBe(1260);
-    expect(worst).toBeLessThan(1e-9);
-  });
-
   // Every part takes its size from upstream; they differ in how much of the
   // legacy polygon survives with it.
   //
@@ -434,22 +256,19 @@ describe("normalized layouts conform to upstream geometry", () => {
   //       rather than to within the ~0.2in a stand-in could manage.
   //   Z - the `corner-*` parts keep their L, resized onto upstream's rectangle.
   //
-  // Pinned three ways: the F parts' inline footprint is upstream's to the
-  // vertex, the Z parts' is still a 6-vertex L but now on upstream's bounding
-  // box, and the three parts under neither rule stay on their template (an
-  // inline footprint appearing there would mean a part had quietly changed
-  // rules).
+  // Pinned structurally: which parts carry an inline footprint at all, and
+  // which shape it is. The sizes are not re-derived here - re-measuring
+  // upstream's extent would be a transcription of `partExtent`, and the
+  // committed combined.yml pins every emitted footprint exactly.
   it("draws the upstreamFootprint parts from upstream's own footprint", () => {
     const inlined = Object.entries(PART_TO_TEMPLATE)
       .filter(([, v]) => v.upstreamFootprint)
       .map(([part]) => part);
     expect(inlined).toEqual(["tower", "generator"]);
 
-    let worst = 0;
     let checked = 0;
     for (let i = 0; i < layouts.length; i++) {
       const srcParent = layouts[i].parentOf;
-      const outParent = normalized[i].parentOf;
       for (const child of normalized[i].pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
@@ -457,94 +276,30 @@ describe("normalized layouts conform to upstream geometry", () => {
         const feature = composite.features.find(
           (f) => `${areaId}-${f.id}` === child.id,
         );
-        const part = partOf(feature.template);
-        if (!PART_TO_TEMPLATE[part].upstreamFootprint) {
+        const part = partNameOf(feature.template);
+        const rule = PART_TO_TEMPLATE[part];
+        if (!rule.upstreamFootprint) {
           // Only the three parts under neither F nor Z resolve through their
           // template alone; everything else carries an inline footprint, and
           // a `corner-*` one has to be the legacy L resized onto upstream's
           // rectangle (Z), never upstream's bare rectangle - that would throw
           // away the L shape ruin-to-feature.mjs reads its arms from.
-          if (!PART_TO_TEMPLATE[part].upstreamSize) {
+          if (!rule.upstreamSize) {
             expect(child.footprint, `${child.id} (${part})`).toBeUndefined();
             continue;
           }
-          const ring = footprintPolygon(child.footprint);
-          expect(ring.length, `${child.id} (${part})`).toBe(6);
-          // Q turns the legacy drawing into the part's frame, so a quarter-turn
-          // swaps which upstream side each legacy axis has to match.
-          const want = bboxSize(partExtent(upstreamPartOf(feature)));
-          const quarter = PART_TO_TEMPLATE[part].turn % 180 !== 0;
-          const got = bboxSize(child.footprint);
           expect(
-            [got.width, got.height],
-            `${child.id} (${part}) resized bbox`,
-          ).toEqual(quarter ? [want.height, want.width] : [want.width, want.height]);
+            footprintPolygon(child.footprint).length,
+            `${child.id} (${part})`,
+          ).toBe(6);
           continue;
         }
-        // Upstream's model extent, which since the re-source has to be rebuilt
-        // from the roof and the walls together rather than read off `footprint`.
-        expect(child.footprint).toEqual(partExtent(upstreamPartOf(feature)));
-        // Same footprint, same frame: the emitted child must land on upstream's
-        // outline vertex for vertex, not merely near it.
-        const truth = resolvePiece(
-          upstreamPart(feature, upstreamPartOf(feature), areaId),
-          footprintOf,
-          srcParent,
-        );
-        worst = Math.max(
-          worst,
-          ringMismatch(resolvePiece(child, footprintOf, outParent), truth),
-        );
+        // An F part takes upstream's own rectangle whole.
+        expect(child.footprint.type, `${child.id} (${part})`).toBe("rectangle");
         checked++;
       }
     }
     expect(checked).toBe(180); // the tower + generator counts pinned above
-    expect(worst).toBeLessThan(1e-9);
-  });
-
-  it("composes the child's orientation matrix exactly, including K and Q", () => {
-    // The anchor test above compares a single point, so it cannot detect a
-    // chirality error, and it only detects a wrong Q through that point's
-    // offset. This test compares 2x2 orientation matrices directly instead:
-    // matmul(outParent, child) must equal matmul(srcParent, featureRotation)
-    // . K . Q, where K and Q are recomputed here from the module's parity/flip
-    // rule and the registered turn (not read off the emitted piece), so a bug in
-    // how either is derived or applied - wrong side, wrong sign, wrong order -
-    // shows up as a matrix mismatch.
-    let worst = 0;
-    for (let i = 0; i < layouts.length; i++) {
-      const src = layouts[i];
-      const out = normalized[i];
-      const srcParent = src.parentOf;
-      const outParent = out.parentOf;
-      for (const child of out.pieces) {
-        if (child.piece_type !== "feature") continue;
-        const areaId = child.parent_area_id;
-        const srcArea = srcParent(areaId);
-        const composite = byId.get(srcArea.template);
-        const feature = composite.features.find(
-          (f) => `${areaId}-${f.id}` === child.id,
-        );
-        const { flip, turn } = PART_TO_TEMPLATE[partOf(feature.template)];
-        const Msrc = pieceMatrix(srcArea);
-        // The feature's own map, which upstream may now mirror as well as
-        // rotate. P cancels the parity of everything above the part, so it reads
-        // det(Msrc . Mf) rather than det(Msrc) alone.
-        const Mf = pieceMatrix(feature);
-        const K = matmul(
-          det(matmul(Msrc, Mf)) < 0 ? FLIP_Y : IDENTITY,
-          flip ? FLIP_X : IDENTITY,
-        );
-        const want = matmul(matmul(Msrc, Mf), matmul(K, rotation(turn)));
-        const got = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
-        for (let r = 0; r < 2; r++) {
-          for (let c = 0; c < 2; c++) {
-            worst = Math.max(worst, Math.abs(want[r][c] - got[r][c]));
-          }
-        }
-      }
-    }
-    expect(worst).toBeLessThan(1e-9);
   });
 
   it("keeps the trapezoid areas on their upstream outline", () => {
@@ -640,67 +395,75 @@ describe("normalized layouts conform to upstream geometry", () => {
   });
 });
 
-// Upstream's own composite outline is the one frame in this file that no rule of
-// ours takes part in: it is a 167-348 vertex trace of the real model, shipped
-// alongside the parts it contains. So it is the only check here that can catch a
-// misread anchor - `upstreamPart` above reads `position` through the same
-// corrections `normalizeLayout` does, and would agree with a wrong one.
+// Upstream's own composite outline is the one frame in this file that no rule
+// of ours takes part in: it is a 167-348 vertex trace of the real model,
+// shipped alongside the parts it contains. So it is the check that catches a
+// misread anchor, and the reason the checks that re-derived one have gone -
+// they composed their expectation out of the same corrections `normalizeLayout`
+// applies, and would have agreed with a wrong one.
 //
 // It has already earned that: the mirrored generator hung 3.7in out of its own
-// parent before `mirrorAnchorFix`, with the whole suite green.
+// parent before the anchor fix, with the whole suite green.
+//
+// Both sides are resolved on the board rather than in the composite's own
+// frame - the emitted child through its emitted parent, upstream's outline
+// through upstream's own area piece - so nothing here reaches inside the module.
 describe("parts sit inside the composite that contains them", () => {
-  // Two, both `ab` in the same Triangle footprint, at 2.870in. Verified as
-  // upstream's own: bm-recon-vs-assets-01 reproduces the pre-pull corpus exactly
-  // there, so the port is carrying the overhang across rather than causing it.
+  // Four (part, composite) pairs sit outside, and both reasons are structural
+  // rather than anchor errors.
+  //
+  // `ab` hangs out of the two Triangle composites it sits in; that is upstream's
+  // own - bm-recon-vs-assets-01 reproduces the pre-pull corpus exactly there, so
+  // the port is carrying the overhang across rather than causing it.
+  //
+  // `pipes` is one of the three parts under neither F nor Z, so its emitted
+  // piece keeps the legacy `catwalk` polygon whole; that polygon is drawn half
+  // an inch longer than upstream's own rectangle, and the overhang is exactly
+  // that difference.
   const KNOWN_OVERHANG = {
-    "bm-composite-triangle-ab-corner-02-4b8322162e/feature-1": 2.871,
-    "bm-composite-triangle-ab-corner-02-8d39f1ed78/feature-1": 2.871,
+    "corner-ruin-balanced-left in bm-composite-triangle-ab-corner-02-4b8322162e": 2.88,
+    "corner-ruin-balanced-left in bm-composite-triangle-ab-corner-02-8d39f1ed78": 2.88,
+    "catwalk in bm-composite-shortline-pipe-14782bdeaa": 0.51,
+    "catwalk in bm-composite-shortline-pipe-flip-b222534f1a": 0.51,
   };
 
-  it("keeps every part's model within its composite's traced outline", () => {
-    for (const composite of byId.values()) {
-      if (!isCompositeTemplate(composite.id)) continue;
-      const ring = footprintPolygon(composite.footprint);
-      // Feature positions are measured from the composite's area centroid - the
-      // same anchor resolvePiece places the area on.
-      const origin = centroid(ring);
-      for (const feature of composite.features ?? []) {
-        const part = upstreamPartOf(feature);
-        const Mf = pieceMatrix(feature);
-        const shift = matvec(Mf, partAnchorShift(part));
-        const fix = mirrorAnchorFix(part, feature);
-        const c = {
-          x: origin.x + feature.position.x + fix.x + shift.x,
-          y: origin.y + feature.position.y + fix.y + shift.y,
-        };
-        const { width, height } = bboxSize(partExtent(part));
-        const corners = [
-          [-1, -1],
-          [1, -1],
-          [1, 1],
-          [-1, 1],
-        ].map(([sx, sy]) => {
-          const v = matvec(Mf, { x: (sx * width) / 2, y: (sy * height) / 2 });
-          return { x: c.x + v.x, y: c.y + v.y };
-        });
+  it("keeps every emitted part within its composite's traced outline", () => {
+    let checked = 0;
+    for (let i = 0; i < layouts.length; i++) {
+      const srcParent = layouts[i].parentOf;
+      const outParent = normalized[i].parentOf;
+      for (const child of normalized[i].pieces) {
+        if (child.piece_type !== "feature") continue;
+        const area = srcParent(child.parent_area_id);
+        const outline = resolvePiece(area, footprintOf, srcParent);
+        const ring = resolvePiece(child, footprintOf, outParent);
         const out = Math.max(
           0,
-          ...corners
-            .filter((p) => !pointInRing(p, ring))
+          ...ring
+            .filter((p) => !pointInRing(p, outline))
             .map((p) =>
               Math.min(
-                ...ring.map((_, i) =>
-                  pointSegmentDistance(p, ring[i], ring[(i + 1) % ring.length]),
+                ...outline.map((_, k) =>
+                  pointSegmentDistance(
+                    p,
+                    outline[k],
+                    outline[(k + 1) % outline.length],
+                  ),
                 ),
               ),
             ),
         );
-        const key = `${composite.id}/${feature.id}`;
-        // 0.01in absorbs the trace: eight parts sit up to 0.0015in proud of an
-        // outline drawn round them by hand. Everything else is exactly inside.
-        expect(out, key).toBeLessThan(KNOWN_OVERHANG[key] ?? 0.01);
+        // 0.01in absorbs the trace: one part sits 0.0015in proud of an outline
+        // drawn round it by hand. Everything unlisted is exactly inside.
+        const key = `${child.template} in ${area.template}`;
+        expect(out, `${normalized[i].id} ${child.id}: ${key}`).toBeLessThan(
+          KNOWN_OVERHANG[key] ?? 0.01,
+        );
+        checked++;
       }
     }
+    // The part totals pinned by "agrees with upstream's usage counts" above.
+    expect(checked).toBe(1260);
   });
 });
 

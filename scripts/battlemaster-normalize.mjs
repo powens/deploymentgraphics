@@ -332,7 +332,7 @@ export const PART_TO_TEMPLATE = {
 };
 
 /** Every field this module reads off a composite's `features[]` entry. */
-export const FEATURE_KEYS = new Set([
+const FEATURE_KEYS = new Set([
   "id",
   "template",
   "position",
@@ -413,7 +413,7 @@ const CANDIDATES = Object.fromEntries(
  * them from, so they are a characterization: re-registering a class fails the
  * fit in `variantOf` instead of moving combined.yml in silence.
  */
-export const CLASS_REFERENCE = {
+const CLASS_REFERENCE = {
   BigRect: ["bm-composite-bigrect-cd-ef-01-19f1adc57b", "R180"],
   LongLine: ["bm-composite-longline-tower-3be6fa3536", "R0"],
   LongLineTower: ["bm-composite-longlinetower-flip-06c4f02941", "R0.FX"],
@@ -503,7 +503,7 @@ const variantCache = new WeakMap();
  * @param {Map<string, object>} templatesById - the vendored template table.
  * @returns {number[][]} V, the rigid map the emitted area carries.
  */
-export function variantOf(composite, templatesById) {
+function variantOf(composite, templatesById) {
   let fitted = variantCache.get(templatesById);
   if (!fitted) variantCache.set(templatesById, (fitted = new Map()));
   let V = fitted.get(composite.id);
@@ -552,15 +552,15 @@ export const PART_CANONICAL = {
 };
 
 /** The template id a part's model should be read from. See PART_CANONICAL. */
-export const canonicalPartId = (templateId) =>
+const canonicalPartId = (templateId) =>
   PART_CANONICAL[partOf(templateId)] ?? templateId;
 
 /** True for an upstream Battlemaster composite area template. */
-export const isCompositeTemplate = (id) =>
+const isCompositeTemplate = (id) =>
   typeof id === "string" && id.startsWith(COMPOSITE_PREFIX);
 
 /** Size class of a composite, read from its name ("Battlemaster BigRect CD GH 01" -> BigRect). */
-export function classOf(composite) {
+function classOf(composite) {
   const cls = composite?.name?.split(" ")[1];
   if (!cls || !SIZE_CLASS[cls]) {
     throw new Error(
@@ -571,7 +571,7 @@ export function classOf(composite) {
 }
 
 /** Bare part name of a composite feature template id, hash suffix removed. */
-export function partOf(templateId) {
+function partOf(templateId) {
   const part = templateId.startsWith(PART_PREFIX)
     ? templateId.slice(PART_PREFIX.length).replace(HASH_SUFFIX, "")
     : templateId;
@@ -599,7 +599,7 @@ const normDeg = (deg) => {
  * An improper map always comes back as a horizontal mirror; the rotation
  * absorbs the difference between the two mirror axes.
  */
-export function decompose(A) {
+function decompose(A) {
   const improper = det(A) < 0;
   const R = improper ? matmul(A, FLIP_X) : A;
   const out = {
@@ -610,7 +610,7 @@ export function decompose(A) {
 }
 
 /** Width and height of a footprint's axis-aligned bounding box. */
-export function bboxSize(footprint) {
+function bboxSize(footprint) {
   return boundsSize(footprintPolygon(footprint));
 }
 
@@ -701,7 +701,7 @@ function extentBounds(part) {
 }
 
 /** The upstream part's extent, as a plain rectangle. */
-export function partExtent(part) {
+function partExtent(part) {
   if (!part.walls?.length) return part.footprint;
   const b = extentBounds(part);
   return {
@@ -722,7 +722,7 @@ export function partExtent(part) {
  * features as well as the one mirrored one. It is exactly zero whenever the
  * feature carries no `mirror`, which is 903 of the corpus's 904.
  */
-export function mirrorAnchorFix(part, feature) {
+function mirrorAnchorFix(part, feature) {
   const roof = boundsCentre(footprintPolygon(part.footprint));
   const reflected = matvec(mirrorMatrix(feature), roof);
   return matvec(rotationMatrix(feature.rotation_degrees ?? 0), {
@@ -737,7 +737,7 @@ export function mirrorAnchorFix(part, feature) {
  * made `footprint` the extent again; up to (1.25, 1.5)in for the big L-ruins
  * while it was the roof. See W and W1 above.
  */
-export function partAnchorShift(part) {
+function partAnchorShift(part) {
   if (!part.walls?.length) return { x: 0, y: 0 };
   const b = extentBounds(part);
   const roof = boundsCentre(footprintPolygon(part.footprint));
@@ -752,7 +752,7 @@ export function partAnchorShift(part) {
  * reflection, so the transpose is the inverse - but check rather than assume,
  * since a non-orthogonal V would make the child anchoring below silently wrong.
  */
-export function orthoInverse(A) {
+function orthoInverse(A) {
   const T = [
     [A[0][0], A[1][0]],
     [A[0][1], A[1][1]],
@@ -788,7 +788,7 @@ export function orthoInverse(A) {
  * the centroid and S then re-anchors onto the bbox centre, so the translation
  * this introduces is absorbed downstream.
  */
-export function scaleToUpstream(legacy, upstream, turn, part = "?") {
+function scaleToUpstream(legacy, upstream, turn, part = "?") {
   const ring = footprintPolygon(legacy);
   const l = bboxSize(legacy);
   const u = bboxSize(upstream);
@@ -829,7 +829,7 @@ export function scaleToUpstream(legacy, upstream, turn, part = "?") {
  * centroid resolvePiece uses onto the bbox centre upstream's `position` means.
  * Zero for every rectangle part, up to (1, 1)in for the L-shaped `corner-*`.
  */
-export function anchorOffset(footprint) {
+function anchorOffset(footprint) {
   const ring = footprintPolygon(footprint);
   const c = centroid(ring);
   const b = boundsCentre(ring);
@@ -837,7 +837,7 @@ export function anchorOffset(footprint) {
 }
 
 /** The piece's own mirror, on its own: diag(sx, sy). */
-export function mirrorMatrix(piece) {
+function mirrorMatrix(piece) {
   return piece.mirror === "horizontal"
     ? FLIP_X
     : piece.mirror === "vertical"
@@ -846,7 +846,7 @@ export function mirrorMatrix(piece) {
 }
 
 /** The piece's own linear map: R(rotation_degrees) . diag(sx, sy). */
-export function pieceMatrix(piece) {
+function pieceMatrix(piece) {
   return matmul(rotationMatrix(piece.rotation_degrees ?? 0), mirrorMatrix(piece));
 }
 
