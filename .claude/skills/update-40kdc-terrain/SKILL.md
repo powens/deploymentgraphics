@@ -18,8 +18,7 @@ changing what its fields *mean* — and that is a normalizer port, not a runbook
 "Is this a refresh or a re-source?" is the first question the drift check has to answer;
 see **When upstream re-sources**.
 
-Source of truth for the data pipeline is CLAUDE.local.md ("Config" section). This is the
-operational runbook.
+Data-pipeline overview lives in CLAUDE.md ("Gotchas"); this is the operational runbook.
 
 ## Workflow
 
