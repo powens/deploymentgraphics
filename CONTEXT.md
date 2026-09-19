@@ -81,6 +81,8 @@ nine reach the renderer through `buildConfig` (`grid`, `territory`, and `t` as
 its `layout`); `m` and `tpl` name bundled presets — a key in `missions`, and a
 building-template set `viewer-controls.ts` resolves to a `TerrainConfig` (the
 viewer fetches nothing at runtime); `da`, `db` and `lay` name nothing directly
-— they derive `m` and `t` through the event matrix; and `rot` post-processes
-the rendered card. Viewer-only: the controls reach the
-demo through `bundle.ts`, and the published package has no concept of them.
+— `deriveControls` turns them into `m` and `t` through the event matrix and the
+40kdc layout metadata, including the fallback for a matrix cell the 40kdc
+source does not cover; and `rot` post-processes the rendered card. Viewer-only:
+the controls reach the demo through `bundle.ts`, and the published package has
+no concept of them.

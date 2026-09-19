@@ -4,12 +4,15 @@ import {
   controlsFromSearch,
   controlsToSearch,
   defaultControls,
+  deriveControls,
   initialControls,
   sanitizeControls,
   type ControlRow,
   type Controls,
 } from "./viewer-controls";
-import { resolveTerrainLayout } from "./event-matrix";
+import { dispositions, resolveTerrainLayout } from "./event-matrix";
+import { eventMatrix } from "./presets/event-matrix";
+import { missions } from "./presets/missions";
 import { gwTerrain } from "./presets/terrain";
 
 /**
@@ -94,6 +97,60 @@ describe("defaultControls", () => {
     const first = defaultControls();
     first.rot = "90";
     expect(defaultControls().rot).toBe("0");
+  });
+});
+
+describe("deriveControls", () => {
+  const LAYOUTS = ["A", "B", "C"];
+  const cells = dispositions(eventMatrix).flatMap((da, i, all) =>
+    all.slice(i).flatMap((db) => LAYOUTS.map((lay) => ({ da, db, lay }))),
+  );
+
+  it("derives the defaults' own pairing back to the default deployment and layout", () => {
+    const d = defaultControls();
+    expect(deriveControls(d)).toEqual({ m: d.m, t: d.t });
+  });
+
+  /**
+   * The check the derivation could not have while it lived in `static/app.js`:
+   * that module runs on import and touches `document`, so no test reached it
+   * and only the default pairing above was ever exercised.
+   *
+   * Both derived values drive a dropdown whose options come off its row's
+   * allowlist, not off the matrix — `writeDerivedControlsToDom` throws when
+   * they disagree, which on the page is a blank dropdown and a stage error. So
+   * every cell has to land on a preset that exists.
+   */
+  it("derives a deployment and a terrain layout the presets carry, for every cell", () => {
+    expect(cells.length).toBe(45);
+    for (const cell of cells) {
+      const { m, t } = deriveControls({ ...defaultControls(), ...cell });
+      const where = `${cell.da} / ${cell.db} / ${cell.lay}`;
+      expect(missions[m as keyof typeof missions], `${where} -> m`).toBeDefined();
+      expect(gwTerrain.layout[t], `${where} -> t`).toBeDefined();
+    }
+  });
+
+  /**
+   * The 40kdc source covers every matrix cell today, so the fallback in
+   * `deriveControls` is currently unreached. Pin that rather than the
+   * fallback: a re-source that stops covering a cell is exactly when the
+   * fallback goes live, and this says which cell.
+   */
+  it("matches a 40kdc layout for every cell, so nothing falls back", () => {
+    for (const cell of cells) {
+      const { m, t } = deriveControls({ ...defaultControls(), ...cell });
+      expect(
+        resolveTerrainLayout(gwTerrain.layout, cell.da, cell.db, m),
+        `${cell.da} / ${cell.db} / ${cell.lay}`,
+      ).toBe(t);
+    }
+  });
+
+  it("throws for a pairing the event matrix has no entry for", () => {
+    expect(() =>
+      deriveControls({ ...defaultControls(), da: "Nonesuch" }),
+    ).toThrow(/No event-matrix entry/);
   });
 });
 

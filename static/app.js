@@ -3,33 +3,25 @@ import {
   buildConfig,
   baseConfig,
   missions,
-  gwTerrain,
   yaml,
-  eventMatrix,
-  resolveMission,
-  resolveTerrainLayout,
   controlElement,
   controlSpec,
   controlsToSearch,
+  deriveControls,
   initialControls,
   readControlsFromDom,
   terrainForTemplateSet,
   writeControlsToDom,
+  writeDerivedControlsToDom,
 } from "./bundle.js";
 import { loadState, saveState } from "./state.js";
 
 // The nine controls are spelled once, in `src/viewer-controls.ts`: every
-// default, allowlist, element id and DOM read or write below comes off
-// `controlSpec` rather than being restated here. Only the option *labels* are
-// the app's own, since they are presentation. The two dispositions + layout
-// resolve to a deployment via the event matrix, which selects the Deployment
-// dropdown; that dropdown can also be set directly.
-
-// The deployment a disposition pairing + layout maps to, used to drive the
-// Deployment dropdown (which the user may then override directly).
-function resolvedMissionId(controls) {
-  return resolveMission(eventMatrix, controls.da, controls.db, controls.lay);
-}
+// default, allowlist, element id, DOM read or write, and the derivation that
+// turns the two dispositions + layout into the Deployment and Terrain
+// dropdowns, all come off that module rather than being restated here. Only
+// the option *labels* are the app's own, since they are presentation. Both
+// derived dropdowns can also be set directly.
 
 // Assemble the config for the current controls from the bundled presets, with
 // the renderer's own `buildConfig` — the same seam the package documents, so
@@ -295,35 +287,16 @@ function onControlChange() {
   renderFromControls();
 }
 
-// A derived value comes off the event matrix or the terrain layouts, not off
-// the row's own allowlist, so the dropdown may have no <option> for it. A
-// <select> ignores such a value silently, leaving the dropdown blank while
-// `readControlsFromDom` substitutes the row's default — the card, the URL and
-// localStorage would then all disagree with what the visitor sees. Read the
-// value back and throw instead: drift between the generated presets belongs
-// on the stage, where a failed render already reports.
-function setDerivedControl(key, value) {
-  const el = controlEl(key);
-  el.value = value;
-  if (el.value !== value) {
-    throw new Error(`Control "${key}" has no option "${value}"`);
-  }
-}
-
 // A disposition/layout change re-derives the deployment and terrain dropdowns,
-// then renders. The terrain layout is matched from combined.yml on the
-// disposition pair + deployment; cells the 40kdc source does not cover fall
-// back to the terrain row's own default. Both dropdowns remain overridable
-// directly.
+// then renders. Both the derivation and the read-back that catches a dropdown
+// with no option for a derived value live behind the controls seam; what is
+// left here is what belongs on a page: report the throw on the stage.
 function onDerivedControlChange() {
-  const controls = readControlsFromDom(document);
-  const missionId = resolvedMissionId(controls);
-  const layoutId =
-    resolveTerrainLayout(gwTerrain.layout, controls.da, controls.db, missionId) ??
-    SPEC.get("t").default;
   try {
-    setDerivedControl("m", missionId);
-    setDerivedControl("t", layoutId);
+    writeDerivedControlsToDom(
+      document,
+      deriveControls(readControlsFromDom(document)),
+    );
   } catch (error) {
     setExportEnabled(false);
     setStageMessage(error.message, true);

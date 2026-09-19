@@ -6,8 +6,10 @@ import {
   controlElement,
   controlSpec,
   defaultControls,
+  deriveControls,
   readControlsFromDom,
   writeControlsToDom,
+  writeDerivedControlsToDom,
 } from "./viewer-controls.js";
 
 /**
@@ -133,6 +135,43 @@ describe("writeControlsToDom", () => {
     expect(() => writeControlsToDom(root, defaultControls())).toThrow(
       'Control "grid" has no element #show-grid',
     );
+  });
+});
+
+describe("writeDerivedControlsToDom", () => {
+  it("writes the derived deployment and terrain layout", () => {
+    const root = panel();
+    const derived = deriveControls(defaultControls());
+    writeDerivedControlsToDom(root, derived);
+    expect((root.querySelector("#deployment") as HTMLSelectElement).value).toBe(
+      derived.m,
+    );
+    expect((root.querySelector("#terrain") as HTMLSelectElement).value).toBe(
+      derived.t,
+    );
+  });
+
+  // The failure this exists for. A `<select>` silently ignores a value it has
+  // no `<option>` for, so the dropdown would go blank while
+  // `readControlsFromDom` substituted the row's default — leaving the card, the
+  // URL and storage all disagreeing with what the visitor sees. On the page it
+  // reaches the stage as an error instead; here it is just a throw.
+  it("throws when a dropdown has no option for the derived value", () => {
+    const root = panel();
+    const terrain = root.querySelector("#terrain") as HTMLSelectElement;
+    const derived = deriveControls(defaultControls());
+    terrain.querySelector(`option[value="${derived.t}"]`)!.remove();
+    expect(() => writeDerivedControlsToDom(root, derived)).toThrow(
+      `Control "t" has no option "${derived.t}"`,
+    );
+  });
+
+  it("names the control and the element when one is missing", () => {
+    const root = panel();
+    root.querySelector("#deployment")!.remove();
+    expect(() =>
+      writeDerivedControlsToDom(root, deriveControls(defaultControls())),
+    ).toThrow('Control "m" has no element #deployment');
   });
 });
 
