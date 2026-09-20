@@ -480,14 +480,44 @@ function fitVariant(composite, templatesById) {
       `the ${cls} reference composite ${refId} is not in the template table`,
     );
   }
+  if (!ref.footprint) {
+    throw new Error(
+      `the ${cls} reference composite ${refId} has no footprint to fit against`,
+    );
+  }
+  if (!composite.footprint) {
+    throw new Error(
+      `composite ${composite.id} has no footprint to fit against the ${cls} reference ${refId}`,
+    );
+  }
   const refRing = centred(footprintPolygon(ref.footprint));
   const ring = centred(footprintPolygon(composite.footprint));
-  const [best, W] = Object.values(CANDIDATES)
-    .map((M) => [shapeDistance(refRing.map((p) => matvec(M, p)), ring), M])
-    .sort((a, b) => a[0] - b[0])[0];
+  const fits = Object.entries(CANDIDATES)
+    .map(([name, M]) => [
+      shapeDistance(
+        refRing.map((p) => matvec(M, p)),
+        ring,
+      ),
+      M,
+      name,
+    ])
+    .sort((a, b) => a[0] - b[0]);
+  const [best, W, bestName] = fits[0];
   if (best >= 1e-3) {
     throw new Error(
       `composite ${composite.id} is not a rigid transform of the ${cls} reference ${refId} (best fit ${best.toFixed(4)}in)`,
+    );
+  }
+  // A footprint with a rigid self-symmetry fits under two or more candidates at
+  // once, and the winner would then be decided by `CANDIDATES` insertion order
+  // rather than by the data — silently fixing which way round the archetype is
+  // drawn. Every other undetermined case in this module throws; so does this.
+  const [runnerUp, , runnerUpName] = fits[1];
+  if (runnerUp < 1e-3) {
+    throw new Error(
+      `composite ${composite.id} fits the ${cls} reference ${refId} under both ` +
+        `${bestName} (${best.toFixed(4)}in) and ${runnerUpName} (${runnerUp.toFixed(4)}in): ` +
+        `its footprint has a rigid self-symmetry, so the shape does not determine the variant`,
     );
   }
   return roundMatrix(matmul(W, CANDIDATES[refName]));

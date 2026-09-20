@@ -175,25 +175,53 @@ describe("registration tables", () => {
   // class is pinned against has gone.
   //
   // Only the composites a layout actually uses get fitted, so hand
-  // `normalizeLayout` one that uses all of them. That is the whole assertion:
-  // everything the fit used to be checked against now lives behind it.
+  // `normalizeLayout` one that uses all of them - and read the variant it
+  // registered each at back off the emitted area, which is the only place the
+  // fit is visible from outside the module now.
   it("accounts for every composite footprint as a registered rigid variant", () => {
     expect(composites).toHaveLength(52);
-    expect(() =>
-      normalizeLayout(
-        {
-          id: "every-composite",
-          pieces: composites.map((t, i) => ({
-            id: `area-${i}`,
-            piece_type: "area",
-            template: t.id,
-            position: { x: 0, y: 0 },
-          })),
-        },
-        byId,
-      ),
-    ).not.toThrow();
+    const out = normalizeLayout(
+      {
+        id: "every-composite",
+        pieces: composites.map((t, i) => ({
+          id: `area-${i}`,
+          piece_type: "area",
+          template: t.id,
+          position: { x: 0, y: 0 },
+        })),
+      },
+      byId,
+    );
+    // One area out per composite in, in source order: each carries its V alone,
+    // since the piece went in at the origin with no rotation of its own.
+    const areas = out.pieces.filter((p) => p.piece_type === "area");
+    expect(areas).toHaveLength(composites.length);
+
+    // Characterization of the fit's output: which rigid map each class's
+    // composites come out registered at, and how many at each.
+    //
+    // "It did not throw" is not the guard this is here to be, and neither is a
+    // count of how many landed away from the identity: upstream re-tracing a
+    // footprint onto a *different* rigid map still fits, still does not throw,
+    // and still leaves any such count where it was - while moving
+    // combined.yml. Naming the maps is what notices.
+    const registered = {};
+    areas.forEach((area, i) => {
+      const cls = classNameOf(composites[i]);
+      const V = `${area.rotation_degrees ?? 0}${area.mirror ? `.${area.mirror}` : ""}`;
+      registered[cls] = { ...registered[cls] };
+      registered[cls][V] = (registered[cls][V] ?? 0) + 1;
+    });
+    expect(registered).toEqual({
+      BigRect: { 180: 25, "180.horizontal": 5 },
+      LongLine: { 0: 2 },
+      LongLineTower: { "0.horizontal": 1 },
+      ShortLine: { 180: 4, "180.horizontal": 2 },
+      SmallRect: { 0: 6, "0.horizontal": 3 },
+      Triangle: { 270: 1, "90.horizontal": 3 },
+    });
   });
+
   // `normalizeLayout` emits each child at `matvec(V, position)` while its parent
   // area now carries `M·V`, so the child resolves through V twice. That is only
   // the identity when V is its own inverse. Both registered variants are

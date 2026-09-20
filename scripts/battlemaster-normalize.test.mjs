@@ -370,6 +370,44 @@ describe("normalizeLayout", () => {
       normalizeLayout(layoutWith({ rotation_degrees: 0 }), bad),
     ).toThrow(/obelisk/);
   });
+
+  it("throws by name for a composite with no footprint to fit", () => {
+    const noFootprint = new Map([
+      referenceEntry("ShortLine"),
+      ["bm-composite-shortline-30-aaaaaaaaaa", {
+        id: "bm-composite-shortline-30-aaaaaaaaaa",
+        name: "Battlemaster ShortLine 30",
+        features: [],
+      }],
+    ]);
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), noFootprint),
+    ).toThrow(/bm-composite-shortline-30-aaaaaaaaaa has no footprint/);
+  });
+
+  // A footprint symmetric under one of the eight rigid maps fits under two of
+  // them at once, so the shape does not say which variant it is registered at
+  // and `.sort()[0]` would answer from `CANDIDATES` insertion order. The
+  // reference ring is an L precisely to avoid this; a rectangle is the case it
+  // avoids.
+  it("throws for a footprint whose self-symmetry leaves the variant undetermined", () => {
+    const square = { type: "polygon", points: [
+      { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 2 }, { x: 0, y: 2 },
+    ] };
+    const [refId] = REFERENCE.ShortLine;
+    const symmetric = new Map([
+      [refId, { id: refId, name: "Battlemaster ShortLine reference", footprint: square }],
+      ["bm-composite-shortline-30-aaaaaaaaaa", {
+        id: "bm-composite-shortline-30-aaaaaaaaaa",
+        name: "Battlemaster ShortLine 30",
+        footprint: square,
+        features: [],
+      }],
+    ]);
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), symmetric),
+    ).toThrow(/rigid self-symmetry/);
+  });
 });
 
 // The battlemaster-11e re-source split a part's old `footprint` rectangle in
