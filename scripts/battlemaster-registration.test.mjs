@@ -232,22 +232,38 @@ describe("registration tables", () => {
     const variants = allVariants();
     expect(variants.size).toEqual(52);
 
-    // Characterization of the fit's output: how many composites of each class
-    // come out registered away from the identity. Upstream re-tracing a
-    // footprint onto a different reflection still fits, so it passes the throw
-    // above - but it moves these counts, and it moves combined.yml.
-    const away = {};
+    // Characterization of the fit's output: which of the eight rigid maps each
+    // class's composites come out registered at, and how many at each.
+    //
+    // Counting only "away from the identity" was too coarse to be the guard
+    // this is here to be: upstream re-tracing a footprint onto a *different*
+    // non-identity map - a `-flip` BigRect moving from R180.FX to R180 - still
+    // fits, still passes the throw above, and still leaves the count at 30,
+    // while moving combined.yml. Naming the maps is what notices.
+    const round = (M) => M.map((row) => row.map((x) => Math.round(x) + 0));
+    const NAMES = new Map(
+      [0, 90, 180, 270]
+        .flatMap((d) => [
+          [`R${d}`, round(rotation(d))],
+          [`R${d}.FX`, round(matmul(rotation(d), FLIP_X))],
+        ])
+        .map(([name, M]) => [JSON.stringify(M), name]),
+    );
+    const registered = {};
     for (const [id, V] of variants) {
-      if (JSON.stringify(V) === JSON.stringify(IDENTITY)) continue;
+      const name = NAMES.get(JSON.stringify(round(V)));
+      expect(name, `${id} is not one of the eight rigid maps`).toBeDefined();
       const cls = classOf(byId.get(id));
-      away[cls] = (away[cls] ?? 0) + 1;
+      registered[cls] = { ...registered[cls] };
+      registered[cls][name] = (registered[cls][name] ?? 0) + 1;
     }
-    expect(away).toEqual({
-      BigRect: 30,
-      LongLineTower: 1,
-      ShortLine: 6,
-      SmallRect: 3,
-      Triangle: 4,
+    expect(registered).toEqual({
+      BigRect: { R180: 25, "R180.FX": 5 },
+      LongLine: { R0: 2 },
+      LongLineTower: { "R0.FX": 1 },
+      ShortLine: { R180: 4, "R180.FX": 2 },
+      SmallRect: { R0: 6, "R0.FX": 3 },
+      Triangle: { "R90.FX": 3, R270: 1 },
     });
   });
 
@@ -307,7 +323,13 @@ describe("registration tables", () => {
   // what has to hold is only that the inverse exists, i.e. that V is orthogonal.
   // A non-orthogonal V would scale or shear the area and silently misplace every
   // child hanging off it.
-  it("registers only orthogonal variants, and inverts them exactly", () => {
+  it("inverts every registered variant exactly", () => {
+    // That V *is* rigid is not asserted here: it is built as `matmul(W,
+    // CANDIDATES[refName])` out of two members of the eight-element group, so
+    // orthogonality and |det| = 1 hold by construction, and the
+    // characterization above already pins every V to a named member. What this
+    // loop exercises is `orthoInverse` - the module's own inverse, which
+    // `normalizeLayout` folds V back out of every child with.
     for (const [id, V] of allVariants()) {
       // +0 canonicalizes IEEE-754 -0 (e.g. (-1)*0) to 0 before the deep-equal,
       // which otherwise distinguishes signed zero even though -0 === 0.
@@ -315,7 +337,6 @@ describe("registration tables", () => {
       expect(round(matmul(V, orthoInverse(V))), `${id} does not invert`).toEqual(
         IDENTITY,
       );
-      expect(Math.abs(det(V)), `${id} is not a rigid map`).toBeCloseTo(1, 12);
     }
     // ...and the one that made this necessary is still here, so a future
     // simplification back to `matvec(V, ...)` cannot pass unnoticed.
