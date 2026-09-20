@@ -54,10 +54,25 @@ describe("objectiveIcons", () => {
     // into two markers instead of collapsing to one - so objectiveIcons threw
     // rather than emit quietly-wrong geometry. The lookups are methods now,
     // so a derived layout resolves against *its* pieces and the guard is gone.
+    //
+    // Which means the derivation has to actually narrow to say anything: a
+    // `parentOf` still closing over the list it was wrapped with answers a
+    // same-contents copy identically, so only a *missing* piece tells the two
+    // apart.
     const layout = layoutById("bm-take-vs-take-01");
-    const whole = objectiveIcons(layout);
-    expect(objectiveIcons(layout.withPieces([...layout.pieces]))).toEqual(whole);
-    expect(objectiveIcons({ ...layout })).toEqual(whole);
+    const dropped = layout.pieces[0];
+    const narrowed = layout.withPieces(
+      layout.pieces.filter((p) => p.id !== dropped.id),
+    );
+    expect(layout.parentOf(dropped.id)).toBe(dropped);
+    expect(narrowed.parentOf(dropped.id)).toBeUndefined();
+    // ...and a bare spread is as good as `withPieces`, which is the mistake the
+    // deleted guard existed to catch.
+    expect({ ...layout, pieces: narrowed.pieces }.parentOf(dropped.id)).toBeUndefined();
+    // Narrowing nothing away still emits the whole card.
+    expect(objectiveIcons(layout.withPieces([...layout.pieces]))).toEqual(
+      objectiveIcons(layout),
+    );
   });
 
   it("returns no icons for a layout without objectives", () => {

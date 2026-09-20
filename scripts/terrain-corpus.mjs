@@ -25,7 +25,15 @@ const templatesPath = new URL(
 const readJson = (name) =>
   JSON.parse(readFileSync(new URL(name, srcDir), "utf8"));
 
-/** `pieces` -> its id index, built once per array. */
+/**
+ * `pieces` -> its id index, built once per array.
+ *
+ * Keyed on the array itself, so a derived layout with its own list gets its own
+ * index and the original keeps hers. The cache is never invalidated, which is
+ * sound only because a piece list is treated as immutable here: derive a new
+ * list (`withPieces`) rather than pushing to or splicing an existing one, or
+ * `parentOf` will keep answering from the list as it was when first read.
+ */
 const indexes = new WeakMap();
 const indexOf = (pieces) => {
   let byId = indexes.get(pieces);
@@ -48,6 +56,10 @@ const indexOf = (pieces) => {
  *
  * The flip side of a method is that it needs its receiver: call
  * `layout.resolve(piece)`, not `const r = layout.resolve; r(piece)`.
+ *
+ * A piece list is immutable once wrapped: `parentOf`'s id index is memoized per
+ * array, so mutating one in place leaves it answering from the list as it was.
+ * Narrow or rewrite with `withPieces`, which gets its own index.
  *
  * @param {object} layout - a 40kdc layout ({ id, pieces }).
  * @param {(id: string) => object | undefined} footprintOf
