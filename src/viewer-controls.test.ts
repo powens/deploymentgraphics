@@ -10,7 +10,11 @@ import {
   type ControlRow,
   type Controls,
 } from "./viewer-controls";
-import { dispositions, resolveTerrainLayout } from "./event-matrix";
+import {
+  dispositions,
+  eventMatrixKey,
+  resolveTerrainLayout,
+} from "./event-matrix";
 import { eventMatrix } from "./presets/event-matrix";
 import { missions } from "./presets/missions";
 import { gwTerrain } from "./presets/terrain";
@@ -101,7 +105,12 @@ describe("defaultControls", () => {
 });
 
 describe("deriveControls", () => {
-  const LAYOUTS = ["A", "B", "C"];
+  // Off the `lay` row's own allowlist, not restated: `LAYOUT_IDS` is keyed by
+  // the `Layout` union precisely so a new variant cannot be missed, and a
+  // literal here would opt this sweep out of that — the new variant would reach
+  // the dropdown and the URL while every pairing under it went unchecked.
+  const layRow = controlSpec.find((row) => row.key === "lay");
+  const LAYOUTS = layRow?.kind === "select" ? layRow.allowed : [];
   const cells = dispositions(eventMatrix).flatMap((da, i, all) =>
     all.slice(i).flatMap((db) => LAYOUTS.map((lay) => ({ da, db, lay }))),
   );
@@ -122,7 +131,14 @@ describe("deriveControls", () => {
    * every cell has to land on a preset that exists.
    */
   it("derives a deployment and a terrain layout the presets carry, for every cell", () => {
-    expect(cells.length).toBe(45);
+    // Non-vacuity, stated against the matrix rather than against today's cell
+    // count: every pairing the matrix carries is enumerated, under every
+    // layout variant. A re-sourced matrix with a sixth disposition grows both
+    // sides, where a literal `45` would fail a legitimate `pnpm gen:presets`.
+    expect(LAYOUTS.length).toBeGreaterThan(0);
+    expect(new Set(cells.map((c) => eventMatrixKey(c.da, c.db))).size).toBe(
+      Object.keys(eventMatrix).length,
+    );
     for (const cell of cells) {
       const { m, t } = deriveControls({ ...defaultControls(), ...cell });
       const where = `${cell.da} / ${cell.db} / ${cell.lay}`;

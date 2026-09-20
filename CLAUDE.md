@@ -21,8 +21,9 @@ CI order: convert:40kdc:check, gen:presets:check, lint, test, build (the demo bu
 ## Layout
 
 - `src/index.ts`: published entry. Geometry/placement/svg-backend are internal, not exported.
-- `src/bundle.ts`: demo entry (rollup -> `dist/bundle.js`); re-exports presets, event
-  matrix, js-yaml for `static/app.js`. The viewer fetches nothing at runtime.
+- `src/bundle.ts`: demo entry (rollup -> `dist/bundle.js`); re-exports presets, the
+  viewer controls and js-yaml for `static/app.js`. The viewer fetches nothing at
+  runtime.
 - `src/placement.ts`: sole owner of the centre-pivot transform
   (`placedTransform`/`placedRing`/`placedFromPin`).
 - `src/viewer-controls.ts`: one row per viewer control; adding a control = one row.
