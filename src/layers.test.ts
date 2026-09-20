@@ -67,7 +67,7 @@ describe("resolveLayout", () => {
     ];
     const r = resolveLayout(config);
     // top-level first, then the layout's — order matters for draw order.
-    expect(r.features.map((f: { type: string }) => f.type)).toEqual(["generator", "l-ruin"]);
+    expect(r.features.map((f) => f.type)).toEqual(["generator", "l-ruin"]);
   });
 
   it("still surfaces top-level features when no layout is selected", () => {
