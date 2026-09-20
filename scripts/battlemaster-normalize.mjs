@@ -1021,8 +1021,9 @@ export function normalizeLayout(layout, templatesById) {
       // Undo the V now folded into the parent's transform, so the child lands
       // at M . feature.position regardless of the variant. This used to apply V
       // itself, on the grounds that every registered variant was self-inverse;
-      // the re-source registered one that is not (Triangle#12 = R270, a
-      // reflection composed onto a reflection), so it takes the real inverse.
+      // the fit produces one that is not (the `-flip` Triangle comes out at
+      // R270, a reflection composed onto a reflection), so it takes the real
+      // inverse.
       // W: `feature.position` anchors the roof's centre; step to the extent's
       // centre in the part's own frame before undoing V, so the emitted child
       // occupies the space upstream's model does rather than its roof's.
