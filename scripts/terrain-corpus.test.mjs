@@ -65,7 +65,7 @@ describe("withLookups", () => {
     for (const layout of corpus.missionLayouts) {
       for (const piece of layout.pieces) {
         expect(layout.resolve(piece)).toEqual(
-          resolvePiece(piece, corpus.footprintOf, layout.parentOf),
+          resolvePiece(piece, corpus.footprintOf, (id) => layout.parentOf(id)),
         );
         checked++;
       }
@@ -96,16 +96,39 @@ describe("withLookups", () => {
   });
 });
 
-describe("the lookups do not survive a spread", () => {
-  it("drops them, so a derived layout cannot resolve against stale parents", () => {
-    const layout = corpus.missionLayouts[0];
-    const derived = { ...layout, pieces: layout.pieces.slice(0, 1) };
-    expect(derived.parentOf).toBeUndefined();
-    expect(derived.resolve).toBeUndefined();
-    expect(derived.footprintOf).toBeUndefined();
-    // Rewrapping is the supported way to derive one.
-    const rewrapped = withLookups(derived, corpus.footprintOf);
-    expect(rewrapped.parentOf(layout.pieces[0].id)).toBe(layout.pieces[0]);
-    expect(rewrapped.parentOf(layout.pieces[1].id)).toBeUndefined();
+describe("a derived layout reads its own pieces", () => {
+  // The lookups used to be non-enumerable closures over the piece list they
+  // were built from, so `{ ...layout, pieces }` produced a layout that could
+  // not resolve at all and every caller had to remember to re-wrap. They are
+  // methods now: the piece index is keyed on the array `this.pieces` holds, so
+  // a narrowed layout answers against the narrowed list.
+  const layout = corpus.missionLayouts[0];
+  const first = layout.pieces[0];
+  const second = layout.pieces[1];
+
+  it("narrows through withPieces", () => {
+    const derived = layout.withPieces([first]);
+    expect(derived.id).toBe(layout.id);
+    expect(derived.parentOf(first.id)).toBe(first);
+    expect(derived.parentOf(second.id)).toBeUndefined();
+    // ...and the original is untouched.
+    expect(layout.parentOf(second.id)).toBe(second);
+  });
+
+  it("narrows through a plain spread too", () => {
+    // The shape is what carries the invariant now, so the mistake the old
+    // guard existed for cannot be made.
+    const derived = { ...layout, pieces: [first] };
+    expect(derived.parentOf(first.id)).toBe(first);
+    expect(derived.parentOf(second.id)).toBeUndefined();
+    expect(derived.resolve(first)).toEqual(layout.resolve(first));
+  });
+
+  it("still wraps a bare layout that never went through loadCorpus", () => {
+    const bare = withLookups(
+      { id: "synthetic", pieces: [first] },
+      corpus.footprintOf,
+    );
+    expect(bare.parentOf(first.id)).toBe(first);
   });
 });

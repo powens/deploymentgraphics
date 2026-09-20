@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { objectiveIcons } from "./objective-icons.mjs";
-import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
+import { loadCorpus } from "./terrain-corpus.mjs";
 import { round } from "./emit-placement.mjs";
 
-const { missionLayouts, footprintOf } = loadCorpus();
+const { missionLayouts } = loadCorpus();
 const layoutById = (id) => missionLayouts.find((l) => l.id === id);
 
 const iconsFor = (id) => objectiveIcons(layoutById(id));
@@ -48,14 +48,16 @@ describe("objectiveIcons", () => {
     for (const icon of icons) expect(icon).not.toHaveProperty("objective_role");
   });
 
-  it("refuses a layout whose lookups were lost to a spread", () => {
-    // Without `resolve` no footprint resolves, nothing touches, and the
-    // central pair would silently split into two markers at the trapezoid
-    // positions instead of collapsing to one at the board centre. Throw
-    // rather than emit quietly-wrong geometry.
+  it("reads a narrowed layout against its own pieces", () => {
+    // This used to be a guard: deriving a layout by spreading dropped the
+    // non-enumerable lookups, nothing resolved, and the central pair split
+    // into two markers instead of collapsing to one - so objectiveIcons threw
+    // rather than emit quietly-wrong geometry. The lookups are methods now,
+    // so a derived layout resolves against *its* pieces and the guard is gone.
     const layout = layoutById("bm-take-vs-take-01");
-    const derived = { ...layout, pieces: layout.pieces };
-    expect(() => objectiveIcons(derived)).toThrow(/no resolve/);
+    const whole = objectiveIcons(layout);
+    expect(objectiveIcons(layout.withPieces([...layout.pieces]))).toEqual(whole);
+    expect(objectiveIcons({ ...layout })).toEqual(whole);
   });
 
   it("returns no icons for a layout without objectives", () => {
@@ -64,9 +66,7 @@ describe("objectiveIcons", () => {
     // and objectiveIcons emits nothing.
     const layout = layoutById("bm-take-vs-take-01");
     const pieces = layout.pieces.filter((p) => !p.is_objective && !p.objective_role);
-    // Rewrap rather than spread: a derived layout needs its own parent lookup,
-    // not the one closed over the original piece list.
-    const icons = objectiveIcons(withLookups({ ...layout, pieces }, footprintOf));
+    const icons = objectiveIcons(layout.withPieces(pieces));
     expect(icons).toEqual([]);
   });
 });

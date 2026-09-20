@@ -16,7 +16,7 @@ import {
   canonicalPartId,
   orthoInverse,
 } from "./battlemaster-normalize.mjs";
-import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
+import { footprintPolygon } from "./terrain-resolver.mjs";
 import {
   FLIP_X,
   FLIP_Y,
@@ -438,12 +438,10 @@ describe("normalized layouts conform to upstream geometry", () => {
     for (let i = 0; i < layouts.length; i++) {
       const src = layouts[i];
       const out = normalized[i];
-      const srcParent = src.parentOf;
-      const outParent = out.parentOf;
       for (const child of out.pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
-        const composite = byId.get(srcParent(areaId).template);
+        const composite = byId.get(src.parentOf(areaId).template);
         const feature = composite.features.find(
           (f) => `${areaId}-${f.id}` === child.id,
         );
@@ -456,11 +454,7 @@ describe("normalized layouts conform to upstream geometry", () => {
         // so reading it directly would now pin every one of them to the wrong
         // point, and pin the emitted piece to it too.
         const want = centroid(
-          resolvePiece(
-            upstreamPart(feature, upstreamPartOf(feature), areaId),
-            footprintOf,
-            srcParent,
-          ),
+          src.resolve(upstreamPart(feature, upstreamPartOf(feature), areaId)),
         );
         // Where the emitted piece puts its own polygon's bbox centre. The
         // resolved ring's centroid is the image of the footprint's centroid, so
@@ -470,12 +464,12 @@ describe("normalized layouts conform to upstream geometry", () => {
         const ring = footprintPolygon(
           child.footprint ?? footprintOf(child.template),
         );
-        const T = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
+        const T = matmul(pieceMatrix(out.parentOf(areaId)), pieceMatrix(child));
         const d = {
           x: bboxCentre(ring).x - centroid(ring).x,
           y: bboxCentre(ring).y - centroid(ring).y,
         };
-        const c = centroid(resolvePiece(child, footprintOf, outParent));
+        const c = centroid(out.resolve(child));
         const got = {
           x: c.x + T[0][0] * d.x + T[0][1] * d.y,
           y: c.y + T[1][0] * d.x + T[1][1] * d.y,
@@ -513,12 +507,12 @@ describe("normalized layouts conform to upstream geometry", () => {
     let worst = 0;
     let checked = 0;
     for (let i = 0; i < layouts.length; i++) {
-      const srcParent = layouts[i].parentOf;
-      const outParent = normalized[i].parentOf;
-      for (const child of normalized[i].pieces) {
+      const src = layouts[i];
+      const out = normalized[i];
+      for (const child of out.pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
-        const composite = byId.get(srcParent(areaId).template);
+        const composite = byId.get(src.parentOf(areaId).template);
         const feature = composite.features.find(
           (f) => `${areaId}-${f.id}` === child.id,
         );
@@ -551,14 +545,12 @@ describe("normalized layouts conform to upstream geometry", () => {
         expect(child.footprint).toEqual(partExtent(upstreamPartOf(feature)));
         // Same footprint, same frame: the emitted child must land on upstream's
         // outline vertex for vertex, not merely near it.
-        const truth = resolvePiece(
+        const truth = src.resolve(
           upstreamPart(feature, upstreamPartOf(feature), areaId),
-          footprintOf,
-          srcParent,
         );
         worst = Math.max(
           worst,
-          ringMismatch(resolvePiece(child, footprintOf, outParent), truth),
+          ringMismatch(out.resolve(child), truth),
         );
         checked++;
       }
@@ -580,12 +572,10 @@ describe("normalized layouts conform to upstream geometry", () => {
     for (let i = 0; i < layouts.length; i++) {
       const src = layouts[i];
       const out = normalized[i];
-      const srcParent = src.parentOf;
-      const outParent = out.parentOf;
       for (const child of out.pieces) {
         if (child.piece_type !== "feature") continue;
         const areaId = child.parent_area_id;
-        const srcArea = srcParent(areaId);
+        const srcArea = src.parentOf(areaId);
         const composite = byId.get(srcArea.template);
         const feature = composite.features.find(
           (f) => `${areaId}-${f.id}` === child.id,
@@ -601,7 +591,7 @@ describe("normalized layouts conform to upstream geometry", () => {
           flip ? FLIP_X : IDENTITY,
         );
         const want = matmul(matmul(Msrc, Mf), matmul(K, rotation(turn)));
-        const got = matmul(pieceMatrix(outParent(areaId)), pieceMatrix(child));
+        const got = matmul(pieceMatrix(out.parentOf(areaId)), pieceMatrix(child));
         for (let r = 0; r < 2; r++) {
           for (let c = 0; c < 2; c++) {
             worst = Math.max(worst, Math.abs(want[r][c] - got[r][c]));
@@ -615,7 +605,7 @@ describe("normalized layouts conform to upstream geometry", () => {
   it("keeps the trapezoid areas on their upstream outline", () => {
     let worst = 0;
     for (let i = 0; i < layouts.length; i++) {
-      const srcParent = layouts[i].parentOf;
+      const src = layouts[i];
       for (const piece of normalized[i].pieces) {
         if (piece.template !== "area-trapezoid") continue;
         const placement = areaBuildingPlacement(
@@ -634,11 +624,7 @@ describe("normalized layouts conform to upstream geometry", () => {
         ];
         const [placed] = resolvePlacement(placement, gwTemplates, CANVAS);
         const drawn = placedRing(local, placed);
-        const truth = resolvePiece(
-          srcParent(piece.id),
-          footprintOf,
-          srcParent,
-        );
+        const truth = src.resolve(src.parentOf(piece.id));
         worst = Math.max(worst, shapeDistance(drawn, truth));
       }
     }
@@ -766,9 +752,8 @@ describe("parts sit inside the composite that contains them", () => {
 describe("board invariants", () => {
   it("keeps every resolved vertex on the 60x44 board", () => {
     for (const layout of normalized) {
-      const getParent = layout.parentOf;
       for (const piece of layout.pieces) {
-        for (const v of resolvePiece(piece, footprintOf, getParent)) {
+        for (const v of layout.resolve(piece)) {
           expect(v.x, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
           expect(v.x, `${layout.id} ${piece.id}`).toBeLessThanOrEqual(60.5);
           expect(v.y, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
@@ -792,12 +777,11 @@ describe("board invariants", () => {
     let worst = 0;
     let worstAt = "";
     for (const layout of normalized) {
-      const getParent = layout.parentOf;
       const exempt = SOURCE_ASYMMETRIC_AREAS[layout.id] ?? [];
       const pts = layout.pieces.map((p) => ({
         exempt: exempt.includes(p.parent_area_id ?? p.id),
         kind: p.piece_type,
-        c: centroid(resolvePiece(p, footprintOf, getParent)),
+        c: centroid(layout.resolve(p)),
       }));
       for (const a of pts) {
         if (a.exempt) continue;

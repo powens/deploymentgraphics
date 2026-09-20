@@ -51,6 +51,10 @@ for (const layout of corpus.missionLayouts) {
   // catwalks are dropped, and an unclaimed piece throws. See
   // scripts/layout-to-placements.mjs.
   const { templates, features } = layoutPlacements(layout, corpus.gwTemplates);
+  // A second walk over the same pieces, deliberately: `is_objective` is
+  // orthogonal to a piece's kind - an objective piece is both a building and a
+  // marker - so it cannot ride along on the classification above, which gives
+  // each piece exactly one kind.
   const icons = objectiveIcons(layout);
   // 40kdc layout metadata: the deployment pattern and the mission matchup
   // split into its two dispositions. `resolveTerrainLayout` joins on both to
