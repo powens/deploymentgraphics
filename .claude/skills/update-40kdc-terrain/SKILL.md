@@ -133,18 +133,48 @@ It throws loudly rather than guessing on:
   catch a wrong reading — it builds its truth piece through the same rule — so check a
   mirrored part against its unmirrored sibling composite and against containment in its own
   parent outline. See W2.
-- **Unregistered composite footprint variant** — not a throw, but a *test* failure in
-  `scripts/battlemaster-registration.test.mjs`. Add the rigid transform to `VARIANT`.
-  A `VARIANT` entry no longer has to be self-inverse (`Triangle#12` is `R270`); the
-  normalizer takes a real `orthoInverse`, and what the test pins is only that `V` is
-  orthogonal — plus which entry is the non-self-inverse one, so a "simplification" back to
-  `matvec(V, …)` can't pass unnoticed. The check is relative — every composite against its
-  class's lowest-id reference — so the references themselves are pinned separately in
-  `CLASS_REFERENCE`. If a pull adds a composite that sorts ahead of one, or re-registers a
-  whole class, that table has to move with it; do not "fix" it to match without deriving
-  the new `V` against the pre-pull corpus first. Fitting the archetype to upstream's traced
-  outline is not the oracle here — it prefers the other reflection for four of the six
-  classes (the numbers are in `VARIANT`'s header).
+- **Composite footprint that will not fit its class reference** (`composite … is not a rigid
+  transform of the <class> reference … (best fit …in)`) — a converter throw from
+  `fitVariant`, so `pnpm convert:40kdc` aborts before any YAML is written. There is no
+  `VARIANT` table to add a row to: `V` is *derived*, by fitting each composite's footprint
+  against the one reference composite its class pins in `CLASS_REFERENCE`, over the eight
+  rigid maps. This fires when upstream ships a footprint that is a shape it has not shipped
+  before. Work out what the new shape is; if it is a genuine new member of the class, it
+  will fit once you have it, and if it is not, it needs its own class.
+
+  **Do not re-point `CLASS_REFERENCE` at a different composite to make this go away.** The
+  six references are pinned *by id* — deliberately, so that upstream reordering the file or
+  adding a composite cannot move them. Re-pointing one silently re-registers every
+  composite in that class. Their orientations were measured against the pre-pull corpus,
+  which no longer exists to re-derive them from, so they are a characterization and have to
+  be treated as one.
+
+  Fitting the coarse legacy archetype to upstream's traced outline is **not** a substitute
+  oracle — it prefers the other reflection for four of the six classes. The numbers are in
+  `CLASS_REFERENCE`'s header in `scripts/battlemaster-normalize.mjs`; read them before
+  concluding the registration is mirrored.
+- **Composite footprint with a rigid self-symmetry** (`composite … fits the <class>
+  reference … under both <A> and <B>: its footprint has a rigid self-symmetry, so the shape
+  does not determine the variant`) — a converter throw from `fitVariant`. A footprint
+  symmetric under one of the eight rigid maps fits under two of them at once, so the shape
+  cannot say which variant it is registered at and the winner would otherwise be decided by
+  `CANDIDATES` insertion order. No real composite is self-symmetric today (best fit `1.1e-14`in
+  against a runner-up of `0.229`in at worst). If upstream ships one, the variant has to come
+  from correspondence with the pre-pull rendering, not from the shape.
+- **Missing or unusable class reference** (`size class … has no reference composite
+  registered`, `the <class> reference … is not in the template table`, `… has no footprint
+  to fit against`) — converter throws from `fitVariant`. The first means a new size class
+  needs a `CLASS_REFERENCE` row; the other two mean upstream dropped or emptied the
+  composite a class is pinned against, which needs a new reference derived against the
+  pre-pull rendering rather than picked.
+- **Re-registered class** — a *test* failure in `scripts/battlemaster-registration.test.mjs`
+  (`accounts for every composite footprint as a registered rigid variant`). The fit above
+  only says each composite is *some* rigid transform of its reference; this pins which of
+  the eight maps each class's composites actually come out at, and how many at each. It is
+  what notices upstream re-tracing a footprint onto a different non-identity map — a `-flip`
+  BigRect moving `R180.FX` → `R180` still fits, still passes every throw, and still leaves
+  the old "away from identity" count unchanged, while moving `combined.yml`. Re-pin the
+  histogram only once you know why it moved.
 
 ### Deriving a new part's registration
 

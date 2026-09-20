@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   SIZE_CLASS,
   PART_TO_TEMPLATE,
-  VARIANT,
+  variantOf,
   isCompositeTemplate,
   classOf,
   partOf,
@@ -67,12 +67,6 @@ const shapeDistance = (a, b) => {
   return Math.max(toOutline(a, b), toOutline(b, a));
 };
 
-/** A ring translated so its area centroid sits on the origin. */
-const centred = (ring) => {
-  const c = centroid(ring);
-  return ring.map((p) => ({ x: p.x - c.x, y: p.y - c.y }));
-};
-
 /**
  * Upstream's own placement of one composite part, as a piece: the part's model
  * extent, anchored where upstream anchors it.
@@ -106,34 +100,6 @@ const upstreamPart = (feature, part, areaId) => {
   };
 };
 
-/** The eight rigid maps a composite footprint can sit under, by name. */
-const CANDIDATES = Object.fromEntries(
-  [0, 90, 180, 270].flatMap((d) => [
-    [`R${d}`, rotation(d)],
-    [`R${d}.FX`, matmul(rotation(d), FLIP_X)],
-  ]),
-);
-
-/** Name one of CANDIDATES from its matrix. */
-const nameOfVariant = (V) =>
-  Object.entries(CANDIDATES).find(([, M]) =>
-    M.every((row, i) => row.every((x, j) => Math.abs(x - V[i][j]) < 1e-9)),
-  )?.[0];
-
-/**
- * Each size class's reference composite - lowest id in the class - and the
- * orientation it is registered at. The absolute half of the rigid-variant check
- * below; see the comment there for why it is pinned rather than derived.
- */
-const CLASS_REFERENCE = {
-  BigRect: ["bm-composite-bigrect-cd-ef-01-19f1adc57b", "R180"],
-  LongLine: ["bm-composite-longline-tower-3be6fa3536", "R0"],
-  LongLineTower: ["bm-composite-longlinetower-flip-06c4f02941", "R0.FX"],
-  ShortLine: ["bm-composite-shortline-barrier-348db27c93", "R180"],
-  SmallRect: ["bm-composite-smallrect-generator-44c45681fa", "R0"],
-  Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", "R90.FX"],
-};
-
 const corpus = loadCorpus();
 const { templatesById: byId, gwTemplates, footprintOf } = corpus;
 /** The drawing a feature's model is read from, through PART_CANONICAL. */
@@ -143,6 +109,13 @@ const upstreamPartOf = (feature) => byId.get(canonicalPartId(feature.template));
 // raw layouts alongside `missionLayouts`. Both come out of the corpus in
 // source order, which is what lets `layouts[i]` and `normalized[i]` pair up.
 const layouts = corpus.rawLayouts.filter((l) => l.mission_matchup_id);
+/** Every composite in the vendored table, fitted. */
+const allVariants = () =>
+  new Map(
+    [...byId.values()]
+      .filter((t) => isCompositeTemplate(t.id))
+      .map((t) => [t.id, variantOf(t, byId)]),
+  );
 const normalized = corpus.missionLayouts;
 
 describe("registration tables", () => {
@@ -246,81 +219,54 @@ describe("registration tables", () => {
     });
   });
 
-  // The guard that stops a new upstream rigid variant from silently rendering
-  // ~6in out of place.
+  // The fit that registers each composite's rigid variant lives in the module
+  // now (`variantOf`), where a failure throws and names the composite instead of
+  // surfacing here as a wall of assertions. `variantOf` throws when a
+  // composite's footprint is a shape upstream has not shipped before, or when
+  // the reference composite its class is pinned against has gone. Fitting the
+  // whole corpus is the first assertion.
   //
-  // It used to read: every composite footprint is its archetype's polygon under
-  // the registered V, vertex for vertex. The re-source killed that premise -
-  // composites are individually traced outlines now, and no rigid map takes the
-  // coarse archetype onto one exactly. What survives, and is just as tight, is
-  // that the composites *of a class* are still rigid transforms of each other:
-  // 52 composites share 13 distinct footprints, and within a class any two of
-  // them coincide to 0.0000in under one of the eight rigid maps (against 0.21in
-  // or more for every other map). So each class gets a reference footprint, and
-  // every other composite in it must be that reference under a rigid W, with its
-  // registered V equal to W composed onto the reference's.
-  //
-  // A composite whose footprint is a shape upstream has not shipped before fails
-  // the first assertion; one that is a known shape at an unregistered
-  // orientation fails the second.
+  // What is left for the test is that the corpus the module fits is still the
+  // corpus we think it is.
   it("accounts for every composite footprint as a registered rigid variant", () => {
-    const composites = [...byId.values()].filter((t) => isCompositeTemplate(t.id));
-    const byClass = {};
-    for (const c of composites) (byClass[classOf(c)] ??= []).push(c);
+    const variants = allVariants();
+    expect(variants.size).toEqual(52);
 
-    for (const [cls, members] of Object.entries(byClass)) {
-      // Sorted, not source order: the reference is half of what CLASS_REFERENCE
-      // pins, so it cannot be allowed to move when upstream reorders the file.
-      members.sort((a, b) => (a.id < b.id ? -1 : 1));
-      const ref = members[0];
-      const refRing = centred(footprintPolygon(ref.footprint));
-      const refV = VARIANT[ref.id] ?? IDENTITY;
-      // The check below is relative: it fixes every composite in a class against
-      // that class's reference, and says nothing at all about the reference
-      // itself. On its own that leaves a whole class free to be registered a
-      // quarter-turn or a reflection out with every assertion still green - and
-      // for LongLineTower, whose single composite is its own reference, it
-      // degenerates to `V === V`. So the references are pinned outright.
-      //
-      // The pin is a characterization, and it has to be: V is derived by vote
-      // against the pre-pull corpus (see VARIANT), which no longer exists to
-      // re-derive it from inside a test, and fitting the coarse archetype to
-      // upstream's re-traced outline is not a substitute - it prefers the other
-      // reflection for three of these six classes (see VARIANT's header). What
-      // it buys is that re-registering a class stops being invisible: it fails
-      // here instead of moving combined.yml in silence. That is the same job
-      // EXPECTED_HAND does below.
-      const [refId, refName] = CLASS_REFERENCE[cls] ?? [];
-      expect(ref.id, `${cls} reference`).toEqual(refId);
-      expect(nameOfVariant(refV), `${cls} reference orientation`).toEqual(refName);
-      for (const c of members) {
-        const ring = centred(footprintPolygon(c.footprint));
-        const fits = Object.entries(CANDIDATES)
-          .map(([n, W]) => [
-            shapeDistance(refRing.map((p) => matvec(W, p)), ring),
-            n,
-            W,
-          ])
-          .sort((a, b) => a[0] - b[0]);
-        const [best, , W] = fits[0];
-        expect(
-          best,
-          `${c.id} is not a rigid transform of the ${cls} reference ${ref.id}`,
-        ).toBeLessThan(1e-3);
-        const want = matmul(W, refV).map((r) => r.map((x) => Math.round(x) + 0));
-        const got = (VARIANT[c.id] ?? IDENTITY).map((r) =>
-          r.map((x) => Math.round(x) + 0),
-        );
-        expect(got, `${c.id} is registered at the wrong orientation`).toEqual(want);
-      }
+    // Characterization of the fit's output: which of the eight rigid maps each
+    // class's composites come out registered at, and how many at each.
+    //
+    // Counting only "away from the identity" was too coarse to be the guard
+    // this is here to be: upstream re-tracing a footprint onto a *different*
+    // non-identity map - a `-flip` BigRect moving from R180.FX to R180 - still
+    // fits, still passes the throw above, and still leaves the count at 30,
+    // while moving combined.yml. Naming the maps is what notices.
+    const round = (M) => M.map((row) => row.map((x) => Math.round(x) + 0));
+    const NAMES = new Map(
+      [0, 90, 180, 270]
+        .flatMap((d) => [
+          [`R${d}`, round(rotation(d))],
+          [`R${d}.FX`, round(matmul(rotation(d), FLIP_X))],
+        ])
+        .map(([name, M]) => [JSON.stringify(M), name]),
+    );
+    const registered = {};
+    for (const [id, V] of variants) {
+      const name = NAMES.get(JSON.stringify(round(V)));
+      expect(name, `${id} is not one of the eight rigid maps`).toBeDefined();
+      const cls = classOf(byId.get(id));
+      registered[cls] = { ...registered[cls] };
+      registered[cls][name] = (registered[cls][name] ?? 0) + 1;
     }
+    expect(registered).toEqual({
+      BigRect: { R180: 25, "R180.FX": 5 },
+      LongLine: { R0: 2 },
+      LongLineTower: { "R0.FX": 1 },
+      ShortLine: { R180: 4, "R180.FX": 2 },
+      SmallRect: { R0: 6, "R0.FX": 3 },
+      Triangle: { "R90.FX": 3, R270: 1 },
+    });
   });
 
-  // `normalizeLayout` emits each child at `matvec(V, position)` while its parent
-  // area now carries `M·V`, so the child resolves through V twice. That is only
-  // the identity when V is its own inverse. Both registered variants are
-  // (a reflection and a 180-degree rotation), but the assumption is load-bearing
-  // enough to pin: a future 90-degree variant would silently misplace children.
   // Q is not recoverable from the shipped data: upstream's part footprints are
   // plain rectangles, so nothing in terrain-templates.json records which way
   // round the model is drawn. The values were measured against the pre-pull
@@ -366,25 +312,30 @@ describe("registration tables", () => {
   });
 
   // This used to require every variant to be its own inverse, because
-  // normalizeLayout undid the parent's V by applying V again. The re-source
-  // registered one that is not - Triangle#12 is a reflection composed onto a
+  // normalizeLayout undid the parent's V by applying V again. The fit produces
+  // one that is not - the `-flip` Triangle is a reflection composed onto a
   // reflection, which lands on R270 - so the module takes a real inverse and
   // what has to hold is only that the inverse exists, i.e. that V is orthogonal.
   // A non-orthogonal V would scale or shear the area and silently misplace every
   // child hanging off it.
-  it("registers only orthogonal variants, and inverts them exactly", () => {
-    for (const [id, V] of Object.entries(VARIANT)) {
+  it("inverts every registered variant exactly", () => {
+    // That V *is* rigid is not asserted here: it is built as `matmul(W,
+    // CANDIDATES[refName])` out of two members of the eight-element group, so
+    // orthogonality and |det| = 1 hold by construction, and the
+    // characterization above already pins every V to a named member. What this
+    // loop exercises is `orthoInverse` - the module's own inverse, which
+    // `normalizeLayout` folds V back out of every child with.
+    for (const [id, V] of allVariants()) {
       // +0 canonicalizes IEEE-754 -0 (e.g. (-1)*0) to 0 before the deep-equal,
       // which otherwise distinguishes signed zero even though -0 === 0.
       const round = (M) => M.map((row) => row.map((x) => x + 0));
       expect(round(matmul(V, orthoInverse(V))), `${id} does not invert`).toEqual(
         IDENTITY,
       );
-      expect(Math.abs(det(V)), `${id} is not a rigid map`).toBeCloseTo(1, 12);
     }
     // ...and the one that made this necessary is still here, so a future
     // simplification back to `matvec(V, ...)` cannot pass unnoticed.
-    const notSelfInverse = Object.entries(VARIANT).filter(
+    const notSelfInverse = [...allVariants()].filter(
       ([, V]) =>
         JSON.stringify(matmul(V, V).map((r) => r.map((x) => x + 0))) !==
         JSON.stringify(IDENTITY),
