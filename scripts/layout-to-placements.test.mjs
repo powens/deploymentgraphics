@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
 import { isRuinTemplate } from "./ruin-to-feature.mjs";
+import { isFeatureBuildingTemplate } from "./feature-to-building.mjs";
 import {
   PIECE_KINDS,
   classifyPiece,
@@ -118,12 +119,15 @@ describe("layoutPlacements", () => {
   it("keeps areas before feature buildings and ruins before rectangles", () => {
     /** Collapse a sequence to its runs, so [a,a,b,b] -> [a,b]. */
     const runs = (values) => values.filter((v, i) => v !== values[i - 1]);
-    // Both buckets are told apart by the emitted row alone: pipes and
-    // barricades keep their own template names, and only ruins are `l-ruin*`.
+    // Both buckets are told apart by the emitted row alone: a feature building
+    // keeps its own template name, and only ruins are `l-ruin*`.
+    //
+    // Asked of the same predicate the `feature-building` row claims with,
+    // rather than of a literal pipe/barricade list: a third feature-building
+    // template would read as an area building here, collapsing the runs back to
+    // the expected pair even when the ordering had gone wrong.
     const templateKind = (row) =>
-      row.type === "pipe" || row.type === "barricade"
-        ? "feature-building"
-        : "area-building";
+      isFeatureBuildingTemplate(row.type) ? "feature-building" : "area-building";
     const featureKind = (row) =>
       row.type.startsWith("l-ruin") ? "ruin-feature" : "rect-feature";
 
@@ -142,9 +146,14 @@ describe("layoutPlacements", () => {
     // The `default: throw "unhandled piece kind"` this replaces existed only
     // because the claims table and the dispatch switch were two lists that
     // could drift. One row per kind cannot, so the case is gone - but a row
-    // with a converter and no bucket would still emit into nothing.
+    // with a converter and no bucket would still emit into nothing - and so
+    // would one naming a bucket the result does not have, since `bucket` is
+    // matched by equality. Both are checked against the emitted entry's own
+    // keys, so the row and the thing it feeds cannot disagree.
+    const emitted = Object.keys(layoutPlacements(L, gwTemplates));
     for (const kind of PIECE_KINDS) {
       expect(Boolean(kind.convert), kind.kind).toBe(Boolean(kind.bucket));
+      if (kind.convert) expect(emitted, kind.kind).toContain(kind.bucket);
     }
     expect(PIECE_KINDS.filter((k) => !k.convert).map((k) => k.kind)).toEqual([
       "dropped",
