@@ -267,11 +267,6 @@ describe("registration tables", () => {
     });
   });
 
-  // `normalizeLayout` emits each child at `matvec(V, position)` while its parent
-  // area now carries `M·V`, so the child resolves through V twice. That is only
-  // the identity when V is its own inverse. Both registered variants are
-  // (a reflection and a 180-degree rotation), but the assumption is load-bearing
-  // enough to pin: a future 90-degree variant would silently misplace children.
   // Q is not recoverable from the shipped data: upstream's part footprints are
   // plain rectangles, so nothing in terrain-templates.json records which way
   // round the model is drawn. The values were measured against the pre-pull
