@@ -48,18 +48,36 @@ function place(point, piece) {
 }
 
 /**
+ * The footprint a piece draws from - its own inline one, else its template's -
+ * or `undefined` when it has neither.
+ *
+ * The one owner of that precedence. Callers that need the footprint without
+ * resolving it used to restate it, which is one more place for inline-vs-
+ * template to drift.
+ *
+ * Use {@link pieceFootprint} unless absence is a case you handle: this exists
+ * for the callers that ask *whether* a piece has one at all, which would
+ * otherwise have to spell the fallback themselves to avoid the throw.
+ *
+ * @param {object} piece - `footprint` or `template`.
+ * @param {(id: string) => object | null | undefined} lookupFootprint
+ */
+export function pieceFootprintIfAny(piece, lookupFootprint) {
+  return piece.footprint ?? lookupFootprint(piece.template);
+}
+
+/**
  * The footprint a piece draws from: its own inline one, else its template's.
  *
- * The one owner of that fallback. The converters that need the footprint
- * without resolving it used to restate it, which is two more places for the
- * precedence between inline and template to drift.
+ * {@link pieceFootprintIfAny} with absence treated as a data fault, which is
+ * what every converter wants.
  *
  * @param {object} piece - `footprint` or `template`.
  * @param {(id: string) => object | null | undefined} lookupFootprint
  * @throws if the piece has neither.
  */
 export function pieceFootprint(piece, lookupFootprint) {
-  const footprint = piece.footprint ?? lookupFootprint(piece.template);
+  const footprint = pieceFootprintIfAny(piece, lookupFootprint);
   if (!footprint) {
     throw new Error(
       `piece ${piece.id ?? "?"} has no footprint or known template`,

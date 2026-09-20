@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
 import { isRuinTemplate } from "./ruin-to-feature.mjs";
-import { isFeatureBuildingTemplate } from "./feature-to-building.mjs";
 import {
   PIECE_KINDS,
   classifyPiece,
@@ -119,15 +118,29 @@ describe("layoutPlacements", () => {
   it("keeps areas before feature buildings and ruins before rectangles", () => {
     /** Collapse a sequence to its runs, so [a,a,b,b] -> [a,b]. */
     const runs = (values) => values.filter((v, i) => v !== values[i - 1]);
-    // Both buckets are told apart by the emitted row alone: a feature building
-    // keeps its own template name, and only ruins are `l-ruin*`.
+    // Both buckets are told apart by the emitted row alone: an area building
+    // is renamed onto one of the six gw archetypes, and only ruins are
+    // `l-ruin*`.
     //
-    // Asked of the same predicate the `feature-building` row claims with,
-    // rather than of a literal pipe/barricade list: a third feature-building
-    // template would read as an area building here, collapsing the runs back to
-    // the expected pair even when the ordering had gone wrong.
+    // Keyed on the *area* names, not on `isFeatureBuildingTemplate`. That
+    // predicate reads 40kdc template ids (`pipe`, `barricade`) while `row.type`
+    // is the emitted gw name `classifyFeature` returns - two namespaces that
+    // coincide only by today's convention, which is exactly why
+    // `classifyFeature` hands back `name` separately. Asking "is this one of
+    // the area archetypes?" instead keeps the robustness that matters here: a
+    // feature building added under any new name still reads as a feature
+    // building, so it cannot collapse the runs back to the expected pair while
+    // the ordering has actually gone wrong.
+    const AREA_GW_NAMES = new Set([
+      "large-area",
+      "small-area",
+      "large-pipes",
+      "small-pipes",
+      "shoe",
+      "shoe-mirror",
+    ]);
     const templateKind = (row) =>
-      isFeatureBuildingTemplate(row.type) ? "feature-building" : "area-building";
+      AREA_GW_NAMES.has(row.type) ? "area-building" : "feature-building";
     const featureKind = (row) =>
       row.type.startsWith("l-ruin") ? "ruin-feature" : "rect-feature";
 

@@ -142,4 +142,35 @@ describe("areaBuildingPlacement", () => {
       mirror: "horizontal",
     });
   });
+
+  // Both guards exist to fail an upstream pull loudly rather than emit a
+  // mis-placed building, so both are pinned - the mapping one names a template
+  // this converter has no gw counterpart for, the footprint one a template
+  // 40kdc itself stopped shipping a polygon for.
+  it("throws for an area template with no gw mapping", () => {
+    const piece = {
+      template: "area-unheard-of",
+      piece_type: "area",
+      position: { x: 30, y: 20 },
+      rotation_degrees: 0,
+    };
+    expect(() =>
+      areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES),
+    ).toThrow(/no gw template mapping for area template area-unheard-of/);
+  });
+
+  it("throws for a mapped area template with no 40kdc footprint", () => {
+    const piece = {
+      template: "area-long-line",
+      piece_type: "area",
+      position: { x: 30, y: 20 },
+      rotation_degrees: 0,
+    };
+    // Mapped, so it clears the first guard - but the layout's lookup has no
+    // polygon for it, which is the case the second guard is for.
+    const layout = withLookups({ id: "t", pieces: [piece] }, () => undefined);
+    expect(() => areaBuildingPlacement(piece, layout, GW_TEMPLATES)).toThrow(
+      /no 40kdc footprint for area template area-long-line/,
+    );
+  });
 });
