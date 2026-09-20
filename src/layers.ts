@@ -58,7 +58,14 @@ export function resolveLayout(config: FullConfig): ResolvedLayout {
  * id never crosses a module edge.
  */
 export interface Layer {
-  /** Names the layer in draw order, and the `<g>` it emits where it has one. */
+  /**
+   * Names the row, so the list reads as the card's draw order. A label for the
+   * reader only — the renderer never emits it, and several layers draw a node
+   * carrying no `id` at all (`grid`, `half-way-lines`) or one named by the
+   * shape inside (a masked deployment zone). Anything that *did* read it would
+   * be the unchecked agreement between a row and its markup that this list
+   * exists to remove.
+   */
   readonly id: string;
   /** Appends this layer's shared shapes to the card's single `<defs>`. */
   injectDefs?(doc: SvgDocument, defs: SvgNode): void;
@@ -188,11 +195,9 @@ function halfwayLines(
 
 function territoryLine(
   doc: SvgDocument,
-  config: FullConfig,
+  territory: NonNullable<FullConfig["deployment"]["territory"]>,
   theme: Theme,
 ): SvgNode {
-  // Only reached when the row's presence rule found a territory.
-  const territory = config.deployment.territory!;
   const start = toPoint(territory.start, "territory start");
   const end = toPoint(territory.end, "territory end");
   const line = doc.createElement("line");
@@ -298,6 +303,9 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
     width: config.base.size.width,
     height: config.base.size.height,
   };
+  // Resolved here so the territory row's presence rule and the value its
+  // `draw` needs are the same expression, two lines apart.
+  const territory = config.deployment.territory;
 
   const rows: LayerRow[] = [
     {
@@ -324,10 +332,8 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
     {
       // A mission with no `territory` draws nothing regardless of the toggle.
       id: "territory",
-      draws:
-        Boolean(config.deployment.territory) &&
-        drawn(config.base.territory, true),
-      draw: (doc) => territoryLine(doc, config, theme),
+      draws: Boolean(territory) && drawn(config.base.territory, true),
+      draw: (doc) => territoryLine(doc, territory!, theme),
     },
     {
       // An unbuilt layout yields empty placements, so this is an empty
