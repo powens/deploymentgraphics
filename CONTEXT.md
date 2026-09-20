@@ -57,13 +57,22 @@ is *mirror on*. One formula, owned by the placement module.
 **Canvas** — the board, `{width, height}` in inches (standard 60×44). Anchors
 (TL/TR/BL/BR) and mirroring are all measured against it.
 
+**Layer** — one drawable layer of the card: the shared shapes it hangs in the
+card's single `<defs>`, the node that references them, and the rule for whether
+it draws at all. `src/layers.ts` lists the layers once, in draw order — one row
+each for the two deployment zones, grid, half-way lines, territory, buildings,
+features, objectives, annotations and icons. Adding a piece kind is one row;
+the def id never leaves the layer that emits both halves of it. `main.ts` walks
+the list twice (defs, then draw) and knows nothing about what is in it.
+
 **Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
 pass draws into a `ResolvedLayout` (buildings, icons, features). Buildings and
 icons come from the selected layout alone (empty arrays when none is selected);
 features are unioned with the board's top-level array. Distinct from
 **Resolve** above: that maps one placement to a `Placed`; this assembles
 placement *arrays* and applies the "is a layout selected / union with
-top-level" rules in one place.
+top-level" rules in one place. It lives with the **Layer** list it feeds, in
+`src/layers.ts`.
 
 **Controls** — the authoring form the *viewer* presents: the nine fields a
 visitor picks in the browser (two dispositions, layout, deployment, terrain

@@ -2,6 +2,16 @@
 import { describe, it, expect } from "vitest";
 import { makeBuildings, injectTemplateDefs } from "./buildings";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
+import { baseTheme } from "./presets/theme.js";
+import type { Theme } from "./theme.js";
+
+/** `baseTheme` with its building styling replaced. */
+const themed = (building: Theme["building"]): Theme => ({
+  ...baseTheme,
+  building,
+});
+/** Styles no building at all, for the assertions that only read geometry. */
+const unstyled = themed({ group: {}, template: { default: {} } });
 
 const doc = browserSvgDocument();
 // The renderer builds against the minimal `SvgNode` contract; the browser
@@ -16,7 +26,7 @@ const templates = {
 describe("injectTemplateDefs", () => {
   it("appends a <rect> per template, sized and id'd", () => {
     const defs = doc.createElement("defs");
-    injectTemplateDefs(doc, templates, defs);
+    injectTemplateDefs(doc, templates, defs, unstyled);
     const rect = defs.querySelector("#template-4x6");
     expect(rect).not.toBeNull();
     expect(rect!.tagName).toBe("rect");
@@ -33,6 +43,7 @@ describe("makeBuildings", () => {
         [{ type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
         templates,
         canvas,
+        unstyled,
       ),
     );
     expect(group.tagName).toBe("g");
@@ -51,6 +62,7 @@ describe("makeBuildings", () => {
         [{ type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 } } }],
         templates,
         canvas,
+        unstyled,
       ),
     );
     expect(group.querySelectorAll("use")).toHaveLength(1);
@@ -66,6 +78,7 @@ describe("makeBuildings", () => {
         ],
         templates,
         canvas,
+        unstyled,
       ),
     );
     const uses = group.querySelectorAll("use");
@@ -76,36 +89,49 @@ describe("makeBuildings", () => {
 });
 
 describe("per-template styling", () => {
-  // styleFor maps a template name -> its SVG props (group base merged in by
-  // the caller in real usage; here we pass props directly).
-  const styleFor = (name: string) =>
-    name === "pipe"
-      ? { fill: "#b9772e", stroke_width: 0.3 }
-      : { fill: "#808080", stroke_width: 1.2 };
+  // The rule both halves read: the shared group props as a base, then the
+  // template's own entry, falling back to `default`.
+  const styled = themed({
+    group: { stroke_width: 1.2 },
+    template: {
+      default: { fill: "#808080" },
+      pipe: { fill: "#b9772e", stroke_width: 0.3 },
+    },
+  });
 
   it("injectTemplateDefs styles each template def by name", () => {
     const defs = doc.createElement("defs");
-    injectTemplateDefs(doc, { pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styleFor);
+    injectTemplateDefs(doc, { pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styled);
     expect(defs.querySelector("#template-pipe")!.getAttribute("fill")).toBe("#b9772e");
     expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBe("#808080");
   });
 
-  it("makeBuildings styles each use by its template name", () => {
+  it("merges the group props under the template's own", () => {
+    const defs = doc.createElement("defs");
+    injectTemplateDefs(doc, { pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styled);
+    // `4x6` has no entry of its own, so it takes the group's stroke width...
+    expect(defs.querySelector("#template-4x6")!.getAttribute("stroke-width")).toBe("1.2");
+    // ...and `pipe` overrides it.
+    expect(defs.querySelector("#template-pipe")!.getAttribute("stroke-width")).toBe("0.3");
+  });
+
+  it("makeBuildings styles each use by the same rule as its def", () => {
     const group = asElement(
       makeBuildings(
         doc,
         [{ type: "pipe", mirror: false, corners: { TL: { x: 0, y: 0 }, TR: { x: 5.5, y: 0 } } }],
         { pipe: { width: 5.5, height: 1 } },
         { width: 60, height: 44 },
-        styleFor,
+        styled,
       ),
     );
     expect(group.querySelector("use")!.getAttribute("fill")).toBe("#b9772e");
+    expect(group.querySelector("use")!.getAttribute("stroke-width")).toBe("0.3");
   });
 
-  it("injectTemplateDefs sets no fill when styleFor is omitted", () => {
+  it("sets no fill when the theme styles no building", () => {
     const defs = doc.createElement("defs");
-    injectTemplateDefs(doc, { "4x6": { width: 4, height: 6 } }, defs);
+    injectTemplateDefs(doc, { "4x6": { width: 4, height: 6 } }, defs, unstyled);
     expect(defs.querySelector("#template-4x6")!.getAttribute("fill")).toBeNull();
   });
 });
@@ -126,6 +152,7 @@ describe("polygon templates", () => {
         },
       },
       defs,
+      unstyled,
     );
     const poly = defs.querySelector("#template-ruins");
     expect(poly).not.toBeNull();
@@ -147,7 +174,7 @@ describe("polygon templates", () => {
         },
       },
       defs,
-      () => ({ fill: "#808080" }),
+      themed({ group: {}, template: { default: { fill: "#808080" } } }),
     );
     expect(defs.querySelector("#template-ruins")!.getAttribute("fill")).toBe(
       "#808080",
@@ -170,6 +197,7 @@ describe("polygon templates", () => {
           },
         },
         canvas,
+        unstyled,
       ),
     );
     expect(group.querySelector("use")!.getAttribute("href")).toBe(

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { resolveLayout } from "./layout";
+import { resolveLayout } from "./layers";
 import type { FullConfig } from "./types";
 
 /** A FullConfig with a selected layout "1" carrying one of each piece. */
