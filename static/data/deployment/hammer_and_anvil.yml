@@ -1,5 +1,4 @@
 name: Hammer and Anvil
-home_edge: short
 
 territory:
   start: { x: 30, y: 0 }

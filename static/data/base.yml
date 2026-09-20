@@ -1,4 +1,6 @@
-# Board structure and draw toggles. All styling lives in theme.yml.
+# Board size and the draw toggles. All styling lives in theme.yml.
+# What an absent `draw` means is per toggle, and src/layers.ts states it
+# beside the layer it gates.
 size:
   width: 60
   height: 44
@@ -8,9 +10,6 @@ half_way_lines:
 
 territory:
   draw: true
-
-building:
-  draw: false
 
 grid:
   draw: true

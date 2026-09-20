@@ -6,7 +6,6 @@ import type { DeploymentConfig } from "../types.js";
 /** Crucible of Battle, from `static/data/deployment/crucible_of_battle.yml`. */
 export const crucibleOfBattle: DeploymentConfig = {
   name: "Crucible of Battle",
-  home_edge: "short",
   territory: { start: { x: 15, y: 0 }, end: { x: 45, y: 44 } },
   attacker: {
     deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 44 }, { x: 30, y: 0 }],
@@ -19,7 +18,6 @@ export const crucibleOfBattle: DeploymentConfig = {
 /** Dawn of War, from `static/data/deployment/dawn_of_war.yml`. */
 export const dawnOfWar: DeploymentConfig = {
   name: "Dawn of War",
-  home_edge: "long",
   territory: { start: { x: 0, y: 22 }, end: { x: 60, y: 22 } },
   attacker: {
     deployment_zone: [
@@ -42,7 +40,6 @@ export const dawnOfWar: DeploymentConfig = {
 /** Hammer and Anvil, from `static/data/deployment/hammer_and_anvil.yml`. */
 export const hammerAndAnvil: DeploymentConfig = {
   name: "Hammer and Anvil",
-  home_edge: "short",
   territory: { start: { x: 30, y: 0 }, end: { x: 30, y: 44 } },
   attacker: {
     deployment_zone: [
@@ -65,7 +62,6 @@ export const hammerAndAnvil: DeploymentConfig = {
 /** Search and Destroy, from `static/data/deployment/search_and_destroy.yml`. */
 export const searchAndDestroy: DeploymentConfig = {
   name: "Search and Destroy",
-  home_edge: "long",
   territory: { start: { x: 0, y: 0 }, end: { x: 60, y: 44 } },
   attacker: {
     mask_center: 9,
@@ -90,7 +86,6 @@ export const searchAndDestroy: DeploymentConfig = {
 /** Sweeping Engagement, from `static/data/deployment/sweeping_engagement.yml`. */
 export const sweepingEngagement: DeploymentConfig = {
   name: "Sweeping Engagement",
-  home_edge: "long",
   territory: { start: { x: 0, y: 19 }, end: { x: 60, y: 25 } },
   attacker: {
     deployment_zone: [
@@ -117,7 +112,6 @@ export const sweepingEngagement: DeploymentConfig = {
 /** Tipping Point, from `static/data/deployment/tipping_point.yml`. */
 export const tippingPoint: DeploymentConfig = {
   name: "Tipping Point",
-  home_edge: "short",
   territory: { start: { x: 26, y: 0 }, end: { x: 34, y: 44 } },
   attacker: {
     deployment_zone: [
