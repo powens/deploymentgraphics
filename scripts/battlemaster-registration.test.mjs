@@ -61,21 +61,29 @@ const composites = [...byId.values()].filter((t) =>
   String(t.id).startsWith("bm-composite-"),
 );
 /**
- * A synthetic layout using every composite once, each at the origin and
- * unrotated.
+ * A synthetic layout using every composite once, each at the origin, under one
+ * shared pose.
  *
  * Only the composites a layout actually uses get fitted, so this is what puts
- * the whole table through `normalizeLayout`. Because each piece carries no pose
- * of its own, what comes out is the registration alone - the area's variant and
- * each child's composed correction - rather than how a mission lays it out.
+ * the whole table through `normalizeLayout`. Called with no pose, each piece
+ * carries none of its own, so what comes out is the registration alone - the
+ * area's variant and each child's composed correction - rather than how a
+ * mission lays it out.
+ *
+ * `pose` is for the one correction that is invisible without it: K cancels the
+ * *parent's* parity, and no mission layout supplies one (every piece upstream
+ * ships is rotation-only, det +1 - the re-source replaced the piece-level
+ * `mirror` flag with separate mirrored composite templates). So a mirrored pose
+ * here is what exercises that factor at all.
  */
-const everyComposite = () => ({
+const everyComposite = (pose = {}) => ({
   id: "every-composite",
   pieces: composites.map((t, i) => ({
     id: `area-${i}`,
     piece_type: "area",
     template: t.id,
     position: { x: 0, y: 0 },
+    ...pose,
   })),
 });
 // This suite is the one place that reads both frames: it checks the normalized
@@ -239,13 +247,21 @@ describe("registration tables", () => {
   // child instead, which is where it matters and where no rule of ours takes
   // part.
   //
-  // Every composite goes in at the origin unrotated, so what comes out is the
-  // correction alone - not how a mission happens to lay the composite out.
-  // That is what makes this survive a re-pull that re-lays the 45 layouts and
-  // still fail if K stops cancelling the parent's parity, if K and Q compose in
-  // the wrong order, or if V is applied where its inverse belongs.
-  it("composes every child's orientation out of the parent variant, K and Q", () => {
-    const out = normalizeLayout(everyComposite(), byId);
+  // Every composite goes in at the origin, so what comes out is the correction
+  // alone - not how a mission happens to lay the composite out. That is what
+  // makes this survive a re-pull that re-lays the 45 layouts and still fail if
+  // K and Q compose in the wrong order, or if V is applied where its inverse
+  // belongs.
+  //
+  // It is pinned at both parent parities, because the unmirrored pass alone
+  // cannot see half of K. With an unposed parent M is the identity, so
+  // `P = det(M . Mf)` collapses to `det(Mf)` and the parent factor is exercised
+  // by nothing: mutating the module to drop M outright leaves this whole file
+  // green. No mission layout supplies the missing parity either - every piece
+  // upstream ships is rotation-only - so the mirrored pass below is the only
+  // thing standing between that factor and a silent deletion.
+  const orientations = (layout) => {
+    const out = normalizeLayout(layout, byId);
     const children = out.pieces.filter((p) => p.piece_type === "feature");
     expect(children).toHaveLength(96);
     const oriented = {};
@@ -254,7 +270,11 @@ describe("registration tables", () => {
       oriented[child.template] = { ...oriented[child.template] };
       oriented[child.template][A] = (oriented[child.template][A] ?? 0) + 1;
     }
-    expect(oriented).toEqual({
+    return oriented;
+  };
+
+  it("composes every child's orientation out of the parent variant, K and Q", () => {
+    expect(orientations(everyComposite())).toEqual({
       "barricade": { "0": 4, "0.horizontal": 2 },
       "catwalk": { "180": 1, "180.horizontal": 1 },
       "corner-ruin-balanced-left": { "0": 1, "270": 2, "270.horizontal": 1 },
@@ -266,6 +286,26 @@ describe("registration tables", () => {
       "gantry": { "0": 2, "0.horizontal": 1 },
       "generator": { "0": 1, "180": 2, "180.horizontal": 2 },
       "pipe": { "180": 3, "180.horizontal": 1 },
+    });
+  });
+
+  // The same 96 children under a mirrored parent. K has to cancel that parity,
+  // so every child's own mirror flips against the pass above while its
+  // quarter-turn is preserved - which is what makes this the pass that fails
+  // when the parent factor goes missing.
+  it("cancels the parent's parity in every child's orientation", () => {
+    expect(orientations(everyComposite({ mirror: "horizontal" }))).toEqual({
+      "barricade": { "180": 2, "180.horizontal": 4 },
+      "catwalk": { "0": 1, "0.horizontal": 1 },
+      "corner-ruin-balanced-left": { "180.horizontal": 1, "90": 1, "90.horizontal": 2 },
+      "corner-ruin-balanced-right": { "0": 1, "0.horizontal": 2, "180": 1, "180.horizontal": 3, "270.horizontal": 1, "90.horizontal": 2 },
+      "corner-ruin-left": { "0": 2, "0.horizontal": 5, "180.horizontal": 4, "270": 1, "270.horizontal": 4, "90.horizontal": 4 },
+      "corner-ruin-right": { "0.horizontal": 2, "180": 1, "180.horizontal": 3, "270.horizontal": 2, "90": 1, "90.horizontal": 4 },
+      "corner-short": { "0": 6, "0.horizontal": 2, "180": 7, "180.horizontal": 2, "270": 3, "270.horizontal": 2, "90": 2, "90.horizontal": 1 },
+      "corner-tiny": { "0.horizontal": 2, "180": 1, "270.horizontal": 1 },
+      "gantry": { "180": 1, "180.horizontal": 2 },
+      "generator": { "0": 2, "0.horizontal": 2, "180.horizontal": 1 },
+      "pipe": { "0": 1, "0.horizontal": 3 },
     });
   });
 
