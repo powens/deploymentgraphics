@@ -48,6 +48,27 @@ function place(point, piece) {
 }
 
 /**
+ * The footprint a piece draws from: its own inline one, else its template's.
+ *
+ * The one owner of that fallback. The converters that need the footprint
+ * without resolving it used to restate it, which is two more places for the
+ * precedence between inline and template to drift.
+ *
+ * @param {object} piece - `footprint` or `template`.
+ * @param {(id: string) => object | null | undefined} lookupFootprint
+ * @throws if the piece has neither.
+ */
+export function pieceFootprint(piece, lookupFootprint) {
+  const footprint = piece.footprint ?? lookupFootprint(piece.template);
+  if (!footprint) {
+    throw new Error(
+      `piece ${piece.id ?? "?"} has no footprint or known template`,
+    );
+  }
+  return footprint;
+}
+
+/**
  * Resolve a piece to absolute board-inch vertices.
  * @param {object} piece - `position`, optional `rotation_degrees`, optional
  *   `mirror` ("horizontal"|"vertical"), optional `parent_area_id`, and either
@@ -57,13 +78,7 @@ function place(point, piece) {
  *   pieces carrying a `parent_area_id`.
  */
 export function resolvePiece(piece, lookupFootprint, getParent) {
-  const footprint = piece.footprint ?? lookupFootprint(piece.template);
-  if (!footprint) {
-    throw new Error(
-      `piece ${piece.id ?? "?"} has no footprint or known template`,
-    );
-  }
-  const ring = footprintPolygon(footprint);
+  const ring = footprintPolygon(pieceFootprint(piece, lookupFootprint));
   const c = centroid(ring);
   // Centre on the centroid, apply this piece's own orientation, add its offset.
   const local = ring.map((p) => {

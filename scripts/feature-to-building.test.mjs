@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { featureBuildingPlacement } from "./feature-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
+import { withLookups } from "./terrain-corpus.mjs";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 
 const CANVAS = { width: 60, height: 44 };
@@ -63,17 +64,29 @@ const sameSet = (a, b) => {
   }
 };
 
-const roundTrip = (piece, getParent) => {
+// The converters take a resolved layout and read their lookups off it, the
+// same way the pipeline hands them one - so the fixture is a layout holding
+// the piece and, where there is one, its parent.
+const layoutOf = (piece, parent) =>
+  withLookups(
+    { id: "t", pieces: parent ? [parent, piece] : [piece] },
+    lookupFootprint,
+  );
+
+const roundTrip = (piece, parent) => {
   const placement = featureBuildingPlacement(
     piece,
-    lookupFootprint,
+    layoutOf(piece, parent),
     TEMPLATES,
-    getParent,
   );
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1); // mirror:false -> single placement
-  const expected = resolvePiece(piece, lookupFootprint, getParent);
+  const expected = resolvePiece(
+    piece,
+    lookupFootprint,
+    (id) => (parent && parent.id === id ? parent : undefined),
+  );
   sameSet(placedTemplateRing(placement.type, placed[0]), expected);
   return placement;
 };
@@ -111,7 +124,7 @@ describe("featureBuildingPlacement", () => {
       position: { x: 1, y: -1 },
       rotation_degrees: 0,
     };
-    const p = roundTrip(child, (id) => (id === "a" ? parent : undefined));
+    const p = roundTrip(child, parent);
     expect(p.type).toBe("barricade");
   });
 });

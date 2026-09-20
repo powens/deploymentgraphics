@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
+import { withLookups } from "./terrain-corpus.mjs";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 
 // templates-simple.yml templates referenced by the converter (subset, incl. shoe-mirror).
@@ -76,12 +77,14 @@ const sameSet = (a, b) => {
   }
 };
 
+// The converters take a resolved layout and read their lookups off it, the
+// same way the pipeline hands them one - so a single-piece layout is the
+// smallest honest fixture.
+const layoutOf = (piece) =>
+  withLookups({ id: "t", pieces: [piece] }, (id) => FOOTPRINTS[id]);
+
 const roundTrip = (piece) => {
-  const placement = areaBuildingPlacement(
-    piece,
-    FOOTPRINTS[piece.template],
-    GW_TEMPLATES,
-  );
+  const placement = areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES);
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, GW_TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1); // mirror:false -> single placement

@@ -25,7 +25,7 @@
 // the two arm ends — which a single fit (`featureFromRefs`) turns into a
 // placement. Every corner-ruin piece carries a whole L footprint.
 
-import { footprintPolygon, resolvePiece } from "./terrain-resolver.mjs";
+import { footprintPolygon, pieceFootprint } from "./terrain-resolver.mjs";
 import { featureRow } from "./emit-placement.mjs";
 import { boundsCorners, cross, distance, toDegrees } from "../src/geometry.ts";
 import { placedFromPin } from "../src/placement.ts";
@@ -108,18 +108,22 @@ export function featureFromRefs(Oa, A1, A2) {
 }
 
 /** Outer corner + arm ends of a single whole-L corner-ruin piece. */
-function lPieceRefs(piece, lookupFootprint, getParent) {
-  const footprint = piece.footprint ?? lookupFootprint(piece.template);
-  const ring = footprintPolygon(footprint);
+function lPieceRefs(piece, layout) {
+  const ring = footprintPolygon(pieceFootprint(piece, layout.footprintOf));
   const { Oidx, armIdx } = lRefIndices(ring);
-  // Same vertices read from resolvePiece, which applies this piece's
-  // mirror/rotation and any parent_area_id transform.
-  const resolved = resolvePiece(piece, lookupFootprint, getParent);
+  // Same vertices read from the layout's own resolve, which applies this
+  // piece's mirror/rotation and any parent_area_id transform.
+  const resolved = layout.resolve(piece);
   return { Oa: resolved[Oidx], A1: resolved[armIdx[0]], A2: resolved[armIdx[1]] };
 }
 
-/** Build a placement for a single whole-L corner-ruin piece. */
-export function ruinFeaturePlacement(piece, lookupFootprint, getParent) {
-  const { Oa, A1, A2 } = lPieceRefs(piece, lookupFootprint, getParent);
+/**
+ * Build a placement for a single whole-L corner-ruin piece.
+ *
+ * @param {object} piece - a whole-L corner-ruin piece.
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
+ */
+export function ruinFeaturePlacement(piece, layout) {
+  const { Oa, A1, A2 } = lPieceRefs(piece, layout);
   return featureFromRefs(Oa, A1, A2);
 }

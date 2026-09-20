@@ -7,7 +7,7 @@ import {
   rectFeaturePlacement,
 } from "./rect-to-feature.mjs";
 
-const { missionLayouts, footprintOf } = loadCorpus();
+const { missionLayouts } = loadCorpus();
 
 const CANVAS = { width: 60, height: 44 };
 
@@ -56,7 +56,7 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
 
   for (const [template, { piece, layout }] of Object.entries(sample)) {
     it(`reproduces the ${template} footprint`, () => {
-      const pl = rectFeaturePlacement(piece, footprintOf, layout.parentOf);
+      const pl = rectFeaturePlacement(piece, layout);
       expect(pl.type).toBe(template);
       expect(pl.color).toBe(template === "generator" ? "teal" : "indigo");
       const target = layout.resolve(piece);
