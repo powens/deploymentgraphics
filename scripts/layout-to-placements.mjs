@@ -30,6 +30,11 @@ import { pieceFootprint } from "./terrain-resolver.mjs";
 /**
  * The kinds a layout piece can have. Every piece has exactly one.
  *
+ * "Exactly one" is about *this* walk, not about everything a layout emits:
+ * `is_objective` is an orthogonal per-piece attribute, and an objective piece
+ * is both a building and a marker. `scripts/objective-icons.mjs` walks the
+ * same pieces for it - see the note in scripts/convert-40kdc-terrain.mjs.
+ *
  * One row per kind, carrying everything that kind decides: which pieces it
  * claims, which converter draws them, and which bucket of the emitted entry
  * they land in. The claims were a separate table from the dispatch, and the

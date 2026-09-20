@@ -38,15 +38,6 @@ const TOUCH_GAP = 0.5;
  * @returns {Array<{ type: "skull" | "fortress", pos: { x: number, y: number } }>}
  */
 export function objectiveIcons(layout) {
-  // A layout derived by spreading (`{ ...layout, pieces }`) loses the
-  // non-enumerable lookups. Without them nothing resolves, every objective
-  // stands alone, and the clustering below silently stops happening — so say
-  // so instead. Rewrap with withLookups (scripts/terrain-corpus.mjs).
-  if (typeof layout.resolve !== "function") {
-    throw new TypeError(
-      `layout ${layout.id ?? "?"} carries no resolve(); wrap it with withLookups`,
-    );
-  }
   const objectives = layout.pieces.filter((p) => p.is_objective);
   // Resolve each objective to an absolute polygon for the touch test. A piece
   // without a footprint (no template) degenerates to a one-point ring, which
