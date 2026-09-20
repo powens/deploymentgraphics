@@ -9,7 +9,7 @@ function buildMinimalConfig(): FullConfig {
     base: {
       size: { width: 60, height: 44 },
       half_way_lines: { draw: true },
-      building: { draw: true },
+      territory: { draw: true },
       grid: { draw: false },
     },
     terrain: {
@@ -23,11 +23,10 @@ function buildMinimalConfig(): FullConfig {
     },
     deployment: {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 10 }] },
       defender: { deployment_zone: [{ x: 0, y: 44 }, { x: 60, y: 44 }, { x: 60, y: 34 }] },
     },
-  } as unknown as FullConfig;
+  };
 }
 
 const config = buildMinimalConfig();
@@ -53,6 +52,25 @@ describe("makeMissionCard", () => {
     } as FullConfig;
     const svg = makeMissionCard(missing);
     expect(svg.querySelectorAll("#buildings use").length).toBe(0);
+  });
+
+  // The template defs are the *board's* template set, not the selected
+  // layout's, so they hang whether or not anything references them.
+  //
+  // Nothing in the `Layer` seam says so, which is why this is pinned here: a
+  // row that does not draw is filtered out of the list entirely, taking its
+  // `injectDefs` with it, so the buildings row hardcodes `draws: true` purely
+  // to keep hanging them. Tightening that to `layout.buildings.length > 0` -
+  // the obvious-looking change - would silently drop every `#template-*` def
+  // and dangle every building `<use>` that referenced one.
+  it("still injects the board's template defs when the layout is empty", () => {
+    const missing = {
+      ...config,
+      terrain: { ...config.terrain, layout_name: "99" },
+    } as FullConfig;
+    const svg = makeMissionCard(missing);
+    expect(svg.querySelectorAll("#buildings use").length).toBe(0);
+    expect(svg.querySelector("defs #template-4x6")).not.toBeNull();
   });
 });
 
@@ -258,7 +276,6 @@ describe("makeDeploymentZone rendering", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }] },
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }] },
     };
@@ -271,7 +288,6 @@ describe("makeDeploymentZone rendering", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }], mask_center: 9 },
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }], mask_center: 9 },
     };
@@ -295,7 +311,6 @@ describe("makeDeploymentZone rendering", () => {
     const config = buildMinimalConfig();
     config.deployment = {
       name: "Test",
-      home_edge: "long",
       attacker: { deployment_zone: [{ x: 60, y: 0 }, { x: 60, y: 22 }, { x: 30, y: 22 }, { x: 30, y: 0 }] },
       defender: { deployment_zone: [{ x: 30, y: 22 }, { x: 30, y: 44 }, { x: 0, y: 44 }, { x: 0, y: 22 }] },
     };
@@ -315,18 +330,16 @@ describe("territory divider", () => {
         size: { width: 60, height: 44 },
         half_way_lines: { draw: false },
         territory: { draw },
-        building: { draw: false },
         grid: { draw: false },
       },
       terrain: { layout_name: "1", templates: {}, layout: { "1": { templates: [] } } },
       deployment: {
         name: "Test",
-        home_edge: "long",
         ...(territory ? { territory } : {}),
         attacker: { deployment_zone: [{ x: 0, y: 0 }, { x: 60, y: 0 }, { x: 60, y: 10 }] },
         defender: { deployment_zone: [{ x: 0, y: 44 }, { x: 60, y: 44 }, { x: 60, y: 34 }] },
       },
-    } as unknown as FullConfig;
+    };
   }
 
   const line = { start: { x: 0, y: 0 }, end: { x: 60, y: 44 } };

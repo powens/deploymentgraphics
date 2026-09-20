@@ -7,7 +7,16 @@ import {
   type Template,
 } from "./building-coordinates.js";
 import { placeBuildings, placedTransform } from "./placement.js";
+import type { Theme } from "./theme.js";
 import type { SVGProperties } from "./types.js";
+
+// A building's SVG props: the shared group props as a base, then the template's
+// own entry (or `default`). The template defs and the `<use>` placements read
+// the same rule, so a pipe def and its uses cannot come out styled differently.
+const styleFor = (theme: Theme, name: string): SVGProperties => ({
+  ...theme.building.group,
+  ...(theme.building.template[name] ?? theme.building.template.default),
+});
 
 /**
  * Appends one shape definition per template into `defs`: a `<polygon>` for a
@@ -18,7 +27,7 @@ export function injectTemplateDefs(
   doc: SvgDocument,
   templates: Record<string, Template>,
   defs: SvgNode,
-  styleFor?: (name: string) => SVGProperties | undefined,
+  theme: Theme,
 ): void {
   for (const [name, template] of Object.entries(templates)) {
     let shape: SvgNode;
@@ -39,10 +48,7 @@ export function injectTemplateDefs(
       shape.setAttribute("height", `${template.height}`);
     }
     shape.setAttribute("id", `template-${name}`);
-    const props = styleFor?.(name);
-    if (props) {
-      applyAttributes(shape, props);
-    }
+    applyAttributes(shape, styleFor(theme, name));
     defs.appendChild(shape);
   }
 }
@@ -53,7 +59,7 @@ export function makeBuildings(
   placements: BuildingPlacement[],
   templates: Record<string, Template>,
   canvas: CanvasSize,
-  styleFor?: (name: string) => SVGProperties | undefined,
+  theme: Theme,
 ): SvgNode {
   const group = doc.createElement("g");
   group.setAttribute("id", "buildings");
@@ -64,10 +70,7 @@ export function makeBuildings(
     use.setAttribute("href", `#template-${placed.name}`);
     use.setAttribute("transform", placedTransform(placed));
     use.setAttribute("id", `building-${counter}`);
-    const props = styleFor?.(placed.name);
-    if (props) {
-      applyAttributes(use, props);
-    }
+    applyAttributes(use, styleFor(theme, placed.name));
     group.appendChild(use);
     counter++;
   }
