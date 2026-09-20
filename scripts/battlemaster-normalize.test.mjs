@@ -1,10 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  normalizeLayout,
-  partAnchorShift,
-  partExtent,
-  pieceMatrix,
-} from "./battlemaster-normalize.mjs";
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
 import { FLIP_X, IDENTITY, matvec, rotationMatrix } from "../src/geometry.ts";
 
 // `variantOf` fits each composite against its class's pinned reference, so a
@@ -421,7 +416,7 @@ describe("normalizeLayout", () => {
 // is the one nothing else in this file would catch - a wrong extent shows up as
 // a wrong footprint, but a wrong anchor only shows up as a part drifting out of
 // its own parent.
-describe("partExtent / partAnchorShift", () => {
+describe("a part's extent and anchor", () => {
   // An L-ruin shaped part: the roof is one corner of the model, the walls run
   // out to the model's full extent.
   const walled = {
@@ -434,28 +429,18 @@ describe("partExtent / partAnchorShift", () => {
     },
     walls: [{ points: [{ x: 0, y: 0 }, { x: 0, y: -3 }], thickness: 0.5 }],
   };
+  const bare = {
+    id: "bm-part-tower-ddab4cb687",
+    footprint: { type: "rectangle", width: 4, height: 1 },
+  };
 
-  it("reads the extent from the roof and the walls together", () => {
-    // Roof alone is 2x2 and the wall centreline alone is 0x3; the model is
-    // neither. Taking the union gives 2x3.
-    expect(partExtent(walled)).toEqual({ type: "rectangle", width: 2, height: 3 });
-  });
-
-  it("measures the anchor shift from the roof centre to the extent centre", () => {
-    // Roof centre (1, -1), extent centre (1, -1.5).
-    expect(partAnchorShift(walled)).toEqual({ x: 0, y: -0.5 });
-  });
-
-  it("falls back to the footprint for a part with no walls", () => {
-    const bare = { id: "x", footprint: { type: "rectangle", width: 4, height: 1 } };
-    expect(partExtent(bare)).toEqual(bare.footprint);
-    expect(partAnchorShift(bare)).toEqual({ x: 0, y: 0 });
-  });
-
-  it("anchors a child on its extent centre, not its roof centre", () => {
+  // `tower` is an upstreamFootprint part, so the emitted child carries
+  // upstream's own extent rather than the legacy gantry's 2x2 - which is what
+  // makes the child readable as the extent and the anchor directly.
+  const towerChild = (part) => {
     const templates = new Map([
       ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
-      ["bm-part-tower-ddab4cb687", walled],
+      ["bm-part-tower-ddab4cb687", part],
       referenceEntry("ShortLine"),
       ["bm-composite-shortline-90-cccccccccc", {
         id: "bm-composite-shortline-90-cccccccccc",
@@ -471,13 +456,27 @@ describe("partExtent / partAnchorShift", () => {
           position: { x: 0, y: 0 } }] },
       templates,
     );
-    const child = out.pieces[1];
-    // `tower` is an upstreamFootprint part, so it draws at the extent - 2x3, not
-    // the roof's 2x2 and not the legacy gantry's own 2x2.
-    expect(child.footprint).toEqual({ type: "rectangle", width: 2, height: 3 });
-    // ...and sits half an inch below where `position` alone would put it,
-    // because `position` names the roof's centre.
-    expect(child.position).toEqual({ x: 3, y: 6.5 });
+    return out.pieces[1];
+  };
+
+  it("reads the extent from the roof and the walls together", () => {
+    // Roof alone is 2x2 and the wall centreline alone is 0x3; the model is
+    // neither. Taking the union gives 2x3.
+    expect(towerChild(walled).footprint).toEqual({
+      type: "rectangle", width: 2, height: 3,
+    });
+  });
+
+  it("anchors the child on the extent centre, not the roof centre", () => {
+    // Roof centre (1, -1), extent centre (1, -1.5), so the child sits half an
+    // inch below where upstream's `position` alone would put it.
+    expect(towerChild(walled).position).toEqual({ x: 3, y: 6.5 });
+  });
+
+  it("falls back to the footprint for a part with no walls", () => {
+    const child = towerChild(bare);
+    expect(child.footprint).toEqual(bare.footprint);
+    expect(child.position).toEqual({ x: 3, y: 7 });
   });
 });
 
@@ -544,7 +543,9 @@ describe("fields the re-source introduced", () => {
          position: { x: 4, y: 1 } }]);
     const [area, child] = out.pieces;
     expect(area.template).toBe("area-trapezoid");
-    const placed = matvec(pieceMatrix(area), child.position);
+    // V is a rotation here, so the area's own map is a plain rotation too.
+    expect("mirror" in area).toBe(false);
+    const placed = matvec(rotationMatrix(area.rotation_degrees), child.position);
     expect(placed.x).toBeCloseTo(4, 10);
     expect(placed.y).toBeCloseTo(1, 10);
     // Applying V instead of its inverse would land on R(180) . (4, 1).
