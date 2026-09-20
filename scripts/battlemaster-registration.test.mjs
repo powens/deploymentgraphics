@@ -60,6 +60,24 @@ const { templatesById: byId, gwTemplates, footprintOf } = corpus;
 const composites = [...byId.values()].filter((t) =>
   String(t.id).startsWith("bm-composite-"),
 );
+/**
+ * A synthetic layout using every composite once, each at the origin and
+ * unrotated.
+ *
+ * Only the composites a layout actually uses get fitted, so this is what puts
+ * the whole table through `normalizeLayout`. Because each piece carries no pose
+ * of its own, what comes out is the registration alone - the area's variant and
+ * each child's composed correction - rather than how a mission lays it out.
+ */
+const everyComposite = () => ({
+  id: "every-composite",
+  pieces: composites.map((t, i) => ({
+    id: `area-${i}`,
+    piece_type: "area",
+    template: t.id,
+    position: { x: 0, y: 0 },
+  })),
+});
 // This suite is the one place that reads both frames: it checks the normalized
 // layouts against the upstream ones they were derived from, so it takes the
 // raw layouts alongside `missionLayouts`. Both come out of the corpus in
@@ -180,18 +198,7 @@ describe("registration tables", () => {
   // fit is visible from outside the module now.
   it("accounts for every composite footprint as a registered rigid variant", () => {
     expect(composites).toHaveLength(52);
-    const out = normalizeLayout(
-      {
-        id: "every-composite",
-        pieces: composites.map((t, i) => ({
-          id: `area-${i}`,
-          piece_type: "area",
-          template: t.id,
-          position: { x: 0, y: 0 },
-        })),
-      },
-      byId,
-    );
+    const out = normalizeLayout(everyComposite(), byId);
     // One area out per composite in, in source order: each carries its V alone,
     // since the piece went in at the origin with no rotation of its own.
     const areas = out.pieces.filter((p) => p.piece_type === "area");
@@ -222,6 +229,45 @@ describe("registration tables", () => {
     });
   });
 
+  // The child's orientation, pinned through the same synthetic layout.
+  //
+  // `normalizeLayout` composes each child's A out of the parent's inverted
+  // variant, the chirality correction K and the per-part quarter-turn Q. The
+  // tests that used to check that composition rebuilt it from the same rule and
+  // compared it to itself, so they could not tell a wrong reading from a right
+  // one; they are gone. This reads the composed orientation off the emitted
+  // child instead, which is where it matters and where no rule of ours takes
+  // part.
+  //
+  // Every composite goes in at the origin unrotated, so what comes out is the
+  // correction alone - not how a mission happens to lay the composite out.
+  // That is what makes this survive a re-pull that re-lays the 45 layouts and
+  // still fail if K stops cancelling the parent's parity, if K and Q compose in
+  // the wrong order, or if V is applied where its inverse belongs.
+  it("composes every child's orientation out of the parent variant, K and Q", () => {
+    const out = normalizeLayout(everyComposite(), byId);
+    const children = out.pieces.filter((p) => p.piece_type === "feature");
+    expect(children).toHaveLength(96);
+    const oriented = {};
+    for (const child of children) {
+      const A = `${child.rotation_degrees ?? 0}${child.mirror ? `.${child.mirror}` : ""}`;
+      oriented[child.template] = { ...oriented[child.template] };
+      oriented[child.template][A] = (oriented[child.template][A] ?? 0) + 1;
+    }
+    expect(oriented).toEqual({
+      "barricade": { "0": 4, "0.horizontal": 2 },
+      "catwalk": { "180": 1, "180.horizontal": 1 },
+      "corner-ruin-balanced-left": { "0": 1, "270": 2, "270.horizontal": 1 },
+      "corner-ruin-balanced-right": { "0": 2, "0.horizontal": 1, "180": 3, "180.horizontal": 1, "270": 1, "90": 2 },
+      "corner-ruin-left": { "0": 5, "0.horizontal": 2, "180": 4, "270": 4, "270.horizontal": 1, "90": 4 },
+      "corner-ruin-right": { "0": 3, "0.horizontal": 1, "180": 2, "270": 4, "270.horizontal": 1, "90": 2 },
+      "corner-short": { "0": 2, "0.horizontal": 7, "180": 2, "180.horizontal": 6, "270": 1, "270.horizontal": 2, "90": 2, "90.horizontal": 3 },
+      "corner-tiny": { "0": 2, "180.horizontal": 1, "270": 1 },
+      "gantry": { "0": 2, "0.horizontal": 1 },
+      "generator": { "0": 1, "180": 2, "180.horizontal": 2 },
+      "pipe": { "180": 3, "180.horizontal": 1 },
+    });
+  });
   // `normalizeLayout` emits each child at `matvec(V, position)` while its parent
   // area now carries `M·V`, so the child resolves through V twice. That is only
   // the identity when V is its own inverse. Both registered variants are
@@ -448,11 +494,18 @@ describe("parts sit inside the composite that contains them", () => {
   // piece keeps the legacy `catwalk` polygon whole; that polygon is drawn half
   // an inch longer than upstream's own rectangle, and the overhang is exactly
   // that difference.
+  //
+  // Keyed on upstream's own feature id as well as the template, so an allowance
+  // covers the one part it was measured against. `(template, composite)` alone
+  // is not unique - 360 of the 1260 checks share such a key with a sibling
+  // under the same area - so a re-pull adding a second
+  // `corner-ruin-balanced-left` to a Triangle composite would inherit a free
+  // 2.88in pass it was never measured for.
   const KNOWN_OVERHANG = {
-    "corner-ruin-balanced-left in bm-composite-triangle-ab-corner-02-4b8322162e": 2.88,
-    "corner-ruin-balanced-left in bm-composite-triangle-ab-corner-02-8d39f1ed78": 2.88,
-    "catwalk in bm-composite-shortline-pipe-14782bdeaa": 0.51,
-    "catwalk in bm-composite-shortline-pipe-flip-b222534f1a": 0.51,
+    "feature-1 (corner-ruin-balanced-left) in bm-composite-triangle-ab-corner-02-4b8322162e": 2.88,
+    "feature-1 (corner-ruin-balanced-left) in bm-composite-triangle-ab-corner-02-8d39f1ed78": 2.88,
+    "feature-1 (catwalk) in bm-composite-shortline-pipe-14782bdeaa": 0.51,
+    "feature-1 (catwalk) in bm-composite-shortline-pipe-flip-b222534f1a": 0.51,
   };
 
   it("keeps every emitted part within its composite's traced outline", () => {
@@ -483,7 +536,7 @@ describe("parts sit inside the composite that contains them", () => {
         );
         // 0.01in absorbs the trace: one part sits 0.0015in proud of an outline
         // drawn round it by hand. Everything unlisted is exactly inside.
-        const key = `${child.template} in ${area.template}`;
+        const key = `${child.name} (${child.template}) in ${area.template}`;
         expect(out, `${normalized[i].id} ${child.id}: ${key}`).toBeLessThan(
           KNOWN_OVERHANG[key] ?? 0.01,
         );
