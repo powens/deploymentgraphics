@@ -12,7 +12,12 @@
  * their root, so the app keeps the one `location.search` read, the one
  * `history.replaceState` call and the one naming of `document`.
  */
-import { dispositions, type Layout } from "./event-matrix.js";
+import {
+  dispositions,
+  resolveMission,
+  resolveTerrainLayout,
+  type Layout,
+} from "./event-matrix.js";
 import { eventMatrix } from "./presets/event-matrix.js";
 import { missions } from "./presets/missions.js";
 import { gwTerrain } from "./presets/terrain.js";
@@ -253,6 +258,64 @@ export function defaultControls(): Controls {
   return { ...DEFAULTS };
 }
 
+/** The two controls `da`, `db` and `lay` decide. */
+export interface DerivedControls {
+  /** Deployment: the event matrix's cell for this pairing and layout. */
+  m: string;
+  /** Terrain layout: the 40kdc layout matching that pairing and deployment. */
+  t: string;
+}
+
+/**
+ * The control keys {@link deriveControls} produces.
+ *
+ * Read off a `Record` over `keyof DerivedControls` rather than written as a
+ * bare list. A list `satisfies readonly ControlKey[]` only checks that every
+ * key named is a control — not that every derived control is named, which is
+ * the direction that matters here: a third field added to
+ * {@link DerivedControls} and {@link deriveControls} but forgotten here would
+ * compile and test green while its dropdown was simply never written. Stated
+ * this way it is a type error instead, which is the same guarantee `LAYOUT_IDS`
+ * and `SpecValues satisfies ControlValues` give their own tables.
+ */
+const DERIVED_KEYS = Object.keys({
+  m: true,
+  t: true,
+} satisfies Record<keyof DerivedControls, true>) as readonly (keyof DerivedControls &
+  ControlKey)[];
+
+/**
+ * Derives the deployment and terrain layout a disposition pairing implies.
+ *
+ * `da`, `db` and `lay` name nothing directly — they derive `m` through the
+ * event matrix, and `t` by matching that pairing and deployment against the
+ * metadata each ported 40kdc layout carries. Both derived controls remain
+ * controls in their own right: a visitor can override either directly, which
+ * is why this returns them rather than writing them anywhere.
+ *
+ * The one fallback is here rather than at the call site: the 40kdc source does
+ * not cover every matrix cell, and an uncovered one falls back to the `t`
+ * row's own default — which is the value that row already documents as the
+ * layout the default pairing resolves to.
+ *
+ * @throws if the pairing or layout is not in the event matrix. `da`, `db` and
+ * `lay` are allowlisted against the matrix itself by {@link sanitizeControls},
+ * so that is a drift between the generated presets rather than bad input.
+ */
+export function deriveControls(controls: Controls): DerivedControls {
+  // `lay` is allowlisted against `LAYOUT_IDS`, which is keyed by `Layout`.
+  const m = resolveMission(
+    eventMatrix,
+    controls.da,
+    controls.db,
+    controls.lay as Layout,
+  );
+  return {
+    m,
+    t: resolveTerrainLayout(gwTerrain.layout, controls.da, controls.db, m) ?? DEFAULTS.t,
+  };
+}
+
 /**
  * Coerces untrusted input — a parsed URL, restored localStorage, anything — to
  * a valid `Controls`. Each field falls back to its default when the key is
@@ -466,6 +529,35 @@ export function readControlsFromDom(root: ControlsRoot): Controls {
         : (element as HTMLSelectElement).value;
   }
   return sanitizeControls(raw);
+}
+
+/**
+ * Writes the two derived controls into a DOM subtree.
+ *
+ * A derived value comes off the event matrix or the terrain layouts, not off
+ * the row's own allowlist, so the dropdown may have no `<option>` for it. A
+ * `<select>` ignores such a value silently, leaving the dropdown blank while
+ * {@link readControlsFromDom} substitutes the row's default — the card, the URL
+ * and storage would then all disagree with what the visitor sees. So the value
+ * is read back and the mismatch thrown: drift between the generated presets
+ * belongs on the stage, where a failed render already reports.
+ *
+ * @throws if a control's element is absent, or its dropdown has no option for
+ * the derived value.
+ */
+export function writeDerivedControlsToDom(
+  root: ControlsRoot,
+  derived: DerivedControls,
+): void {
+  for (const key of DERIVED_KEYS) {
+    const row = controlSpec.find((candidate) => candidate.key === key);
+    if (!row) throw new Error(`Control "${key}" has no spec row`);
+    const element = controlElement(root, row) as HTMLSelectElement;
+    element.value = derived[key];
+    if (element.value !== derived[key]) {
+      throw new Error(`Control "${key}" has no option "${derived[key]}"`);
+    }
+  }
 }
 
 /**
