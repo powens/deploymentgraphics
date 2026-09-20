@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { resolveLayout } from "./layers";
+import { cardLayers, resolveLayout } from "./layers";
+import { baseTheme } from "./presets/theme.js";
 import type { FullConfig } from "./types";
 
 /** A FullConfig with a selected layout "1" carrying one of each piece. */
@@ -77,5 +78,52 @@ describe("resolveLayout", () => {
     ];
     const r = resolveLayout(config);
     expect(r.features).toHaveLength(1);
+  });
+});
+
+describe("cardLayers draw defaults", () => {
+  const TERRITORY = { start: { x: 0, y: 22 }, end: { x: 60, y: 22 } };
+
+  /** The layers that survive their own presence rule, in draw order. */
+  function drawnIds(config: FullConfig): string[] {
+    return cardLayers(config, baseTheme).map((layer) => layer.id);
+  }
+
+  function withTerritory(over: Partial<FullConfig["base"]> = {}): FullConfig {
+    const config = configWith();
+    config.base = { ...config.base, ...over };
+    config.deployment.territory = TERRITORY;
+    return config;
+  }
+
+  // `configWith` leaves all three toggles `{}`. What an absent `draw` means is
+  // a per-toggle decision and `layers.ts` is its one owner, so each default is
+  // pinned here — otherwise flipping one in that list breaks no test.
+  it("defaults the half-way lines and the territory line on, and the grid off", () => {
+    const ids = drawnIds(withTerritory());
+    expect(ids).toContain("half-way-lines");
+    expect(ids).toContain("territory");
+    expect(ids).not.toContain("grid");
+  });
+
+  it("lets an explicit `draw` override each default", () => {
+    const ids = drawnIds(
+      withTerritory({
+        grid: { draw: true },
+        half_way_lines: { draw: false },
+        territory: { draw: false },
+      }),
+    );
+    expect(ids).toContain("grid");
+    expect(ids).not.toContain("half-way-lines");
+    expect(ids).not.toContain("territory");
+  });
+
+  // The territory row is two rules, not one: no mission territory means no
+  // line whatever the toggle says.
+  it("draws no territory line for a mission with no territory", () => {
+    const config = configWith();
+    config.base = { ...config.base, territory: { draw: true } };
+    expect(drawnIds(config)).not.toContain("territory");
   });
 });

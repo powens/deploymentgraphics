@@ -101,6 +101,14 @@ Trace a curved footprint as a polygon instead.
   consumer hand-building a `FullConfig` had to supply a value that did nothing.
   If you were reading it off a bundled mission, carry your own table.
 
+**An omitted `base.grid` now throws.** `BaseConfig` has always declared all four
+toggles required, and `base.half_way_lines` and `base.territory` already threw
+when absent; `base.grid` alone was read through optional chaining and silently
+behaved as `draw: false`. It is read like its siblings now, so a config built by
+hand — or loaded from YAML, as the demo viewer's editor tab does — that omits
+`grid:` fails loudly instead of quietly dropping the layer. Supply `grid: {}` to
+keep the previous behaviour.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's
