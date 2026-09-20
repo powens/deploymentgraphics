@@ -126,4 +126,27 @@ describe("cardLayers draw defaults", () => {
     config.base = { ...config.base, territory: { draw: true } };
     expect(drawnIds(config)).not.toContain("territory");
   });
+
+  // All three toggles read `draw` by truthiness, which matters because the
+  // viewer's YAML tab is an unvalidated path into `makeMissionCard` and js-yaml
+  // 4 parses `no`/`off`/`yes`/`on` as *strings* under the YAML 1.2 core schema.
+  // So `draw: no` is the truthy `"no"` and draws — surprising enough to be
+  // written down in the CHANGELOG, and therefore worth pinning here.
+  //
+  // The grid is the one that changed: it used to test `=== true`, so `draw: no`
+  // left it off while the same spelling already drew the other two. Unifying
+  // the rule is the point of this change; pinning it is what stops the grid
+  // drifting back to a fourth spelling of the same question.
+  it("reads `draw` by truthiness, so a YAML `no` draws and an empty string does not", () => {
+    const ids = drawnIds(
+      withTerritory({
+        grid: { draw: "no" },
+        territory: { draw: "off" },
+        half_way_lines: { draw: "" },
+      } as unknown as Partial<FullConfig["base"]>),
+    );
+    expect(ids).toContain("grid");
+    expect(ids).toContain("territory");
+    expect(ids).not.toContain("half-way-lines");
+  });
 });

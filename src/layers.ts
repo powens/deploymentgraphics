@@ -84,9 +84,17 @@ type LayerRow = Layer & { readonly draws: boolean };
  * spelled three different ways in three places, one of them optional-chaining
  * through fields `FullConfig` declares required. Each row names its own default
  * here instead, beside the layer the toggle gates.
+ *
+ * The `Boolean` is not redundant with the declared type. `draw` is *typed*
+ * `boolean`, but the viewer's YAML tab hands `makeMissionCard` an unvalidated
+ * object, and js-yaml 4 parses `no`, `off`, `yes` and `on` as *strings* under
+ * the YAML 1.2 core schema - only `true`/`false` arrive as booleans. So
+ * `draw: no` reaches here as `"no"`, and without the coercion `LayerRow.draws`
+ * would carry a string while declaring a boolean. (`"no"` is truthy either way:
+ * this keeps the declaration honest, it does not make `draw: no` mean false.)
  */
 const drawn = (toggle: { draw?: boolean }, whenAbsent: boolean): boolean =>
-  toggle.draw ?? whenAbsent;
+  Boolean(toggle.draw ?? whenAbsent);
 
 function deploymentZone(
   doc: SvgDocument,

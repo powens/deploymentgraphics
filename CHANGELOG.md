@@ -101,13 +101,22 @@ Trace a curved footprint as a polygon instead.
   consumer hand-building a `FullConfig` had to supply a value that did nothing.
   If you were reading it off a bundled mission, carry your own table.
 
-**An omitted `base.grid` now throws.** `BaseConfig` has always declared all four
-toggles required, and `base.half_way_lines` and `base.territory` already threw
-when absent; `base.grid` alone was read through optional chaining and silently
-behaved as `draw: false`. It is read like its siblings now, so a config built by
-hand — or loaded from YAML, as the demo viewer's editor tab does — that omits
-`grid:` fails loudly instead of quietly dropping the layer. Supply `grid: {}` to
-keep the previous behaviour.
+**An omitted `base.grid` now throws.** `BaseConfig` has always declared its
+toggles required. `base.half_way_lines` already threw when absent, and
+`base.territory` throws when absent on a mission that *has* a territory (the
+layer short-circuits before reading the toggle on one that does not); `base.grid`
+alone was read through optional chaining and silently behaved as `draw: false`.
+It is read like its siblings now, so a config built by hand — or loaded from
+YAML, as the demo viewer's editor tab does — that omits `grid:` fails loudly
+instead of quietly dropping the layer. Supply `grid: {}` to keep the previous
+behaviour.
+
+All three toggles are read the same way, by truthiness of `draw`. That is worth
+knowing if you author YAML: under js-yaml 4's YAML 1.2 core schema only
+`true`/`false` are booleans, so `draw: no` and `draw: off` parse as the *strings*
+`"no"` and `"off"` — which are truthy, and therefore draw. Write `draw: false`.
+Previously `base.grid` alone tested `=== true`, so `draw: no` did not draw the
+grid while the same spelling already drew the other two.
 
 ### Changed
 
