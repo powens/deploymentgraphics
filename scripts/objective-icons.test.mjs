@@ -75,6 +75,38 @@ describe("objectiveIcons", () => {
     );
   });
 
+  // The pass above pins `parentOf` against a narrowed list, and is what would
+  // fail if the lookups went back to closing over the list they were built
+  // from. This pins the clustering itself, which that pass does not reach:
+  // these objectives are parentless areas, so `parentOf` is never consulted
+  // for them and a stale closure would not move a marker.
+  //
+  // What it replaces was `objectiveIcons(withPieces([...pieces]))` against the
+  // unnarrowed card - a same-contents copy, which agrees whatever the layout
+  // reads its pieces off, so it could not fail. Drop a piece instead:
+  // `bm-take-vs-take-01`'s two central objectives touch, so its six pieces
+  // emit five markers with the pair collapsed onto (30, 22); remove one and
+  // the survivor has nothing to cluster with and emits alone where it sits.
+  it("clusters over a narrowed layout's own pieces", () => {
+    const layout = layoutById("bm-take-vs-take-01");
+    expect(layout.pieces.filter((p) => p.is_objective)).toHaveLength(6);
+    expect(objectiveIcons(layout)).toContainEqual({
+      type: "skull",
+      pos: { x: 30, y: 22 },
+    });
+
+    const narrowed = layout.withPieces(
+      layout.pieces.filter((p) => p.id !== "area-03"),
+    );
+    const icons = objectiveIcons(narrowed);
+    expect(icons).toHaveLength(5);
+    expect(icons).not.toContainEqual({ type: "skull", pos: { x: 30, y: 22 } });
+    expect(icons).toContainEqual({
+      type: "skull",
+      pos: { x: 32.064, y: 20.615 },
+    });
+  });
+
   it("returns no icons for a layout without objectives", () => {
     // No vendored layout is objective-free, so strip the objective pieces from
     // bm-take-vs-take-01: the remaining terrain carries no objective_role,

@@ -57,8 +57,11 @@ const indexOf = (pieces) => {
  * The flip side of a method is that it needs its receiver: call
  * `layout.resolve(piece)`, not `const r = layout.resolve; r(piece)`.
  *
- * A piece list is immutable once wrapped: `parentOf`'s id index is memoized per
- * array, so mutating one in place leaves it answering from the list as it was.
+ * Treat a piece list as immutable: `parentOf`'s id index is memoized per array
+ * and never invalidated, so mutating one in place leaves it answering from the
+ * list as it was *when first read* - not as it was when wrapped, since the
+ * index is built lazily on the first `parentOf` call. Which of your mutations
+ * landed therefore depends on when something first happened to read the list.
  * Narrow or rewrite with `withPieces`, which gets its own index.
  *
  * @param {object} layout - a 40kdc layout ({ id, pieces }).
