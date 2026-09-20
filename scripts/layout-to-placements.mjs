@@ -25,6 +25,7 @@ import {
   featureBuildingPlacement,
   isFeatureBuildingTemplate,
 } from "./feature-to-building.mjs";
+import { pieceFootprint } from "./terrain-resolver.mjs";
 
 /**
  * The kinds a layout piece can have. Every piece has exactly one.
@@ -72,7 +73,7 @@ export const PIECE_KINDS = Object.freeze([
     // is unclaimed, and `classifyPiece` throws on it.
     claims: (piece, layout) =>
       isRuinTemplate(piece.template) &&
-      isLFootprint(piece.footprint ?? layout.footprintOf(piece.template)),
+      isLFootprint(pieceFootprint(piece, layout.footprintOf)),
     convert: ruinFeaturePlacement,
     bucket: "features",
   },
@@ -100,7 +101,33 @@ export const PIECE_KINDS = Object.freeze([
     kind: "dropped",
     claims: (piece) => piece.template === "catwalk",
   },
-]);
+].map(Object.freeze));
+
+/**
+ * The buckets a converted row can land in, in the order a combined.yml entry
+ * spells them.
+ *
+ * A row's `bucket` is matched by equality, so a row naming one this list does
+ * not have would convert its pieces and then have them silently dropped. That
+ * is the case the deleted `default: throw` used to approximate, so it is
+ * checked here instead - once, when the module loads, against the same list
+ * `layoutPlacements` builds its result from.
+ */
+const BUCKETS = ["templates", "features"];
+
+for (const kind of PIECE_KINDS) {
+  if (kind.convert && !BUCKETS.includes(kind.bucket)) {
+    throw new Error(
+      `PIECE_KINDS row "${kind.kind}" converts into bucket ` +
+        `"${kind.bucket}", which is not one of ${BUCKETS.join(", ")}`,
+    );
+  }
+  if (!kind.convert && kind.bucket !== undefined) {
+    throw new Error(
+      `PIECE_KINDS row "${kind.kind}" names a bucket but has no converter`,
+    );
+  }
+}
 
 /**
  * The single kind of one layout piece.
@@ -157,5 +184,5 @@ export function layoutPlacements(layout, gwTemplates) {
     PIECE_KINDS.filter((kind) => kind.bucket === name).flatMap((kind) =>
       rows.get(kind),
     );
-  return { templates: bucket("templates"), features: bucket("features") };
+  return Object.fromEntries(BUCKETS.map((name) => [name, bucket(name)]));
 }
