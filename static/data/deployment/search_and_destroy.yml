@@ -1,5 +1,4 @@
 name: Search and Destroy
-home_edge: long
 
 territory:
   start: { x: 0, y: 0 }

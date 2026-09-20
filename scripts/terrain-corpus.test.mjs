@@ -1,7 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
-import { isCompositeTemplate } from "./battlemaster-normalize.mjs";
 
 const corpus = loadCorpus();
 
@@ -18,8 +17,13 @@ describe("loadCorpus", () => {
     // The composite templates upstream introduced are what normalizeLayout
     // rewrites away; they must be gone from `missionLayouts` and still present
     // in `rawLayouts`, which the registration test compares against.
+    // Upstream's own prefix, read directly: the module that maps it away no
+    // longer exports the predicate, and a test of what normalizeLayout removed
+    // should be reading upstream's vocabulary rather than the module's.
     const composites = (ls) =>
-      ls.flatMap((l) => l.pieces).filter((p) => isCompositeTemplate(p.template));
+      ls.flatMap((l) => l.pieces).filter((p) =>
+        p.template?.startsWith("bm-composite-"),
+      );
     expect(composites(corpus.rawLayouts).length).toBeGreaterThan(0);
     expect(composites(corpus.missionLayouts)).toEqual([]);
   });

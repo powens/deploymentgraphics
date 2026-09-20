@@ -1,5 +1,4 @@
 name: Sweeping Engagement
-home_edge: long
 
 territory:
   start: { x: 0, y: 19 }

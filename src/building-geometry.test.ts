@@ -15,6 +15,7 @@
 // silently.
 import { describe, it, expect } from "vitest";
 import { makeBuildings } from "./buildings";
+import { baseTheme } from "./presets/theme.js";
 import { templateBounds, type Template } from "./building-coordinates";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
 
@@ -92,7 +93,7 @@ function evalTransform(transform: string): (p: { x: number; y: number }) => { x:
 
 /** Render placements, return absolute positions of every tracked local point. */
 function absolutePoints(placements: Parameters<typeof makeBuildings>[1]): string[] {
-  const group = asElement(makeBuildings(doc, placements, templates, canvas));
+  const group = asElement(makeBuildings(doc, placements, templates, canvas, baseTheme));
   const out: string[] = [];
   for (const use of Array.from(group.querySelectorAll("use"))) {
     const href = use.getAttribute("href") ?? "";

@@ -11,6 +11,7 @@ import {
   matmul,
   matvec,
   normalizeDegrees,
+  pointSegmentDistance,
   rotationMatrix,
   toDegrees,
 } from "../src/geometry.ts";
@@ -331,7 +332,7 @@ export const PART_TO_TEMPLATE = {
 };
 
 /** Every field this module reads off a composite's `features[]` entry. */
-export const FEATURE_KEYS = new Set([
+const FEATURE_KEYS = new Set([
   "id",
   "template",
   "position",
@@ -339,136 +340,206 @@ export const FEATURE_KEYS = new Set([
   "mirror",
 ]);
 
-/** Rotation by 180 degrees. */
-const ROT_180 = [
-  [-1, 0],
-  [0, -1],
-];
-/** Rotation by 270 degrees. */
-const ROT_270 = [
-  [0, 1],
-  [-1, 0],
-];
-/** Reflection in the line y = -x. */
-const FLIP_ANTIDIAG = [
-  [0, -1],
-  [-1, 0],
-];
+/**
+ * Snap a rigid matrix to integers.
+ *
+ * `rotationMatrix` goes through Math.cos/sin, so a quarter-turn carries 1e-17
+ * noise and a half-turn a signed zero. Every matrix here is one of the eight
+ * rigid maps, whose entries are all -1, 0 or 1, and the noise survives into
+ * `decompose`'s angle and into any deep-equal on a registered variant. The `+ 0`
+ * canonicalizes IEEE-754 -0, which deep-equal distinguishes even though -0 === 0.
+ */
+const roundMatrix = (M) => M.map((row) => row.map((x) => Math.round(x) + 0));
 
-// Composites whose footprint is a rigid transform of their archetype rather
-// than a copy of it. Everything absent from this table takes the identity.
-//
-// V's only job is orienting the area: a child's placement is independent of it.
-// `normalizeLayout` folds V into the parent's own transform and takes it back
-// out of the child's anchor, so the two cancel and the emitted child lands at
-// `M . feature.position` whatever V is. What V does control is which way round
-// the legacy archetype polygon is drawn once it stands in for the composite.
-//
-// The battlemaster-11e re-source made these underivable from the shipped
-// footprints. Upstream now ships each composite as an individually traced
-// outline of 167-348 vertices rather than a copy of one of five archetype
-// polygons, so a composite footprint no longer equals its archetype under any
-// rigid map - it only resembles it. Fitting the archetype to the outline is not
-// a loose oracle that happens to tie, though, and it should not be described as
-// one: it discriminates sharply, and for four of the six classes it discriminates
-// sharply in favour of the *other* reflection. Shape-distance of each class's
-// reference outline against its archetype, over the eight rigid maps:
-//
-//   class          best fit        registered      runner-up
-//   BigRect        R180.FX  0.114  R180     0.552  R0       0.411
-//   LongLine       R0.FX    0.084  R0       0.590  R0       0.590
-//   LongLineTower  R0       0.084  R0.FX    0.590  R0.FX    0.590
-//   ShortLine      R180     0.069  R180     0.069  R0       0.288
-//   SmallRect      R180.FX  0.071  R0       0.265  R0       0.265
-//   Triangle       R90.FX   0.706  R90.FX   0.706  R270.FX  2.537
-//
-// So the emitted area polygon is drawn at the reflection of upstream's own
-// re-traced outline for 42 of the 52 composites, by a 4-7x margin - not a tie
-// broken the other way. Containment cannot referee it (all four reflections of
-// an archetype hold the same children), and the fit above is not evidence the
-// port is mirrored: it is evidence the coarse legacy polygons and upstream's
-// traces disagree about chirality, and the pre-pull *rendering* is what this
-// repo has to keep. Recorded here in full because the numbers look like an
-// argument against the table until you have them, and the next maintainer should
-// not have to re-derive them to find that out.
-//
-// So V is measured against the pre-pull corpus instead, the same oracle
-// PART_TO_TEMPLATE is calibrated against. Pair each new area with the pre-pull
-// area of the same archetype nearest it (globally assigned within a layout, not
-// independently nearest), and V is read straight off the two transforms as
-// M_new^-1 . M_old. Grouping the votes by *footprint* rather than by composite
-// id is what makes this well-conditioned - V is a property of the shape, and 52
-// composites share just 13 distinct footprints, so each one is decided by 14 to
-// 130 votes. Eleven of the thirteen come out unanimous or near it (the handful
-// of dissenting votes are all pieces upstream genuinely moved, which pair
-// against the wrong neighbour).
-//
-// The two footprints with no tight pairing at all are fixed structurally, off a
-// sibling of the same class whose V the corpus did decide. Vertex-for-vertex the
-// traced outlines never coincide - they are sampled independently - but as
-// *shapes* they are exact rigid transforms of one another, so the map between
-// them is unambiguous:
-//
-//   SmallRect#10 = R0     . SmallRect#8   (Hausdorff 0.0000, next best 1.5173)
-//   Triangle#12  = FLIP_X . Triangle#11   (Hausdorff 0.0000, next best 3.8794)
-//
-// Triangle#12 is the first registered variant that is *not* self-inverse: it
-// composes a reflection onto a reflection, which lands on a rotation (R270).
-// The child anchoring below uses a real inverse rather than assuming V is its
-// own, which is what the header of that line always said would be needed.
-export const VARIANT = {
-  // BigRect#1 - the five `-flip` BigRect composites.
-  "bm-composite-bigrect-cd-gh-03-9d5528f061": FLIP_Y,
-  "bm-composite-bigrect-cd-l-02-flip-863010bdd5": FLIP_Y,
-  "bm-composite-bigrect-cd-l-03-flip-d35d59fe95": FLIP_Y,
-  "bm-composite-bigrect-ef-gh-mirror-flip-79be9885fc": FLIP_Y,
-  "bm-composite-bigrect-ef-l-02-flip-9d4ca9e228": FLIP_Y,
-  // BigRect#0 - every other BigRect.
-  "bm-composite-bigrect-cd-ef-01-19f1adc57b": ROT_180,
-  "bm-composite-bigrect-cd-gh-01-3f00cdfa8b": ROT_180,
-  "bm-composite-bigrect-cd-gh-01-f1e4a03d8a": ROT_180,
-  "bm-composite-bigrect-cd-gh-02-272b53a6a4": ROT_180,
-  "bm-composite-bigrect-cd-gh-03-flip-5f30503b64": ROT_180,
-  "bm-composite-bigrect-cd-gh-04-823e332c40": ROT_180,
-  "bm-composite-bigrect-cd-gh-05-9ebcea9273": ROT_180,
-  "bm-composite-bigrect-cd-l-02-0d75b41c2b": ROT_180,
-  "bm-composite-bigrect-cd-l-02-8b8eb18e6f": ROT_180,
-  "bm-composite-bigrect-cd-l-02-mirror-c90a3ee89b": ROT_180,
-  "bm-composite-bigrect-cd-l-02-mirror-cb9fd65589": ROT_180,
-  "bm-composite-bigrect-cd-l-03-8bb0fcfdad": ROT_180,
-  "bm-composite-bigrect-cd-l-03-ce9e1884e5": ROT_180,
-  "bm-composite-bigrect-cd-l-05-bbbfc327bb": ROT_180,
-  "bm-composite-bigrect-cd-l-06-e20c53cbac": ROT_180,
-  "bm-composite-bigrect-cd-l-a7a8f506b4": ROT_180,
-  "bm-composite-bigrect-cd-l-ccb5d722cd": ROT_180,
-  "bm-composite-bigrect-ef-gh-02-ca83578212": ROT_180,
-  "bm-composite-bigrect-ef-gh-03-1e21a93573": ROT_180,
-  "bm-composite-bigrect-ef-gh-ecc366e9dd": ROT_180,
-  "bm-composite-bigrect-ef-gh-mirror-a5036a736e": ROT_180,
-  "bm-composite-bigrect-ef-l-01-2a7c66398d": ROT_180,
-  "bm-composite-bigrect-ef-l-02-a52cc09067": ROT_180,
-  "bm-composite-bigrect-ef-l-03-8d5601d88e": ROT_180,
-  "bm-composite-bigrect-gh-l-01-65c8a762be": ROT_180,
-  // LongLineTower#4 - upstream's odd-one-out id, and the only flipped LongLine.
-  "bm-composite-longlinetower-flip-06c4f02941": FLIP_X,
-  // ShortLine#5 / #7.
-  "bm-composite-shortline-barrier-348db27c93": ROT_180,
-  "bm-composite-shortline-barrier-c8ee187515": ROT_180,
-  "bm-composite-shortline-barrier-e331c77b59": ROT_180,
-  "bm-composite-shortline-pipe-14782bdeaa": ROT_180,
-  // ShortLine#6 - the `-flip` pair.
-  "bm-composite-shortline-barrier-flip-f253144faf": FLIP_Y,
-  "bm-composite-shortline-pipe-flip-b222534f1a": FLIP_Y,
-  // SmallRect#9 - the `-flip` trio. (SmallRect#8 and #10 take the identity.)
-  "bm-composite-smallrect-generator-flip-cb6b7111f9": FLIP_X,
-  "bm-composite-smallrect-generator-updown-flip-3db57df624": FLIP_X,
-  "bm-composite-smallrect-l-flip-1c67923cb7": FLIP_X,
-  // Triangle#11, then #12 - the one non-self-inverse variant.
-  "bm-composite-triangle-ab-corner-02-4b8322162e": FLIP_ANTIDIAG,
-  "bm-composite-triangle-ab-corner-02-8d39f1ed78": FLIP_ANTIDIAG,
-  "bm-composite-triangle-ab-corner-dcd1586dce": FLIP_ANTIDIAG,
-  "bm-composite-triangle-ab-corner-flip-e300f1fbc2": ROT_270,
+/** The eight rigid maps a composite footprint can sit under, by name. */
+const CANDIDATES = Object.fromEntries(
+  [0, 90, 180, 270].flatMap((d) => [
+    [`R${d}`, roundMatrix(rotationMatrix(d))],
+    [`R${d}.FX`, roundMatrix(matmul(rotationMatrix(d), FLIP_X))],
+  ]),
+);
+
+/**
+ * Each size class's reference composite, and the orientation it is registered
+ * at.
+ *
+ * This is the whole of the variant registration. Every other composite's
+ * variant is fitted against its class's reference by `variantOf` below; these
+ * six rows are the absolute half, and they are pinned rather than derived.
+ *
+ * A composite's footprint is a rigid transform of its class's archetype rather
+ * than a copy of it. `gMap`'s trapezoid branch in area-to-building.mjs is
+ * hard-coded to `area-trapezoid`'s orientation, so the variant has to be folded
+ * into the piece's own transform instead of carried as an inline footprint
+ * (which mis-places it by ~6in). It is folded back out of every child, so a
+ * child's placement does not depend on V at all. What V controls is which way
+ * round the legacy archetype polygon is drawn once it stands in for the
+ * composite.
+ *
+ * Why the references cannot be fitted too: the obvious absolute oracle is the
+ * legacy archetype polygon, and it disagrees. The battlemaster-11e re-source
+ * replaced upstream's copies of the five archetypes with individually traced
+ * 167-348 vertex outlines, so a composite footprint no longer equals its
+ * archetype under any rigid map - it only resembles it. Fitting the archetype
+ * to the outline is not a loose oracle that happens to tie, though, and it
+ * should not be described as one: it discriminates sharply, and for four of the
+ * six classes it discriminates sharply in favour of the *other* reflection.
+ * Shape-distance of each class's reference outline against its archetype, over
+ * the eight rigid maps:
+ *
+ *   class          best fit        registered      runner-up
+ *   BigRect        R180.FX  0.114  R180     0.552  R0       0.411
+ *   LongLine       R0.FX    0.084  R0       0.590  R0       0.590
+ *   LongLineTower  R0       0.084  R0.FX    0.590  R0.FX    0.590
+ *   ShortLine      R180     0.069  R180     0.069  R0       0.288
+ *   SmallRect      R180.FX  0.071  R0       0.265  R0       0.265
+ *   Triangle       R90.FX   0.706  R90.FX   0.706  R270.FX  2.537
+ *
+ * So the emitted area polygon is drawn at the reflection of upstream's own
+ * re-traced outline for 42 of the 52 composites, by a 4-7x margin - not a tie
+ * broken the other way. Containment cannot referee it (all four reflections of
+ * an archetype hold the same children), and the fit above is not evidence the
+ * port is mirrored: it is evidence the coarse legacy polygons and upstream's
+ * traces disagree about chirality, and the pre-pull *rendering* is what this
+ * repo has to keep. Recorded here in full because the numbers look like an
+ * argument against the table until you have them, and the next maintainer
+ * should not have to re-derive them to find that out.
+ *
+ * These six were therefore measured against the pre-pull corpus, the same
+ * oracle PART_TO_TEMPLATE is calibrated against - pair each new area with the
+ * pre-pull area of the same archetype nearest it (globally assigned within a
+ * layout, not independently nearest), and V is read straight off the two
+ * transforms as M_new^-1 . M_old. That corpus no longer exists to re-derive
+ * them from, so they are a characterization: re-registering a class fails the
+ * fit in `variantOf` instead of moving combined.yml in silence.
+ */
+const CLASS_REFERENCE = {
+  BigRect: ["bm-composite-bigrect-cd-ef-01-19f1adc57b", "R180"],
+  LongLine: ["bm-composite-longline-tower-3be6fa3536", "R0"],
+  LongLineTower: ["bm-composite-longlinetower-flip-06c4f02941", "R0.FX"],
+  ShortLine: ["bm-composite-shortline-barrier-348db27c93", "R180"],
+  SmallRect: ["bm-composite-smallrect-generator-44c45681fa", "R0"],
+  Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", "R90.FX"],
 };
+
+/**
+ * Shape distance between two rings: the Hausdorff distance from each ring's
+ * vertices to the *other ring's outline*, rather than to its vertices.
+ *
+ * Vertex-to-vertex comparison is useless across the re-source seam: upstream
+ * ships each composite as a 167-348 vertex traced outline, so a point halfway
+ * along a long edge is inches from the nearest vertex of a coarser sampling of
+ * the same shape. Comparing to the outline measures whether the two are the
+ * same shape rather than how densely each was sampled.
+ */
+const shapeDistance = (a, b) => {
+  const toOutline = (ring, other) =>
+    Math.max(
+      ...ring.map((p) =>
+        Math.min(
+          ...other.map((_, i) =>
+            pointSegmentDistance(p, other[i], other[(i + 1) % other.length]),
+          ),
+        ),
+      ),
+    );
+  return Math.max(toOutline(a, b), toOutline(b, a));
+};
+
+/** A ring translated so its area centroid sits on the origin. */
+const centred = (ring) => {
+  const c = centroid(ring);
+  return ring.map((p) => ({ x: p.x - c.x, y: p.y - c.y }));
+};
+
+/**
+ * Fit one composite's footprint against its class's reference.
+ *
+ * The composites *of a class* are rigid transforms of each other even though
+ * none of them is a rigid transform of its archetype: 52 composites share 13
+ * distinct footprints, and within a class any two of them coincide to 0.0000in
+ * under one of the eight CANDIDATES (against 0.21in or more for every other
+ * map). So a composite's variant is the map taking its class's reference onto
+ * it, composed onto the reference's pinned one.
+ *
+ * A composite whose footprint is a shape upstream has not shipped before fails
+ * the fit and throws here, naming it, rather than silently taking the identity
+ * and moving the emitted area ~6in.
+ */
+function fitVariant(composite, templatesById) {
+  const cls = classOf(composite);
+  const [refId, refName] = CLASS_REFERENCE[cls] ?? [];
+  if (!refName) {
+    throw new Error(`size class ${cls} has no reference composite registered`);
+  }
+  if (composite.id === refId) return CANDIDATES[refName];
+
+  const ref = templatesById.get(refId);
+  if (!ref) {
+    throw new Error(
+      `the ${cls} reference composite ${refId} is not in the template table`,
+    );
+  }
+  if (!ref.footprint) {
+    throw new Error(
+      `the ${cls} reference composite ${refId} has no footprint to fit against`,
+    );
+  }
+  if (!composite.footprint) {
+    throw new Error(
+      `composite ${composite.id} has no footprint to fit against the ${cls} reference ${refId}`,
+    );
+  }
+  const refRing = centred(footprintPolygon(ref.footprint));
+  const ring = centred(footprintPolygon(composite.footprint));
+  const fits = Object.entries(CANDIDATES)
+    .map(([name, M]) => [
+      shapeDistance(
+        refRing.map((p) => matvec(M, p)),
+        ring,
+      ),
+      M,
+      name,
+    ])
+    .sort((a, b) => a[0] - b[0]);
+  const [best, W, bestName] = fits[0];
+  if (best >= 1e-3) {
+    throw new Error(
+      `composite ${composite.id} is not a rigid transform of the ${cls} reference ${refId} (best fit ${best.toFixed(4)}in)`,
+    );
+  }
+  // A footprint with a rigid self-symmetry fits under two or more candidates at
+  // once, and the winner would then be decided by `CANDIDATES` insertion order
+  // rather than by the data — silently fixing which way round the archetype is
+  // drawn. Every other undetermined case in this module throws; so does this.
+  const [runnerUp, , runnerUpName] = fits[1];
+  if (runnerUp < 1e-3) {
+    throw new Error(
+      `composite ${composite.id} fits the ${cls} reference ${refId} under both ` +
+        `${bestName} (${best.toFixed(4)}in) and ${runnerUpName} (${runnerUp.toFixed(4)}in): ` +
+        `its footprint has a rigid self-symmetry, so the shape does not determine the variant`,
+    );
+  }
+  return roundMatrix(matmul(W, CANDIDATES[refName]));
+}
+
+/** Fitted once per composite; `normalizeLayout` runs 45 layouts over one table. */
+const variantCache = new WeakMap();
+
+/**
+ * The rigid variant a composite's footprint is registered at.
+ *
+ * @param {object} composite - a `bm-composite-` template.
+ * @param {Map<string, object>} templatesById - the vendored template table.
+ * @returns {number[][]} V, the rigid map the emitted area carries.
+ */
+function variantOf(composite, templatesById) {
+  let fitted = variantCache.get(templatesById);
+  if (!fitted) variantCache.set(templatesById, (fitted = new Map()));
+  let V = fitted.get(composite.id);
+  if (!V) fitted.set(composite.id, (V = fitVariant(composite, templatesById)));
+  return V;
+}
 
 const COMPOSITE_PREFIX = "bm-composite-";
 const PART_PREFIX = "bm-part-";
@@ -503,7 +574,7 @@ const HASH_SUFFIX = /-[0-9a-f]{10}$/;
  * row exactly, so identical input produces identical output. A roof that
  * overhangs its own walls cannot be told from a barrier's (whose centreline
  * genuinely runs along one edge) by geometry alone, so the choice is registered
- * rather than derived, the way VARIANT is. `battlemaster-registration.test.mjs`
+ * rather than derived, the way CLASS_REFERENCE is. `battlemaster-registration.test.mjs`
  * fails if a later pull ships a second drawing of any other part without one.
  */
 export const PART_CANONICAL = {
@@ -511,15 +582,15 @@ export const PART_CANONICAL = {
 };
 
 /** The template id a part's model should be read from. See PART_CANONICAL. */
-export const canonicalPartId = (templateId) =>
+const canonicalPartId = (templateId) =>
   PART_CANONICAL[partOf(templateId)] ?? templateId;
 
 /** True for an upstream Battlemaster composite area template. */
-export const isCompositeTemplate = (id) =>
+const isCompositeTemplate = (id) =>
   typeof id === "string" && id.startsWith(COMPOSITE_PREFIX);
 
 /** Size class of a composite, read from its name ("Battlemaster BigRect CD GH 01" -> BigRect). */
-export function classOf(composite) {
+function classOf(composite) {
   const cls = composite?.name?.split(" ")[1];
   if (!cls || !SIZE_CLASS[cls]) {
     throw new Error(
@@ -530,7 +601,7 @@ export function classOf(composite) {
 }
 
 /** Bare part name of a composite feature template id, hash suffix removed. */
-export function partOf(templateId) {
+function partOf(templateId) {
   const part = templateId.startsWith(PART_PREFIX)
     ? templateId.slice(PART_PREFIX.length).replace(HASH_SUFFIX, "")
     : templateId;
@@ -558,7 +629,7 @@ const normDeg = (deg) => {
  * An improper map always comes back as a horizontal mirror; the rotation
  * absorbs the difference between the two mirror axes.
  */
-export function decompose(A) {
+function decompose(A) {
   const improper = det(A) < 0;
   const R = improper ? matmul(A, FLIP_X) : A;
   const out = {
@@ -569,7 +640,7 @@ export function decompose(A) {
 }
 
 /** Width and height of a footprint's axis-aligned bounding box. */
-export function bboxSize(footprint) {
+function bboxSize(footprint) {
   return boundsSize(footprintPolygon(footprint));
 }
 
@@ -660,7 +731,7 @@ function extentBounds(part) {
 }
 
 /** The upstream part's extent, as a plain rectangle. */
-export function partExtent(part) {
+function partExtent(part) {
   if (!part.walls?.length) return part.footprint;
   const b = extentBounds(part);
   return {
@@ -681,7 +752,7 @@ export function partExtent(part) {
  * features as well as the one mirrored one. It is exactly zero whenever the
  * feature carries no `mirror`, which is 903 of the corpus's 904.
  */
-export function mirrorAnchorFix(part, feature) {
+function mirrorAnchorFix(part, feature) {
   const roof = boundsCentre(footprintPolygon(part.footprint));
   const reflected = matvec(mirrorMatrix(feature), roof);
   return matvec(rotationMatrix(feature.rotation_degrees ?? 0), {
@@ -696,7 +767,7 @@ export function mirrorAnchorFix(part, feature) {
  * made `footprint` the extent again; up to (1.25, 1.5)in for the big L-ruins
  * while it was the roof. See W and W1 above.
  */
-export function partAnchorShift(part) {
+function partAnchorShift(part) {
   if (!part.walls?.length) return { x: 0, y: 0 };
   const b = extentBounds(part);
   const roof = boundsCentre(footprintPolygon(part.footprint));
@@ -711,7 +782,7 @@ export function partAnchorShift(part) {
  * reflection, so the transpose is the inverse - but check rather than assume,
  * since a non-orthogonal V would make the child anchoring below silently wrong.
  */
-export function orthoInverse(A) {
+function orthoInverse(A) {
   const T = [
     [A[0][0], A[1][0]],
     [A[0][1], A[1][1]],
@@ -747,7 +818,7 @@ export function orthoInverse(A) {
  * the centroid and S then re-anchors onto the bbox centre, so the translation
  * this introduces is absorbed downstream.
  */
-export function scaleToUpstream(legacy, upstream, turn, part = "?") {
+function scaleToUpstream(legacy, upstream, turn, part = "?") {
   const ring = footprintPolygon(legacy);
   const l = bboxSize(legacy);
   const u = bboxSize(upstream);
@@ -788,7 +859,7 @@ export function scaleToUpstream(legacy, upstream, turn, part = "?") {
  * centroid resolvePiece uses onto the bbox centre upstream's `position` means.
  * Zero for every rectangle part, up to (1, 1)in for the L-shaped `corner-*`.
  */
-export function anchorOffset(footprint) {
+function anchorOffset(footprint) {
   const ring = footprintPolygon(footprint);
   const c = centroid(ring);
   const b = boundsCentre(ring);
@@ -796,7 +867,7 @@ export function anchorOffset(footprint) {
 }
 
 /** The piece's own mirror, on its own: diag(sx, sy). */
-export function mirrorMatrix(piece) {
+function mirrorMatrix(piece) {
   return piece.mirror === "horizontal"
     ? FLIP_X
     : piece.mirror === "vertical"
@@ -805,7 +876,7 @@ export function mirrorMatrix(piece) {
 }
 
 /** The piece's own linear map: R(rotation_degrees) . diag(sx, sy). */
-export function pieceMatrix(piece) {
+function pieceMatrix(piece) {
   return matmul(rotationMatrix(piece.rotation_degrees ?? 0), mirrorMatrix(piece));
 }
 
@@ -833,11 +904,11 @@ export function normalizeLayout(layout, templatesById) {
     if (!composite) {
       throw new Error(`layout ${layout.id} references missing template ${piece.template}`);
     }
-    const V = VARIANT[piece.template] ?? IDENTITY;
+    const V = variantOf(composite, templatesById);
     // The parent area carries M . V, so everything hung off it has to start by
     // undoing V - the child's orientation as well as its anchor. Both used to
     // apply V itself, which is the same thing only while every registered
-    // variant is self-inverse; Triangle#12 is not (see VARIANT).
+    // variant is self-inverse; the `-flip` Triangle is not (see CLASS_REFERENCE).
     const Vinv = orthoInverse(V);
     const M = pieceMatrix(piece);
 
@@ -950,8 +1021,9 @@ export function normalizeLayout(layout, templatesById) {
       // Undo the V now folded into the parent's transform, so the child lands
       // at M . feature.position regardless of the variant. This used to apply V
       // itself, on the grounds that every registered variant was self-inverse;
-      // the re-source registered one that is not (Triangle#12 = R270, a
-      // reflection composed onto a reflection), so it takes the real inverse.
+      // the fit produces one that is not (the `-flip` Triangle comes out at
+      // R270, a reflection composed onto a reflection), so it takes the real
+      // inverse.
       // W: `feature.position` anchors the roof's centre; step to the extent's
       // centre in the part's own frame before undoing V, so the emitted child
       // occupies the space upstream's model does rather than its roof's.
