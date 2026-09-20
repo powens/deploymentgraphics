@@ -11,7 +11,6 @@
 //
 // Parallels scripts/ruin-to-feature.mjs and scripts/area-to-building.mjs.
 
-import { resolvePiece } from "./terrain-resolver.mjs";
 import { featureRow } from "./emit-placement.mjs";
 import { centroid, distance, toDegrees } from "../src/geometry.ts";
 import { placedFromPin } from "../src/placement.ts";
@@ -35,9 +34,14 @@ const RECT_FEATURE_COLORS = {
 export const isRectFeatureTemplate = (id) =>
   Object.prototype.hasOwnProperty.call(RECT_FEATURES, id);
 
-/** Fit a feature placement to a resolved rectangle (perimeter-ordered corners). */
-export function rectFeaturePlacement(piece, lookupFootprint, getParent) {
-  const r = resolvePiece(piece, lookupFootprint, getParent);
+/**
+ * Fit a feature placement to a resolved rectangle (perimeter-ordered corners).
+ *
+ * @param {object} piece - a generator or gantry piece.
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
+ */
+export function rectFeaturePlacement(piece, layout) {
+  const r = layout.resolve(piece);
   const u = { x: r[1].x - r[0].x, y: r[1].y - r[0].y }; // first edge
   const size = { width: distance(r[0], r[1]), height: distance(r[1], r[2]) };
   const rotDeg = toDegrees(Math.atan2(u.y, u.x));

@@ -57,14 +57,22 @@ const gMap = (kind, mirrored, Wa, Ha) => {
  *
  * @param {object} piece - area piece: template, position, optional
  *   rotation_degrees, optional mirror ("horizontal"|"vertical").
- * @param {object} areaFootprint - the 40kdc template footprint for the piece.
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
  * @returns {{type: string, corners: object, mirror: false}}
  */
-export function areaBuildingPlacement(piece, areaFootprint, gwTemplates) {
+export function areaBuildingPlacement(piece, layout, gwTemplates) {
   const map = AREA_TO_TEMPLATE[piece.template];
   if (!map) {
     throw new Error(`no gw template mapping for area template ${piece.template}`);
+  }
+  // The *template's* footprint, deliberately, not `pieceFootprint`'s inline-first
+  // precedence: an area piece carrying an inline footprint would resolve through
+  // one polygon and draw through another, which is why battlemaster-normalize
+  // throws rather than emitting one.
+  const areaFootprint = layout.footprintOf(piece.template);
+  if (!areaFootprint) {
+    throw new Error(`no 40kdc footprint for area template ${piece.template}`);
   }
   const mirrored =
     piece.mirror === "horizontal" || piece.mirror === "vertical";

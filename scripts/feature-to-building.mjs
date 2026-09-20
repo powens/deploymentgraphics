@@ -11,7 +11,7 @@
 // bounding-box corners to the resolved edge whose length matches the template
 // width.
 
-import { resolvePiece, footprintPolygon } from "./terrain-resolver.mjs";
+import { pieceFootprint, footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
 import { templateBounds } from "../src/building-coordinates.ts";
 import { distance } from "../src/geometry.ts";
@@ -63,26 +63,15 @@ export const isFeatureBuildingTemplate = (id) =>
  * Build a `buildings` placement for a single pipe/barricade feature piece.
  * @param {object} piece - feature piece: `template`, `position`, optional
  *   `rotation_degrees`, optional `parent_area_id`, and either `footprint` or a
- *   named template resolved via `lookupFootprint`.
- * @param {(id: string) => object | undefined} lookupFootprint
+ *   named template resolved via the layout's footprint lookup.
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
- * @param {(id: string) => object | undefined} [getParent]
  * @returns {{ type: string, corners: object, mirror: false }}
  */
-export function featureBuildingPlacement(
-  piece,
-  lookupFootprint,
-  gwTemplates,
-  getParent,
-) {
-  const footprint = piece.footprint ?? lookupFootprint(piece.template);
-  if (!footprint) {
-    throw new Error(
-      `piece ${piece.id ?? "?"} has no footprint or known template`,
-    );
-  }
+export function featureBuildingPlacement(piece, layout, gwTemplates) {
+  const footprint = pieceFootprint(piece, layout.footprintOf);
   const { name, width } = classifyFeature(piece.template, footprint, gwTemplates);
-  const ring = resolvePiece(piece, lookupFootprint, getParent);
+  const ring = layout.resolve(piece);
   // Pin the resolved edge whose length matches the template width as TL->TR.
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i];

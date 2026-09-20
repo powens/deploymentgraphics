@@ -420,7 +420,7 @@ describe("normalized layouts conform to upstream geometry", () => {
         if (piece.template !== "area-trapezoid") continue;
         const placement = areaBuildingPlacement(
           piece,
-          footprintOf(piece.template),
+          normalized[i],
           gwTemplates,
         );
         // Rebuild the rendered outline by crossing the placement seam: resolve
@@ -456,16 +456,10 @@ describe("normalized layouts conform to upstream geometry", () => {
   it("renders each chiral part as exactly one l-ruin variant", () => {
     const seen = {};
     for (const layout of normalized) {
-      const getParent = layout.parentOf;
       for (const piece of layout.pieces) {
         if (piece.piece_type !== "feature") continue;
         if (!piece.template.startsWith("corner-")) continue;
-        const placement = ruinFeaturePlacement(
-          piece,
-          footprintOf,
-          getParent,
-          false,
-        );
+        const placement = ruinFeaturePlacement(piece, layout);
         (seen[piece.template] ??= new Set()).add(placement.type);
       }
     }
