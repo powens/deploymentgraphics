@@ -266,8 +266,23 @@ export interface DerivedControls {
   t: string;
 }
 
-/** The control keys {@link deriveControls} produces. */
-const DERIVED_KEYS = ["m", "t"] as const satisfies readonly ControlKey[];
+/**
+ * The control keys {@link deriveControls} produces.
+ *
+ * Read off a `Record` over `keyof DerivedControls` rather than written as a
+ * bare list. A list `satisfies readonly ControlKey[]` only checks that every
+ * key named is a control — not that every derived control is named, which is
+ * the direction that matters here: a third field added to
+ * {@link DerivedControls} and {@link deriveControls} but forgotten here would
+ * compile and test green while its dropdown was simply never written. Stated
+ * this way it is a type error instead, which is the same guarantee `LAYOUT_IDS`
+ * and `SpecValues satisfies ControlValues` give their own tables.
+ */
+const DERIVED_KEYS = Object.keys({
+  m: true,
+  t: true,
+} satisfies Record<keyof DerivedControls, true>) as readonly (keyof DerivedControls &
+  ControlKey)[];
 
 /**
  * Derives the deployment and terrain layout a disposition pairing implies.
