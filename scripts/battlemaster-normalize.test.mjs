@@ -1,14 +1,40 @@
 import { describe, it, expect } from "vitest";
-import {
-  normalizeLayout,
-  partAnchorShift,
-  partExtent,
-  pieceMatrix,
-} from "./battlemaster-normalize.mjs";
-import { matvec } from "../src/geometry.ts";
+import { normalizeLayout } from "./battlemaster-normalize.mjs";
+import { FLIP_X, IDENTITY, matvec, rotationMatrix } from "../src/geometry.ts";
 
-// A minimal stand-in for the vendored data: one composite whose footprint is
-// byte-identical to `area-short-line` (so VARIANT is identity), carrying two
+// `variantOf` fits each composite against its class's pinned reference, so a
+// fixture table has to carry that reference. These stand in for upstream's
+// traced outlines: the fit needs a shape with no rigid self-symmetry, which an
+// L has, and nothing else - a fixture composite drawn as the reference under
+// the rigid map W comes out registered at `W . refV`.
+const REF_RING = [
+  { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 1 },
+  { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 0, y: 2 },
+];
+const ringUnder = (M) => ({
+  type: "polygon",
+  points: REF_RING.map((p) => matvec(M, p)),
+});
+const REFERENCE = {
+  // Pinned at R180, so a footprint drawn at R180 fits at W = R180 and comes
+  // out at the identity - which is what every ShortLine fixture below wants.
+  ShortLine: ["bm-composite-shortline-barrier-348db27c93", rotationMatrix(180)],
+  // Pinned at R90.FX, so a footprint drawn at R0.FX comes out at
+  // FLIP_X . R90.FX = R270 - the one registered variant that is not its own
+  // inverse, which "anchors children through a variant that is not
+  // self-inverse" below is about.
+  Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", FLIP_X],
+};
+/** The class reference entry a fixture table needs, for `cls`. */
+const referenceEntry = (cls) => {
+  const [id] = REFERENCE[cls];
+  return [id, { id, name: `Battlemaster ${cls} reference`, footprint: ringUnder(IDENTITY) }];
+};
+/** The footprint a fixture composite of `cls` carries to be registered. */
+const fixtureFootprint = (cls) => ringUnder(REFERENCE[cls][1]);
+
+// A minimal stand-in for the vendored data: one composite registered at the
+// identity (see REFERENCE above), carrying two
 // parts - one that needs a chirality flip and one that does not - plus the two
 // legacy templates they map onto, which normalizeLayout reads to compute each
 // child's anchor offset. Both footprints are copied verbatim from
@@ -73,7 +99,7 @@ const templatesById = new Map([
       id: "bm-composite-shortline-31-bbbbbbbbbb",
       name: "Battlemaster ShortLine 31",
       kind: "area",
-      footprint: { type: "polygon", points: [] },
+      footprint: fixtureFootprint("ShortLine"),
       features: [
         {
           id: "feature-1",
@@ -90,7 +116,7 @@ const templatesById = new Map([
       id: "bm-composite-shortline-30-aaaaaaaaaa",
       name: "Battlemaster ShortLine 30",
       kind: "area",
-      footprint: { type: "polygon", points: [] },
+      footprint: fixtureFootprint("ShortLine"),
       features: [
         {
           id: "feature-1",
@@ -106,6 +132,7 @@ const templatesById = new Map([
       ],
     },
   ],
+  referenceEntry("ShortLine"),
 ]);
 
 const layoutWith = (piece) => ({
@@ -313,9 +340,11 @@ describe("normalizeLayout", () => {
     // silence - it would lose to the template's under F/Z, so the part would
     // quietly draw at the wrong size.
     const withFootprint = new Map([
+      referenceEntry("ShortLine"),
       ["bm-composite-shortline-30-aaaaaaaaaa", {
         id: "bm-composite-shortline-30-aaaaaaaaaa",
         name: "Battlemaster ShortLine 30",
+        footprint: fixtureFootprint("ShortLine"),
         features: [{ id: "f", template: "bm-part-pipes-fc0edd53ea",
                      position: { x: 0, y: 0 },
                      footprint: { type: "rectangle", width: 1, height: 1 } }],
@@ -328,9 +357,11 @@ describe("normalizeLayout", () => {
 
   it("throws on an unmapped part", () => {
     const bad = new Map([
+      referenceEntry("ShortLine"),
       ["bm-composite-shortline-30-aaaaaaaaaa", {
         id: "bm-composite-shortline-30-aaaaaaaaaa",
         name: "Battlemaster ShortLine 30",
+        footprint: fixtureFootprint("ShortLine"),
         features: [{ id: "f", template: "bm-part-obelisk-0123456789",
                      position: { x: 0, y: 0 } }],
       }],
@@ -338,6 +369,44 @@ describe("normalizeLayout", () => {
     expect(() =>
       normalizeLayout(layoutWith({ rotation_degrees: 0 }), bad),
     ).toThrow(/obelisk/);
+  });
+
+  it("throws by name for a composite with no footprint to fit", () => {
+    const noFootprint = new Map([
+      referenceEntry("ShortLine"),
+      ["bm-composite-shortline-30-aaaaaaaaaa", {
+        id: "bm-composite-shortline-30-aaaaaaaaaa",
+        name: "Battlemaster ShortLine 30",
+        features: [],
+      }],
+    ]);
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), noFootprint),
+    ).toThrow(/bm-composite-shortline-30-aaaaaaaaaa has no footprint/);
+  });
+
+  // A footprint symmetric under one of the eight rigid maps fits under two of
+  // them at once, so the shape does not say which variant it is registered at
+  // and `.sort()[0]` would answer from `CANDIDATES` insertion order. The
+  // reference ring is an L precisely to avoid this; a rectangle is the case it
+  // avoids.
+  it("throws for a footprint whose self-symmetry leaves the variant undetermined", () => {
+    const square = { type: "polygon", points: [
+      { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 2 }, { x: 0, y: 2 },
+    ] };
+    const [refId] = REFERENCE.ShortLine;
+    const symmetric = new Map([
+      [refId, { id: refId, name: "Battlemaster ShortLine reference", footprint: square }],
+      ["bm-composite-shortline-30-aaaaaaaaaa", {
+        id: "bm-composite-shortline-30-aaaaaaaaaa",
+        name: "Battlemaster ShortLine 30",
+        footprint: square,
+        features: [],
+      }],
+    ]);
+    expect(() =>
+      normalizeLayout(layoutWith({ rotation_degrees: 0 }), symmetric),
+    ).toThrow(/rigid self-symmetry/);
   });
 });
 
@@ -347,7 +416,7 @@ describe("normalizeLayout", () => {
 // is the one nothing else in this file would catch - a wrong extent shows up as
 // a wrong footprint, but a wrong anchor only shows up as a part drifting out of
 // its own parent.
-describe("partExtent / partAnchorShift", () => {
+describe("a part's extent and anchor", () => {
   // An L-ruin shaped part: the roof is one corner of the model, the walls run
   // out to the model's full extent.
   const walled = {
@@ -360,32 +429,23 @@ describe("partExtent / partAnchorShift", () => {
     },
     walls: [{ points: [{ x: 0, y: 0 }, { x: 0, y: -3 }], thickness: 0.5 }],
   };
+  const bare = {
+    id: "bm-part-tower-ddab4cb687",
+    footprint: { type: "rectangle", width: 4, height: 1 },
+  };
 
-  it("reads the extent from the roof and the walls together", () => {
-    // Roof alone is 2x2 and the wall centreline alone is 0x3; the model is
-    // neither. Taking the union gives 2x3.
-    expect(partExtent(walled)).toEqual({ type: "rectangle", width: 2, height: 3 });
-  });
-
-  it("measures the anchor shift from the roof centre to the extent centre", () => {
-    // Roof centre (1, -1), extent centre (1, -1.5).
-    expect(partAnchorShift(walled)).toEqual({ x: 0, y: -0.5 });
-  });
-
-  it("falls back to the footprint for a part with no walls", () => {
-    const bare = { id: "x", footprint: { type: "rectangle", width: 4, height: 1 } };
-    expect(partExtent(bare)).toEqual(bare.footprint);
-    expect(partAnchorShift(bare)).toEqual({ x: 0, y: 0 });
-  });
-
-  it("anchors a child on its extent centre, not its roof centre", () => {
+  // `tower` is an upstreamFootprint part, so the emitted child carries
+  // upstream's own extent rather than the legacy gantry's 2x2 - which is what
+  // makes the child readable as the extent and the anchor directly.
+  const towerChild = (part) => {
     const templates = new Map([
       ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
-      ["bm-part-tower-ddab4cb687", walled],
+      ["bm-part-tower-ddab4cb687", part],
+      referenceEntry("ShortLine"),
       ["bm-composite-shortline-90-cccccccccc", {
         id: "bm-composite-shortline-90-cccccccccc",
         name: "Battlemaster ShortLine 90",
-        footprint: { type: "polygon", points: [] },
+        footprint: fixtureFootprint("ShortLine"),
         features: [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
                      position: { x: 3, y: 7 } }],
       }],
@@ -396,13 +456,27 @@ describe("partExtent / partAnchorShift", () => {
           position: { x: 0, y: 0 } }] },
       templates,
     );
-    const child = out.pieces[1];
-    // `tower` is an upstreamFootprint part, so it draws at the extent - 2x3, not
-    // the roof's 2x2 and not the legacy gantry's own 2x2.
-    expect(child.footprint).toEqual({ type: "rectangle", width: 2, height: 3 });
-    // ...and sits half an inch below where `position` alone would put it,
-    // because `position` names the roof's centre.
-    expect(child.position).toEqual({ x: 3, y: 6.5 });
+    return out.pieces[1];
+  };
+
+  it("reads the extent from the roof and the walls together", () => {
+    // Roof alone is 2x2 and the wall centreline alone is 0x3; the model is
+    // neither. Taking the union gives 2x3.
+    expect(towerChild(walled).footprint).toEqual({
+      type: "rectangle", width: 2, height: 3,
+    });
+  });
+
+  it("anchors the child on the extent centre, not the roof centre", () => {
+    // Roof centre (1, -1), extent centre (1, -1.5), so the child sits half an
+    // inch below where upstream's `position` alone would put it.
+    expect(towerChild(walled).position).toEqual({ x: 3, y: 6.5 });
+  });
+
+  it("falls back to the footprint for a part with no walls", () => {
+    const child = towerChild(bare);
+    expect(child.footprint).toEqual(bare.footprint);
+    expect(child.position).toEqual({ x: 3, y: 7 });
   });
 });
 
@@ -418,8 +492,14 @@ describe("fields the re-source introduced", () => {
       footprint: { type: "rectangle", width: 1, height: 1 },
     }],
   ]);
-  const composite = (id, name, features) =>
-    new Map([...templates, [id, { id, name, footprint: { type: "polygon", points: [] }, features }]]);
+  const composite = (id, name, features) => {
+    const cls = name.split(" ")[1];
+    return new Map([
+      ...templates,
+      referenceEntry(cls),
+      [id, { id, name, footprint: fixtureFootprint(cls), features }],
+    ]);
+  };
   const run = (id, name, features, piece = {}) =>
     normalizeLayout(
       { id: "fixture", pieces: [{ id: "area-01", piece_type: "area", template: id,
@@ -452,7 +532,8 @@ describe("fields the re-source introduced", () => {
   });
 
   it("anchors children through a variant that is not self-inverse", () => {
-    // Triangle#12 registers R270, the first variant that is not its own inverse.
+    // The `-flip` Triangle registers R270, the one variant that is not its own
+    // inverse.
     // The child's anchor has to undo V with a real inverse: whatever V is, the
     // child must resolve to the same point upstream's feature does, which with
     // an unrotated parent is `feature.position` itself.
@@ -462,7 +543,9 @@ describe("fields the re-source introduced", () => {
          position: { x: 4, y: 1 } }]);
     const [area, child] = out.pieces;
     expect(area.template).toBe("area-trapezoid");
-    const placed = matvec(pieceMatrix(area), child.position);
+    // V is a rotation here, so the area's own map is a plain rotation too.
+    expect("mirror" in area).toBe(false);
+    const placed = matvec(rotationMatrix(area.rotation_degrees), child.position);
     expect(placed.x).toBeCloseTo(4, 10);
     expect(placed.y).toBeCloseTo(1, 10);
     // Applying V instead of its inverse would land on R(180) . (4, 1).

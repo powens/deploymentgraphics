@@ -117,8 +117,7 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
     ]);
   });
 
-  const placementOf = ({ piece, layout }) =>
-    ruinFeaturePlacement(piece, footprintOf, layout.parentOf);
+  const placementOf = ({ piece, layout }) => ruinFeaturePlacement(piece, layout);
 
   for (const [template, entry] of Object.entries(sample)) {
     it(`reproduces the ${template} footprint`, () => {

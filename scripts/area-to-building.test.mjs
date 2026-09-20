@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { resolvePiece } from "./terrain-resolver.mjs";
+import { withLookups } from "./terrain-corpus.mjs";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 
 // templates-simple.yml templates referenced by the converter (subset, incl. shoe-mirror).
@@ -76,12 +77,14 @@ const sameSet = (a, b) => {
   }
 };
 
+// The converters take a resolved layout and read their lookups off it, the
+// same way the pipeline hands them one - so a single-piece layout is the
+// smallest honest fixture.
+const layoutOf = (piece) =>
+  withLookups({ id: "t", pieces: [piece] }, (id) => FOOTPRINTS[id]);
+
 const roundTrip = (piece) => {
-  const placement = areaBuildingPlacement(
-    piece,
-    FOOTPRINTS[piece.template],
-    GW_TEMPLATES,
-  );
+  const placement = areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES);
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, GW_TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1); // mirror:false -> single placement
@@ -138,5 +141,36 @@ describe("areaBuildingPlacement", () => {
       rotation_degrees: 137,
       mirror: "horizontal",
     });
+  });
+
+  // Both guards exist to fail an upstream pull loudly rather than emit a
+  // mis-placed building, so both are pinned - the mapping one names a template
+  // this converter has no gw counterpart for, the footprint one a template
+  // 40kdc itself stopped shipping a polygon for.
+  it("throws for an area template with no gw mapping", () => {
+    const piece = {
+      template: "area-unheard-of",
+      piece_type: "area",
+      position: { x: 30, y: 20 },
+      rotation_degrees: 0,
+    };
+    expect(() =>
+      areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES),
+    ).toThrow(/no gw template mapping for area template area-unheard-of/);
+  });
+
+  it("throws for a mapped area template with no 40kdc footprint", () => {
+    const piece = {
+      template: "area-long-line",
+      piece_type: "area",
+      position: { x: 30, y: 20 },
+      rotation_degrees: 0,
+    };
+    // Mapped, so it clears the first guard - but the layout's lookup has no
+    // polygon for it, which is the case the second guard is for.
+    const layout = withLookups({ id: "t", pieces: [piece] }, () => undefined);
+    expect(() => areaBuildingPlacement(piece, layout, GW_TEMPLATES)).toThrow(
+      /no 40kdc footprint for area template area-long-line/,
+    );
   });
 });

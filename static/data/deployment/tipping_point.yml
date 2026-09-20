@@ -1,5 +1,4 @@
 name: Tipping Point
-home_edge: short
 
 territory:
   start: { x: 26, y: 0 }

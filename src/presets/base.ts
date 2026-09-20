@@ -8,6 +8,5 @@ export const baseConfig: BaseConfig = {
   size: { width: 60, height: 44 },
   half_way_lines: { draw: true },
   territory: { draw: true },
-  building: { draw: false },
   grid: { draw: true },
 };

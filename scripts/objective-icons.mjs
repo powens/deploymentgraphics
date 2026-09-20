@@ -21,6 +21,7 @@
 // suggest, and the three outliers are what the threshold is absorbing.
 
 import { round } from "./emit-placement.mjs";
+import { pieceFootprintIfAny } from "./terrain-resolver.mjs";
 import { ringGap } from "../src/geometry.ts";
 
 // Footprint gap (inches) at or below which two objective pieces count as one
@@ -54,7 +55,11 @@ export function objectiveIcons(layout) {
   // resolve failure (a missing parent, an unsupported footprint type) is a data
   // fault and propagates.
   const polys = objectives.map((p) => {
-    const footprint = p.footprint ?? layout.footprintOf(p.template);
+    // `pieceFootprintIfAny` rather than the inline-else-template fallback
+    // spelled out here: this is the one caller that treats absence as a case
+    // instead of a fault, and restating the precedence is how it would drift
+    // from the converters if inline ever stopped winning.
+    const footprint = pieceFootprintIfAny(p, layout.footprintOf);
     return footprint ? layout.resolve(p) : [p.position];
   });
 

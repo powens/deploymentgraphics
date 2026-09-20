@@ -48,6 +48,45 @@ function place(point, piece) {
 }
 
 /**
+ * The footprint a piece draws from - its own inline one, else its template's -
+ * or `undefined` when it has neither.
+ *
+ * The one owner of that precedence. Callers that need the footprint without
+ * resolving it used to restate it, which is one more place for inline-vs-
+ * template to drift.
+ *
+ * Use {@link pieceFootprint} unless absence is a case you handle: this exists
+ * for the callers that ask *whether* a piece has one at all, which would
+ * otherwise have to spell the fallback themselves to avoid the throw.
+ *
+ * @param {object} piece - `footprint` or `template`.
+ * @param {(id: string) => object | null | undefined} lookupFootprint
+ */
+export function pieceFootprintIfAny(piece, lookupFootprint) {
+  return piece.footprint ?? lookupFootprint(piece.template);
+}
+
+/**
+ * The footprint a piece draws from: its own inline one, else its template's.
+ *
+ * {@link pieceFootprintIfAny} with absence treated as a data fault, which is
+ * what every converter wants.
+ *
+ * @param {object} piece - `footprint` or `template`.
+ * @param {(id: string) => object | null | undefined} lookupFootprint
+ * @throws if the piece has neither.
+ */
+export function pieceFootprint(piece, lookupFootprint) {
+  const footprint = pieceFootprintIfAny(piece, lookupFootprint);
+  if (!footprint) {
+    throw new Error(
+      `piece ${piece.id ?? "?"} has no footprint or known template`,
+    );
+  }
+  return footprint;
+}
+
+/**
  * Resolve a piece to absolute board-inch vertices.
  * @param {object} piece - `position`, optional `rotation_degrees`, optional
  *   `mirror` ("horizontal"|"vertical"), optional `parent_area_id`, and either
@@ -57,13 +96,7 @@ function place(point, piece) {
  *   pieces carrying a `parent_area_id`.
  */
 export function resolvePiece(piece, lookupFootprint, getParent) {
-  const footprint = piece.footprint ?? lookupFootprint(piece.template);
-  if (!footprint) {
-    throw new Error(
-      `piece ${piece.id ?? "?"} has no footprint or known template`,
-    );
-  }
-  const ring = footprintPolygon(footprint);
+  const ring = footprintPolygon(pieceFootprint(piece, lookupFootprint));
   const c = centroid(ring);
   // Centre on the centroid, apply this piece's own orientation, add its offset.
   const local = ring.map((p) => {

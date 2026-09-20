@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { resolvePiece } from "./terrain-resolver.mjs";
+import {
+  resolvePiece,
+  pieceFootprint,
+  pieceFootprintIfAny,
+} from "./terrain-resolver.mjs";
 import { centroid } from "../src/geometry.ts";
 
 const TRAPEZOID = {
@@ -123,5 +127,50 @@ describe("resolvePiece", () => {
     expect(() => resolvePiece(child, () => null, () => undefined)).toThrow(
       /missing parent/,
     );
+  });
+});
+
+describe("pieceFootprint", () => {
+  const RECT = { type: "rectangle", width: 2, height: 3 };
+  const TEMPLATE = { type: "rectangle", width: 5, height: 7 };
+
+  it("prefers the piece's own footprint over its template's", () => {
+    expect(
+      pieceFootprint({ footprint: RECT, template: "t" }, () => TEMPLATE),
+    ).toEqual(RECT);
+  });
+
+  it("falls back to the template's footprint", () => {
+    expect(pieceFootprint({ template: "t" }, () => TEMPLATE)).toEqual(TEMPLATE);
+  });
+
+  // The guard exists so an upstream pull that drops a template fails by name
+  // here rather than reaching footprintPolygon(undefined) and throwing a bare
+  // TypeError from somewhere further down.
+  it("throws by name for a piece with neither", () => {
+    expect(() =>
+      pieceFootprint({ id: "p7", template: "gone" }, () => undefined),
+    ).toThrow(/piece p7 has no footprint or known template/);
+  });
+});
+
+describe("pieceFootprintIfAny", () => {
+  // The same precedence without the throw, for the one caller that asks
+  // whether a piece has a footprint at all rather than demanding one.
+  it("returns undefined instead of throwing when a piece has neither", () => {
+    expect(
+      pieceFootprintIfAny({ id: "p7", template: "gone" }, () => undefined),
+    ).toBeUndefined();
+  });
+
+  it("applies the same inline-over-template precedence", () => {
+    const inline = { type: "rectangle", width: 1, height: 1 };
+    expect(
+      pieceFootprintIfAny({ footprint: inline, template: "t" }, () => ({
+        type: "rectangle",
+        width: 9,
+        height: 9,
+      })),
+    ).toEqual(inline);
   });
 });

@@ -1,11 +1,11 @@
-// The one walk over a 40kdc layout's pieces: classify each piece, then dispatch
+// The one walk over a 40kdc layout's pieces: classify each piece, then hand it
 // to the converter that owns that kind.
 //
 // Classification used to be spread across three collectors that each filtered
 // `layout.pieces` themselves and handed back a `consumedIds` set for a fourth
 // walk to skip. Nothing made those filters disjoint, so a piece could be
-// claimed twice; `classifyPiece` gives every piece exactly one kind and throws
-// if two converters would claim it, which makes a double emit unrepresentable.
+// claimed twice; PIECE_KINDS gives every piece exactly one kind and throws if
+// two rows would claim it, which makes a double emit unrepresentable.
 //
 // The per-piece converters (area-to-building, ruin-to-feature, rect-to-feature,
 // feature-to-building) stay where they are - this module only decides which one
@@ -25,70 +25,123 @@ import {
   featureBuildingPlacement,
   isFeatureBuildingTemplate,
 } from "./feature-to-building.mjs";
+import { pieceFootprint } from "./terrain-resolver.mjs";
 
-/** The kinds a layout piece can have. Every piece has exactly one. */
-export const PIECE_KINDS = Object.freeze({
-  /** `area` piece -> gw building template placement. */
-  areaBuilding: "area-building",
-  /** whole-L corner-ruin piece -> `l-ruin` feature. */
-  ruinFeature: "ruin-feature",
-  /** generator/gantry -> rectangle feature. */
-  rectFeature: "rect-feature",
-  /** pipe/barricade -> building template placement. */
-  featureBuilding: "feature-building",
-  /** catwalk: consumed and not emitted (see the CLAIMS note below). */
-  dropped: "dropped",
-});
-
-// Predicates in one table so the disjointness check below is over the same list
-// the dispatch is. Order is irrelevant: a piece matching two of them throws.
-const CLAIMS = [
-  [PIECE_KINDS.areaBuilding, (piece) => piece.piece_type === "area"],
-  [
-    PIECE_KINDS.ruinFeature,
+/**
+ * The kinds a layout piece can have. Every piece has exactly one.
+ *
+ * One row per kind, carrying everything that kind decides: which pieces it
+ * claims, which converter draws them, and which bucket of the emitted entry
+ * they land in. The claims were a separate table from the dispatch, and the
+ * split was a failure mode of its own - a kind classified but not dispatched
+ * fell through to a `default: throw`, which only existed because the two lists
+ * could drift. Merging them removes that case and costs nothing.
+ *
+ * Row order is the output order: `layoutPlacements` concatenates each bucket's
+ * rows in the order the kinds appear here, so the generated file keeps its
+ * established layout (areas before pipes/barricades, ruins before
+ * generators/gantries) rather than the interleaving of the source piece list.
+ *
+ * Every converter takes `(piece, layout, gwTemplates)` and reads the lookups it
+ * needs off the layout, which is what `scripts/terrain-corpus.mjs` attached
+ * them for. A converter that wants fewer arguments simply declares fewer.
+ */
+export const PIECE_KINDS = Object.freeze([
+  {
+    /** `area` piece -> gw building template placement. */
+    kind: "area-building",
+    claims: (piece) => piece.piece_type === "area",
+    convert: areaBuildingPlacement,
+    bucket: "templates",
+  },
+  {
+    /** pipe/barricade -> building template placement. */
+    kind: "feature-building",
+    claims: (piece) => isFeatureBuildingTemplate(piece.template),
+    convert: featureBuildingPlacement,
+    bucket: "templates",
+  },
+  {
+    /** whole-L corner-ruin piece -> `l-ruin` feature. */
+    kind: "ruin-feature",
     // Only a whole-L corner footprint becomes a ruin; any other corner piece
     // is unclaimed, and `classifyPiece` throws on it.
-    (piece, footprintOf) =>
+    claims: (piece, layout) =>
       isRuinTemplate(piece.template) &&
-      isLFootprint(piece.footprint ?? footprintOf(piece.template)),
-  ],
-  [PIECE_KINDS.rectFeature, (piece) => isRectFeatureTemplate(piece.template)],
-  [
-    PIECE_KINDS.featureBuilding,
-    (piece) => isFeatureBuildingTemplate(piece.template),
-  ],
-  // Catwalks are consumed and not emitted: upstream models them as standalone
-  // composites, and the parent area still becomes a building that already
-  // covers upstream's 6x1in `pipes` part. The legacy `catwalk` template that
-  // part is normalized onto is 7x2in, so the resolved child does overhang its
-  // 6x2in parent by 0.5in at each end (measured: catwalk y 4.5015-11.5015
-  // against area y 5.000-11.000). That overhang is an artifact of the oversized
-  // legacy template rather than ground upstream draws - see the `pipes` note on
-  // PART_TO_TEMPLATE in battlemaster-normalize.mjs - and is accepted, not
-  // emitted.
-  [PIECE_KINDS.dropped, (piece) => piece.template === "catwalk"],
-];
+      isLFootprint(pieceFootprint(piece, layout.footprintOf)),
+    convert: ruinFeaturePlacement,
+    bucket: "features",
+  },
+  {
+    /** generator/gantry -> rectangle feature. */
+    kind: "rect-feature",
+    claims: (piece) => isRectFeatureTemplate(piece.template),
+    convert: rectFeaturePlacement,
+    bucket: "features",
+  },
+  {
+    /**
+     * Catwalks are consumed and not emitted: upstream models them as
+     * standalone composites, and the parent area still becomes a building that
+     * already covers upstream's 6x1in `pipes` part. The legacy `catwalk`
+     * template that part is normalized onto is 7x2in, so the resolved child
+     * does overhang its 6x2in parent by 0.5in at each end (measured: catwalk y
+     * 4.5015-11.5015 against area y 5.000-11.000). That overhang is an artifact
+     * of the oversized legacy template rather than ground upstream draws - see
+     * the `pipes` note on PART_TO_TEMPLATE in battlemaster-normalize.mjs - and
+     * is accepted, not emitted.
+     *
+     * No `convert` and no `bucket`: that is what "dropped" means here.
+     */
+    kind: "dropped",
+    claims: (piece) => piece.template === "catwalk",
+  },
+].map(Object.freeze));
+
+/**
+ * The buckets a converted row can land in, in the order a combined.yml entry
+ * spells them.
+ *
+ * A row's `bucket` is matched by equality, so a row naming one this list does
+ * not have would convert its pieces and then have them silently dropped. That
+ * is the case the deleted `default: throw` used to approximate, so it is
+ * checked here instead - once, when the module loads, against the same list
+ * `layoutPlacements` builds its result from.
+ */
+const BUCKETS = ["templates", "features"];
+
+for (const kind of PIECE_KINDS) {
+  if (kind.convert && !BUCKETS.includes(kind.bucket)) {
+    throw new Error(
+      `PIECE_KINDS row "${kind.kind}" converts into bucket ` +
+        `"${kind.bucket}", which is not one of ${BUCKETS.join(", ")}`,
+    );
+  }
+  if (!kind.convert && kind.bucket !== undefined) {
+    throw new Error(
+      `PIECE_KINDS row "${kind.kind}" names a bucket but has no converter`,
+    );
+  }
+}
 
 /**
  * The single kind of one layout piece.
  *
  * @param {object} piece - a 40kdc layout piece.
- * @param {(id: string) => object | undefined} footprintOf - corpus footprint
- *   lookup, used to test a corner piece's footprint for the L shape.
- * @returns {string} one of PIECE_KINDS.
- * @throws if two converters would claim the same piece, or if none does.
+ * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs,
+ *   read for the footprint lookup that tests a corner piece for the L shape.
+ * @returns {object} the matching PIECE_KINDS row.
+ * @throws if two rows would claim the same piece, or if none does.
  */
-export function classifyPiece(piece, footprintOf) {
-  const kinds = CLAIMS.filter(([, claims]) => claims(piece, footprintOf)).map(
-    ([kind]) => kind,
-  );
-  if (kinds.length > 1) {
+export function classifyPiece(piece, layout) {
+  const matched = PIECE_KINDS.filter((row) => row.claims(piece, layout));
+  if (matched.length > 1) {
     throw new Error(
       `piece ${piece.id ?? "?"} (${piece.piece_type}/${piece.template}) ` +
-        `matches more than one kind: ${kinds.join(", ")}`,
+        `matches more than one kind: ${matched.map((r) => r.kind).join(", ")}`,
     );
   }
-  if (kinds.length === 0) {
+  if (matched.length === 0) {
     // There used to be an `area_terrain` fallback here, drawing an unclaimed
     // piece as a translucent zone. Every piece in the corpus is claimed by a
     // converter (720 area-buildings, 720 ruins, 270 feature-buildings, 180
@@ -98,19 +151,15 @@ export function classifyPiece(piece, footprintOf) {
     // fail the pull rather than silently become a grey blob.
     throw new Error(
       `piece ${piece.id ?? "?"} (${piece.piece_type}/${piece.template}) ` +
-        `matches no converter; teach one to claim it or add it to CLAIMS ` +
+        `matches no converter; teach one to claim it or add it to PIECE_KINDS ` +
         `as explicitly dropped`,
     );
   }
-  return kinds[0];
+  return matched[0];
 }
 
 /**
  * Convert every piece of one layout into the rows a combined.yml entry holds.
- *
- * Buckets are filled in one walk but concatenated per kind, so the generated
- * file keeps its established order (areas before pipes/barricades, ruins before
- * generators/gantries) rather than the interleaving of the source piece list.
  *
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @param {object} gwTemplates - the hand-authored building templates, read for
@@ -118,54 +167,17 @@ export function classifyPiece(piece, footprintOf) {
  * @returns {{ templates: object[], features: object[] }}
  */
 export function layoutPlacements(layout, gwTemplates) {
-  const areaBuildings = [];
-  const featureBuildings = [];
-  const ruinFeatures = [];
-  const rectFeatures = [];
+  const rows = new Map(PIECE_KINDS.map((kind) => [kind, []]));
 
   for (const piece of layout.pieces) {
-    const kind = classifyPiece(piece, layout.footprintOf);
-    switch (kind) {
-      case PIECE_KINDS.areaBuilding:
-        areaBuildings.push(
-          areaBuildingPlacement(
-            piece,
-            layout.footprintOf(piece.template),
-            gwTemplates,
-          ),
-        );
-        break;
-      case PIECE_KINDS.featureBuilding:
-        featureBuildings.push(
-          featureBuildingPlacement(
-            piece,
-            layout.footprintOf,
-            gwTemplates,
-            layout.parentOf,
-          ),
-        );
-        break;
-      case PIECE_KINDS.ruinFeature:
-        ruinFeatures.push(
-          ruinFeaturePlacement(piece, layout.footprintOf, layout.parentOf),
-        );
-        break;
-      case PIECE_KINDS.rectFeature:
-        rectFeatures.push(
-          rectFeaturePlacement(piece, layout.footprintOf, layout.parentOf),
-        );
-        break;
-      case PIECE_KINDS.dropped:
-        break;
-      // Every kind is handled above: a new PIECE_KINDS entry without a case
-      // here is a miscategorisation, not something to draw generically.
-      default:
-        throw new Error(`unhandled piece kind ${kind}`);
-    }
+    const kind = classifyPiece(piece, layout);
+    if (!kind.convert) continue;
+    rows.get(kind).push(kind.convert(piece, layout, gwTemplates));
   }
 
-  return {
-    templates: [...areaBuildings, ...featureBuildings],
-    features: [...ruinFeatures, ...rectFeatures],
-  };
+  const bucket = (name) =>
+    PIECE_KINDS.filter((kind) => kind.bucket === name).flatMap((kind) =>
+      rows.get(kind),
+    );
+  return Object.fromEntries(BUCKETS.map((name) => [name, bucket(name)]));
 }

@@ -60,5 +60,5 @@ export type TerrainConfig = {
 };
 
 // The pieces of a selected layout are assembled by `resolveLayout` in
-// `layout.ts` (which unions them with the board's top-level arrays), not by
+// `layers.ts` (which unions them with the board's top-level arrays), not by
 // per-piece accessors here.

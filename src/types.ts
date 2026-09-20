@@ -6,11 +6,18 @@ export type SVGProperties = Record<string, string | number>;
 
 export type Size = { width: number; height: number };
 
+/**
+ * Board size and the draw toggles.
+ *
+ * Every toggle is `{ draw?: boolean }`, and what an absent `draw` means is a
+ * per-toggle decision: half-way lines and the territory line default *on*, the
+ * grid defaults *off*. `src/layers.ts` states each default beside the layer it
+ * gates; nothing else reads these.
+ */
 export type BaseConfig = {
   size: Size;
   half_way_lines: { draw?: boolean };
   territory: { draw?: boolean };
-  building: { draw?: boolean };
   grid: { draw?: boolean };
 };
 
@@ -21,7 +28,6 @@ export type AttackerDefender = {
 
 export type DeploymentConfig = {
   name: string;
-  home_edge: "short" | "long";
   territory?: { start: Coordinate; end: Coordinate };
   attacker: AttackerDefender;
   defender: AttackerDefender;
