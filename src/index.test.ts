@@ -18,20 +18,20 @@ import * as presets from "./presets/index.js";
  * leak. `pnpm type-check` covers the type side.
  *
  * `package.json` publishes a second entry, `./presets`, so pinning the root
- * alone would leave half the committed surface unguarded — that is how
- * `eventMatrix` stayed reachable as `deploymentgraphics/presets` after the
- * root stopped exporting it.
+ * alone would leave half the committed surface unguarded — which is why the
+ * lists below are split by entry point and composed, rather than one flat
+ * list the presets assertion re-derives.
  */
-const PUBLIC_VALUES = [
-  // Renderers
-  "makeMissionCard",
-  "renderMissionCardToString",
-  // Presets
+const RENDERERS = ["makeMissionCard", "renderMissionCardToString"] as const;
+
+/** Everything `deploymentgraphics/presets` publishes — bundled data, no logic. */
+const PRESETS = [
   "baseConfig",
   "baseTheme",
   "buildConfig",
   "gwTerrain",
   "gwTemplatesReal",
+  "eventMatrix",
   "missions",
   "dawnOfWar",
   "crucibleOfBattle",
@@ -40,6 +40,16 @@ const PUBLIC_VALUES = [
   "sweepingEngagement",
   "tippingPoint",
 ] as const;
+
+/** Two dispositions -> the mission they play, and the layout that covers it. */
+const RESOLUTION = [
+  "resolveMission",
+  "resolveTerrainLayout",
+  "eventMatrixKey",
+  "dispositions",
+] as const;
+
+const PUBLIC_VALUES = [...RENDERERS, ...PRESETS, ...RESOLUTION] as const;
 
 describe("the package root", () => {
   it("exports exactly the documented values", () => {
@@ -66,9 +76,6 @@ describe("the package root", () => {
       "virtualSvgDocument",
       "injectTemplateDefs",
       "makeBuildings",
-      "eventMatrixKey",
-      "resolveMission",
-      "resolveTerrainLayout",
     ]) {
       expect(pkg).not.toHaveProperty(name);
     }
@@ -98,16 +105,12 @@ describe("the published entry points", () => {
 });
 
 describe("the presets entry", () => {
-  it("exports the same presets as the root, and nothing the root omits", () => {
-    const rootPresets = PUBLIC_VALUES.filter(
-      (name) => name !== "makeMissionCard" && name !== "renderMissionCardToString",
-    );
-    expect(Object.keys(presets).sort()).toEqual([...rootPresets].sort());
+  it("exports exactly the presets, and nothing the root omits", () => {
+    expect(Object.keys(presets).sort()).toEqual([...PRESETS].sort());
   });
 
-  it("keeps the event matrix out of the package module graph", () => {
-    // No renderer reads it. The browser demo does, and reaches it by path
-    // through `bundle.ts` rather than through a published entry.
-    expect(presets).not.toHaveProperty("eventMatrix");
+  it("is a subset of the root, so either import reaches the same preset", () => {
+    for (const name of PRESETS) expect(pkg).toHaveProperty(name);
+    expect(presets.eventMatrix).toBe(pkg.eventMatrix);
   });
 });
