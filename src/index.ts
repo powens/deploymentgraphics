@@ -12,16 +12,15 @@
  *
  * ## What this module exports
  *
- * The two renderers, the presets, and the type graph of the config they
- * consume — nothing else. The geometry, placement and SVG-backend primitives
- * the renderers are built from stay internal: they are implementation, they
+ * The two renderers, the presets, the matchup resolution that picks which
+ * mission a pairing plays, and the type graph of the config they consume —
+ * nothing else. The geometry, placement and SVG-backend primitives the
+ * renderers are built from stay internal: they are implementation, they
  * change with it, and a consumer never has to learn them to render a card.
  *
  * Internal code reaches them by path (`./placement.js`, `./svg-backend.js`)
  * rather than through this barrel, and the browser app has its own entry in
- * `bundle.ts`. Naming the preset modules individually rather than
- * re-exporting `presets/index.js` also keeps the event matrix — which no
- * renderer reads — out of the package's module graph.
+ * `bundle.ts`.
  */
 
 // --- Renderers ---
@@ -81,3 +80,22 @@ export type {
 // --- Theming ---
 // `baseTheme` is the default; `Theme` is what a replacement must satisfy.
 export type { Theme } from "./theme.js";
+
+// --- Matchup resolution ---
+// Which mission two force dispositions play, and which terrain layout covers
+// that cell. A consumer that renders a *specific* matchup rather than a
+// mission picked by hand needs these to get from two dispositions to a
+// `buildConfig({ mission, layout })` call, so they are published alongside
+// the `eventMatrix` preset they read.
+export {
+  resolveMission,
+  resolveTerrainLayout,
+  eventMatrixKey,
+  dispositions,
+} from "./event-matrix.js";
+export type {
+  EventMatrix,
+  Layout,
+  TerrainLayoutMeta,
+} from "./event-matrix.js";
+export { eventMatrix } from "./presets/event-matrix.js";

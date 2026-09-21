@@ -118,6 +118,16 @@ knowing if you author YAML: under js-yaml 4's YAML 1.2 core schema only
 Previously `base.grid` alone tested `=== true`, so `draw: no` did not draw the
 grid while the same spelling already drew the other two.
 
+### Added
+
+- Published the matchup-resolution API: `resolveMission`, `resolveTerrainLayout`,
+  `eventMatrixKey`, `dispositions`, the `eventMatrix` preset, and the
+  `EventMatrix` / `Layout` / `TerrainLayoutMeta` types. They were already the
+  path from "two force dispositions" to a `buildConfig({ mission, layout })`
+  call; a consumer rendering a *specific* matchup rather than a hand-picked
+  mission cannot get there without them. `eventMatrix` is exported from both
+  the root and `deploymentgraphics/presets`, like every other preset.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's
