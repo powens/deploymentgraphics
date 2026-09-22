@@ -477,8 +477,7 @@
 
       <div class="control">
         <label class="control-label" for="disposition-a">Disposition A</label>
-        <!-- Empty by design: app.js fills the options from `controlSpec`, and
-             static/index.test.js fails if any land here instead. -->
+        <!-- Empty by design: app.js fills the options from `controlSpec`. -->
         <select id="disposition-a" class="field"></select>
       </div>
 
@@ -509,8 +508,7 @@
 
       <div class="control">
         <label class="control-label" for="templates">Templates</label>
-        <!-- These options are the markup's own (`staticOptions` in
-             `controlSpec`); index.test.js holds the two value sets equal. -->
+        <!-- Markup-owned options (`staticOptions`); must match `controlSpec`. -->
         <select id="templates" class="field">
           <option value="simple">Simple</option>
           <option value="real" selected>Detailed</option>

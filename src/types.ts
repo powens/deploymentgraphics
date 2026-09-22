@@ -7,12 +7,8 @@ export type SVGProperties = Record<string, string | number>;
 export type Size = { width: number; height: number };
 
 /**
- * Board size and the draw toggles.
- *
- * Every toggle is `{ draw?: boolean }`, and what an absent `draw` means is a
- * per-toggle decision: half-way lines and the territory line default *on*, the
- * grid defaults *off*. `src/layers.ts` states each default beside the layer it
- * gates; nothing else reads these.
+ * Board size and draw toggles. An absent `draw` means on for half-way lines
+ * and territory, off for the grid (defaults live in `src/layers.ts`).
  */
 export type BaseConfig = {
   size: Size;
@@ -33,10 +29,7 @@ export type DeploymentConfig = {
   defender: AttackerDefender;
 };
 
-/**
- * Terrain config as loaded from combined.yml, plus the `layout_name` the page
- * injects at fetch time (see static/index.html `getTerrain`).
- */
+/** A `TerrainConfig` plus the selected layout key (`""` for none). */
 export type RuntimeTerrainConfig = TerrainConfig & { layout_name: string };
 
 export type Annotation = {
@@ -55,7 +48,7 @@ export type Objective = {
   number: number;
 };
 
-/** The whole config object built by static/index.html. */
+/** Everything a renderer consumes; `buildConfig` assembles one. */
 export type FullConfig = {
   base: BaseConfig;
   terrain: RuntimeTerrainConfig;

@@ -1,18 +1,8 @@
 // @vitest-environment happy-dom
 //
-// GEOMETRY SNAPSHOT for rendered buildings.
-//
-// `makeBuildings` emits one `translate(x y) rotate(deg cx cy)` per building —
-// rotation about the box centre. This test reads whatever transform the
-// renderer emits, evaluates it on each template's distinctive local points
-// (bbox corners plus polygon vertices, so a nubbin that pokes past the declared
-// box is covered), and snapshots the ABSOLUTE canvas positions. Anything that
-// moves a building on the canvas — placement or mirroring — surfaces here as a
-// snapshot diff. A change to the shape of the transform itself fails earlier,
-// in the parse: the transform must match `translate(a b) rotate(deg cx cy)`
-// whole-string, so both a pivot-less `rotate(deg)` and an extra component the
-// evaluator does not model throw `unparsable transform` rather than passing
-// silently.
+// Evaluates each rendered building's transform on its template's local points
+// and snapshots the absolute canvas positions, so anything that moves a
+// building (placement or mirroring) shows up as a snapshot diff.
 import { describe, it, expect } from "vitest";
 import { makeBuildings } from "./buildings";
 import { baseTheme } from "./presets/theme.js";
@@ -20,15 +10,13 @@ import { templateBounds, type Template } from "./building-coordinates";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
 
 const doc = browserSvgDocument();
-// The renderer builds against the minimal `SvgNode` contract; the browser
-// backend hands back real DOM nodes, which is what the assertions query.
+// The browser backend's `SvgNode`s are real DOM nodes.
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 const canvas = { width: 60, height: 44 };
 
-// A polygon whose geometry pokes past its declared 4x6 box (nubbin to x=5),
-// so the snapshot exercises a point outside the placement box under
-// rotation and mirroring.
+// Geometry pokes past its declared 4x6 box (nubbin to x=5), to cover a point
+// outside the placement box under rotation and mirroring.
 const nub: Template = {
   width: 4,
   height: 6,
@@ -63,12 +51,9 @@ function localPoints(name: string): { x: number; y: number }[] {
 }
 
 /**
- * Parse the renderer's `translate(a b) rotate(deg cx cy)` transform into a
- * function mapping a local point to its absolute canvas position. The match is
- * whole-string and the pivot is required: centre-pivot is the only convention
- * `placedTransform` emits, so a transform that drops the pivot — or that gains
- * a component this evaluator would silently ignore, such as a `scale(...)` —
- * is a regression, not a form to accommodate.
+ * Parses `translate(a b) rotate(deg cx cy)` into a local-to-canvas point map.
+ * Whole-string match with the pivot required, so a pivot-less rotate or an
+ * extra component (e.g. `scale`) throws rather than being silently ignored.
  */
 function evalTransform(transform: string): (p: { x: number; y: number }) => { x: number; y: number } {
   const m =
@@ -83,7 +68,6 @@ function evalTransform(transform: string): (p: { x: number; y: number }) => { x:
   const rad = (deg * Math.PI) / 180;
   const cos = Math.cos(rad), sin = Math.sin(rad);
   return (p) => {
-    // rotate about (cx,cy), then translate
     const dx = p.x - cx, dy = p.y - cy;
     const rxp = cx + dx * cos - dy * sin;
     const ryp = cy + dx * sin + dy * cos;

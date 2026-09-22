@@ -19,8 +19,6 @@ import { layoutPlacements } from "./layout-to-placements.mjs";
 
 const { missionLayouts, footprintOf, gwTemplates } = loadCorpus();
 
-// The ruins one layout emits, read back off the single classification pass that
-// decides which pieces are ruins (scripts/layout-to-placements.mjs).
 const ruinsOf = (L) =>
   layoutPlacements(L, gwTemplates).features.filter((f) =>
     f.type.startsWith("l-ruin"),
@@ -29,16 +27,11 @@ const ruinsOf = (L) =>
 const CANVAS = { width: 60, height: 44 };
 
 /**
- * The outer corner of a piece's resolved footprint, restated here rather than
- * read off the converter: three of the four bbox corners are ring vertices,
- * and the outer one is diagonally opposite the missing one.
- *
- * The rule is applied to the *unrotated* footprint and the answer carried
- * across as a vertex index, because a rotated piece's resolved bbox is not the
- * rotated local bbox — the same reason the converter's `lRefIndices` returns
- * indices. Taking the nearest resolved vertex to the drawn point instead would
- * let a fit that pinned the wrong corner pass, since every corner of the L is
- * a ring vertex.
+ * The outer corner of a piece's resolved footprint, derived independently of
+ * the converter (diagonal from the missing bbox corner). Found on the unrotated
+ * footprint and carried as a vertex index, since a rotated piece's bbox is not
+ * the rotated local bbox. Nearest-vertex matching would pass a fit that pinned
+ * the wrong corner.
  */
 const outerCornerOf = (entry) => {
   const footprint =
@@ -53,9 +46,7 @@ const outerCornerOf = (entry) => {
   return entry.layout.resolve(entry.piece)[at[(openIdx + 2) % 4]];
 };
 
-// Absolute outline of a placed l-ruin feature: the lRuin / lRuinMirror wall
-// path drawn through the placement seam, the way makeFeatures draws it. Used to
-// check the emitted placement reproduces resolvePiece's footprint.
+// Absolute outline of a placed l-ruin feature, drawn the way makeFeatures does.
 function featureFootprint(pl) {
   const { width: w, height: h } = pl;
   const wall = Math.min(0.5, w, h);
@@ -77,15 +68,12 @@ function featureFootprint(pl) {
         { x: w, y: h },
         { x: 0, y: h },
       ];
-  // Every emitted ruin placement is mirror:false, so the primary is the only
-  // `Placed`.
+  // mirror:false, so the primary is the only `Placed`.
   const [placed] = resolveFeature(pl, CANVAS);
   return placedRing(local, placed);
 }
 
-// One representative L-ruin piece per corner template, drawn from the source.
-// The piece rides along with its layout, which carries the lookups needed to
-// resolve it.
+// One representative L-ruin piece (with its layout) per corner template.
 const sample = {};
 for (const L of missionLayouts) {
   for (const p of L.pieces) {
@@ -135,10 +123,8 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
   for (const [template, entry] of Object.entries(sample)) {
     it(`lands the ${template} outer corner on the resolved one`, () => {
-      // What the fit actually promises: the variant's own outer corner ends up
-      // on the piece's. Asserting it through the placement seam — resolve the
-      // emitted placement, draw the local corner through it — checks the pivot
-      // convention rather than a constant measured once and pinned.
+      // Drawn through the placement transform, so this checks the pivot
+      // convention rather than a pinned constant.
       const placement = placementOf(entry);
       const { width: w, height: h } = placement;
       const localOuter =
@@ -153,8 +139,8 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
 });
 
-// The roofing guard below is the only tripwire for a catwalk seated on a ruin,
-// so its geometry gets its own test rather than being trusted by inspection.
+// The corpus roofing check below is the only tripwire for a catwalk seated on a
+// ruin, so its geometry primitives get their own test.
 describe("roofing guard geometry", () => {
   // Outer corner at the origin: a 5x0.5in horizontal arm and a 0.5x4.5in
   // vertical one, the shape of a resolved l-ruin.
@@ -168,9 +154,8 @@ describe("roofing guard geometry", () => {
   ];
 
   it("sees a catwalk laid across a ruin arm", () => {
-    // Nothing here is caught by vertex containment - the catwalk spans the
-    // 0.5in-wide arm, so neither ring holds a vertex of the other - and every
-    // endpoint-to-segment distance is 0.5. Only the edge crossing gives it away.
+    // Neither ring holds a vertex of the other and every endpoint-to-segment
+    // distance is 0.5; only the edge crossing gives it away.
     const across = [
       { x: -3, y: 2 },
       { x: 4, y: 2 },
@@ -219,28 +204,15 @@ describe("ruins over the corpus", () => {
   });
 
   it("emits no -roof variant, because no catwalk rests on a ruin", () => {
-    // The corpus has no catwalk-on-ruin relation to read, in the data or in the
-    // geometry, so the converter emits plain l-ruin everywhere.
-    //
-    // Upstream ships `pipes` as its own standalone composite - composite-03 and
-    // composite-30, each with the pipes part as its only child - so a catwalk is
-    // never a sibling of a ruin part, and the assertions below re-derive that
-    // from the shipped geometry every run.
-    //
-    // Catwalk-to-nearest-ruin polygon gaps over all 90, sorted:
+    // Upstream ships `pipes` (the catwalk part) as its own standalone composite
+    // (composite-03, composite-30), never as a sibling of a ruin part.
+    // Catwalk-to-nearest-ruin gaps over all 90, sorted:
     //
     //   0.002 x2  0.005 x4 | 0.435 x2  0.461 x2  0.498 x12  0.502 x10 .. 6.98
     //
-    // Nothing at zero, no second ring within reach of any catwalk, and the six
-    // that come closest to touching are *not* the ones a centroid threshold
-    // picks: they sit 3.996-5.037in centre-to-centre, past every catwalk in the
-    // 0.5in-gap population. That is what retired `ROOF_DISTANCE = 3.21`, which
-    // roofed 20 of the 0.5in ones and skipped all six of these. The guard here
-    // is deliberately about contact, not about a count: if a future pull ever
-    // does seat a catwalk on a ruin, these fail and the -roof variant is worth
-    // reviving. `ringsOverlap` / `ringGap` both run a real segment-crossing
-    // test, so a catwalk laid across a ruin arm trips them even though neither
-    // ring would then hold a vertex of the other - see the geometry test above.
+    // The closest six sit 3.996-5.037in centre-to-centre, so a centroid
+    // threshold picks the wrong ones; the check is about contact. If a future
+    // pull seats a catwalk on a ruin, this fails and a roof variant is needed.
     const missions = missionLayouts;
     const catwalks = missions
       .flatMap((l) => l.pieces)
@@ -281,9 +253,6 @@ describe("ruins over the corpus", () => {
   });
 
   it("emits 16 whole-L ruins for every mission layout", () => {
-    // Upstream filled the two variants that used to be short (12 each), so the
-    // corpus is now uniform - this is what retired the hand-authored patch
-    // overlay that used to fill the gap.
     for (const L of missionLayouts) {
       expect(ruinsOf(L).length, L.id).toBe(16);
     }

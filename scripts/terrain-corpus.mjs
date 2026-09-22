@@ -1,15 +1,5 @@
-// The one place that loads, normalizes and resolves the vendored 40kdc corpus.
-//
-// Before this module every converter and test rebuilt the same bootstrap by
-// hand - read the two JSON files, index templates by id, run normalizeLayout,
-// index footprints by id, and build a per-layout id->piece map - and then
-// threaded `lookupFootprint` and `getParent` through every call. All of that
-// lives here now: `loadCorpus()` returns the layouts already carrying the
-// lookups they need, so a converter takes one argument.
-//
-// A layout handed back by this module is the normalized layout object with
-// four members added, so `layout.id` / `.pieces` / `.mission_matchup_id` and
-// the rest of the upstream shape read exactly as before.
+// Loads and normalizes the vendored 40kdc corpus. Each layout returned is the
+// upstream layout object plus the lookups added by `withLookups`.
 
 import { readFileSync } from "node:fs";
 import * as yaml from "js-yaml";
@@ -25,15 +15,8 @@ const templatesPath = new URL(
 const readJson = (name) =>
   JSON.parse(readFileSync(new URL(name, srcDir), "utf8"));
 
-/**
- * `pieces` -> its id index, built once per array.
- *
- * Keyed on the array itself, so a derived layout with its own list gets its own
- * index and the original keeps hers. The cache is never invalidated, which is
- * sound only because a piece list is treated as immutable here: derive a new
- * list (`withPieces`) rather than pushing to or splicing an existing one, or
- * `parentOf` will keep answering from the list as it was when first read.
- */
+// `pieces` -> id index, memoized per array and never invalidated: treat piece
+// lists as immutable (derive with `withPieces`).
 const indexes = new WeakMap();
 const indexOf = (pieces) => {
   let byId = indexes.get(pieces);
@@ -42,27 +25,12 @@ const indexOf = (pieces) => {
 };
 
 /**
- * Attach the corpus lookups to a layout. Works on a raw upstream layout as
- * well as a normalized one - `battlemaster-registration.test.mjs` resolves
- * pieces under both frames to compare them.
+ * Attach the corpus lookups to a layout (raw or normalized).
  *
- * `parentOf` and `resolve` are **methods**: they read the piece list off
- * `this` on each call rather than closing over the one they were built from.
- * That is what makes a derived layout correct by construction - `withPieces`
- * below, and even a plain `{ ...layout, pieces }`, resolve against *their* own
- * pieces. The lookups used to be non-enumerable closures, so a spread produced
- * a layout that could not resolve at all; every consumer then had to remember
- * to re-wrap, and the one that did not remember got a runtime guard.
- *
- * The flip side of a method is that it needs its receiver: call
- * `layout.resolve(piece)`, not `const r = layout.resolve; r(piece)`.
- *
- * Treat a piece list as immutable: `parentOf`'s id index is memoized per array
- * and never invalidated, so mutating one in place leaves it answering from the
- * list as it was *when first read* - not as it was when wrapped, since the
- * index is built lazily on the first `parentOf` call. Which of your mutations
- * landed therefore depends on when something first happened to read the list.
- * Narrow or rewrite with `withPieces`, which gets its own index.
+ * `parentOf` and `resolve` are methods reading `this.pieces`, so a spread
+ * `{ ...layout, pieces }` resolves against its own pieces; they need their
+ * receiver (`layout.resolve(piece)`, not a detached reference). Do not mutate a
+ * piece list in place: the id index is memoized per array.
  *
  * @param {object} layout - a 40kdc layout ({ id, pieces }).
  * @param {(id: string) => object | undefined} footprintOf
@@ -73,7 +41,6 @@ export function withLookups(layout, footprintOf) {
   return {
     ...layout,
     footprintOf,
-    /** One of this layout's own pieces, by id. */
     parentOf(id) {
       return indexOf(this.pieces).get(id);
     },
@@ -81,11 +48,7 @@ export function withLookups(layout, footprintOf) {
     resolve(piece) {
       return resolvePiece(piece, this.footprintOf, (id) => this.parentOf(id));
     },
-    /**
-     * This layout with a different piece list - the supported way to narrow or
-     * rewrite one. The result carries the lookups, and they answer against the
-     * new list.
-     */
+    /** This layout with a different piece list; lookups answer against it. */
     withPieces(pieces) {
       return { ...this, pieces };
     },
@@ -93,16 +56,9 @@ export function withLookups(layout, footprintOf) {
 }
 
 /**
- * Load the vendored 40kdc corpus, normalized and ready to resolve.
- *
- * Only the mission layouts are normalized; the fan layouts are never touched
- * (see below).
- *
- * `templatesById` and `footprintOf` are the vendored template table and its
- * footprint lookup. Production reads them only through the layouts, which
- * already carry the lookup; they are on the return because this is the one
- * place that loads the corpus, and the registration suite checks the port
- * against upstream's own templates.
+ * Load the vendored 40kdc corpus. Only mission layouts are normalized;
+ * `rawLayouts` is everything, un-normalized. `templatesById` and `footprintOf`
+ * are exposed for the registration suite.
  *
  * @returns {{
  *   missionLayouts: object[],
@@ -120,32 +76,23 @@ export function loadCorpus() {
   const footprintById = new Map(templates.map((t) => [t.id, t.footprint]));
   const footprintOf = (id) => footprintById.get(id);
 
-  // Upstream's battlemaster-11e re-source moved the ruins, pipes and generators
-  // out of the layout and onto composite *templates*. Rewrite them back into
-  // the legacy piece vocabulary every converter downstream consumes - see
-  // scripts/battlemaster-normalize.mjs.
+  // Rewrites upstream composite templates into the piece vocabulary the
+  // converters consume (see battlemaster-normalize.mjs).
   const normalize = (l) =>
     withLookups(normalizeLayout(l, templatesById), footprintOf);
   const rawLayouts = rawLayoutData.map((l) => withLookups(l, footprintOf));
 
-  // Only the mission set is normalized. Fan-format layouts carry no
-  // mission_matchup_id and bring their own templates, and normalizeLayout
-  // throws on an unmapped part - so normalizing the whole corpus would abort
-  // the conversion on the very layouts the converter's skip exists to pass
-  // over.
+  // Fan-format layouts (no mission_matchup_id) would make normalizeLayout throw
+  // on their unmapped parts.
   const missionLayouts = rawLayoutData
     .filter((l) => l.mission_matchup_id)
     .map(normalize);
 
-  // Building templates, read only to size `area` placements. Not part of the
-  // 40kdc source - these are the hand-authored gw templates the placements
-  // reference by name.
+  // The hand-authored gw building templates, read to size placements.
   const gwTemplates =
     yaml.load(readFileSync(templatesPath, "utf8")).templates ?? {};
 
   return {
-    // Layouts outside GW's mission system carry no mission_matchup_id; see the
-    // skip note in scripts/convert-40kdc-terrain.mjs.
     missionLayouts,
     rawLayouts,
     templatesById,

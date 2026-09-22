@@ -1,15 +1,11 @@
 // Rewrites `./foo.ts` specifiers to `./foo.js` in the emitted declaration files.
 //
 // `rewriteRelativeImportExtensions` (see tsconfig.json) fixes the `.js` output
-// but not the `.d.ts` output, so a module that spells its imports with a `.ts`
-// extension — the ones the plain-node converters load — ships declarations
-// pointing at files that do not exist in `lib/`. tsc itself resolves them
-// anyway by falling back to the sibling `.d.ts`, which is why this went
-// unnoticed; other declaration consumers (dts bundlers, api-extractor,
-// publint/attw) see a dangling path.
+// but not `.d.ts`. tsc tolerates the dangling `.ts` paths by falling back to
+// the sibling `.d.ts`; dts bundlers, api-extractor and publint/attw do not.
 //
-// Run after `tsc -p tsconfig.build.json`. Idempotent, and fails loudly if any
-// `.ts` specifier survives.
+// Run after `tsc -p tsconfig.build.json`. Idempotent; fails if any `.ts`
+// specifier survives.
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
@@ -17,7 +13,6 @@ import { fileURLToPath } from "node:url";
 
 const libDir = fileURLToPath(new URL("../lib/", import.meta.url));
 
-/** Every `.d.ts` under `dir`, recursively. */
 function declarations(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const path = join(dir, entry.name);
@@ -29,12 +24,9 @@ function declarations(dir) {
 // A relative specifier in a `from "…"` clause or a dynamic `import("…")`.
 const SPECIFIER = /((?:from|import)\s*\(?\s*)(["'])(\.[^"']*)\.ts\2/g;
 
-// The check, and deliberately not `SPECIFIER`: re-testing with the regex that
-// just did the replacing can only ever confirm that `replace` replaced what it
-// matched, so it would pass on exactly the case it exists to catch — a clause
-// shape the rewrite does not know about. Any relative `.ts` string left in a
-// declaration is a path that does not exist in `lib/`, whatever holds it.
-// Not global, so there is no `lastIndex` to carry between files.
+// Broader than SPECIFIER on purpose: re-testing with the rewrite's own regex
+// would miss a clause shape the rewrite does not know. Not global, so no
+// `lastIndex` carries between files.
 const ANY_TS_SPECIFIER = /(["'])\.[^"']*\.ts\1/;
 
 let rewritten = 0;

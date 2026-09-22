@@ -296,9 +296,6 @@ describe("placeBuildings", () => {
 });
 
 describe("placedTransform (centre-pivot draw string)", () => {
-  // The single owner of the centre-pivot convention every Placed renderer
-  // (buildings, features) draws with: translate to the box top-left, then
-  // rotate about the box centre (width/2, height/2).
   it("translates to the box top-left and rotates about the box centre", () => {
     const placed: Placed = {
       name: "x",
@@ -348,9 +345,6 @@ describe("placedFromPin (the last step of every converter fit)", () => {
   const size = { width: 6, height: 4 };
 
   it("is the inverse of placedRing for the pinned point", () => {
-    // This is the property that lets a converter be checked at all: it fits a
-    // placement so a known local point lands on a known absolute one, and the
-    // check draws that local point back through the placement.
     const pin = { x: 0, y: 4 }; // an L-ruin's outer corner
     const at = { x: 21.5, y: 13.25 };
     for (const rotation of [0, 37, 90, 180, 271, -45]) {
@@ -362,8 +356,7 @@ describe("placedFromPin (the last step of every converter fit)", () => {
   });
 
   it("pinning the centre puts the box top-left at centre minus half the size", () => {
-    // The degenerate case rect-to-feature.mjs uses: the rotation term drops
-    // out, because the centre is the pivot.
+    // The rotation term drops out because the centre is the pivot.
     const centre = { x: size.width / 2, y: size.height / 2 };
     const placed = placedFromPin("generator", size, 47, centre, { x: 30, y: 22 });
     expect(placed.box.x).toBeCloseTo(27, 12);

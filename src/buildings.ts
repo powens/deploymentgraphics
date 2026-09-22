@@ -10,19 +10,14 @@ import { placeBuildings, placedTransform } from "./placement.js";
 import type { Theme } from "./theme.js";
 import type { SVGProperties } from "./types.js";
 
-// A building's SVG props: the shared group props as a base, then the template's
-// own entry (or `default`). The template defs and the `<use>` placements read
-// the same rule, so a pipe def and its uses cannot come out styled differently.
+// Group props, overridden by the template's own entry (or `default`). Used for
+// both the defs and the `<use>`s so they cannot diverge.
 const styleFor = (theme: Theme, name: string): SVGProperties => ({
   ...theme.building.group,
   ...(theme.building.template[name] ?? theme.building.template.default),
 });
 
-/**
- * Appends one shape definition per template into `defs`: a `<polygon>` for a
- * polygon, a `<rect>` for a rectangle. Each carries the id `template-<name>` so a building `<use>`
- * can reference it.
- */
+/** Appends a `<polygon>` or `<rect>` per template to `defs`, id `template-<name>`. */
 export function injectTemplateDefs(
   doc: SvgDocument,
   templates: Record<string, Template>,

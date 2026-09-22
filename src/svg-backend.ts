@@ -1,33 +1,24 @@
 /**
- * The tiny slice of the DOM the renderer actually needs, plus a dependency-free
- * implementation of it.
- *
- * Building the card touches exactly four operations — create an element by tag
- * name, `setAttribute`, `appendChild`, and `textContent` — so server-side
- * rendering does not need a real DOM, only a substitute element type. The
- * renderer takes an `SvgDocument` and never reaches for a `document` global:
- * `browserSvgDocument()` backs it with real SVG nodes, `virtualSvgDocument()`
- * with plain objects that `serializeSvg` turns into a string.
+ * The slice of the DOM the renderer needs (create element, `setAttribute`,
+ * `appendChild`, `textContent`), so it can render without a real DOM.
+ * `browserSvgDocument()` backs it with SVG nodes; `virtualSvgDocument()` with
+ * plain objects that `serializeSvg` turns into a string.
  */
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-/** The element contract the renderer builds against. */
 export interface SvgNode {
   setAttribute(name: string, value: string): void;
   appendChild(child: SvgNode): void;
   textContent: string | null;
 }
 
-/** Element factory threaded through every renderer helper. */
 export interface SvgDocument {
   createElement(tagName: string): SvgNode;
 }
 
-/** A real SVG DOM element, usable wherever the renderer wants an `SvgNode`. */
 type BrowserSvgNode = SVGElement & SvgNode;
 
-/** The browser backend, narrowed to the DOM nodes it actually hands back. */
 export interface BrowserSvgDocument extends SvgDocument {
   createElement(tagName: string): BrowserSvgNode;
 }
@@ -41,12 +32,8 @@ export function browserSvgDocument(): BrowserSvgDocument {
 }
 
 /**
- * An SVG element held as data: a tag, its attributes, and its children.
- *
- * Children are elements and text runs both, mirroring the DOM's mixed content
- * rather than forcing an element to be either textual or nested — otherwise
- * `textContent` followed by `appendChild` would drop one of the two here while
- * the browser backend kept both.
+ * An SVG element held as data. Children mix elements and text runs, as in the
+ * DOM, so `textContent` followed by `appendChild` keeps both.
  */
 export class VirtualSvgElement implements SvgNode {
   readonly attributes = new Map<string, string>();
@@ -60,9 +47,7 @@ export class VirtualSvgElement implements SvgNode {
 
   appendChild(child: SvgNode): void {
     if (!(child instanceof VirtualSvgElement)) {
-      // Most likely a node from `browserSvgDocument()`. Rejecting it here
-      // points at the mismatched append rather than failing later, deep inside
-      // `serializeSvg`, on a node it cannot walk.
+      // Probably a browser node; fail here rather than later in `serializeSvg`.
       throw new TypeError("appendChild expects a virtual SVG element");
     }
     this.children.push(child);
@@ -87,9 +72,7 @@ export function virtualSvgDocument(): SvgDocument {
   return { createElement: (tagName) => new VirtualSvgElement(tagName) };
 }
 
-// `>` is only strictly forbidden as part of the `]]>` sequence, but escaping
-// it everywhere costs nothing and keeps text like `a ]]> b` well formed;
-// quotes only matter inside the double-quoted attribute syntax.
+// `>` only needs escaping in `]]>`, but escaping it everywhere is simpler.
 function escapeAttribute(value: string): string {
   return escapeText(value).replaceAll('"', "&quot;");
 }
@@ -123,14 +106,12 @@ function serializeNode(
 }
 
 /**
- * Renders a virtual tree to SVG markup. A standalone `.svg` is parsed as XML,
- * so a root `<svg>` is stamped with `xmlns` — without it every element lands in
- * the null namespace and nothing draws.
+ * Renders a virtual tree to SVG markup. A root `<svg>` gets `xmlns`, without
+ * which a standalone `.svg` draws nothing.
  */
 export function serializeSvg(root: SvgNode): string {
   if (!(root instanceof VirtualSvgElement)) {
-    // Most likely a DOM node from `browserSvgDocument()`: those serialize with
-    // `outerHTML`, not here.
+    // Browser nodes serialize with `outerHTML`.
     throw new Error("serializeSvg expects a virtual SVG tree");
   }
   const node = root;

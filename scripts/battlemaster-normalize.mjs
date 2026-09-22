@@ -16,123 +16,72 @@ import {
   toDegrees,
 } from "../src/geometry.ts";
 
-// Translates upstream 40kdc "battlemaster-11e" composite layouts back into the
-// legacy piece vocabulary the rest of this pipeline was built for.
+// Translates upstream 40kdc "battlemaster-11e" composite layouts into the
+// legacy piece vocabulary the rest of this pipeline consumes. Upstream lists
+// one composite `area` piece whose parts live in `features[]` on its template;
+// this emits the area retemplated onto one of the five legacy archetypes, plus
+// one parented `feature` child per part drawn with a legacy part template.
 //
-// Upstream re-sourced the 11e Chapter Approved terrain from Battlemaster's TTS
-// Map API. Where a layout used to list an `area` piece plus a handful of
-// `feature` children (corner ruins, pipes, generators), it now lists only the
-// area, and the children live in a `features[]` array on the *template*. The
-// whole migration is a vocabulary rewrite: emit the same pieces the old data
-// would have carried, and nothing downstream changes.
+// The corrections, by the letters used throughout this file:
 //
-// A later re-source under the same `battlemaster-11e` name renamed every id
-// (composites and parts both, each now carrying a content hash), renamed the
-// five size classes from initialisms to words, replaced the `mirror` flag a
-// layout piece used to carry with separate mirrored composite templates,
-// re-traced every composite footprint at 167-348 vertices where it used to ship
-// a copy of one of the five legacy archetypes, and split each part's `footprint`
-// into a roof plus a set of `walls`. What did *not* change is the pipeline
-// downstream of this module: the emitted corpus still uses the same five
-// archetypes and the same legacy part templates, in the same counts.
+//   V - a composite's footprint is a rigid transform of its class's archetype,
+//       not a copy. `gMap`'s trapezoid branch in area-to-building.mjs is
+//       hard-coded to `area-trapezoid`'s orientation, so V is folded into the
+//       area's own transform rather than carried as an inline footprint (which
+//       mis-places it by ~6in), and folded back out of every child.
 //
-// Several subtleties make this more than a lookup table:
+//   K - a Battlemaster part is a physical model, so its handedness is fixed
+//       however its parent is oriented. The legacy `corner-*` polygons are
+//       chiral and `featureFromRefs` reads chirality from the *resolved* arms,
+//       which a mirrored parent flips. K cancels the parent's parity and applies
+//       a per-part flip bit. It is the composition of those two reflections,
+//       not one reflection of the same parity: they differ by a half-turn (see
+//       the K comment in normalizeLayout).
 //
-//   V - a composite's footprint is a rigid transform of its class's, rather than
-//       a copy of it. `gMap`'s trapezoid branch in area-to-building.mjs is
-//       hard-coded to `area-trapezoid`'s orientation, so the variant has to be
-//       folded into the piece's own transform instead of carried as an inline
-//       footprint (which mis-places it by ~6in). It is folded back out of every
-//       child, so a child's placement does not depend on V at all.
+//   Q - seven of the thirteen mapped parts are drawn a quarter- or half-turn
+//       apart in the legacy template and upstream. `rotation_degrees` is copied
+//       verbatim, so without Q those seven render turned.
 //
-//   K - a Battlemaster part is a physical model, so its handedness is fixed no
-//       matter how its parent composite is oriented. The legacy `corner-*`
-//       polygons are chiral and `featureFromRefs` reads chirality from the
-//       *resolved* arms, which a parent's `mirror: horizontal` flips. K cancels
-//       the parent's parity and applies a per-part flip bit so each part always
-//       renders as the same l-ruin variant. It is the composition of those two
-//       reflections, not a single one chosen to match their parity: the two
-//       agree on handedness but differ by a half-turn, so collapsing them turns
-//       the part (see the comment at the K in normalizeLayout).
+//   W - a part's model extent, read by `partExtent`. "Upstream's rectangle" in
+//       F, Z and S means this.
 //
-//   Q - the legacy template and the upstream part are two drawings of the same
-//       physical model, but not always in the same orientation: seven of the
-//       thirteen mapped parts are drawn a quarter- or half-turn apart.
-//       `rotation_degrees` is copied from upstream verbatim, so without Q those
-//       seven render turned.
-//
-//   W - a part's model extent. The re-source briefly stopped shipping it
-//       directly - `footprint` became the roofed area, the rest of the model
-//       lived only in `walls` - and upstream restored it in 40kdc-data 39661875,
-//       moving the roof to `upper_floor`. F, Z and S below all mean the extent
-//       wherever they say "upstream's rectangle", and `partExtent` is what
-//       reads it, robust to either schema. See that function for why it is the
-//       union of the two and not either alone, and for the anchor half of the
-//       same change.
-//
-//   F - substituting the legacy footprint is only sound where that polygon says
-//       something upstream's does not. Upstream's own drawing of a part is a
-//       plain rectangle (W), so for the chiral `corner-*` parts the legacy
-//       polygon is
-//       carrying the whole L shape and must win. But where the legacy footprint
-//       is *itself* a plain rectangle it adds no shape at all, only a size -
-//       and the sizes disagree, by up to (1.5, 2)in. There the substitution can
-//       only ever be a worse-measured version of upstream's own rectangle, so
-//       those parts (`generator`, `tower`) carry upstream's footprint inline
-//       and keep the legacy template id purely for the feature type and colour
+//   F - substitute the legacy footprint only where it says something upstream's
+//       plain rectangle does not. For the chiral `corner-*` parts it carries the
+//       L shape and wins. Where the legacy footprint is itself a rectangle it
+//       adds only a size, and one that disagrees by up to (1.5, 2)in, so those
+//       parts (`generator`, `tower`) carry upstream's footprint inline and keep
+//       the legacy template id only for the feature type and colour
 //       rect-to-feature.mjs reads off it. See PART_TO_TEMPLATE for the two
-//       rectangle parts this rule does *not* reach.
+//       rectangle parts this rule does not reach.
 //
-//   Z - F keeps the legacy polygon's *shape* for the `corner-*` parts, but its
-//       size was never upstream's either: those polygons are drawn up to 1.25in
-//       out (see the delta table below). Only the bounding box survives into the
-//       render - ruin-to-feature.mjs reads the outer corner and the two arm ends
-//       and nothing else, and lRuin draws its walls a fixed 0.5in thick - so the
-//       L shape and the size are separable, and there is no reason to take the
-//       size from the worse source. Z rescales each legacy polygon so that, once
-//       Q has turned it into the part's frame, its bbox *is* upstream's
-//       rectangle. That buys containment by construction rather than by
-//       measurement: upstream's parts sit inside their composite to within
-//       0.003in, S already pins our bbox centre on upstream's rectangle centre,
-//       so a bbox equal to that rectangle cannot leave the parent. Without Z the
-//       oversize `ab` and `corner` hung 0.13in and 0.11in outside the trapezoid
-//       composite, which has no slack at its slanted edge to absorb them.
+//   Z - the legacy `corner-*` polygons are up to 1.25in oversize. Only their
+//       bbox reaches the render (ruin-to-feature.mjs reads the outer corner and
+//       arm ends; lRuin draws fixed 0.5in walls), so shape and size separate:
+//       Z rescales each polygon so that, once Q has turned it into the part's
+//       frame, its bbox is upstream's rectangle. With S centring it there, the
+//       part stays inside its composite by construction (upstream's parts fit
+//       theirs to 0.003in); unscaled, `ab` and `corner` overhang the trapezoid
+//       by ~0.1in.
 //
-//   S - upstream anchors `position` at the centre of the part's own footprint,
-//       which for a rectangle is both its bbox centre and its area centroid.
-//       resolvePiece anchors at the area centroid, and the legacy `corner-*`
-//       polygons are L-shaped, so their centroid sits up to (1, 1)in inside
-//       their bbox centre. S re-anchors the substituted polygon by that offset,
-//       otherwise every L-shaped part lands ~1in off upstream's placement.
-//       While that footprint was the *roof*, the point S has to land on was
-//       `partAnchorShift` away from `position` rather than on it; that shift is
-//       zero again now that `footprint` is the extent.
+//   S - upstream's `position` is the bbox centre of the part; resolvePiece
+//       anchors at the area centroid. For the L-shaped `corner-*` polygons those
+//       differ by up to (1, 1)in, so S re-anchors by the offset.
 //
-// Q, S, V and the flip bits are all measured against the pre-pull corpus (the
-// legacy-vocabulary layouts this repo shipped at f1d98fb, immediately before
-// c1bb2b4 adopted the battlemaster source). Both corpora draw the same physical
-// terrain, so for each part the rigid map taking our emitted piece onto the
-// pre-pull piece is a direct read-out of the correction. See
-// battlemaster-registration.test.mjs for what is pinned and how.
-//
-// W is the one correction *not* measured that way, and does not need to be: it
-// is derived from the shipped data and checked against the pre-pull rectangles,
-// which it reproduces exactly. That is what let the rest of this calibration
-// survive the re-source untouched.
+// Q, S, V and the flip bits were measured against the pre-pull corpus (the
+// legacy-vocabulary layouts at f1d98fb, before c1bb2b4 adopted the battlemaster
+// source): both draw the same terrain, so the rigid map taking each emitted
+// piece onto its pre-pull counterpart reads off the correction. That corpus
+// can no longer be regenerated, so battlemaster-registration.test.mjs pins the
+// results. W alone is derived from the shipped data.
 
 /**
- * Legacy area template for each Battlemaster size class.
+ * Legacy area archetype for each Battlemaster size class. Every composite's
+ * footprint matches its archetype's bounding box to within 0.06in.
  *
- * Upstream renamed the classes from initialisms (`BR`/`SR`/`SL`/`LL`/`TR`) to
- * words in the battlemaster-11e re-source; the mapping onto the five legacy
- * archetypes is unchanged, and each class's composite footprints still match
- * their archetype's bounding box to within 0.06in.
- *
- * `LongLineTower` is upstream's own inconsistency, not a sixth class: one
- * composite (`bm-composite-longlinetower-flip-...`) drops the separator its two
- * siblings keep (`bm-composite-longline-tower-...`), in both its id and its
- * name. Its footprint is a rigid variant of the other LongLine ones, so it maps
- * onto the same archetype.
+ * `LongLineTower` is not a sixth class: one composite
+ * (`bm-composite-longlinetower-flip-...`) drops the separator its siblings keep
+ * (`bm-composite-longline-tower-...`) in both id and name. Its footprint is a
+ * rigid variant of the other LongLine ones.
  */
 export const SIZE_CLASS = {
   BigRect: "area-large",
@@ -145,25 +94,23 @@ export const SIZE_CLASS = {
 
 // Legacy template for each Battlemaster part, plus:
 //
-//   `flip` - whether the part's true handedness is the opposite of the legacy
-//            polygon's own (see K above).
-//   `turn` - the quarter-turn taking the legacy polygon's drawing orientation
-//            onto the upstream part's (see Q above). Degrees, always a multiple
-//            of 90. Necessarily 0 for an `upstreamFootprint` part, which is
-//            already drawn in the upstream part's own frame.
+//   `flip` - the part's true handedness is the opposite of the legacy
+//            polygon's (K).
+//   `turn` - degrees, a multiple of 90, taking the legacy polygon's drawing
+//            orientation onto the upstream part's (Q). Always 0 for an
+//            `upstreamFootprint` part, which is already in the part's frame.
 //   `upstreamFootprint`
-//          - carry the upstream part's own footprint on the emitted child
-//            rather than substituting the legacy polygon (see F above).
+//          - emit the upstream part's own footprint instead of the legacy
+//            polygon (F).
 //   `upstreamSize`
-//          - keep the legacy polygon's shape but rescale it onto the upstream
-//            part's rectangle (see Z above). Mutually exclusive with
-//            `upstreamFootprint`; both emit an inline footprint.
+//          - keep the legacy shape, rescaled onto upstream's rectangle (Z).
+//            Mutually exclusive with `upstreamFootprint`.
+//   `drop` - emit no child for this part.
 //
-// Both are measured against the pre-pull corpus: emit each child, match it to
-// the nearest pre-pull piece of the mapped template, and read off the rigid map
-// between the two. Sweeping each part over all four turns and both flip bits
-// picks a unique optimum per part, by a wide margin over the runners-up
-// (worst-case ring mismatch vs the pre-pull piece, mean over matched instances):
+// `turn` and `flip` were measured by matching each emitted child to the
+// nearest pre-pull piece of its template and sweeping all four turns and both
+// flip bits. Each part has a unique optimum by a wide margin (worst-case ring
+// mismatch in inches, mean over matched instances):
 //
 //   part          turn 0   turn 90   turn 180   turn 270   -> registered
 //   ab             3.98      4.25      1.20       3.80        180
@@ -174,28 +121,16 @@ export const SIZE_CLASS = {
 //   small-l        1.72      2.11      0.24       2.07        180
 //   small-l-flip   1.52      2.10      0.50       2.02        180
 //
-// `cd` is absent from that table because it needs no sweep of its own: it is
-// byte-identical to `co` upstream (see its entry below) and takes `co`'s row.
+// `cd` takes `co`'s row (see its entry). The rectangle and near-symmetric
+// parts cannot tell 0 from 180 and are decisively worse at 90/270, so they
+// take 0.
 //
-// The four parts absent for the original reason (tower, long-barrier,
-// short-barrier, pipes) map onto rectangles or a near-symmetric barricade, where
-// 0 and 180 are indistinguishable and 90/270 are decisively worse; they take
-// turn 0.
+// Do not use bounding-box aspect ratio as the oracle instead: it is blind to a
+// half-turn, undefined for the square parts, and for `ab` prefers the wrong
+// answer (90).
 //
-// `generator` and `tower` are absent for a different reason: they take
-// upstream's own footprint, so they have no legacy drawing to re-orient and
-// their turn is 0 by construction. (Sweeping `generator` against the pre-pull
-// corpus while it still used the legacy polygon read 0.20in at 90/270 against
-// 0.88in at 0/180 - the pre-pull generator is landscape, as upstream's 4.5x2 is
-// - but 0.20in was the floor, because a 4x3 stand-in cannot sit on a 4.5x2
-// model exactly.)
-//
-// Legacy bbox (under its turn) against the upstream part's rectangle (W), which
-// is what F above is reading. Thirteen rows: the eight parts whose roof is
-// centred on their extent plus the five big L-ruins. `cd` is omitted - it is
-// `co`'s row exactly - and `ab` is one row although upstream draws it twice,
-// because only the registered drawing is read (see PART_CANONICAL); the other
-// would read 4x4.5 here.
+// Legacy bbox (under its turn) against upstream's rectangle (W), which is what
+// F and Z act on. `ab` is read from its PART_CANONICAL drawing; `cd` is `co`.
 //
 //   part          legacy   upstream   delta
 //   ab            5x4.5    3.75x4.5   +1.25  0        L-shaped: legacy polygon
@@ -211,36 +146,18 @@ export const SIZE_CLASS = {
 //   long-barrier  5.5x1    4.5x0.5    +1    +0.5      rectangle, but see below
 //   pipes         7x2      6x1        +1    +1        rectangle, but see below
 //
-// The deltas are not a consistent margin convention (they run from -1.5 to
-// +1.25 and change sign), so there is no rule here that would let a legacy size
-// stand in for an upstream one; where upstream has a usable rectangle, it wins.
-// `short-barrier` is the one part whose polygon is neither a rectangle nor a
-// bbox-only consumer - feature-to-building.mjs matches its 8-vertex profile to
-// pick the `barricade` template - so Z cannot reach it either.
+// The deltas change sign, so no margin convention relates the two sizes; where
+// upstream has a usable rectangle, it wins. `short-barrier` keeps its legacy
+// polygon because feature-to-building.mjs matches its 8-vertex profile to pick
+// the `barricade` template. Two rectangle parts keep theirs too:
 //
-// The two rectangle parts that keep their legacy footprint anyway:
-//
-//   long-barrier - maps onto the `pipe` *building* template, and a building is
-//     drawn at its templates-simple.yml size, not at its piece's: placement.ts
-//     throws if the pinned corner distance disagrees with the template edge by
-//     more than 0.1in, and feature-to-building.mjs pins on a 5.5in edge that a
-//     4.5x0.5 rectangle does not have. Adopting upstream's size here means
-//     redrawing the gw template, not setting a flag.
-//   pipes - maps onto `catwalk`, which layout-to-placements.mjs drops; all it
-//     uses is the resolved centroid, which is the piece's `position` either
-//     way. Measured: switching it changes 0 of 900 features and 0 of 270
-//     buildings, and leaves the roofed count at 20. Left alone as churn.
-//
-// A bounding-box aspect ratio is NOT a valid oracle here and must not be used as
-// one: it is blind to a half-turn (`ab`, `small-l`, `small-l-flip` all measure
-// 180 while their aspect is unchanged), it is undefined for the square parts
-// (`corner`, `tower`), and for `ab` it actively prefers the wrong answer (90).
-// The legacy polygons are drawn a little larger than the upstream rectangles, so
-// aspect never matches exactly even when the orientation is right.
-//
-// The same sweep confirms every flip bit independently, each by a wide margin,
-// including the `ab` / `ef` / `co` / `gh` bits that previously rested on a
-// visual spot-check alone.
+//   long-barrier - maps onto the `pipe` building template, drawn at its
+//     templates-simple.yml size: placement.ts throws if a pinned corner
+//     distance disagrees with the template edge by more than 0.1in, and
+//     feature-to-building.mjs pins on a 5.5in edge. Adopting upstream's size
+//     means redrawing the template, not setting a flag.
+//   pipes - maps onto `catwalk`, which layout-to-placements.mjs drops after
+//     reading only its centroid; switching it changes no emitted output.
 export const PART_TO_TEMPLATE = {
   ab: {
     template: "corner-ruin-balanced-left",
@@ -284,40 +201,23 @@ export const PART_TO_TEMPLATE = {
     turn: 180,
     upstreamSize: true,
   },
-  // `cd` is not a new model: its footprint, its walls, its thickness, its
-  // `has_roof` and its terrain category are all byte-identical to `co`'s, and
-  // the two ids together are used exactly as often as `co` alone was before the
-  // re-source (20 + 72 = 92). Upstream simply issues two ids ("Battlemaster CO"
-  // and "Battlemaster CD") for one piece of terrain. Identical input has to
-  // produce identical output, so it takes `co`'s registration outright rather
-  // than a sweep of its own - and a sweep could not have chosen anyway, since Z
-  // resizes every candidate legacy L onto the same 6x2.5 rectangle and all
-  // twelve template/turn/flip combinations tie to the last decimal.
+  // `cd` is `co` under a second upstream id: footprint, walls, thickness,
+  // `has_roof` and category are byte-identical. Identical input must give
+  // identical output, so it takes `co`'s registration; a sweep could not choose
+  // anyway, since Z resizes every candidate onto the same 6x2.5 rectangle.
   cd: {
     template: "corner-ruin-left",
     flip: false,
     turn: 90,
     upstreamSize: true,
   },
-  // The one part upstream ships that this pipeline deliberately drops, the way
-  // layout-to-placements.mjs drops `catwalk`.
-  //
-  // It is the only part with *no walls at all* - a plain 1x1 dense square, no
-  // `has_roof` - so it is not a ruin in the sense the rest of this table means,
-  // and partExtent has no extent to read for it. Two uses in the whole corpus,
-  // both in one composite (`bm-composite-bigrect-cd-gh-03-...`), and nothing
-  // stands where they land in the pre-pull corpus (nearest ring 4.27in away,
-  // against 0.00in for a part that genuinely corresponds).
-  //
-  // What settles it is a corpus invariant this repo already pins: every mission
-  // layout carries exactly 16 whole-L ruins (ruin-to-feature.test.mjs). Emitting
-  // this fragment as the nearest legacy ruin - `corner-tiny`, drawn at
-  // upstream's own 1x1 - gives `bm-disrupt-vs-assets-02` eighteen, and no other
-  // layout. A wall-less 1x1 fragment is not a seventeenth ruin, and inventing
-  // one to carry it would put a lone layout out of step with the other 44. If a
-  // future pull grows this part a wall, or spreads it across the corpus the way
-  // a real piece of terrain would be, that is the point to give it a mapping
-  // rather than a drop.
+  // Dropped, as layout-to-placements.mjs drops `catwalk`. The only part with no
+  // walls (a plain 1x1 square, no roof), used twice in one composite
+  // (`bm-composite-bigrect-cd-gh-03-...`) with nothing at that spot in the
+  // pre-pull corpus. Emitting it as `corner-tiny` would give
+  // `bm-disrupt-vs-assets-02` 18 whole-L ruins against the 16 every mission
+  // layout carries (ruin-to-feature.test.mjs). Give it a mapping if upstream
+  // grows it a wall or uses it more widely.
   "ruin-part": { drop: true },
   tower: { template: "gantry", flip: false, turn: 0, upstreamFootprint: true },
   generator: {
@@ -341,13 +241,9 @@ const FEATURE_KEYS = new Set([
 ]);
 
 /**
- * Snap a rigid matrix to integers.
- *
- * `rotationMatrix` goes through Math.cos/sin, so a quarter-turn carries 1e-17
- * noise and a half-turn a signed zero. Every matrix here is one of the eight
- * rigid maps, whose entries are all -1, 0 or 1, and the noise survives into
- * `decompose`'s angle and into any deep-equal on a registered variant. The `+ 0`
- * canonicalizes IEEE-754 -0, which deep-equal distinguishes even though -0 === 0.
+ * Snap a rigid matrix to integers. `rotationMatrix` leaves 1e-17 noise on a
+ * quarter-turn, which would leak into `decompose`'s angle and into deep-equals
+ * on a variant; `+ 0` also canonicalizes -0, which deep-equal distinguishes.
  */
 const roundMatrix = (M) => M.map((row) => row.map((x) => Math.round(x) + 0));
 
@@ -360,32 +256,15 @@ const CANDIDATES = Object.fromEntries(
 );
 
 /**
- * Each size class's reference composite, and the orientation it is registered
- * at.
+ * Each size class's reference composite and the variant it is registered at.
+ * `fitVariant` registers every other composite relative to its class's
+ * reference; these six are pinned. V decides which way round the legacy
+ * archetype polygon is drawn when it stands in for the composite.
  *
- * This is the whole of the variant registration. Every other composite's
- * variant is fitted against its class's reference by `variantOf` below; these
- * six rows are the absolute half, and they are pinned rather than derived.
- *
- * A composite's footprint is a rigid transform of its class's archetype rather
- * than a copy of it. `gMap`'s trapezoid branch in area-to-building.mjs is
- * hard-coded to `area-trapezoid`'s orientation, so the variant has to be folded
- * into the piece's own transform instead of carried as an inline footprint
- * (which mis-places it by ~6in). It is folded back out of every child, so a
- * child's placement does not depend on V at all. What V controls is which way
- * round the legacy archetype polygon is drawn once it stands in for the
- * composite.
- *
- * Why the references cannot be fitted too: the obvious absolute oracle is the
- * legacy archetype polygon, and it disagrees. The battlemaster-11e re-source
- * replaced upstream's copies of the five archetypes with individually traced
- * 167-348 vertex outlines, so a composite footprint no longer equals its
- * archetype under any rigid map - it only resembles it. Fitting the archetype
- * to the outline is not a loose oracle that happens to tie, though, and it
- * should not be described as one: it discriminates sharply, and for four of the
- * six classes it discriminates sharply in favour of the *other* reflection.
- * Shape-distance of each class's reference outline against its archetype, over
- * the eight rigid maps:
+ * They cannot be fitted against the archetype polygon itself: upstream's
+ * 167-348 vertex traced outlines only resemble the archetypes, and that fit
+ * prefers the *other* reflection for four of the six classes, by a 4-7x
+ * margin (shape distance over the eight rigid maps):
  *
  *   class          best fit        registered      runner-up
  *   BigRect        R180.FX  0.114  R180     0.552  R0       0.411
@@ -395,23 +274,12 @@ const CANDIDATES = Object.fromEntries(
  *   SmallRect      R180.FX  0.071  R0       0.265  R0       0.265
  *   Triangle       R90.FX   0.706  R90.FX   0.706  R270.FX  2.537
  *
- * So the emitted area polygon is drawn at the reflection of upstream's own
- * re-traced outline for 42 of the 52 composites, by a 4-7x margin - not a tie
- * broken the other way. Containment cannot referee it (all four reflections of
- * an archetype hold the same children), and the fit above is not evidence the
- * port is mirrored: it is evidence the coarse legacy polygons and upstream's
- * traces disagree about chirality, and the pre-pull *rendering* is what this
- * repo has to keep. Recorded here in full because the numbers look like an
- * argument against the table until you have them, and the next maintainer
- * should not have to re-derive them to find that out.
- *
- * These six were therefore measured against the pre-pull corpus, the same
- * oracle PART_TO_TEMPLATE is calibrated against - pair each new area with the
- * pre-pull area of the same archetype nearest it (globally assigned within a
- * layout, not independently nearest), and V is read straight off the two
- * transforms as M_new^-1 . M_old. That corpus no longer exists to re-derive
- * them from, so they are a characterization: re-registering a class fails the
- * fit in `variantOf` instead of moving combined.yml in silence.
+ * That shows the coarse legacy polygons and upstream's traces disagree about
+ * chirality, not that the port is mirrored; the pre-pull rendering is what
+ * has to be kept, and containment cannot referee (all four reflections hold
+ * the same children). So these were measured against the pre-pull corpus:
+ * pair each new area with the nearest pre-pull area of the same archetype
+ * (assigned globally within a layout) and read V = M_new^-1 . M_old.
  */
 const CLASS_REFERENCE = {
   BigRect: ["bm-composite-bigrect-cd-ef-01-19f1adc57b", "R180"],
@@ -423,14 +291,10 @@ const CLASS_REFERENCE = {
 };
 
 /**
- * Shape distance between two rings: the Hausdorff distance from each ring's
- * vertices to the *other ring's outline*, rather than to its vertices.
- *
- * Vertex-to-vertex comparison is useless across the re-source seam: upstream
- * ships each composite as a 167-348 vertex traced outline, so a point halfway
- * along a long edge is inches from the nearest vertex of a coarser sampling of
- * the same shape. Comparing to the outline measures whether the two are the
- * same shape rather than how densely each was sampled.
+ * Symmetric Hausdorff distance from each ring's vertices to the other ring's
+ * *outline*. Vertex-to-vertex comparison fails against upstream's densely
+ * traced outlines, where a mid-edge vertex can be inches from the nearest
+ * vertex of a coarser ring of the same shape.
  */
 const shapeDistance = (a, b) => {
   const toOutline = (ring, other) =>
@@ -453,18 +317,12 @@ const centred = (ring) => {
 };
 
 /**
- * Fit one composite's footprint against its class's reference.
- *
- * The composites *of a class* are rigid transforms of each other even though
- * none of them is a rigid transform of its archetype: 52 composites share 13
- * distinct footprints, and within a class any two of them coincide to 0.0000in
- * under one of the eight CANDIDATES (against 0.21in or more for every other
- * map). So a composite's variant is the map taking its class's reference onto
- * it, composed onto the reference's pinned one.
- *
- * A composite whose footprint is a shape upstream has not shipped before fails
- * the fit and throws here, naming it, rather than silently taking the identity
- * and moving the emitted area ~6in.
+ * Fit one composite's footprint against its class's reference. Within a class
+ * the composites coincide to 0.0000in under one of the eight CANDIDATES (0.21in
+ * or worse under every other), so the variant is that map composed onto the
+ * reference's pinned one. A shape upstream has not shipped before throws here,
+ * naming the composite, rather than taking the identity and moving the area
+ * ~6in.
  */
 function fitVariant(composite, templatesById) {
   const cls = classOf(composite);
@@ -508,10 +366,8 @@ function fitVariant(composite, templatesById) {
       `composite ${composite.id} is not a rigid transform of the ${cls} reference ${refId} (best fit ${best.toFixed(4)}in)`,
     );
   }
-  // A footprint with a rigid self-symmetry fits under two or more candidates at
-  // once, and the winner would then be decided by `CANDIDATES` insertion order
-  // rather than by the data — silently fixing which way round the archetype is
-  // drawn. Every other undetermined case in this module throws; so does this.
+  // A self-symmetric footprint fits under several candidates, leaving the
+  // variant to CANDIDATES insertion order rather than the data.
   const [runnerUp, , runnerUpName] = fits[1];
   if (runnerUp < 1e-3) {
     throw new Error(
@@ -523,7 +379,7 @@ function fitVariant(composite, templatesById) {
   return roundMatrix(matmul(W, CANDIDATES[refName]));
 }
 
-/** Fitted once per composite; `normalizeLayout` runs 45 layouts over one table. */
+/** Fitted once per composite per template table. */
 const variantCache = new WeakMap();
 
 /**
@@ -544,38 +400,22 @@ function variantOf(composite, templatesById) {
 const COMPOSITE_PREFIX = "bm-composite-";
 const PART_PREFIX = "bm-part-";
 
-// Upstream now suffixes every template id with a content hash, so a part's id
-// no longer names it on its own: `bm-part-ab-68b696d07f` and
-// `bm-part-ab-b2b36df6fb` are two footprint variants of the same `ab` model and
-// must map onto the same legacy template. The hash is what makes the id table
-// churn on a re-pull, and stripping it is what keeps PART_TO_TEMPLATE keyed on
-// the model rather than on the drawing.
+// Upstream suffixes every template id with a content hash, so
+// `bm-part-ab-68b696d07f` and `bm-part-ab-b2b36df6fb` are two drawings of the
+// same `ab` model. Stripping it keys PART_TO_TEMPLATE on the model.
 const HASH_SUFFIX = /-[0-9a-f]{10}$/;
 
 /**
- * The one drawing of a part that its model is read from, for the part names
- * upstream ships more than one of.
+ * The drawing a part's model is read from, for parts upstream ships more than
+ * one drawing of.
  *
- * `ab` is the only such name today, and its two ids are the same model: their
- * `walls` - the polyline the whole extent is measured from - are byte-identical,
- * and only the roof rectangle differs. `b2b36df6fb` draws it 0.25in wider and
- * shifted, poking out past the wall at x = 0, where `68b696d07f` keeps it inside.
- * Since `partExtent` unions roof with walls, taking each id at face value gives
- * the same model two sizes: 4x4.5 and 3.75x4.5, so 2 of the 90 `ab` ruins in the
- * corpus emitted a quarter-inch wider than the other 88 and than the pre-pull
- * corpus. `partAnchorShift` split the same way, 0.5 against 0.625.
- *
- * Since 40kdc-data 39661875 both ids ship the same 3.75x4.5 `footprint` (the
- * differing roof moved to `upper_floor`), so the two drawings now emit alike
- * either way. The registration stays: it costs nothing and holds if upstream's
- * drawings diverge again.
- *
- * This is the rule `cd` already follows from the other direction - it is `co`'s
- * row exactly, so identical input produces identical output. A roof that
- * overhangs its own walls cannot be told from a barrier's (whose centreline
- * genuinely runs along one edge) by geometry alone, so the choice is registered
- * rather than derived, the way CLASS_REFERENCE is. `battlemaster-registration.test.mjs`
- * fails if a later pull ships a second drawing of any other part without one.
+ * Both `ab` ids have byte-identical `walls` and differ only in the roof. Since
+ * `partExtent` unions roof with walls, a divergent roof gives one model two
+ * sizes (4x4.5 against 3.75x4.5 when they last diverged; today both ship the
+ * same `footprint`). Geometry alone cannot tell a roof overhanging its walls
+ * from a barrier's off-centre centreline, so the choice is registered, like
+ * CLASS_REFERENCE. battlemaster-registration.test.mjs fails if another part
+ * gains a second drawing without an entry.
  */
 export const PART_CANONICAL = {
   ab: "bm-part-ab-68b696d07f",
@@ -585,7 +425,6 @@ export const PART_CANONICAL = {
 const canonicalPartId = (templateId) =>
   PART_CANONICAL[partOf(templateId)] ?? templateId;
 
-/** True for an upstream Battlemaster composite area template. */
 const isCompositeTemplate = (id) =>
   typeof id === "string" && id.startsWith(COMPOSITE_PREFIX);
 
@@ -612,11 +451,9 @@ function partOf(templateId) {
 }
 
 /**
- * `normalizeDegrees` plus a float-noise snap. The angles here come out of
- * `atan2` on composed matrices, so an exact quarter-turn arrives as
- * 89.99999999999999 or as a hair under 360 — either of which would be written
- * into the emitted corpus verbatim. The renderer's own normalisation has no
- * such problem and stays exact.
+ * `normalizeDegrees` plus a float-noise snap: angles from `atan2` on composed
+ * matrices arrive as 89.99999999999999 or just under 360, and would otherwise
+ * be written into the emitted corpus verbatim.
  */
 const normDeg = (deg) => {
   const r = Math.round(normalizeDegrees(deg) * 1e6) / 1e6;
@@ -639,90 +476,25 @@ function decompose(A) {
   return out;
 }
 
-/** Width and height of a footprint's axis-aligned bounding box. */
 function bboxSize(footprint) {
   return boundsSize(footprintPolygon(footprint));
 }
 
 /**
- * W: the upstream part's *model extent* and its anchor, as the plain rectangle
- * F and Z are calibrated against.
+ * W: the upstream part's model extent, as the plain rectangle F and Z are
+ * calibrated against, read correctly under both schemas upstream has shipped.
  *
- * The battlemaster-11e re-source changed what a part's `footprint` means, and
- * changed it in two ways that have to be undone together.
+ * Currently (since 40kdc-data 39661875) `footprint` is the model extent, the
+ * roof lives in `upper_floor` (not read here), and `position` anchors the
+ * extent's centre. In the earlier schema `footprint` was only the roofed area
+ * (`ab`: 2.5x2.5 of a 3.75x4.5 model), the rest of the model was `walls`
+ * centrelines, and `position` anchored the roof's centre.
  *
- * It used to be the model's extent - the rectangle the whole calibration below
- * was measured against. It is now the part's *roofed* area, which for an
- * L-shaped ruin is one corner of that rectangle and nothing like it: `ab` reads
- * 2.5x2.5 where its model is 3.75x4.5. The rest of the extent moved into
- * `walls`, a polyline per wall with a thickness. Taking the union of the roof
- * polygon and the wall centrelines puts it back: that bounding box reproduces
- * the pre-re-source rectangle *exactly* for twelve of the thirteen parts that
- * have a pre-pull counterpart, and the thirteenth is a second, slightly wider
- * drawing of `ab` that upstream added in the same pull. Note it is the union
- * that does this and not the walls alone - a barrier's centreline runs along one
- * edge of its footprint rather than down its middle, so walls alone would lose
- * the barrier's whole 0.5in depth (and, worse, shift its centre by half of it).
- *
- * That exactness is what lets every `turn`, every flip bit, and both the F and Z
- * rules carry across the re-source unchanged rather than being re-derived;
- * `battlemaster-registration.test.mjs` pins the twelve rectangles so a later pull
- * cannot quietly move one.
- *
- * The second change is the anchor, and it is the one that is invisible until you
- * measure containment. `position` still means the centre of the footprint - but
- * the footprint is now the roof, so `position` now anchors the *roof's* centre
- * where it used to anchor the extent's. For the eight parts whose roof is centred
- * on their extent (`corner`, `small-l`, `small-l-flip`, `generator`, `tower`,
- * `pipes`, and both barriers) that is the same point and nothing changes. For
- * the five big L-ruins it is not: the offset runs to (1.25, 1.5)in, and anchoring
- * an extent-sized L on the roof's centre pushed 270 of 360 children up to 1.25in
- * outside their own parent - outside upstream's composite outline, not merely
- * outside the coarse legacy archetype. `partAnchorShift` is that offset.
- *
- * A part with no walls at all (`ruin-part`, which this module drops) has no
- * extent to read and falls back to its own footprint.
- *
- * W1: upstream then undid the schema half of this (40kdc-data 39661875, "Render
- * Battlemaster ruin walls"). `footprint` is the model extent again, the roof
- * moved to `upper_floor.footprint`, and composite features' `position` moved to
- * the extent's centre by exactly the offset `partAnchorShift` used to supply.
- * Against that schema the union above is the footprint itself and the shift is
- * zero for every part, so the emitted corpus came through the pull unchanged
- * with no code change. Both are kept because they read either schema correctly;
- * nothing here reads `upper_floor`.
- *
- * W2: the same pull also started expressing the other hand of a part with a
- * feature-level `mirror`, and on a mirrored feature `position` does not read the
- * roof centre the way it does everywhere else. Upstream ships exactly one today,
- * the generator in `bm-composite-smallrect-generator-updown-flip-3db57df624`, and
- * four independent measurements agree on where it belongs:
- *
- *   - Its unmirrored sibling `...-updown-bfbe6a06e7` is the same composite drawn
- *     the other way: all 167 outline vertices map onto each other exactly under
- *     x -> 6.003 - x. So the two features' roof centres must negate about that
- *     axis, and the sibling reads position.x = +0.066281 - which makes the flip's
- *     -0.066281, not the -4.566281 upstream stores.
- *   - -4.566281 + 4.5 = -0.066281 to the last bit, and 4.5in is exactly the
- *     generator's own roof width; nothing else in the corpus is off by it.
- *   - Placed as upstream writes it, the generator hangs 3.7in outside its own
- *     parent outline. Corrected, it sits inside, roughly centred.
- *   - The pre-pull corpus put both generators of `bm-purge-vs-recon-01` 4.500in
- *     from where the uncorrected anchor lands them - the only exactly-4.5in
- *     movement anywhere in the 900-feature old/new comparison.
- *
- * The correction is (I - S) . roofCentre under the feature's own rotation, where
- * S is the feature's mirror alone: zero unless the feature carries one, so it
- * reaches that generator and nothing else. It is not expressible as a change of
- * anchor convention - no single `t + Mf . x` places the roof centre at
- * `position` when Mf is proper and at `position + 2 . roofCentre` when it is not
- * - which reads as an exporter bug upstream rather than a convention we had
- * misread. With one instance to calibrate against, (I - S) . roofCentre cannot be
- * told apart from a rule in the roof's *width*: the generator's roof starts at
- * x = 0, so its width and twice its centre are the same 4.5in. A second mirrored
- * part would separate them, and `parts sit inside the composite that contains
- * them` in `battlemaster-registration.test.mjs` is what would notice - it reads
- * 3.747in on this one with the correction removed.
+ * The bbox of the footprint plus the wall centrelines is the extent under
+ * both, and reproduces the pre-pull rectangles exactly. Walls alone would not:
+ * a barrier's centreline runs along one edge of its footprint, not down the
+ * middle. `partAnchorShift` handles the anchor half. A part with no walls
+ * falls back to its footprint.
  */
 function extentBounds(part) {
   const roof = footprintPolygon(part.footprint);
@@ -730,7 +502,6 @@ function extentBounds(part) {
   return bounds([...roof, ...walls]);
 }
 
-/** The upstream part's extent, as a plain rectangle. */
 function partExtent(part) {
   if (!part.walls?.length) return part.footprint;
   const b = extentBounds(part);
@@ -742,15 +513,28 @@ function partExtent(part) {
 }
 
 /**
- * The composite-frame correction from what `position` reads on a *mirrored*
- * feature to where the part's roof centre actually sits. See W2 above.
+ * W2: the composite-frame correction from a *mirrored* feature's `position` to
+ * its roof centre: (I - S) . roofCentre, where S is the feature's mirror alone,
+ * raised into the composite frame by the feature's rotation. Zero for an
+ * unmirrored feature (903 of 904). Not the full `pieceMatrix`: rotation is not
+ * what upstream mis-anchors, and that would fire on all 96 rotated features.
  *
- * (I - S) . roofCentre, raised into the composite frame by the feature's own
- * rotation - S alone, not the feature's whole map. The distinction is the whole
- * content of the function: a rotation is not what upstream mis-anchors, so
- * reading the correction off `pieceMatrix` instead would fire on all 96 rotated
- * features as well as the one mirrored one. It is exactly zero whenever the
- * feature carries no `mirror`, which is 903 of the corpus's 904.
+ * One instance ships: the generator in
+ * `bm-composite-smallrect-generator-updown-flip-3db57df624`, stored at
+ * x = -4.566281. Four independent measurements put it at -0.066281:
+ *
+ *   - its unmirrored sibling `...-updown-bfbe6a06e7` maps onto it exactly
+ *     under x -> 6.003 - x and reads +0.066281;
+ *   - the stored value is off by exactly 4.5in, the generator's roof width;
+ *   - as stored, it hangs 3.7in outside its own parent outline;
+ *   - the pre-pull corpus puts both generators of `bm-purge-vs-recon-01`
+ *     4.500in from the uncorrected anchor.
+ *
+ * No single anchor convention yields both this and the unmirrored case, so it
+ * reads as an upstream exporter bug. With one instance this rule cannot be
+ * told from one in the roof's *width* (the roof starts at x = 0); a second
+ * mirrored part would separate them, and `parts sit inside the composite that
+ * contains them` in battlemaster-registration.test.mjs would notice.
  */
 function mirrorAnchorFix(part, feature) {
   const roof = boundsCentre(footprintPolygon(part.footprint));
@@ -762,10 +546,10 @@ function mirrorAnchorFix(part, feature) {
 }
 
 /**
- * The part-frame vector from the footprint centre `position` anchors to the
- * centre of the extent `partExtent` returns. Zero for every part since upstream
- * made `footprint` the extent again; up to (1.25, 1.5)in for the big L-ruins
- * while it was the roof. See W and W1 above.
+ * Part-frame vector from the footprint centre `position` anchors to the centre
+ * of `partExtent`. Zero under the current schema; up to (1.25, 1.5)in for the
+ * big L-ruins under the roof-footprint one, where omitting it pushed 270 of
+ * 360 children outside their parent. See W.
  */
 function partAnchorShift(part) {
   if (!part.walls?.length) return { x: 0, y: 0 };
@@ -778,9 +562,8 @@ function partAnchorShift(part) {
 }
 
 /**
- * Inverse of an orthogonal 2x2. Every registered variant is a rotation or a
- * reflection, so the transpose is the inverse - but check rather than assume,
- * since a non-orthogonal V would make the child anchoring below silently wrong.
+ * Inverse of an orthogonal 2x2, i.e. its transpose. Checked, since a
+ * non-orthogonal V would silently mis-anchor every child.
  */
 function orthoInverse(A) {
   const T = [
@@ -800,23 +583,14 @@ function orthoInverse(A) {
 
 /**
  * Z: resize a legacy `corner-*` polygon so that, once Q has turned it into the
- * upstream part's frame, its bounding box is the upstream rectangle (see Z in
- * the header). A quarter-turn swaps which upstream side each legacy axis has to
- * reach, which is the only thing `turn` contributes here.
+ * upstream part's frame, its bbox is upstream's rectangle. A quarter-turn
+ * swaps which upstream side each legacy axis must reach.
  *
- * The arms keep their thickness instead of scaling with the box. That thickness
- * is a rendering convention - `lRuin` draws a fixed 0.5in wall whatever the box
- * - not something upstream's solid rectangle has an opinion about, and holding
- * it fixed keeps the emitted footprint identical to the polygon the renderer
- * will draw from it. So each axis moves only its far side: a coordinate in the
- * near half stays put, one in the far half shifts by the whole size delta.
- * Every legacy corner polygon is an axis-aligned L with 0.5in arms (measured, 6
- * of 6), so this takes {0, t, W} to {0, t, W'} for an arm on the near side and
- * {0, W-t, W} to {0, W'-t, W'} for one on the far side.
- *
- * Resizing about the polygon's own origin is enough: resolvePiece re-centres on
- * the centroid and S then re-anchors onto the bbox centre, so the translation
- * this introduces is absorbed downstream.
+ * The arms keep their 0.5in thickness, matching the fixed wall lRuin draws, so
+ * the emitted footprint is the polygon the renderer will draw. Each axis
+ * moves only its far side: a coordinate in the near half stays put, one in
+ * the far half shifts by the whole size delta. The translation this
+ * introduces is absorbed downstream (resolvePiece re-centres, S re-anchors).
  */
 function scaleToUpstream(legacy, upstream, turn, part = "?") {
   const ring = footprintPolygon(legacy);
@@ -836,11 +610,8 @@ function scaleToUpstream(legacy, upstream, turn, part = "?") {
       y: move(p.y, minY, l.height, want.height - l.height),
     })),
   };
-  // The near/far split only lands the box on `want` for a polygon whose every
-  // vertex sits on a box edge or an arm within the near half - true of all six
-  // legacy corner Ls. Anything else (a redrawn upstream part, a new mapping)
-  // silently resizes to something other than upstream's rectangle, so measure
-  // rather than assume.
+  // The near/far split only reaches `want` for an axis-aligned L whose arms sit
+  // in the near half (all six legacy corners), so measure rather than assume.
   const got = bboxSize(out);
   if (
     Math.abs(got.width - want.width) > 1e-9 ||
@@ -905,23 +676,18 @@ export function normalizeLayout(layout, templatesById) {
       throw new Error(`layout ${layout.id} references missing template ${piece.template}`);
     }
     const V = variantOf(composite, templatesById);
-    // The parent area carries M . V, so everything hung off it has to start by
-    // undoing V - the child's orientation as well as its anchor. Both used to
-    // apply V itself, which is the same thing only while every registered
-    // variant is self-inverse; the `-flip` Triangle is not (see CLASS_REFERENCE).
+    // The parent area carries M . V, so every child starts by undoing V, in
+    // orientation and anchor. Not every variant is self-inverse (the `-flip`
+    // Triangle registers R270), so this is the real inverse.
     const Vinv = orthoInverse(V);
     const M = pieceMatrix(piece);
 
     const area = { ...piece, template: SIZE_CLASS[classOf(composite)] };
     delete area.mirror;
-    // Upstream does use inline piece footprints elsewhere (kotc-colosseum), so
-    // this is live schema, just not on composite pieces today. If a future
-    // pull attaches one here, retemplating to the archetype would silently
-    // discard it: areaBuildingPlacement reads `piece.template` (the
-    // archetype) while resolvePiece prefers `piece.footprint` (the
-    // composite's own polygon) over the template, so the area would render
-    // from one polygon while its children parent through another. Throw
-    // instead of silently dropping it.
+    // Composite pieces carry no inline footprint today, but upstream uses them
+    // elsewhere (kotc-colosseum). Retemplating would silently split it:
+    // areaBuildingPlacement reads the archetype template while resolvePiece
+    // prefers `piece.footprint`, so the area and its children would disagree.
     if (piece.footprint) {
       throw new Error(
         `piece ${piece.id} carries an inline footprint; composite retemplating to ${area.template} would discard it`,
@@ -931,18 +697,9 @@ export function normalizeLayout(layout, templatesById) {
     pieces.push(area);
 
     for (const feature of composite.features ?? []) {
-      // Only the FEATURE_KEYS fields are read below, so anything else upstream
-      // adds to a feature would be dropped in silence - and the silent cases
-      // are the dangerous ones. This guard has already earned itself once:
-      // `mirror` is the natural way for upstream to express the other hand of a
-      // part and is exactly the axis K controls, so when upstream started
-      // shipping one, a dropped `mirror` would have emitted a child of the wrong
-      // chirality while every test still passed (the registration test
-      // recomputes K from the same rule, so it would have agreed with the bug).
-      // It throws instead, which is what forced K to account for it. An inline
-      // `footprint` would likewise lose to the template's under F/Z. Fail loudly,
-      // the way the piece-level guards above and the size-class and part lookups
-      // below already do.
+      // Any field outside FEATURE_KEYS would be dropped silently: an inline
+      // `footprint` would lose to the template's under F/Z, and an unread
+      // `mirror` would emit the wrong chirality.
       for (const key of Object.keys(feature)) {
         if (!FEATURE_KEYS.has(key)) {
           throw new Error(
@@ -950,17 +707,12 @@ export function normalizeLayout(layout, templatesById) {
           );
         }
       }
-      // Upstream now expresses the other hand of a part with a feature-level
-      // `mirror` (one composite carries one today), which the guard above used
-      // to reject outright. It is the same `{ rotation, mirror }` pair a piece
-      // carries, so it reads through pieceMatrix and rides in wherever the
-      // feature's bare rotation used to.
+      // A feature-level `mirror` expresses the other hand of a part; it is the
+      // same `{ rotation, mirror }` pair a piece carries.
       const Mf = pieceMatrix(feature);
       const part = partOf(feature.template);
       const { template, flip, turn, upstreamFootprint, upstreamSize, drop } =
         PART_TO_TEMPLATE[part];
-      // A part registered as `drop` has no legacy counterpart and is left out of
-      // the emitted corpus entirely - see its entry in PART_TO_TEMPLATE.
       if (drop) continue;
       const legacy = templatesById.get(template);
       // Not `feature.template`: where upstream draws one model twice, every
@@ -977,58 +729,34 @@ export function normalizeLayout(layout, templatesById) {
           );
         }
       }
-      // F/Z: upstream's rectangle outright where the legacy polygon is itself a
-      // rectangle, the legacy polygon rescaled onto that rectangle where its L
-      // shape is load-bearing, and the legacy polygon untouched for the three
-      // parts neither rule reaches.
-      // W: the extent F and Z are calibrated against now lives in the part's
-      // `walls`, not its `footprint` - see partExtent.
+      // F/Z: upstream's rectangle (W) outright, the legacy L rescaled onto it,
+      // or the legacy polygon untouched for the three parts neither reaches.
       const extent = partExtent(upstream);
       const footprint = upstreamFootprint
         ? extent
         : upstreamSize
           ? scaleToUpstream(legacy.footprint, extent, turn, part)
           : legacy.footprint;
-      // K does two separate jobs, and they have to be composed rather than
-      // collapsed: P undoes a mirrored parent, F applies the part's own flip
-      // bit. Both are reflections, so only their *parity* was visible in the
-      // handedness the old `improper ? FLIP_X : IDENTITY` form was tuned
-      // against - and parity is all it preserved. It got the axis wrong
-      // whenever the parent was mirrored: FLIP_Y = R(180) . FLIP_X, so
-      // collapsing P . F to a single FLIP_X (or, when both fire, to IDENTITY)
-      // silently drops a half-turn. Measured against the pre-pull corpus, that
-      // was 44 of 44 `small-l-flip` under a mirrored parent drawn exactly 180
-      // degrees out. det(P . F) is identical to the old det(K) in all four
-      // combinations, so every flip bit and every pinned hand still holds.
-      // P cancels every improper map standing above the part, which since the
-      // re-source can include the feature's own mirror as well as the parent's.
-      // det(M . Mf) reduces to the old det(M) whenever the feature is proper.
+      // K = P . F: P cancels every improper map above the part (the parent's
+      // mirror and the feature's own), F applies the part's flip bit. Do not
+      // collapse them to `improper ? FLIP_X : IDENTITY`: that has the right
+      // parity, but since FLIP_Y = R(180) . FLIP_X it drops a half-turn under
+      // a mirrored parent (44 of 44 such `small-l-flip` 180 degrees out against
+      // the pre-pull corpus).
       const P = det(matmul(M, Mf)) < 0 ? FLIP_Y : IDENTITY;
       const F = flip ? FLIP_X : IDENTITY;
       const K = matmul(P, F);
-      // Q rotates the legacy drawing onto the upstream part's orientation, so it
-      // sits inside K: the flip axis was calibrated in the part's frame, not the
-      // legacy template's. The two orders differ only where a part carries both
-      // a flip bit and a turn that is not a half-turn (`corner` alone today, a
-      // quarter-turn not commuting with FLIP_X), and the pre-pull corpus picks
-      // this one there by 51/68 exact matches against 2/68.
+      // Q sits inside K because the flip axis was calibrated in the part's
+      // frame. The order matters only for a flip bit with a quarter-turn
+      // (`corner` alone), where the pre-pull corpus prefers this order by
+      // 51/68 exact matches against 2/68.
       const A = matmul(matmul(Vinv, Mf), matmul(K, rotationMatrix(turn)));
-      // S rides through the child's full map, so it is applied after Q: what it
-      // re-anchors is the polygon as finally oriented, not as drawn. It is zero
-      // for an upstreamFootprint part (a rectangle re-anchored onto itself),
-      // but derive it rather than special-case it.
+      // S goes through the full map A: it re-anchors the polygon as finally
+      // oriented, not as drawn. Zero for a rectangle.
       const S = matvec(A, anchorOffset(footprint));
-      // Undo the V now folded into the parent's transform, so the child lands
-      // at M . feature.position regardless of the variant. This used to apply V
-      // itself, on the grounds that every registered variant was self-inverse;
-      // the fit produces one that is not (the `-flip` Triangle comes out at
-      // R270, a reflection composed onto a reflection), so it takes the real
-      // inverse.
-      // W: `feature.position` anchors the roof's centre; step to the extent's
-      // centre in the part's own frame before undoing V, so the emitted child
-      // occupies the space upstream's model does rather than its roof's.
-      // W2: on a *mirrored* feature `position` does not read the roof centre at
-      // all - it is out by the part's own roof width. See mirrorAnchorFix.
+      // Undo V so the child lands at M . feature.position whatever the
+      // variant. `shift` steps from the footprint centre to the extent centre
+      // (W); `fix` corrects a mirrored feature's anchor (W2).
       const shift = matvec(Mf, partAnchorShift(upstream));
       const fix = mirrorAnchorFix(upstream, feature);
       const anchor = matvec(Vinv, {
@@ -1040,11 +768,8 @@ export function normalizeLayout(layout, templatesById) {
         name: feature.id,
         piece_type: "feature",
         template,
-        // resolvePiece prefers an inline footprint over the template's, while
-        // the downstream converters keep keying their feature type and colour
-        // off `template`. So the child draws at Battlemaster's size and still
-        // renders as a generator / l-ruin. The three parts under neither rule
-        // stay on their template alone.
+        // resolvePiece prefers an inline footprint, while the downstream
+        // converters key feature type and colour off `template`.
         ...(upstreamFootprint || upstreamSize ? { footprint } : {}),
         parent_area_id: piece.id,
         position: { x: anchor.x + S.x, y: anchor.y + S.y },

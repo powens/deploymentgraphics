@@ -1,16 +1,7 @@
 /**
- * The viewer's **Controls** — the nine fields a visitor picks in the browser
- * demo, and the single spelling of that set.
- *
- * One row per control ({@link controlSpec}); the URL form, the stored form, the
- * DOM form and the coercion of untrusted input are all *derived* from those
- * rows rather than restated. Adding a control is one row.
- *
- * Reached by the demo app through `bundle.ts`, not a published entry point:
- * only this repo's demo has controls. Nothing here reaches for a global: the
- * URL functions take and return a search string, and the DOM functions take
- * their root, so the app keeps the one `location.search` read, the one
- * `history.replaceState` call and the one naming of `document`.
+ * The viewer's **Controls**: the nine fields a visitor picks in the demo.
+ * URL, storage and DOM forms are all driven by {@link controlSpec}, so adding
+ * a control means adding a row there. Demo-only (reached via `bundle.ts`).
  */
 import {
   dispositions,
@@ -63,11 +54,9 @@ export interface Controls {
 }
 
 /**
- * Control values indexed by key. The spec is a heterogeneous array, so a row
- * cannot recover the precise {@link Controls} field types — that last step stays
- * a cast, and `viewer-controls.test.ts` pins the defaults. The *key set* does
- * not: {@link SpecValues} is checked against this type, so the spec covering
- * every {@link ControlKey} is a compile-time guarantee rather than a test's.
+ * Control values indexed by key. Field types are recovered by cast (the spec
+ * is heterogeneous), but key coverage is checked at compile time via
+ * {@link SpecValues}.
  */
 type ControlValues = Record<ControlKey, string | boolean>;
 
@@ -80,9 +69,8 @@ interface SelectRow {
   /** The accepted values; anything else sanitizes to `default`. */
   readonly allowed: readonly string[];
   /**
-   * Set when `index.html` carries the `<option>`s itself. The app populates the
-   * rest from `allowed`; `static/index.test.js` holds markup and `allowed` to
-   * the same value set.
+   * Set when `index.html` carries the `<option>`s itself; otherwise the app
+   * populates them from `allowed`.
    */
   readonly staticOptions?: true;
 }
@@ -98,35 +86,21 @@ interface CheckboxRow {
 /** One row of {@link controlSpec}. */
 export type ControlRow = SelectRow | CheckboxRow;
 
-// The force dispositions present in the event matrix. Computed once: every
-// allowlist below is read on each sanitize.
 const DISPOSITION_IDS = dispositions(eventMatrix);
 
-// Layout variants within a disposition pairing. Keyed by `Layout` so the list
-// and the union cannot drift apart in *either* direction: dropping a variant
-// from the union leaves an excess key here, and adding one leaves the `Record`
-// incomplete. A bare `readonly Layout[]` annotation only catches the first,
-// and the second is the quiet one — a new variant missing from the dropdown
-// and sanitized out of its own URLs, with nothing failing to say so.
+// Layout variants within a disposition pairing. A `Record<Layout, …>` rather
+// than a `Layout[]` so that adding a variant to the union is a type error here
+// until it is listed.
 const LAYOUT_IDS = Object.keys({
   A: null,
   B: null,
   C: null,
 } satisfies Record<Layout, null>) as readonly Layout[];
 
-// Building-template set: the illustrative shapes or the detailed GW footprints.
-// Keyed by set id so the dropdown's values and the terrain each one *means*
-// have one owner. The viewer used to fetch `templates-<value>.yml`, which made
-// a set the assembly did not know about a visible 404 on the stage; rendering
-// from bundled presets, the same mistake would quietly render the simple
-// templates instead. Adding a set is one line here, and that line is both the
-// dropdown option and the terrain it selects.
-//
-// `gwTerrain` carries the simple templates already merged with the layouts.
-// Spreading `gwTemplatesReal` over it swaps in the detailed GW footprints —
-// both sets declare the same template box for every shared name, so a layout
-// renders against either. Templates last: the other way round the layouts
-// object would put its own templates back.
+// Building-template set id -> terrain; the keys are also the dropdown values.
+// `gwTerrain` already carries the simple templates, so `gwTemplatesReal` must
+// be spread last to override them. Both sets declare the same template box per
+// name, so every layout renders against either.
 const TEMPLATE_TERRAIN = {
   simple: gwTerrain,
   real: { ...gwTerrain, ...gwTemplatesReal },
@@ -135,12 +109,9 @@ const TEMPLATE_TERRAIN = {
 const TEMPLATE_SETS = Object.keys(TEMPLATE_TERRAIN);
 
 /**
- * The terrain a `tpl` control value names.
- *
- * Throws rather than falling back: {@link readControlsFromDom} sanitizes `tpl`
- * against {@link controlSpec}, so an unknown value reaching here is a bug in
- * the caller rather than untrusted input — and the render path turns the throw
- * into a stage message, the way the old fetch's 404 was.
+ * The terrain a `tpl` control value names. Throws on an unknown value: input
+ * is sanitized upstream, so this is a caller bug, and the render path shows the
+ * throw on the stage.
  */
 export function terrainForTemplateSet(tpl: string): TerrainConfig {
   const terrain = TEMPLATE_TERRAIN[tpl as keyof typeof TEMPLATE_TERRAIN];
@@ -148,17 +119,12 @@ export function terrainForTemplateSet(tpl: string): TerrainConfig {
   return terrain;
 }
 
-// Canvas rotation in degrees, as strings (the `<select>` values).
 const ROTATIONS = ["0", "90", "-90"];
 
-// The rows themselves, kept as a literal tuple so each `key` survives as its
-// own literal type. `controlSpec` below re-exports them under the wider
-// `readonly ControlRow[]`, which is what every caller wants but which also
-// widens every `key` back to the whole union — erasing exactly the information
-// `SpecKey` needs.
+// Kept as a literal tuple so each `key` stays a literal type for `SpecKey`;
+// `controlSpec` below is the widened view callers use.
 const controlRows = [
-  // Take and Hold vs Take and Hold, layout B -> dawn_of_war (the previous
-  // default mission), so the initial render is unchanged.
+  // Take and Hold vs Take and Hold, layout B -> dawn_of_war.
   {
     key: "da",
     elementId: "disposition-a",
@@ -191,12 +157,11 @@ const controlRows = [
     key: "t",
     elementId: "terrain",
     kind: "select",
-    // The layout the default pairing above resolves to (Take and Hold vs Take
-    // and Hold on dawn_of_war), so the first render agrees with the dropdowns.
+    // What the default pairing resolves to, so the first render agrees with
+    // the dropdowns. Also the fallback in `deriveControls`.
     default: "bm-take-vs-take-02",
     allowed: Object.keys(gwTerrain.layout),
   },
-  // Default to the detailed GW footprints; the illustrative "simple" set is opt-in.
   {
     key: "tpl",
     elementId: "templates",
@@ -206,7 +171,6 @@ const controlRows = [
     staticOptions: true,
   },
   { key: "grid", elementId: "show-grid", kind: "checkbox", default: false },
-  // The territory line draws by default; the toggle opts out.
   {
     key: "territory",
     elementId: "show-territory",
@@ -224,36 +188,24 @@ const controlRows = [
 ] as const satisfies readonly ControlRow[];
 
 /**
- * The nine controls, in URL-param order.
- *
- * Every allowlist that *has* a referent in this repo derives from it — the
- * generated presets or a type — so options, validation and the underlying
- * YAML cannot drift apart. `ROTATIONS` is the one literal left: it has no
- * referent to drift from.
+ * The nine controls, in URL-param order. Allowlists derive from the generated
+ * presets or types, so options and validation track the data.
  */
 export const controlSpec: readonly ControlRow[] = controlRows;
 
-/** The keys {@link controlRows} actually carries a row for. */
 type SpecKey = (typeof controlRows)[number]["key"];
 
 /**
- * The spec's own value record — the same shape as {@link ControlValues}, but
- * built from the keys the spec *has* rather than the keys it is supposed to
- * have, so the two can be compared. Every `satisfies ControlValues` below is
- * that comparison.
+ * {@link ControlValues} built from the keys the spec actually has, so
+ * `satisfies ControlValues` fails when a {@link ControlKey} lacks a row.
  */
 type SpecValues = Record<SpecKey, string | boolean>;
 
-// `satisfies ControlValues` is the load-bearing half: it fails the moment a key
-// joins `ControlKey` without a matching spec row. That is the quiet direction —
-// the `satisfies readonly ControlRow[]` above already rejects a row naming a key
-// the union does not have, but nothing rejected the reverse, and the two casts
-// here would hand back an object missing that field while typed as having it.
 const DEFAULTS = Object.fromEntries(
   controlRows.map((row) => [row.key, row.default]),
 ) as SpecValues satisfies ControlValues as Controls;
 
-/** The nine defaults, as a fresh object. */
+/** The defaults, as a fresh object. */
 export function defaultControls(): Controls {
   return { ...DEFAULTS };
 }
@@ -267,16 +219,9 @@ export interface DerivedControls {
 }
 
 /**
- * The control keys {@link deriveControls} produces.
- *
- * Read off a `Record` over `keyof DerivedControls` rather than written as a
- * bare list. A list `satisfies readonly ControlKey[]` only checks that every
- * key named is a control — not that every derived control is named, which is
- * the direction that matters here: a third field added to
- * {@link DerivedControls} and {@link deriveControls} but forgotten here would
- * compile and test green while its dropdown was simply never written. Stated
- * this way it is a type error instead, which is the same guarantee `LAYOUT_IDS`
- * and `SpecValues satisfies ControlValues` give their own tables.
+ * The control keys {@link deriveControls} produces. A `Record` over
+ * `keyof DerivedControls` so a new derived field is a type error until listed
+ * (otherwise its dropdown would silently never be written).
  */
 const DERIVED_KEYS = Object.keys({
   m: true,
@@ -285,25 +230,18 @@ const DERIVED_KEYS = Object.keys({
   ControlKey)[];
 
 /**
- * Derives the deployment and terrain layout a disposition pairing implies.
+ * Derives the deployment (`m`, via the event matrix) and terrain layout (`t`,
+ * via 40kdc layout metadata) a disposition pairing implies. Returned rather
+ * than written, since the visitor may override either.
  *
- * `da`, `db` and `lay` name nothing directly — they derive `m` through the
- * event matrix, and `t` by matching that pairing and deployment against the
- * metadata each ported 40kdc layout carries. Both derived controls remain
- * controls in their own right: a visitor can override either directly, which
- * is why this returns them rather than writing them anywhere.
+ * The 40kdc source does not cover every matrix cell; an uncovered one falls
+ * back to the `t` default.
  *
- * The one fallback is here rather than at the call site: the 40kdc source does
- * not cover every matrix cell, and an uncovered one falls back to the `t`
- * row's own default — which is the value that row already documents as the
- * layout the default pairing resolves to.
- *
- * @throws if the pairing or layout is not in the event matrix. `da`, `db` and
- * `lay` are allowlisted against the matrix itself by {@link sanitizeControls},
- * so that is a drift between the generated presets rather than bad input.
+ * @throws if the pairing or layout is not in the event matrix (a drift between
+ * generated presets, since inputs are allowlisted against the matrix).
  */
 export function deriveControls(controls: Controls): DerivedControls {
-  // `lay` is allowlisted against `LAYOUT_IDS`, which is keyed by `Layout`.
+  // Safe cast: `lay` is allowlisted against `LAYOUT_IDS`.
   const m = resolveMission(
     eventMatrix,
     controls.da,
@@ -317,17 +255,15 @@ export function deriveControls(controls: Controls): DerivedControls {
 }
 
 /**
- * Coerces untrusted input — a parsed URL, restored localStorage, anything — to
- * a valid `Controls`. Each field falls back to its default when the key is
- * absent, when a select value is not in the row's allowlist, or when a flag is
- * not a boolean.
+ * Coerces untrusted input (parsed URL, restored storage, anything) to a valid
+ * `Controls`. Each field falls back to its default when absent, not in the
+ * row's allowlist, or (for flags) not a boolean.
  */
 export function sanitizeControls(input: unknown): Controls {
   const source = (input ?? {}) as Record<string, unknown>;
   const out: Partial<SpecValues> = {};
-  // `controlSpec`, not `controlRows`: the widened rows are what the allowlist
-  // membership test wants — the literal tuple types `lay`'s `allowed` as
-  // `readonly Layout[]`, which no plain string can be tested against.
+  // `controlSpec`, not `controlRows`: the literal tuple types `lay`'s
+  // `allowed` as `Layout[]`, which `.includes(string)` rejects.
   for (const row of controlSpec) {
     const value = source[row.key];
     if (row.kind === "checkbox") {
@@ -342,12 +278,8 @@ export function sanitizeControls(input: unknown): Controls {
 }
 
 /**
- * The query string for these controls — no leading `?` — holding only the
- * controls that differ from their default, so a default-state link stays clean
- * and {@link controlsFromSearch} restores any absent param.
- *
- * That one rule is also why `grid=1` and `territory=0` are the same case rather
- * than two: the flags differ from opposite defaults.
+ * The query string (no leading `?`) for these controls, holding only those
+ * that differ from their default; {@link controlsFromSearch} restores the rest.
  */
 export function controlsToSearch(controls: Controls): string {
   const values = controls as ControlValues;
@@ -366,10 +298,8 @@ export function controlsToSearch(controls: Controls): string {
 }
 
 /**
- * A flag's URL form. `"1"` and `"0"` are the only spellings
- * {@link controlsToSearch} writes; anything else — a hand-written
- * `?territory=true`, a param left empty — takes the row's default rather than
- * reading as off, so such a link still shows what it always showed.
+ * Parses a flag param. Only `"1"`/`"0"` are recognised; anything else (e.g. a
+ * hand-written `?territory=true`) takes the default rather than reading as off.
  */
 function checkboxFromParam(value: string, fallback: boolean): boolean {
   if (value === "1") {
@@ -381,10 +311,7 @@ function checkboxFromParam(value: string, fallback: boolean): boolean {
   return fallback;
 }
 
-/**
- * Reads controls out of a query string, sanitized. An absent param takes its
- * default, which is what makes {@link controlsToSearch}'s omissions round-trip.
- */
+/** Reads controls out of a query string, sanitized; absent params take defaults. */
 export function controlsFromSearch(search: string): Controls {
   const params = new URLSearchParams(search);
   const raw: Record<string, unknown> = {};
@@ -399,12 +326,7 @@ export function controlsFromSearch(search: string): Controls {
   return sanitizeControls(raw);
 }
 
-/**
- * True when the query string explicitly carries any control — the test that
- * makes a URL a shared link rather than a bare page load. Private: the only
- * thing that turns on the answer is {@link initialControls}'s precedence rule,
- * and a caller asking the question separately could only get that rule wrong.
- */
+/** True when the query string carries any control, i.e. it is a shared link. */
 function searchHasControls(search: string): boolean {
   const params = new URLSearchParams(search);
   return controlSpec.some((row) => params.has(row.key));
@@ -412,38 +334,27 @@ function searchHasControls(search: string): boolean {
 
 /** What a page load should come up showing, and whether to persist it. */
 export interface InitialControls {
-  /** The controls to write into the DOM. */
   readonly controls: Controls;
   /** Which editor drives the render. */
   readonly mode: "controls" | "yaml";
   /**
-   * Text for the YAML editor, or null to leave the editor as the markup has
-   * it. Non-null exactly when `mode` is `"yaml"`.
+   * Text for the YAML editor, or null to leave the markup's text. Non-null
+   * exactly when `mode` is `"yaml"`.
    */
   readonly yaml: string | null;
   /**
-   * Whether this state should be written back to storage on load.
-   *
-   * False for a URL-driven load: following someone's link must not overwrite
-   * the visitor's own saved session. Their later edits persist as usual.
+   * Whether to write this state back to storage on load. False for a
+   * URL-driven load, so following a link does not clobber the visitor's saved
+   * session; later edits persist as usual.
    */
   readonly persist: boolean;
 }
 
 /**
- * Resolves a page load's starting state from the only two places one can come
- * from: the query string, and whatever storage handed back.
- *
- * Two rules live here, and they are why this is a function rather than a
- * branch in the app's `start()`:
- *
- * 1. **An explicit URL wins.** A query string carrying any control is a shared
- *    link, and it beats saved state outright — including a saved YAML
- *    override, which a URL cannot express.
- * 2. **A URL-driven load is read-only for storage.** See `persist`.
- *
- * `saved` is untrusted — any shape, including null — so every field is either
- * validated here or run through {@link sanitizeControls}.
+ * Resolves a page load's starting state from the query string and whatever
+ * storage handed back (`saved` is untrusted, any shape). A query string
+ * carrying any control wins outright, including over a saved YAML override,
+ * and is not persisted (see `persist`).
  */
 export function initialControls({
   search,
@@ -469,9 +380,7 @@ export function initialControls({
     };
   }
   const blob = saved as { controls?: unknown; mode?: unknown; yaml?: unknown };
-  // The saved mode counts only when there is a string to put in the editor: a
-  // blob whose `yaml` is missing or null comes up in controls mode rather than
-  // in a yaml mode with nothing to render.
+  // A saved yaml mode without yaml text falls back to controls mode.
   const yaml =
     blob.mode === "yaml" && typeof blob.yaml === "string" ? blob.yaml : null;
   return {
@@ -483,22 +392,15 @@ export function initialControls({
 }
 
 /**
- * Where the controls live: a document, or any element containing them. Looked
- * up with `querySelector` rather than `getElementById` so a plain container
- * works as a root too, which is what lets the tests build one.
+ * A document or any element containing the controls. Elements are found with
+ * `querySelector` so a plain container works as a root (as in tests).
  */
 export type ControlsRoot = Document | Element;
 
 /**
- * The element a row is bound to, by id. A missing element is a broken markup
- * contract, not a value to coerce: `static/index.test.js` holds `index.html`
- * to the spec so it fails there rather than in the browser.
+ * The element a row is bound to, by id.
  *
- * Exported because the app binds its own references the same way — a bare
- * `getElementById` there would hand back `null` and fail somewhere later,
- * with a blank page and no mention of which control drifted.
- *
- * @throws if the root has no element with the row's id.
+ * @throws if the root has no element with the row's id, naming the control.
  */
 export function controlElement(
   root: ControlsRoot,
@@ -512,10 +414,8 @@ export function controlElement(
 }
 
 /**
- * Reads the nine controls out of a DOM subtree, sanitized — the DOM is an
- * input like any other. A `<select>` set to a value it has no `<option>` for
- * reads back as the empty string, so sanitizing is what makes this the
- * inverse of {@link writeControlsToDom} rather than nearly so.
+ * Reads the controls out of a DOM subtree, sanitized (a `<select>` set to a
+ * value it has no `<option>` for reads back as `""`).
  *
  * Throws if any control's element is absent.
  */
@@ -534,13 +434,9 @@ export function readControlsFromDom(root: ControlsRoot): Controls {
 /**
  * Writes the two derived controls into a DOM subtree.
  *
- * A derived value comes off the event matrix or the terrain layouts, not off
- * the row's own allowlist, so the dropdown may have no `<option>` for it. A
- * `<select>` ignores such a value silently, leaving the dropdown blank while
- * {@link readControlsFromDom} substitutes the row's default — the card, the URL
- * and storage would then all disagree with what the visitor sees. So the value
- * is read back and the mismatch thrown: drift between the generated presets
- * belongs on the stage, where a failed render already reports.
+ * A derived value need not be in the dropdown's options, and a `<select>`
+ * silently ignores such a value, so the write is read back and a mismatch
+ * thrown rather than letting the UI and the render disagree.
  *
  * @throws if a control's element is absent, or its dropdown has no option for
  * the derived value.
@@ -561,8 +457,7 @@ export function writeDerivedControlsToDom(
 }
 
 /**
- * Writes the nine controls into a DOM subtree, replacing what is there — every
- * row is assigned, so nothing survives from a previous state.
+ * Writes every control into a DOM subtree.
  *
  * Throws if any control's element is absent.
  */

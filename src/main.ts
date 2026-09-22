@@ -37,9 +37,8 @@ function buildTree(
     svg.appendChild(background);
   }
 
-  // Everything else the card is made of, in draw order. Each layer hangs its
-  // own shared shapes in the one `<defs>` and then emits the node that
-  // references them, so the two halves cannot drift apart.
+  // The rest of the card, in draw order. Each layer adds its shared shapes to
+  // `<defs>`, then draws the node that references them.
   const layers = cardLayers(config, theme);
   const defs = doc.createElement("defs");
   svg.appendChild(defs);
@@ -74,14 +73,9 @@ export interface RenderToStringOptions {
 }
 
 /**
- * Renders the card as SVG markup, with no DOM and no dependencies — the
- * server-side path. The result carries an `xmlns`, so it stands alone as a
- * `.svg` file or drops straight into an HTML response.
- *
- * The card is otherwise sized by its `viewBox` alone, which leaves a
- * standalone file or an `<img>` to pick a size. Since a string leaves no node
- * to set attributes on afterwards, pass `width`/`height` here to fix one — the
- * board is measured in inches, so `width: 60 * 15` renders it at 15px/inch.
+ * Renders the card as standalone SVG markup (with `xmlns`), no DOM required.
+ * Without `width`/`height` it is sized by its `viewBox` alone; the board is in
+ * inches, so `width: 60 * 15` renders at 15px/inch.
  */
 export function renderMissionCardToString(
   config: FullConfig,

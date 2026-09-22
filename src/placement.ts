@@ -1,7 +1,5 @@
-// `.ts` specifiers: the 40kdc converters load this module under plain Node, and
-// Node's type stripping resolves specifiers literally rather than following the
-// `./foo.js`-means-`./foo.ts` convention the rest of src/ uses. tsc rewrites
-// them back to `.js` on emit — see the tsconfig note.
+// `.ts` specifiers: the 40kdc converters load this module under plain Node,
+// which resolves specifiers literally. See the tsconfig note.
 import {
   localCorner,
   resolveCorner,
@@ -27,11 +25,8 @@ import type { FeaturePlacement } from "./terrain-config.ts";
 type Box = { x: number; y: number; width: number; height: number };
 
 /**
- * The canonical resolved form of any board piece: an unrotated bounding box
- * plus a rotation taken about the box centre. Every authoring placement
- * (corner-pin buildings, box features) resolves to a `Placed`, and every
- * renderer draws it with the same `translate(box.x box.y) rotate(rotation
- * cx cy)`. This is the single representation behind the placement seam.
+ * The resolved form of any board piece: an unrotated box plus a rotation about
+ * the box centre. Both corner-pin buildings and box features resolve to this.
  */
 export type Placed = {
   name: string;
@@ -40,10 +35,8 @@ export type Placed = {
 };
 
 /**
- * The transform that draws a `Placed`: translate to the box top-left, then
- * rotate about the box centre `(width/2, height/2)`. The single owner of the
- * centre-pivot convention — every renderer of a `Placed` (buildings, features)
- * crosses this seam instead of re-spelling the pivot.
+ * SVG transform for a `Placed`: translate to the box top-left, then rotate
+ * about the box centre. Renderers use this rather than re-spelling the pivot.
  */
 export function placedTransform(placed: Placed): string {
   return (
@@ -53,15 +46,9 @@ export function placedTransform(placed: Placed): string {
 }
 
 /**
- * Draws a template-local ring through a `Placed` — the same centre-pivot map
- * `placedTransform` hands the SVG renderer, applied in JavaScript instead.
- *
- * This is what a converter's output has to be checked against: a converter fits
- * a placement to a resolved footprint, and the only way to know the fit is
- * right is to put the template's own ring back through the placement and
- * compare. Spelling that by hand — which five converter test files each did —
- * means a pivot bug can hide by being made twice, once in the converter and
- * once in the check.
+ * Maps a template-local ring through a `Placed`: the same transform as
+ * `placedTransform`, in JavaScript. Converter tests use it to check a fit
+ * without re-deriving the pivot (and repeating any pivot bug).
  */
 export function placedRing(ring: Ring, placed: Placed): Ring {
   const rad = toRadians(placed.rotation);
@@ -74,21 +61,11 @@ export function placedRing(ring: Ring, placed: Placed): Ring {
 }
 
 /**
- * The `Placed` that lands a template-local point `pin` on the absolute point
- * `at`, with the box turned `rotation` degrees about its own centre.
- *
- * This is the last step of the two converter fits that build a `Placed` —
- * `ruin-to-feature` and `rect-to-feature`. (The other two, `area-to-building`
- * and `feature-to-building`, emit corner-pin authoring placements and never
- * reach this form.) A converter works out *where* a piece goes in its own terms —
- * three reference points for an L-ruin, a rectangle ring for a generator — and
- * then has to express that as a centre-pivot box, which is where the pivot
- * convention gets re-derived and where it can be got wrong. Pinning the box
- * centre (`pin` = the centre) is the degenerate case, so one function covers
- * both fits.
- *
- * The inverse of `placedRing` for the pinned point: `placedRing([pin], p)` is
- * `[at]`.
+ * The `Placed` that lands template-local point `pin` on absolute point `at`,
+ * with the box turned `rotation` degrees about its centre. Inverse of
+ * `placedRing` for the pinned point: `placedRing([pin], p)` is `[at]`.
+ * Used by the converters that emit a `Placed` directly (`ruin-to-feature`,
+ * `rect-to-feature`; the latter pins the centre).
  */
 export function placedFromPin(
   name: string,
@@ -111,12 +88,7 @@ export function placedFromPin(
   };
 }
 
-/**
- * Point-reflects a `Placed` through the canvas centre (rotation += 180). The
- * one mirror formula shared by buildings and features — point reflection is a
- * rotation by 180 about the centre, so the box's top-left maps to its
- * opposite and the orientation gains a half-turn.
- */
+/** Point-reflects a `Placed` through the canvas centre (rotation += 180). */
 export function mirror(placed: Placed, canvas: CanvasSize): Placed {
   return {
     name: placed.name,
@@ -130,11 +102,7 @@ export function mirror(placed: Placed, canvas: CanvasSize): Placed {
   };
 }
 
-/**
- * Applies the mirror default — on unless `mirror: false` — yielding the
- * primary plus an optional point-reflected copy. The single owner of the
- * "mirror unless explicitly false" rule.
- */
+/** Primary plus its mirrored copy, unless `mirror` is explicitly false. */
 function withMirror(
   primary: Placed,
   mirrorFlag: boolean | undefined,
@@ -144,11 +112,9 @@ function withMirror(
 }
 
 /**
- * Resolves a corner-pin building placement to its primary `Placed` (no
- * mirror). One corner pins position with no rotation; a second corner derives
- * the rotation (checked against the template edge). The corner trigonometry
- * yields an origin-pivot landing point, which is converted to a centre-pivot
- * box so every `Placed` shares one pivot convention.
+ * Resolves a corner-pin placement to its primary `Placed` (no mirror). One
+ * corner fixes position at rotation 0; a second derives the rotation and must
+ * match the template edge length.
  */
 function resolvePrimary(
   placement: BuildingPlacement,
@@ -213,10 +179,9 @@ function resolvePrimary(
 }
 
 /**
- * Resolves a corner-pin building placement to one or two `Placed` (primary,
- * plus a point-reflected copy unless `mirror: false`). Throws on an unknown
- * template, a corner count other than 1–2, or a corner distance that
- * disagrees with the template edge.
+ * Resolves a corner-pin building placement to its primary plus mirrored copy
+ * (unless `mirror: false`). Throws on an unknown template, a corner count
+ * other than 1–2, or a corner distance that disagrees with the template edge.
  */
 export function resolvePlacement(
   placement: BuildingPlacement,
@@ -240,9 +205,9 @@ export function placeBuildings(
 }
 
 /**
- * Resolves a box-authored feature placement to one or two `Placed` (primary
- * plus point-reflected copy unless `mirror: false`). Features already carry a
- * box and a centre rotation, so the primary is the placement verbatim.
+ * Resolves a feature placement to its primary plus mirrored copy (unless
+ * `mirror: false`). Features are already box + centre rotation, so the
+ * primary is the placement verbatim.
  */
 export function resolveFeature(
   feature: FeaturePlacement,

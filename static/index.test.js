@@ -6,13 +6,8 @@ import markup from "./index.html?raw";
 import { controlSpec } from "../src/viewer-controls.js";
 
 /**
- * The viewer markup's contract with the control spec.
- *
- * `index.html` is copied into `dist/` verbatim — never compiled, and nothing
- * else reads it — so an element id renamed on either side of the seam, or an
- * `<option>` the spec's allowlist does not accept, broke the page silently
- * with the whole suite green. Parsing the file is the only way to hold the two
- * together.
+ * The viewer markup's contract with the control spec: element ids and static
+ * `<option>` values must match, since nothing else checks `index.html`.
  */
 const doc = new DOMParser().parseFromString(markup, "text/html");
 const panel = doc.getElementById("panel-controls");
@@ -29,8 +24,7 @@ function optionValues(row) {
 
 describe("the controls panel", () => {
   it("holds exactly the controls in the spec", () => {
-    // Both directions: a spec row with no element, and an element with no spec
-    // row (which nothing would read, write, persist or put in the URL).
+    // Both directions: no spec row without an element, and vice versa.
     const found = [...panel.querySelectorAll("select, input[type=checkbox]")]
       .map((el) => el.id)
       .sort();
@@ -78,16 +72,14 @@ describe("app-populated selects", () => {
 
   for (const row of dynamicRows) {
     it(`#${row.elementId} starts empty for app.js to fill`, () => {
-      // An <option> left in the markup here would be appended to, not
-      // replaced: the dropdown would offer it twice.
+      // app.js appends, so a markup option would appear twice.
       expect(optionValues(row)).toEqual([]);
     });
   }
 });
 
 describe("the markup's initial state", () => {
-  // Only the markup-owned controls have one to check: the rest are empty until
-  // `start()` writes the URL, saved or default controls into them.
+  // Only markup-owned controls have an initial state; `start()` fills the rest.
   for (const row of controlSpec) {
     if (row.kind === "checkbox") {
       it(`#${row.elementId} is ${row.default ? "checked" : "unchecked"}`, () => {

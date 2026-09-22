@@ -1,19 +1,11 @@
 /**
- * Entry point for the browser demo bundle (`dist/bundle.js`, imported by
- * `static/app.js`) — not a published entry point.
+ * Entry point for the demo bundle (`dist/bundle.js`, imported by
+ * `static/app.js`); not published. Holds what the demo needs beyond the
+ * package API (viewer controls, a YAML parser) so `index.ts` stays narrow.
  *
- * The app needs more than the package's public interface: it owns a set of
- * viewer controls the package has no concept of — including the two the event
- * matrix derives, which the renderer itself never reads — and its YAML editor
- * tab needs a YAML parser the renderer has no use for. Those live here rather
- * than in `index.ts` so serving the demo does not widen what the package
- * commits to.
- *
- * `js-yaml` is re-exported rather than pulled from a CDN by `index.html`, so
- * the site has no third-party runtime dependency and cannot drift from the
- * version `gen-presets.mjs` authors against. `tsconfig.build.json` excludes
- * this module, so the import never reaches `lib/` — the published package
- * still parses no YAML.
+ * `js-yaml` is bundled rather than loaded from a CDN so the site has no
+ * third-party runtime dependency. `tsconfig.build.json` excludes this module,
+ * so it never reaches `lib/`.
  */
 export { makeMissionCard } from "./main.js";
 export * as yaml from "js-yaml";

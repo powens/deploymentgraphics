@@ -66,7 +66,6 @@ describe("resolveLayout", () => {
       { type: "generator", x: 0, y: 0, width: 2, height: 2, color: "gunmetal" },
     ];
     const r = resolveLayout(config);
-    // top-level first, then the layout's — order matters for draw order.
     expect(r.features.map((f) => f.type)).toEqual(["generator", "l-ruin"]);
   });
 
@@ -84,7 +83,6 @@ describe("resolveLayout", () => {
 describe("cardLayers draw defaults", () => {
   const TERRITORY = { start: { x: 0, y: 22 }, end: { x: 60, y: 22 } };
 
-  /** The layers that survive their own presence rule, in draw order. */
   function drawnIds(config: FullConfig): string[] {
     return cardLayers(config, baseTheme).map((layer) => layer.id);
   }
@@ -96,9 +94,7 @@ describe("cardLayers draw defaults", () => {
     return config;
   }
 
-  // `configWith` leaves all three toggles `{}`. What an absent `draw` means is
-  // a per-toggle decision and `layers.ts` is its one owner, so each default is
-  // pinned here — otherwise flipping one in that list breaks no test.
+  // `configWith` leaves all three toggles `{}`, so this pins each default.
   it("defaults the half-way lines and the territory line on, and the grid off", () => {
     const ids = drawnIds(withTerritory());
     expect(ids).toContain("half-way-lines");
@@ -119,24 +115,15 @@ describe("cardLayers draw defaults", () => {
     expect(ids).not.toContain("territory");
   });
 
-  // The territory row is two rules, not one: no mission territory means no
-  // line whatever the toggle says.
   it("draws no territory line for a mission with no territory", () => {
     const config = configWith();
     config.base = { ...config.base, territory: { draw: true } };
     expect(drawnIds(config)).not.toContain("territory");
   });
 
-  // All three toggles read `draw` by truthiness, which matters because the
-  // viewer's YAML tab is an unvalidated path into `makeMissionCard` and js-yaml
-  // 4 parses `no`/`off`/`yes`/`on` as *strings* under the YAML 1.2 core schema.
-  // So `draw: no` is the truthy `"no"` and draws — surprising enough to be
-  // written down in the CHANGELOG, and therefore worth pinning here.
-  //
-  // The grid is the one that changed: it used to test `=== true`, so `draw: no`
-  // left it off while the same spelling already drew the other two. Unifying
-  // the rule is the point of this change; pinning it is what stops the grid
-  // drifting back to a fourth spelling of the same question.
+  // js-yaml 4 parses `no`/`off` as strings, and the viewer's YAML tab passes
+  // them through unvalidated, so `draw: no` is truthy and draws (documented in
+  // the CHANGELOG).
   it("reads `draw` by truthiness, so a YAML `no` draws and an empty string does not", () => {
     const ids = drawnIds(
       withTerritory({

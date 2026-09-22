@@ -9,8 +9,7 @@ import {
 
 const { missionLayouts, gwTemplates, footprintOf } = loadCorpus();
 
-// A whole L (three of four bbox corners present) and a plain bar, both inline
-// so classification never depends on a corpus lookup.
+// Inline so classification never depends on a corpus lookup.
 const L_FOOTPRINT = {
   type: "polygon",
   points: [
@@ -31,10 +30,8 @@ const piece = (over) => ({
   ...over,
 });
 
-/** The kind name one piece classifies as, through a one-piece layout. */
 const kindOf = (p) =>
   classifyPiece(p, withLookups({ id: "t", pieces: [p] }, footprintOf)).kind;
-/** The same, but for a piece already sitting in a corpus layout. */
 const kindIn = (p, layout) => classifyPiece(p, layout).kind;
 
 describe("classifyPiece", () => {
@@ -49,8 +46,6 @@ describe("classifyPiece", () => {
   });
 
   it("throws on a corner piece with a non-L footprint", () => {
-    // No converter draws a rotated bar as a ruin, and there is no generic
-    // fallback any more (#182), so this has to fail the pull.
     const p = piece({
       id: "bar",
       template: "corner-bar",
@@ -100,8 +95,6 @@ describe("layoutPlacements", () => {
       const dropped = layout.pieces.filter(
         (p) => kindIn(p, layout) === "dropped",
       );
-      // The dropped set is exactly the catwalks - the corpus-wide count lives
-      // in ruin-to-feature.test.mjs; here we only pin what was dropped.
       expect(dropped.length, layout.id).toBe(
         layout.pieces.filter((p) => p.template === "catwalk").length,
       );
@@ -111,26 +104,13 @@ describe("layoutPlacements", () => {
     }
   });
 
-  // This used to rebuild the dispatch by hand and `toEqual` it against
-  // `layoutPlacements` - it proved the switch equalled the switch. What the
-  // ordering rule actually promises is visible in the output on its own: each
-  // bucket is one contiguous run per kind, in PIECE_KINDS order.
+  // Each bucket is one contiguous run per kind, in PIECE_KINDS order.
   it("keeps areas before feature buildings and ruins before rectangles", () => {
-    /** Collapse a sequence to its runs, so [a,a,b,b] -> [a,b]. */
+    /** [a,a,b,b] -> [a,b] */
     const runs = (values) => values.filter((v, i) => v !== values[i - 1]);
-    // Both buckets are told apart by the emitted row alone: an area building
-    // is renamed onto one of the six gw archetypes, and only ruins are
-    // `l-ruin*`.
-    //
-    // Keyed on the *area* names, not on `isFeatureBuildingTemplate`. That
-    // predicate reads 40kdc template ids (`pipe`, `barricade`) while `row.type`
-    // is the emitted gw name `classifyFeature` returns - two namespaces that
-    // coincide only by today's convention, which is exactly why
-    // `classifyFeature` hands back `name` separately. Asking "is this one of
-    // the area archetypes?" instead keeps the robustness that matters here: a
-    // feature building added under any new name still reads as a feature
-    // building, so it cannot collapse the runs back to the expected pair while
-    // the ordering has actually gone wrong.
+    // Keyed on the gw area names, not `isFeatureBuildingTemplate` (which reads
+    // 40kdc ids), so a feature building under any new gw name still counts as
+    // one.
     const AREA_GW_NAMES = new Set([
       "large-area",
       "small-area",
@@ -156,13 +136,7 @@ describe("layoutPlacements", () => {
   });
 
   it("gives every kind a bucket, except the dropped one", () => {
-    // The `default: throw "unhandled piece kind"` this replaces existed only
-    // because the claims table and the dispatch switch were two lists that
-    // could drift. One row per kind cannot, so the case is gone - but a row
-    // with a converter and no bucket would still emit into nothing - and so
-    // would one naming a bucket the result does not have, since `bucket` is
-    // matched by equality. Both are checked against the emitted entry's own
-    // keys, so the row and the thing it feeds cannot disagree.
+    // A converter with no bucket, or an unknown one, would emit into nothing.
     const emitted = Object.keys(layoutPlacements(L, gwTemplates));
     for (const kind of PIECE_KINDS) {
       expect(Boolean(kind.convert), kind.kind).toBe(Boolean(kind.bucket));

@@ -54,15 +54,10 @@ describe("makeMissionCard", () => {
     expect(svg.querySelectorAll("#buildings use").length).toBe(0);
   });
 
-  // The template defs are the *board's* template set, not the selected
-  // layout's, so they hang whether or not anything references them.
-  //
-  // Nothing in the `Layer` seam says so, which is why this is pinned here: a
-  // row that does not draw is filtered out of the list entirely, taking its
-  // `injectDefs` with it, so the buildings row hardcodes `draws: true` purely
-  // to keep hanging them. Tightening that to `layout.buildings.length > 0` -
-  // the obvious-looking change - would silently drop every `#template-*` def
-  // and dangle every building `<use>` that referenced one.
+  // Template defs belong to the board, not the layout. A layer that does not
+  // draw also skips `injectDefs`, so the buildings row hardcodes
+  // `draws: true`; tightening it to `layout.buildings.length > 0` would drop
+  // every `#template-*` def.
   it("still injects the board's template defs when the layout is empty", () => {
     const missing = {
       ...config,

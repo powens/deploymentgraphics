@@ -20,9 +20,8 @@ import { missions } from "./presets/missions";
 import { gwTerrain } from "./presets/terrain";
 
 /**
- * The control set, pinned. Changing it is a persisted-shape change: bump
- * `STORAGE_VERSION` in `static/state.js` so saved state from the old set is
- * dropped rather than half-restored.
+ * The control set, pinned. Changing it changes the persisted shape: bump
+ * `STORAGE_VERSION` in `static/state.js`.
  */
 const EXPECTED_KEYS = [
   "da",
@@ -105,10 +104,7 @@ describe("defaultControls", () => {
 });
 
 describe("deriveControls", () => {
-  // Off the `lay` row's own allowlist, not restated: `LAYOUT_IDS` is keyed by
-  // the `Layout` union precisely so a new variant cannot be missed, and a
-  // literal here would opt this sweep out of that — the new variant would reach
-  // the dropdown and the URL while every pairing under it went unchecked.
+  // Read off the `lay` row, not a literal, so a new variant is swept too.
   const layRow = controlSpec.find((row) => row.key === "lay");
   const LAYOUTS = layRow?.kind === "select" ? layRow.allowed : [];
   const cells = dispositions(eventMatrix).flatMap((da, i, all) =>
@@ -121,20 +117,12 @@ describe("deriveControls", () => {
   });
 
   /**
-   * The check the derivation could not have while it lived in `static/app.js`:
-   * that module runs on import and touches `document`, so no test reached it
-   * and only the default pairing above was ever exercised.
-   *
-   * Both derived values drive a dropdown whose options come off its row's
-   * allowlist, not off the matrix — `writeDerivedControlsToDom` throws when
-   * they disagree, which on the page is a blank dropdown and a stage error. So
-   * every cell has to land on a preset that exists.
+   * Every cell must land on a value in its dropdown's allowlist, or
+   * `writeDerivedControlsToDom` throws on the page.
    */
   it("derives a deployment and a terrain layout the presets carry, for every cell", () => {
-    // Non-vacuity, stated against the matrix rather than against today's cell
-    // count: every pairing the matrix carries is enumerated, under every
-    // layout variant. A re-sourced matrix with a sixth disposition grows both
-    // sides, where a literal `45` would fail a legitimate `pnpm gen:presets`.
+    // Non-vacuity against the matrix rather than a literal count, so a
+    // regenerated matrix does not break this.
     expect(LAYOUTS.length).toBeGreaterThan(0);
     expect(new Set(cells.map((c) => eventMatrixKey(c.da, c.db))).size).toBe(
       Object.keys(eventMatrix).length,
@@ -148,10 +136,8 @@ describe("deriveControls", () => {
   });
 
   /**
-   * The 40kdc source covers every matrix cell today, so the fallback in
-   * `deriveControls` is currently unreached. Pin that rather than the
-   * fallback: a re-source that stops covering a cell is exactly when the
-   * fallback goes live, and this says which cell.
+   * The 40kdc source covers every matrix cell today, so the `deriveControls`
+   * fallback is unreached. This fails, naming the cell, if that changes.
    */
   it("matches a 40kdc layout for every cell, so nothing falls back", () => {
     for (const cell of cells) {
@@ -197,8 +183,7 @@ describe("sanitizeControls", () => {
   });
 
   it("rejects a non-boolean flag whichever way its default points", () => {
-    // The two flags default in opposite directions, so a junk value has to
-    // land on the row's own default rather than on `false`.
+    // The flags have opposite defaults, so junk must land on each row's own.
     expect(sanitizeControls({ grid: "yes" }).grid).toBe(false);
     expect(sanitizeControls({ territory: "no" }).territory).toBe(true);
     expect(sanitizeControls({ grid: null }).grid).toBe(false);
@@ -219,7 +204,6 @@ describe("controlsToSearch", () => {
   }
 
   it("spells a differing flag as 1 or 0, whichever way it differs", () => {
-    // One rule — "differs from the default" — not two special cases.
     expect(controlsToSearch({ ...defaultControls(), grid: true })).toBe(
       "grid=1",
     );
@@ -250,8 +234,7 @@ describe("controlsFromSearch", () => {
   });
 
   it("keeps a flag's default for a spelling it never wrote", () => {
-    // Hand-written links. `?territory=true` and `?territory=` drew the
-    // territory line before the spec owned this parse, and still do.
+    // Hand-written links: unrecognised flag spellings keep the default.
     expect(controlsFromSearch("territory=true").territory).toBe(true);
     expect(controlsFromSearch("territory=").territory).toBe(true);
     expect(controlsFromSearch("grid=true").grid).toBe(false);
@@ -279,8 +262,7 @@ describe("initialControls", () => {
   });
 
   it("ignores a query string carrying no control", () => {
-    // Analytics params and the like are not a shared link, so saved state
-    // still wins.
+    // Non-control params (analytics etc.) do not make a shared link.
     const saved = savedSession({ controls: { rot: "90" } });
     const initial = initialControls({ search: "?utm_source=x", saved });
     expect(initial.controls.rot).toBe("90");
@@ -289,8 +271,7 @@ describe("initialControls", () => {
 
   for (const row of controlSpec) {
     it(`treats a bare "${row.key}" as a shared link`, () => {
-      // Any control in the URL makes it explicit — even valueless, and even
-      // when saved state exists and would otherwise have won.
+      // Even a valueless control param makes it a shared link.
       const initial = initialControls({
         search: `?${row.key}=`,
         saved: savedSession({ controls: { rot: "90" } }),
@@ -335,8 +316,7 @@ describe("initialControls", () => {
   });
 
   it("keeps a URL over a saved yaml override, which a URL cannot express", () => {
-    // The rule that matters most: a shared link must render the link, not the
-    // visitor's own half-finished YAML.
+    // A shared link must render the link, not the visitor's saved YAML.
     const initial = initialControls({
       search: "?rot=90",
       saved: savedSession({ mode: "yaml", yaml: "canvas: {}" }),
@@ -359,8 +339,7 @@ describe("initialControls", () => {
   });
 
   it("keeps an empty saved override, which is still an override", () => {
-    // A cleared editor is a state the visitor put themselves in; coming back
-    // to controls mode would silently discard it.
+    // An empty editor is still the visitor's state; don't discard it.
     const initial = initialControls({
       search: "",
       saved: savedSession({ mode: "yaml", yaml: "" }),

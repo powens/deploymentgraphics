@@ -1,36 +1,14 @@
 /**
- * Plane geometry — the primitives both halves of the codebase are built on.
+ * Pure plane geometry shared by the renderer (`src/`) and the 40kdc converters
+ * (`scripts/`). No board, template or placement vocabulary here.
  *
- * The renderer (`src/`) and the 40kdc converters (`scripts/`) each need rings,
- * bounding boxes, centroids, 2×2 linear maps, degree normalisation and
- * polygon proximity. Before this module they each spelled their own: `matvec`
- * existed twice with incompatible signatures, a bounding box four times in
- * three conventions, `((d % 360) + 360) % 360` four times, and the
- * segment-crossing predicate lived in a test file next to a second copy
- * elsewhere that never received its fix.
- *
- * So this owns them, once. Everything here is pure: points in, points out, no
- * board, template, piece or placement vocabulary. Anything that knows what a
- * *building* or a *piece* is belongs a layer up — `building-coordinates.ts`
- * and `placement.ts` on the renderer side, `terrain-resolver.mjs` on the
- * converter side.
- *
- * The converters are `.mjs` and import this by its `.ts` path, the way their
- * tests already import `placement.ts`; Node strips the types at load
- * (`--experimental-strip-types`, passed explicitly by the `convert:40kdc`
- * scripts so it does not depend on the version where that became the default).
- *
- * That is why this module has **no imports of its own** and must keep none.
- * Type stripping does not rewrite specifiers, so plain Node cannot follow the
- * `./foo.js`-means-`./foo.ts` convention the rest of `src/` is written in —
- * a single import here would break `make update-terrain`. Vitest resolves
- * those specifiers, so the *tests* under `scripts/` may still import
- * `placement.ts` and friends; the production converters may not.
+ * Must have **no imports**: the `.mjs` converters load this under plain Node
+ * with type stripping, which does not rewrite `./foo.js` specifiers, so any
+ * import here would break `make update-terrain`.
  *
  * ## Conventions
  *
- * - A **point** is `{ x, y }`. Never a `[x, y]` pair — that was the other
- *   `matvec`, and having two was the bug.
+ * - A **point** is `{ x, y }`, never a `[x, y]` pair.
  * - A **ring** is a closed polygon given as its vertices, without repeating
  *   the first at the end. Winding is not assumed.
  * - **Angles** are degrees unless a name says `Radians`.
@@ -89,11 +67,8 @@ export function distance(a: Point, b: Point): number {
 }
 
 /**
- * The cross product of `oa` × `ob` — twice the signed area of the triangle
- * `o, a, b`. Positive when `o → a → b` turns one way, negative the other, zero
- * when collinear; which way is which depends on the axis orientation, so
- * callers care about the sign relative to another cross product, not its
- * absolute meaning.
+ * `oa` × `ob`: twice the signed area of triangle `o, a, b`; zero when
+ * collinear. Only the sign relative to another cross product is meaningful.
  */
 export function cross(o: Point, a: Point, b: Point): number {
   return (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
@@ -157,11 +132,7 @@ export function rotationMatrix(deg: number): Matrix2 {
 
 // --- Bounding boxes -------------------------------------------------------
 
-/**
- * The axis-aligned bounding box of a ring, as extents. `boundsSize` and
- * `boundsCentre` derive the two other shapes callers want, so a caller never
- * has to decide which one a helper named `bbox` happens to return.
- */
+/** Axis-aligned bounding box of a ring, as extents. */
 export function bounds(ring: Ring): Bounds {
   const xs = ring.map((p) => p.x);
   const ys = ring.map((p) => p.y);
@@ -199,9 +170,8 @@ export function boundsCorners(ring: Ring): [Point, Point, Point, Point] {
 // --- Rings ----------------------------------------------------------------
 
 /**
- * Area centroid of a simple polygon (shoelace). Falls back to the vertex
- * average for a degenerate (zero-area) ring, so a collapsed footprint still
- * returns a usable point rather than `NaN`.
+ * Area centroid of a simple polygon (shoelace). A zero-area ring falls back to
+ * the vertex average rather than `NaN`.
  */
 export function centroid(ring: Ring): Point {
   let area = 0;
@@ -226,10 +196,8 @@ export function centroid(ring: Ring): Point {
 }
 
 /**
- * How far apart two rings are: the largest distance from a vertex of either
- * ring to the nearest vertex of the other (Hausdorff over vertex sets). Zero
- * when they have the same vertices in any order. Used by the converter tests
- * to check an emitted placement reproduces the ring the source resolves to.
+ * Hausdorff distance over the two rings' vertex sets; zero when they have the
+ * same vertices in any order.
  */
 export function ringMismatch(a: Ring, b: Ring): number {
   const near = (p: Point, ring: Ring) =>
@@ -250,22 +218,14 @@ export function pointSegmentDistance(p: Point, a: Point, b: Point): number {
 }
 
 /**
- * Do segments `p`–`q` and `r`–`s` properly cross? True only when each segment
- * strictly straddles the other's line, so a shared endpoint or a collinear
- * overlap reads false.
- *
- * `ringGap` needs this because endpoint-to-segment distance alone cannot see a
- * crossing: for two segments that cross, all four endpoint distances are
- * strictly positive. A 7×2in catwalk laid squarely across a 0.5in ruin arm —
- * the literal "resting on it" case — would otherwise measure 0.5in clear,
- * indistinguishable from a piece genuinely standing 0.5in away.
+ * Do segments `p`–`q` and `r`–`s` properly cross? True only when each strictly
+ * straddles the other's line, so a shared endpoint or collinear overlap is
+ * false. `ringGap` needs this because endpoint distances alone are all
+ * positive for crossing segments.
  */
 export function segmentsCross(p: Point, q: Point, r: Point, s: Point): boolean {
-  // Strictly opposite, so a zero — an endpoint sitting on the other segment's
-  // line — reads as "does not straddle". Comparing `d > 0` alone would fold
-  // zero in with the negatives, which makes a T-junction answer depend on
-  // which side of the crossbar the stem points: `segmentsCross((0,0), (4,0),
-  // (2,0), (2,2))` would read true and its mirror image false.
+  // Strict on both sides: treating zero as negative would make a T-junction's
+  // answer depend on which side of the crossbar the stem points.
   const straddles = (u: number, v: number) =>
     (u > 0 && v < 0) || (u < 0 && v > 0);
   return (
@@ -275,13 +235,9 @@ export function segmentsCross(p: Point, q: Point, r: Point, s: Point): boolean {
 }
 
 /**
- * Smallest distance between the edges of two closed rings — 0 when their edges
- * cross or touch, so callers can ask how far apart two pieces are rather than
- * comparing centroids.
- *
- * This measures edges, not areas: a ring nested wholly inside another with
- * clearance all round gaps by that clearance, not 0, however completely the
- * two overlap. `ringsOverlap` is the predicate for "do these share ground".
+ * Smallest distance between the edges of two closed rings; 0 when edges cross
+ * or touch. Measures edges, not area: a ring nested inside another gaps by its
+ * clearance, not 0. Use `ringsOverlap` for shared ground.
  */
 export function ringGap(a: Ring, b: Ring): number {
   let min = Infinity;
@@ -322,17 +278,11 @@ export function pointInRing(p: Point, ring: Ring): boolean {
 }
 
 /**
- * Do two closed rings share ground? Vertex containment either way catches
- * nesting and corner overlap; the edge-crossing pass catches the plus-shaped
- * overlap where neither ring has a vertex inside the other.
+ * Do two closed rings share ground? Vertex containment catches nesting and
+ * corner overlap; the edge-crossing pass catches a plus-shaped overlap.
  *
- * Rings that only touch are not decided consistently, because `pointInRing`
- * leaves edge points undefined: two coincident rings and two rectangles
- * sharing a whole edge both read true (one vertex happens to ray-cast inside),
- * while rectangles sharing part of an edge read false. Callers that care about
- * contact rather than shared area should ask `ringGap(a, b) === 0`, which is
- * exact on all three. The corpus has no coincident objective footprints, so
- * nothing downstream depends on which way these fall today.
+ * Rings that only touch are decided inconsistently (`pointInRing` leaves edge
+ * points undefined); use `ringGap(a, b) === 0` for contact.
  */
 export function ringsOverlap(a: Ring, b: Ring): boolean {
   if (a.some((p) => pointInRing(p, b)) || b.some((p) => pointInRing(p, a))) {

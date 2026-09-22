@@ -11,10 +11,8 @@ const { missionLayouts } = loadCorpus();
 
 const CANVAS = { width: 60, height: 44 };
 
-// Absolute outline of a placed rectangle feature: the box corners drawn through
-// the placement seam, the way makeFeatures draws them. The outline is
-// reflection-symmetric, so ringMismatch against resolvePiece's ring matches
-// regardless of mirror parity — no mirror variant is needed to compare them.
+// Absolute outline of a placed rectangle feature, drawn the way makeFeatures
+// does. Reflection-symmetric, so it matches regardless of mirror parity.
 function featureFootprint(pl) {
   const { width: w, height: h } = pl;
   const local = [
@@ -23,15 +21,12 @@ function featureFootprint(pl) {
     { x: w, y: h },
     { x: 0, y: h },
   ];
-  // Every emitted rect-feature placement is mirror:false, so the primary is
-  // the only `Placed`.
+  // mirror:false, so the primary is the only `Placed`.
   const [placed] = resolveFeature(pl, CANVAS);
   return placedRing(local, placed);
 }
 
-// One representative piece per rectangle-feature template, drawn from the
-// source. The piece rides along with its layout, which carries the lookups
-// needed to resolve it.
+// One representative piece (with its layout) per rectangle-feature template.
 const sample = {};
 for (const L of missionLayouts) {
   for (const p of L.pieces) {

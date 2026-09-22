@@ -1,10 +1,8 @@
 import type { SVGProperties } from "./types.js";
 
 /**
- * The single home for SVG visual properties. Every leaf is a bag of SVG
- * attributes (snake_case keys are rewritten to kebab-case by
- * `applyAttributes`). Geometry and behaviour live elsewhere; the theme only
- * decides how things look, never whether they are drawn.
+ * SVG visual properties. Each leaf is a bag of SVG attributes (snake_case keys
+ * become kebab-case). The theme decides how things look, never whether they draw.
  */
 export type Theme = {
   background: SVGProperties;

@@ -5,8 +5,7 @@ import { baseTheme } from "./presets/theme.js";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
 
 const doc = browserSvgDocument();
-// The renderer builds against the minimal `SvgNode` contract; the browser
-// backend hands back real DOM nodes, which is what the assertions query.
+// The browser backend's `SvgNode`s are real DOM nodes.
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 describe("feature draw functions", () => {
@@ -22,7 +21,6 @@ describe("feature draw functions", () => {
   it("draws the gantry as a deck body plus brace + post accents", () => {
     const art = features.gantry(2, 2);
     expect(art.body).toEqual([{ tag: "rect", x: 0, y: 0, width: 2, height: 2 }]);
-    // Two diagonal brace beams (paths) + four corner posts (circles).
     expect(art.accent.filter((s) => s.tag === "path").length).toBe(2);
     expect(art.accent.filter((s) => s.tag === "circle").length).toBe(4);
   });
@@ -35,10 +33,7 @@ describe("feature draw functions", () => {
     if (base.tag !== "path" || mir.tag !== "path") {
       throw new Error("expected path bodies");
     }
-    // The base L walls the left+bottom edges (outer corner bottom-left); the
-    // mirror walls the right+bottom edges (outer corner bottom-right). The wall
-    // thickness is the same, so the mirror path mentions w - wall where the base
-    // mentions wall.
+    // Same wall thickness, so the mirror says w - wall where the base says wall.
     const wall = Math.min(0.5, w, h);
     expect(base.d).toContain(`H${wall}`);
     expect(mir.d).toContain(`H${w - wall}`);
@@ -55,8 +50,7 @@ describe("feature draw functions", () => {
 
 describe("makeFeatures", () => {
   const CANVAS = { width: 60, height: 44 };
-  // Defaults to mirror:false so single-copy assertions stay unambiguous; the
-  // mirror behaviour has its own test.
+  // mirror:false by default so single-copy assertions are unambiguous.
   const place = (over: Record<string, unknown> = {}) => ({
     type: "generator",
     x: 10,

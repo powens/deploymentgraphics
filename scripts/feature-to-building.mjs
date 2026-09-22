@@ -1,15 +1,9 @@
 // Converts 40kdc `pipe` and `barricade` feature pieces into building-template
-// placements. Parallels scripts/area-to-building.mjs and scripts/rect-to-feature.mjs.
-//
-// A pipe piece maps to the `pipe` template; a barricade piece (an 8-vertex
-// polygon) maps to `barricade`. Each template's pinned edge is its own
-// **Template box** width, read through `templateBounds`. A piece resolves (via resolvePiece,
-// which composes any parent-area transform and the piece's own rotation) to an
-// absolute polygon in footprint-vertex order. Neither piece is mirrored, and
-// each shape is reflection-symmetric or a rectangle, so a single non-mirrored
-// template per shape reproduces the outline. We pin the template's TL/TR
-// bounding-box corners to the resolved edge whose length matches the template
-// width.
+// placements. Each piece resolves (parent-area transform and own rotation
+// composed) to an absolute polygon; we pin the template's TL/TR corners to the
+// resolved edge whose length matches the template box width. Neither piece is
+// mirrored and both shapes are reflection-symmetric, so one non-mirrored
+// template per shape reproduces the outline.
 
 import { pieceFootprint, footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
@@ -20,11 +14,7 @@ const near = (a, b) => Math.abs(a - b) < 0.05;
 
 /**
  * Pick the building template that reproduces a pipe/barricade footprint.
- *
- * The pinned edge is the gw template's own **Template box** width (see
- * CONTEXT.md), read through `templateBounds` rather than restated here: the
- * check then asks whether upstream still matches the template we actually pin,
- * and cannot drift from it.
+ * Throws if upstream no longer matches the template box we pin against.
  *
  * @param {string} template - the 40kdc template id.
  * @param {object} footprint - the piece's footprint.
@@ -43,8 +33,7 @@ function classifyFeature(template, footprint, gwTemplates) {
   }
   if (template === "barricade") {
     const width = widthOf("barricade");
-    // Two guards, catching two different upstream regressions: the vertex count
-    // a reshaped barricade, the long edge a resized one.
+    // Vertex count catches a reshaped barricade, the long edge a resized one.
     if (ring.length === 8 && near(long, width)) {
       return { name: "barricade", width };
     }
@@ -72,7 +61,6 @@ export function featureBuildingPlacement(piece, layout, gwTemplates) {
   const footprint = pieceFootprint(piece, layout.footprintOf);
   const { name, width } = classifyFeature(piece.template, footprint, gwTemplates);
   const ring = layout.resolve(piece);
-  // Pin the resolved edge whose length matches the template width as TL->TR.
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i];
     const b = ring[(i + 1) % ring.length];

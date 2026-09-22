@@ -16,23 +16,9 @@ import {
 } from "./bundle.js";
 import { loadState, saveState } from "./state.js";
 
-// The nine controls are spelled once, in `src/viewer-controls.ts`: every
-// default, allowlist, element id, DOM read or write, and the derivation that
-// turns the two dispositions + layout into the Deployment and Terrain
-// dropdowns, all come off that module rather than being restated here. Only
-// the option *labels* are the app's own, since they are presentation. Both
-// derived dropdowns can also be set directly.
+// Control defaults, allowlists, element ids and derivation all live in
+// `src/viewer-controls.ts`; only the option labels are defined here.
 
-// Assemble the config for the current controls from the bundled presets, with
-// the renderer's own `buildConfig` — the same seam the package documents, so
-// the app and the library can never drift on assembly. `gen-presets.mjs`
-// compiles every slice below from the YAML under `static/data/`, which stays
-// the source of truth for authoring; the app reads the compiled form, so the
-// site ships no YAML and parses none.
-//
-// The `tpl` value is not read here: which terrain a template set means is
-// spelled beside the dropdown's value list in `src/viewer-controls.ts`, so a
-// new set cannot reach the dropdown without also reaching the assembly.
 function configFromControls(controls) {
   return buildConfig({
     mission: missions[controls.m],
@@ -59,18 +45,15 @@ function downloadBlob(blob, filename) {
 
 const SPEC = new Map(controlSpec.map((row) => [row.key, row]));
 
-// Through the spec's own lookup, so markup drift throws naming the control
-// that drifted. A bare `getElementById` would hand back `null` here and blow
-// up further down — at `appendChild` or `addEventListener`, both of which run
-// during module evaluation, so the visitor gets a blank page.
+// Throws naming the control if the markup lacks it, rather than returning
+// null and failing later with a blank page.
 function controlEl(key) {
   return controlElement(document, SPEC.get(key));
 }
 
-// Every control element, in spec order — the ids are the spec's, not the app's.
 const controlEls = controlSpec.map((row) => controlEl(row.key));
-// Changing a disposition or the layout re-derives the deployment and terrain;
-// the other controls (those two dropdowns included) just re-render.
+// Changing these re-derives the deployment and terrain; other controls just
+// re-render.
 const derivedFromControls = ["da", "db", "lay"].map((key) => controlEl(key));
 
 const stage = document.getElementById("stage");
@@ -90,17 +73,8 @@ const resetButton = document.getElementById("reset-controls");
 
 // --- Controls -------------------------------------------------------------
 
-// Option labels are presentation, so they stay here; the option *values* come
-// off each row's allowlist, which is what keeps the dropdowns, the URL and the
-// underlying YAML from drifting. Rows marked `staticOptions` carry their
-// <option>s in index.html instead, and `static/index.test.js` holds that
-// markup to the same value set.
-//
-// A control the map says nothing about labels its options with their own
-// values, which is what `da`, `db` and `lay` want anyway. Without that
-// fallback, adding a select row to the spec throws here at load — before a
-// single listener is wired, so the page comes up blank — rather than showing
-// a plain dropdown.
+// Option values come from each row's allowlist (`staticOptions` rows carry
+// theirs in index.html). Controls with no entry here are labelled by value.
 const OPTION_LABEL = {
   m: (id) => missions[id].name,
   t: (id) => `GW Layout ${id}`,
@@ -121,9 +95,8 @@ for (const row of controlSpec) {
   }
 }
 
-// "controls" — the dropdowns drive the render. "yaml" — the editor text
-// does. The first edit of the YAML textarea promotes the mode to "yaml";
-// `start()` resolves the mode a page load comes up in.
+// Which editor drives the render: "controls" or "yaml". The first YAML edit
+// switches to "yaml".
 let mode = "controls";
 
 // --- Rendering ------------------------------------------------------------
@@ -147,11 +120,9 @@ function setYamlError(message) {
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 
-// Rotate the rendered card by ±90° in place: swap the viewBox dimensions and
-// wrap the content in a rotated group, mapping the w×h board into the swapped
-// h×w viewport. Doing it inside the SVG (rather than via CSS) keeps the card
-// correctly sized and makes exports — which serialize this same SVG — match
-// what's on screen. The <title> stays a direct child for accessibility.
+// Rotate the card by ±90° inside the SVG (swap the viewBox, wrap content in a
+// rotated group) rather than via CSS, so layout sizing and exports match the
+// screen. The <title> stays a direct child for accessibility.
 function rotateCard(svg, deg) {
   if (deg !== 90 && deg !== -90) {
     return svg;
@@ -172,13 +143,8 @@ function rotateCard(svg, deg) {
   return svg;
 }
 
-// Assembly is synchronous — the presets are already in memory — so a render
-// runs start to finish before the next event is handled. There is no window
-// for a stale result to land late, which is what the generation counter this
-// function used to carry was guarding against.
+// Synchronous (presets are in memory), so no stale-render guard is needed.
 function renderFromControls() {
-  // No card to export until this render finishes successfully. No progress
-  // message either: assembly never yields, so nothing could observe one.
   setExportEnabled(false);
   try {
     const controls = readControlsFromDom(document);
@@ -193,8 +159,7 @@ function renderFromControls() {
 }
 
 function renderFromYaml() {
-  // Export is not touched on the error paths below: a bad edit keeps the
-  // last good render on the stage, and that card stays exportable.
+  // Error paths leave the last good render on stage, still exportable.
   let config;
   try {
     config = yaml.load(yamlEditor.value);
@@ -207,8 +172,7 @@ function renderFromYaml() {
     return;
   }
   try {
-    // Build off-DOM first: an invalid config throws before the stage is
-    // touched, so the last good render survives a bad edit.
+    // Build off-DOM first so a throw leaves the stage untouched.
     const card = makeMissionCard(config);
     stage.replaceChildren(card);
     setExportEnabled(true);
@@ -231,9 +195,8 @@ function updateModeUi() {
 }
 
 function openYamlTab() {
-  // Clear any error left over from a previous yaml session.
   setYamlError(null);
-  // In yaml mode the editor already holds the user's edits — keep them.
+  // In yaml mode the editor already holds the user's edits.
   if (mode === "yaml") {
     return;
   }
@@ -287,10 +250,8 @@ function onControlChange() {
   renderFromControls();
 }
 
-// A disposition/layout change re-derives the deployment and terrain dropdowns,
-// then renders. Both the derivation and the read-back that catches a dropdown
-// with no option for a derived value live behind the controls seam; what is
-// left here is what belongs on a page: report the throw on the stage.
+// Re-derive the deployment and terrain dropdowns, then render; a derivation
+// failure is reported on the stage.
 function onDerivedControlChange() {
   try {
     writeDerivedControlsToDom(
@@ -315,13 +276,12 @@ for (const el of controlEls) {
 let yamlRenderTimer;
 
 yamlEditor.addEventListener("input", () => {
-  // The first edit promotes yaml to the source of truth.
   if (mode === "controls") {
     mode = "yaml";
     updateModeUi();
     syncUrl();
   }
-  // Debounce: re-render shortly after the user stops typing.
+  // Debounce re-render.
   clearTimeout(yamlRenderTimer);
   yamlRenderTimer = setTimeout(() => {
     renderFromYaml();
@@ -415,9 +375,8 @@ function exportPng() {
 const COPY_LINK_LABEL = "Copy link";
 let copyLinkResetTimer;
 
-// Show transient feedback on the button, restoring to the fixed label.
-// Using a literal (not the live textContent) avoids a rapid second click
-// capturing "Copied" as the label to restore.
+// Restore to a fixed label, not the live textContent, so a rapid second click
+// cannot capture "Copied" as the label.
 function flashCopyLink(message) {
   copyLinkButton.textContent = message;
   clearTimeout(copyLinkResetTimer);
@@ -457,9 +416,6 @@ document.addEventListener("keydown", (event) => {
 function start() {
   setExportEnabled(false);
 
-  // Which of the URL and the saved session wins, and whether the result may be
-  // written back, are `initialControls`' rules — this is where they are
-  // applied to the page.
   const initial = initialControls({
     search: window.location.search,
     saved: loadState(),

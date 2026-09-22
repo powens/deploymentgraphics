@@ -14,12 +14,8 @@ describe("loadCorpus", () => {
   });
 
   it("normalizes the mission layouts, leaving rawLayouts on the upstream shape", () => {
-    // The composite templates upstream introduced are what normalizeLayout
-    // rewrites away; they must be gone from `missionLayouts` and still present
-    // in `rawLayouts`, which the registration test compares against.
-    // Upstream's own prefix, read directly: the module that maps it away no
-    // longer exports the predicate, and a test of what normalizeLayout removed
-    // should be reading upstream's vocabulary rather than the module's.
+    // Upstream's composite prefix, spelled here rather than imported from the
+    // normalizer under test.
     const composites = (ls) =>
       ls.flatMap((l) => l.pieces).filter((p) =>
         p.template?.startsWith("bm-composite-"),
@@ -58,7 +54,7 @@ describe("withLookups", () => {
   });
 
   it("scopes parentOf to one layout", () => {
-    // Two layouts can share piece ids; each layout must only see its own.
+    // Layouts share piece ids.
     const [a, b] = corpus.missionLayouts;
     const pieceOfB = b.pieces[0];
     expect(a.parentOf(pieceOfB.id)).not.toBe(pieceOfB);
@@ -101,11 +97,6 @@ describe("withLookups", () => {
 });
 
 describe("a derived layout reads its own pieces", () => {
-  // The lookups used to be non-enumerable closures over the piece list they
-  // were built from, so `{ ...layout, pieces }` produced a layout that could
-  // not resolve at all and every caller had to remember to re-wrap. They are
-  // methods now: the piece index is keyed on the array `this.pieces` holds, so
-  // a narrowed layout answers against the narrowed list.
   const layout = corpus.missionLayouts[0];
   const first = layout.pieces[0];
   const second = layout.pieces[1];
@@ -115,13 +106,10 @@ describe("a derived layout reads its own pieces", () => {
     expect(derived.id).toBe(layout.id);
     expect(derived.parentOf(first.id)).toBe(first);
     expect(derived.parentOf(second.id)).toBeUndefined();
-    // ...and the original is untouched.
     expect(layout.parentOf(second.id)).toBe(second);
   });
 
   it("narrows through a plain spread too", () => {
-    // The shape is what carries the invariant now, so the mistake the old
-    // guard existed for cannot be made.
     const derived = { ...layout, pieces: [first] };
     expect(derived.parentOf(first.id)).toBe(first);
     expect(derived.parentOf(second.id)).toBeUndefined();
