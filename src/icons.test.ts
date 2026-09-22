@@ -5,8 +5,7 @@ import { baseTheme } from "./presets/theme.js";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
 
 const doc = browserSvgDocument();
-// The renderer builds against the minimal `SvgNode` contract; the browser
-// backend hands back real DOM nodes, which is what the assertions query.
+// The browser backend returns real DOM nodes, so tests can query them.
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 const defsEl = () => doc.createElement("defs");
@@ -57,10 +56,8 @@ describe("injectIconDefs", () => {
     expect(group).not.toBeNull();
     const circle = group!.querySelector("circle")!;
     expect(circle.getAttribute("fill")).toBe(baseTheme.deployment.attacker.fill);
-    // only the fill is tinted; the border stroke stays neutral
     expect(circle.getAttribute("stroke")).toBe(baseTheme.icon.circle.stroke);
     const rects = [...group!.querySelectorAll("rect")];
-    // cutouts take the disk (deployment) fill; body keeps the glyph fill
     expect(rects.some((r) => r.getAttribute("fill") === baseTheme.deployment.attacker.fill)).toBe(true);
     expect(rects.some((r) => r.getAttribute("fill") === baseTheme.icon.glyph.fill)).toBe(true);
   });

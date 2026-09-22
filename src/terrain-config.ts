@@ -13,10 +13,9 @@ export type IconPlacement = {
 
 /**
  * A placed terrain feature: `type` selects a draw function, `x`/`y` is the
- * top-left of its unrotated bounding box (inches), `width`/`height` its box,
- * `color` a palette key resolved from `theme.feature.palette`, `rotation`
- * degrees about the box center. Like buildings, a feature is mirrored 180°
- * through the canvas centre unless `mirror: false`.
+ * top-left of the unrotated box (inches), `color` a `theme.feature.palette`
+ * key, `rotation` degrees about the box centre. Mirrored through the canvas
+ * centre unless `mirror: false`.
  */
 export type FeaturePlacement = {
   type: string;
@@ -29,36 +28,23 @@ export type FeaturePlacement = {
   mirror?: boolean; // default true
 };
 
-/**
- * One numbered layout: building placements and optional icon markers and
- * terrain features (drawn on top of the buildings).
- */
+/** One numbered layout: building placements, icon markers and features. */
 export type TerrainLayout = {
-  // Building placements for this layout. Named `templates` in the YAML
-  // because each placement references a building template by `type:`.
+  // Building placements; each references a template by `type`.
   templates: BuildingPlacement[];
   icons?: IconPlacement[];
   features?: FeaturePlacement[];
-  // The two mission dispositions this layout's matchup pairs (e.g.
-  // ["Take and Hold", "Purge the Foe"]), ported from the 40kdc
-  // `mission_matchup_id`. Absent on layouts with no matchup.
+  // The matchup's two dispositions, from the 40kdc `mission_matchup_id`.
   dispositions?: string[];
-  // The 40kdc `deployment_pattern_id` (e.g. "hammer-and-anvil"). The renderer
-  // never reads it; `resolveTerrainLayout` joins on it, with `dispositions`, to
-  // pick the layout for a mission pairing.
+  // e.g. "hammer-and-anvil". Not rendered; `resolveTerrainLayout` matches on it.
   deployment_pattern_id?: string;
 };
 
 /**
- * A terrain file as parsed from YAML: a set of named building templates
- * (rectangles or polygon footprints) and a set of numbered layouts. Layout keys are strings because YAML integer keys
- * become string object properties once loaded.
+ * A terrain file as parsed from YAML: named building templates and numbered
+ * layouts. Layout keys are strings because loaded YAML integer keys are.
  */
 export type TerrainConfig = {
   templates: Record<string, Template>;
   layout: Record<string, TerrainLayout>;
 };
-
-// The pieces of a selected layout are assembled by `resolveLayout` in
-// `layers.ts` (which unions them with the board's top-level arrays), not by
-// per-piece accessors here.

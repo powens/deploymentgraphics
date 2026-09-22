@@ -14,8 +14,7 @@ const loadTerrainYaml = (file: string) =>
   yaml.load(readFileSync(terrainUrl(file), "utf8")) as Partial<TerrainConfig>;
 
 describe("combined.yml", () => {
-  // combined.yml carries layouts only; templates live in templates-simple.yml.
-  // Merge them as gen-presets does to get a complete TerrainConfig.
+  // combined.yml carries layouts only; merge in templates as gen-presets does.
   const terrain = {
     ...loadTerrainYaml("templates-simple.yml"),
     ...loadTerrainYaml("combined.yml"),

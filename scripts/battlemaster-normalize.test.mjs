@@ -3,10 +3,9 @@ import { normalizeLayout } from "./battlemaster-normalize.mjs";
 import { FLIP_X, IDENTITY, matvec, rotationMatrix } from "../src/geometry.ts";
 
 // `variantOf` fits each composite against its class's pinned reference, so a
-// fixture table has to carry that reference. These stand in for upstream's
-// traced outlines: the fit needs a shape with no rigid self-symmetry, which an
-// L has, and nothing else - a fixture composite drawn as the reference under
-// the rigid map W comes out registered at `W . refV`.
+// fixture table must carry that reference. The fit only needs a shape with no
+// rigid self-symmetry, which an L is: a fixture composite drawn as the
+// reference under the rigid map W registers at `W . refV`.
 const REF_RING = [
   { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 1 },
   { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 0, y: 2 },
@@ -16,13 +15,11 @@ const ringUnder = (M) => ({
   points: REF_RING.map((p) => matvec(M, p)),
 });
 const REFERENCE = {
-  // Pinned at R180, so a footprint drawn at R180 fits at W = R180 and comes
-  // out at the identity - which is what every ShortLine fixture below wants.
+  // Pinned at R180, so a footprint drawn at R180 registers at the identity,
+  // which every ShortLine fixture below wants.
   ShortLine: ["bm-composite-shortline-barrier-348db27c93", rotationMatrix(180)],
-  // Pinned at R90.FX, so a footprint drawn at R0.FX comes out at
-  // FLIP_X . R90.FX = R270 - the one registered variant that is not its own
-  // inverse, which "anchors children through a variant that is not
-  // self-inverse" below is about.
+  // Pinned at R90.FX, so a footprint drawn at R0.FX registers at
+  // FLIP_X . R90.FX = R270, the one variant that is not its own inverse.
   Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", FLIP_X],
 };
 /** The class reference entry a fixture table needs, for `cls`. */
@@ -34,27 +31,21 @@ const referenceEntry = (cls) => {
 const fixtureFootprint = (cls) => ringUnder(REFERENCE[cls][1]);
 
 // A minimal stand-in for the vendored data: one composite registered at the
-// identity (see REFERENCE above), carrying two
-// parts - one that needs a chirality flip and one that does not - plus the two
-// legacy templates they map onto, which normalizeLayout reads to compute each
-// child's anchor offset. Both footprints are copied verbatim from
+// identity carrying two parts, one with a flip bit and one without, plus the
+// legacy templates they map onto. Footprints are copied from
 // terrain-templates.json.
 //
-// The upstream parts here carry a bare `footprint` and no `walls`, which is the
-// pre-battlemaster-11e shape of the data. partExtent falls back to `footprint`
-// and partAnchorShift to zero for such a part, so these fixtures go on
-// exercising the mapping rules (F, Z, K, Q, S) in isolation. The `walls` path
-// those two functions exist for is pinned separately at the end of this file.
+// The upstream parts carry `footprint` and no `walls`, so partExtent falls back
+// to the footprint and partAnchorShift to zero, isolating F, Z, K, Q and S. The
+// `walls` path is tested at the end of this file.
 const templatesById = new Map([
   [
     "corner-short",
     {
       id: "corner-short",
       // An L: 2x3 bbox with 0.5in arms. Z resizes it onto upstream's 1.5x2.5
-      // (turn 180, so no axis swap) by moving each axis's far side only, giving
-      // a 1.5x2.5 L with the same 0.5in arms, whose area centroid then sits
-      // (-0.3125, -0.3125) inside its bbox centre. That offset is what the
-      // child's `position` must absorb.
+      // (turn 180, so no axis swap) keeping the 0.5in arms; the resized L's
+      // centroid-to-bbox offset is what the child's `position` must absorb.
       footprint: {
         type: "polygon",
         points: [
@@ -71,8 +62,8 @@ const templatesById = new Map([
       footprint: { type: "rectangle", width: 1.5, height: 2.5 },
     },
   ],
-  // A rectangle: centroid and bbox centre coincide, so its anchor offset is 0.
-  // `tower` takes upstream's footprint (2x2.5) over this one, so both are here.
+  // A rectangle, so its anchor offset is 0. `tower` takes upstream's 2x2.5
+  // footprint over this one, so both are here.
   ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
   [
     "bm-part-tower-ddab4cb687",
@@ -81,10 +72,8 @@ const templatesById = new Map([
       footprint: { type: "rectangle", width: 2, height: 2.5 },
     },
   ],
-  // The legacy generator is 3x4 and Battlemaster's part is 4.5x2 - a different
-  // model, not a re-drawing - so `generator` is the one part that carries
-  // upstream's own footprint through onto the child. Both copied verbatim from
-  // terrain-templates.json.
+  // The legacy generator is 3x4 and Battlemaster's part 4.5x2, so `generator`
+  // carries upstream's footprint onto the child (F).
   ["generator", { id: "generator", footprint: { type: "rectangle", width: 3, height: 4 } }],
   [
     "bm-part-generator-2aeba08b62",
@@ -171,22 +160,18 @@ describe("normalizeLayout", () => {
     const [lRuin, tower] = out.pieces.filter((p) => p.piece_type === "feature");
     // small-l is flip:true under an unmirrored parent (K = FLIP_X) and turn:180,
     // so A = R(90) . FLIP_X . R(180) = [[0, 1], [1, 0]], which maps the anchor
-    // offset onto itself. The offset is read off the *resized* polygon (Z), the
-    // 1.5x2.5 L with 0.5in arms: area 1.75, centroid (13/28, 27/28), bbox centre
-    // (0.75, 1.25), so the offset is (-2/7, -2/7). It was (-5/12, -5/12) off the
-    // unresized 2x3 L.
+    // offset onto itself. The offset is read off the Z-resized 1.5x2.5 L: area
+    // 1.75, centroid (13/28, 27/28), bbox centre (0.75, 1.25), so (-2/7, -2/7).
     expect(lRuin.position.x).toBeCloseTo(1.5 - 2 / 7, 10);
     expect(lRuin.position.y).toBeCloseTo(-0.25 - 2 / 7, 10);
-    // tower is a rectangle, so its centroid is its bbox centre and upstream's
-    // position carries through untouched.
+    // A rectangle's centroid is its bbox centre, so position carries through.
     expect(tower.position).toEqual({ x: -1.5, y: 0.25 });
   });
 
   it("carries upstream's own footprint for the tower part", () => {
     const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
     const tower = out.pieces[2];
-    // Upstream's 2x2.5, not the legacy gantry's 2x2. Neither footprint says
-    // anything the other doesn't beyond its size, so upstream's wins.
+    // Upstream's 2x2.5, not the legacy gantry's 2x2.
     expect(tower.template).toBe("gantry");
     expect(tower.footprint).toEqual({ type: "rectangle", width: 2, height: 2.5 });
   });
@@ -200,23 +185,19 @@ describe("normalizeLayout", () => {
       templatesById,
     );
     const gen = out.pieces[1];
-    // Upstream's 4.5x2, not the legacy 3x4 the template id names. The id stays
-    // so rect-to-feature.mjs still types and colours it as a generator.
+    // Upstream's 4.5x2, not the legacy 3x4. The template id stays so
+    // rect-to-feature.mjs still types and colours it as a generator.
     expect(gen.template).toBe("generator");
     expect(gen.footprint).toEqual({ type: "rectangle", width: 4.5, height: 2 });
-    // Turn 0 and a rectangle's zero anchor offset, so upstream's placement
-    // carries through untouched.
+    // Turn 0 and a zero anchor offset, so upstream's placement carries through.
     expect(gen.position).toEqual({ x: 2, y: -1 });
     expect(gen.rotation_degrees).toBe(90);
   });
 
   it("resizes a corner part's L onto the upstream rectangle, arms intact", () => {
-    // corner-short's L exists only in the legacy polygon - upstream ships that
-    // part as a plain rectangle - so the shape has to survive. Its *size* comes
-    // from upstream all the same: Z moves each axis's far side onto the 1.5x2.5
-    // rectangle and leaves the 0.5in arms where they are, so the emitted
-    // polygon is still an L, still 0.5in-walled (which is what lRuin draws), and
-    // now exactly upstream's bounding box.
+    // Upstream ships this part as a plain rectangle, so the L comes from the
+    // legacy polygon and the size from upstream: Z moves each axis's far side
+    // onto 1.5x2.5 and leaves the 0.5in arms (what lRuin draws) alone.
     const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
     const child = out.pieces[1];
     expect(child.template).toBe("corner-short");
@@ -230,12 +211,9 @@ describe("normalizeLayout", () => {
   });
 
   it("throws when resizing cannot land on the upstream rectangle", () => {
-    // Moving only the far side lands on the target box as long as the arm stays
-    // inside it. Shrink the upstream rectangle past corner-short's 0.5in arm
-    // (0.4in wide against an arm the near/far split leaves at 0.5) and the arm
-    // itself becomes the widest thing in the polygon, so the result is 0.5 wide,
-    // not 0.4. That has to throw rather than emit a piece that is not upstream's
-    // size after all.
+    // A 0.4in-wide target is narrower than the 0.5in arm the near/far split
+    // leaves in place, so the result is 0.5 wide and must throw rather than
+    // emit a piece that is not upstream's size.
     const bad = new Map(templatesById);
     bad.set("bm-part-small-l-a5777aceb2", {
       id: "bm-part-small-l-a5777aceb2",
@@ -255,16 +233,15 @@ describe("normalizeLayout", () => {
   });
 
   it("mirrors a flip-bit part so its handedness is fixed", () => {
-    // small-l has flip:true and the parent is unmirrored, so K must be improper.
+    // small-l has flip:true under an unmirrored parent, so K is improper.
     const plain = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
     expect(plain.pieces[1].mirror).toBe("horizontal");
-    // tower has flip:false, so K is the identity.
     expect("mirror" in plain.pieces[2]).toBe(false);
   });
 
   it("cancels the parent's parity so handedness survives a mirrored area", () => {
-    // Parent mirrored => det(M) = -1, so small-l's K flips back to proper and
-    // tower's K becomes improper. Each part keeps its absolute handedness.
+    // Parent mirrored: small-l's K becomes proper and tower's improper, so
+    // each part keeps its absolute handedness.
     const out = normalizeLayout(
       layoutWith({ rotation_degrees: 0, mirror: "horizontal" }),
       templatesById,
@@ -282,16 +259,14 @@ describe("normalizeLayout", () => {
     //                        => A = R(90) . R(180) . R(180) = R(90)
     //   tower    flip:false  K = FLIP_Y, turn 0  => A = FLIP_Y
     //
-    // Collapsing to `improper ? FLIP_X : IDENTITY` gives 270 and 0 instead -
-    // a half-turn out in both cases, with identical mirror flags, which is
-    // exactly what the assertions above cannot see.
+    // Collapsing to `improper ? FLIP_X : IDENTITY` gives 270 and 0 instead: a
+    // half-turn out in both, with the same mirror flags the test above checks.
     const out = normalizeLayout(
       layoutWith({ rotation_degrees: 0, mirror: "horizontal" }),
       templatesById,
     );
     expect(out.pieces[1].rotation_degrees).toBe(90);
     expect(out.pieces[2].rotation_degrees).toBe(180);
-    // ...and the proper-parent case is untouched by the composition.
     const plain = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
     expect(plain.pieces[1].rotation_degrees).toBe(270);
     expect(plain.pieces[2].rotation_degrees).toBe(0);
@@ -318,7 +293,7 @@ describe("normalizeLayout", () => {
       },
       templates,
     );
-    // V is a 180-degree rotation, so it lands entirely in rotation_degrees.
+    // BigRect's reference is registered at R180, a pure rotation.
     expect(out.pieces[0].template).toBe("area-large");
     expect(out.pieces[0].rotation_degrees).toBe(210);
     expect("mirror" in out.pieces[0]).toBe(false);
@@ -334,11 +309,8 @@ describe("normalizeLayout", () => {
   });
 
   it("throws on an unhandled composite feature field", () => {
-    // `mirror` used to be this test's subject; upstream started shipping one and
-    // the module now handles it (see "applies a feature's own mirror" below). An
-    // inline `footprint` takes its place as the field that would be dropped in
-    // silence - it would lose to the template's under F/Z, so the part would
-    // quietly draw at the wrong size.
+    // An inline feature `footprint` would lose to the template's under F/Z, so
+    // the part would silently draw at the wrong size.
     const withFootprint = new Map([
       referenceEntry("ShortLine"),
       ["bm-composite-shortline-30-aaaaaaaaaa", {
@@ -386,10 +358,8 @@ describe("normalizeLayout", () => {
   });
 
   // A footprint symmetric under one of the eight rigid maps fits under two of
-  // them at once, so the shape does not say which variant it is registered at
-  // and `.sort()[0]` would answer from `CANDIDATES` insertion order. The
-  // reference ring is an L precisely to avoid this; a rectangle is the case it
-  // avoids.
+  // them, so without the guard `CANDIDATES` insertion order would pick the
+  // variant. This is why REF_RING is an L.
   it("throws for a footprint whose self-symmetry leaves the variant undetermined", () => {
     const square = { type: "polygon", points: [
       { x: 0, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 2 }, { x: 0, y: 2 },
@@ -410,15 +380,12 @@ describe("normalizeLayout", () => {
   });
 });
 
-// The battlemaster-11e re-source split a part's old `footprint` rectangle in
-// two: `footprint` became the roofed area and the rest of the model moved into
-// `walls`. Both the *size* and the *anchor* have to be put back, and the anchor
-// is the one nothing else in this file would catch - a wrong extent shows up as
-// a wrong footprint, but a wrong anchor only shows up as a part drifting out of
-// its own parent.
+// The earlier upstream schema: `footprint` is only the roof and the rest of
+// the model is in `walls`. A wrong extent shows up as a wrong footprint, but a
+// wrong anchor only as a part drifting out of its parent, which nothing else
+// in this file catches.
 describe("a part's extent and anchor", () => {
-  // An L-ruin shaped part: the roof is one corner of the model, the walls run
-  // out to the model's full extent.
+  // An L-ruin: the roof is one corner, the walls reach the full extent.
   const walled = {
     id: "bm-part-tower-ddab4cb687",
     footprint: {
@@ -434,9 +401,8 @@ describe("a part's extent and anchor", () => {
     footprint: { type: "rectangle", width: 4, height: 1 },
   };
 
-  // `tower` is an upstreamFootprint part, so the emitted child carries
-  // upstream's own extent rather than the legacy gantry's 2x2 - which is what
-  // makes the child readable as the extent and the anchor directly.
+  // `tower` is an upstreamFootprint part, so the child's footprint and
+  // position read the extent and anchor directly.
   const towerChild = (part) => {
     const templates = new Map([
       ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
@@ -460,16 +426,14 @@ describe("a part's extent and anchor", () => {
   };
 
   it("reads the extent from the roof and the walls together", () => {
-    // Roof alone is 2x2 and the wall centreline alone is 0x3; the model is
-    // neither. Taking the union gives 2x3.
+    // Roof alone is 2x2 and the wall centreline 0x3; the union is 2x3.
     expect(towerChild(walled).footprint).toEqual({
       type: "rectangle", width: 2, height: 3,
     });
   });
 
   it("anchors the child on the extent centre, not the roof centre", () => {
-    // Roof centre (1, -1), extent centre (1, -1.5), so the child sits half an
-    // inch below where upstream's `position` alone would put it.
+    // Roof centre (1, -1), extent centre (1, -1.5).
     expect(towerChild(walled).position).toEqual({ x: 3, y: 6.5 });
   });
 
@@ -508,16 +472,15 @@ describe("fields the re-source introduced", () => {
     );
 
   it("applies a feature's own mirror, and cancels it in K", () => {
-    // Upstream ships one composite whose feature carries a `mirror`. It is the
-    // same axis K controls, so P has to cancel the feature's parity as well as
-    // the parent's: `tower` is flip:false, so its emitted hand must stay proper.
+    // P cancels the feature's parity as well as the parent's: `tower` is
+    // flip:false, so its emitted hand must stay proper.
     const out = run(
       "bm-composite-shortline-91-dddddddddd", "Battlemaster ShortLine 91",
       [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
          position: { x: 0, y: 0 }, mirror: "horizontal" }],
     );
     const child = out.pieces[1];
-    // A = FLIP_X . FLIP_Y = R(180): proper, so no mirror survives onto the child.
+    // A = FLIP_X . FLIP_Y = R(180).
     expect("mirror" in child).toBe(false);
     expect(child.rotation_degrees).toBe(180);
   });
@@ -532,18 +495,14 @@ describe("fields the re-source introduced", () => {
   });
 
   it("anchors children through a variant that is not self-inverse", () => {
-    // The `-flip` Triangle registers R270, the one variant that is not its own
-    // inverse.
-    // The child's anchor has to undo V with a real inverse: whatever V is, the
-    // child must resolve to the same point upstream's feature does, which with
-    // an unrotated parent is `feature.position` itself.
+    // The `-flip` Triangle registers R270, which is not self-inverse. With an
+    // unrotated parent the child must resolve to `feature.position` itself.
     const id = "bm-composite-triangle-ab-corner-flip-e300f1fbc2";
     const out = run(id, "Battlemaster Triangle AB Corner flip",
       [{ id: "feature-1", template: "bm-part-tower-ddab4cb687",
          position: { x: 4, y: 1 } }]);
     const [area, child] = out.pieces;
     expect(area.template).toBe("area-trapezoid");
-    // V is a rotation here, so the area's own map is a plain rotation too.
     expect("mirror" in area).toBe(false);
     const placed = matvec(rotationMatrix(area.rotation_degrees), child.position);
     expect(placed.x).toBeCloseTo(4, 10);

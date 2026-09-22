@@ -13,12 +13,8 @@ import {
 } from "./viewer-controls.js";
 
 /**
- * A panel holding one element per spec row, with every `<select>`'s options
- * taken from the row's allowlist.
- *
- * Generating the fixture off the spec is the point: whether
- * `static/index.html` matches the spec is `static/index.test.js`'s question,
- * and asking it here too would only pin the fixture to itself.
+ * A panel holding one element per spec row, with `<select>` options from the
+ * row's allowlist. Markup-vs-spec is checked in `static/index.test.js`.
  */
 function panel(): HTMLElement {
   const root = document.createElement("div");
@@ -78,8 +74,6 @@ describe("writeControlsToDom / readControlsFromDom", () => {
   }
 
   it("replaces the whole set rather than merging into it", () => {
-    // Every row is assigned on write, so a control left at a non-default by an
-    // earlier write must not survive the next one.
     const root = panel();
     const allChanged = Object.fromEntries(
       controlSpec.map((row) => [row.key, otherValue(row)]),
@@ -106,9 +100,7 @@ describe("writeControlsToDom / readControlsFromDom", () => {
 describe("readControlsFromDom", () => {
   for (const row of selectRows) {
     it(`falls back to the default when "${row.key}" holds no option`, () => {
-      // Assigning a `<select>` a value it has no `<option>` for leaves it
-      // reading as the empty string. Sanitizing on read is what keeps that out
-      // of the rest of the app.
+      // A `<select>` given a value with no `<option>` reads back as "".
       const root = panel();
       const select = root.querySelector<HTMLSelectElement>(
         `#${row.elementId}`,
@@ -151,11 +143,7 @@ describe("writeDerivedControlsToDom", () => {
     );
   });
 
-  // The failure this exists for. A `<select>` silently ignores a value it has
-  // no `<option>` for, so the dropdown would go blank while
-  // `readControlsFromDom` substituted the row's default — leaving the card, the
-  // URL and storage all disagreeing with what the visitor sees. On the page it
-  // reaches the stage as an error instead; here it is just a throw.
+  // A `<select>` silently ignores a value it has no `<option>` for.
   it("throws when a dropdown has no option for the derived value", () => {
     const root = panel();
     const terrain = root.querySelector("#terrain") as HTMLSelectElement;
@@ -176,11 +164,7 @@ describe("writeDerivedControlsToDom", () => {
 });
 
 describe("controlElement", () => {
-  // Exported for `static/app.js`, which binds its own references off the spec
-  // and would otherwise reach for `getElementById` and get a silent `null` —
-  // one that surfaces as a blank page during module evaluation rather than as
-  // a named error. The two functions above are covered through their own
-  // entry points; these pin the seam the app uses directly.
+  // Used directly by `static/app.js` to bind its element references.
   it("returns the element every row is bound to", () => {
     const root = panel();
     for (const row of controlSpec) {

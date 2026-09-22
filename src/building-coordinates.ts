@@ -5,8 +5,6 @@ import { bounds, type Point } from "./geometry.ts";
 export type Anchor = "TL" | "TR" | "BL" | "BR";
 export type CanvasSize = { width: number; height: number };
 
-// `Point` is plane geometry, owned by `geometry.ts`; re-exported here because
-// the template and corner vocabulary below is spelled in terms of it.
 export type { Point };
 
 /** A corner: { x, y } with an optional `from` anchor override. x/y are inward distances. */
@@ -54,11 +52,9 @@ export function resolveCorner(
 export type RectTemplate = { width: number; height: number };
 
 /**
- * A polygon footprint: a closed ring of template-local points. The bounding
- * box (used for placement) is normally derived from the points and must start
- * at 0,0. An optional declared `width`/`height` overrides that derivation, so
- * the geometry may extend beyond the box — e.g. small nubbins that poke past
- * the body's edge while the body fills the declared box.
+ * A polygon footprint in template-local points. The placement box is derived
+ * from the points (which must start at 0,0) unless `width`/`height` declare
+ * it, in which case the geometry may protrude past it.
  */
 export type PolygonTemplate = { points: Point[]; width?: number; height?: number };
 
@@ -66,10 +62,8 @@ export type PolygonTemplate = { points: Point[]; width?: number; height?: number
 export type Template = RectTemplate | PolygonTemplate;
 
 /**
- * The bounding-box size of a template. A rectangle returns its stored size; a
- * polygon returns its declared size, or else one derived from its points (the
- * bbox origin is required to be 0,0, so width/height are the maximum x/y).
- * Throws when a template is not a valid rectangle or polygon.
+ * The template box: a rectangle's size, or a polygon's declared size, else its
+ * points' max x/y (bbox must start at 0,0). Throws on an invalid template.
  */
 export function templateBounds(
   template: Template,
@@ -80,9 +74,6 @@ export function templateBounds(
     if (!Array.isArray(points) || points.length < 3) {
       throw new Error(`template ${name}: polygon needs at least 3 points`);
     }
-    // A declared width/height is the placement box; the geometry may then
-    // extend past it (protruding nubbins). Without one, the box is derived
-    // from the points and is required to start at 0,0.
     if ("width" in template || "height" in template) {
       const { width, height } = template;
       if (
@@ -139,7 +130,4 @@ export function localCorner(
   }
 }
 
-// Building placement resolution (corner-pin -> resolved geometry) and the
-// canonical `Placed` form live in `placement.ts`, which builds on these
-// primitives (`resolveCorner`, `templateBounds`, `localCorner`) and on
-// `geometry.ts` for the plane maths underneath them.
+// Corner-pin resolution to `Placed` lives in `placement.ts`.

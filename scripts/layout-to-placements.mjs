@@ -1,15 +1,4 @@
-// The one walk over a 40kdc layout's pieces: classify each piece, then hand it
-// to the converter that owns that kind.
-//
-// Classification used to be spread across three collectors that each filtered
-// `layout.pieces` themselves and handed back a `consumedIds` set for a fourth
-// walk to skip. Nothing made those filters disjoint, so a piece could be
-// claimed twice; PIECE_KINDS gives every piece exactly one kind and throws if
-// two rows would claim it, which makes a double emit unrepresentable.
-//
-// The per-piece converters (area-to-building, ruin-to-feature, rect-to-feature,
-// feature-to-building) stay where they are - this module only decides which one
-// each piece goes to.
+// Classifies each piece of a 40kdc layout and dispatches it to its converter.
 
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import {
@@ -28,28 +17,11 @@ import {
 import { pieceFootprint } from "./terrain-resolver.mjs";
 
 /**
- * The kinds a layout piece can have. Every piece has exactly one.
+ * The kinds a layout piece can have; every piece matches exactly one row
+ * (`is_objective` is orthogonal and handled by objective-icons.mjs).
  *
- * "Exactly one" is about *this* walk, not about everything a layout emits:
- * `is_objective` is an orthogonal per-piece attribute, and an objective piece
- * is both a building and a marker. `scripts/objective-icons.mjs` walks the
- * same pieces for it - see the note in scripts/convert-40kdc-terrain.mjs.
- *
- * One row per kind, carrying everything that kind decides: which pieces it
- * claims, which converter draws them, and which bucket of the emitted entry
- * they land in. The claims were a separate table from the dispatch, and the
- * split was a failure mode of its own - a kind classified but not dispatched
- * fell through to a `default: throw`, which only existed because the two lists
- * could drift. Merging them removes that case and costs nothing.
- *
- * Row order is the output order: `layoutPlacements` concatenates each bucket's
- * rows in the order the kinds appear here, so the generated file keeps its
- * established layout (areas before pipes/barricades, ruins before
- * generators/gantries) rather than the interleaving of the source piece list.
- *
- * Every converter takes `(piece, layout, gwTemplates)` and reads the lookups it
- * needs off the layout, which is what `scripts/terrain-corpus.mjs` attached
- * them for. A converter that wants fewer arguments simply declares fewer.
+ * Row order is output order within each bucket, which keeps combined.yml
+ * stable. Converters take `(piece, layout, gwTemplates)`.
  */
 export const PIECE_KINDS = Object.freeze([
   {
@@ -69,8 +41,7 @@ export const PIECE_KINDS = Object.freeze([
   {
     /** whole-L corner-ruin piece -> `l-ruin` feature. */
     kind: "ruin-feature",
-    // Only a whole-L corner footprint becomes a ruin; any other corner piece
-    // is unclaimed, and `classifyPiece` throws on it.
+    // Any non-L corner piece is unclaimed, so `classifyPiece` throws on it.
     claims: (piece, layout) =>
       isRuinTemplate(piece.template) &&
       isLFootprint(pieceFootprint(piece, layout.footprintOf)),
@@ -86,17 +57,11 @@ export const PIECE_KINDS = Object.freeze([
   },
   {
     /**
-     * Catwalks are consumed and not emitted: upstream models them as
-     * standalone composites, and the parent area still becomes a building that
-     * already covers upstream's 6x1in `pipes` part. The legacy `catwalk`
-     * template that part is normalized onto is 7x2in, so the resolved child
-     * does overhang its 6x2in parent by 0.5in at each end (measured: catwalk y
-     * 4.5015-11.5015 against area y 5.000-11.000). That overhang is an artifact
-     * of the oversized legacy template rather than ground upstream draws - see
-     * the `pipes` note on PART_TO_TEMPLATE in battlemaster-normalize.mjs - and
-     * is accepted, not emitted.
-     *
-     * No `convert` and no `bucket`: that is what "dropped" means here.
+     * Catwalks are dropped: the parent area already becomes a building covering
+     * upstream's 6x1in `pipes` part. The 7x2in legacy `catwalk` template
+     * overhangs its 6x2in parent by 0.5in each end; that is an artifact of the
+     * template (see the `pipes` note on PART_TO_TEMPLATE in
+     * battlemaster-normalize.mjs), not upstream ground.
      */
     kind: "dropped",
     claims: (piece) => piece.template === "catwalk",
@@ -104,14 +69,8 @@ export const PIECE_KINDS = Object.freeze([
 ].map(Object.freeze));
 
 /**
- * The buckets a converted row can land in, in the order a combined.yml entry
- * spells them.
- *
- * A row's `bucket` is matched by equality, so a row naming one this list does
- * not have would convert its pieces and then have them silently dropped. That
- * is the case the deleted `default: throw` used to approximate, so it is
- * checked here instead - once, when the module loads, against the same list
- * `layoutPlacements` builds its result from.
+ * Buckets in combined.yml entry order. Checked at load below: a row naming an
+ * unknown bucket would otherwise have its pieces silently dropped.
  */
 const BUCKETS = ["templates", "features"];
 
@@ -147,13 +106,7 @@ export function classifyPiece(piece, layout) {
     );
   }
   if (matched.length === 0) {
-    // There used to be an `area_terrain` fallback here, drawing an unclaimed
-    // piece as a translucent zone. Every piece in the corpus is claimed by a
-    // converter (720 area-buildings, 720 ruins, 270 feature-buildings, 180
-    // rect-features, 90 dropped catwalks), so the fallback emitted nothing and
-    // the whole draw path behind it was dead — see #182. An unclaimed piece is
-    // now an upstream shape this pipeline has not been taught, which should
-    // fail the pull rather than silently become a grey blob.
+    // An upstream shape this pipeline has not been taught: fail the pull.
     throw new Error(
       `piece ${piece.id ?? "?"} (${piece.piece_type}/${piece.template}) ` +
         `matches no converter; teach one to claim it or add it to PIECE_KINDS ` +

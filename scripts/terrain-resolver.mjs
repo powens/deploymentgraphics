@@ -1,17 +1,11 @@
 // Resolves a 40kdc-data terrain piece to an absolute board polygon.
 //
-// Source model: each piece references a template footprint (or carries an
-// inline `footprint`); `position` anchors the footprint's area centroid;
-// `rotation_degrees` and `mirror` apply about that centroid. A piece with a
-// `parent_area_id` is positioned in its parent area's centred local frame and
-// then carried through the parent's own placement transform (composition).
-// Verified against the upstream terrain-resolver conformance suite.
-// Order (per piece): center -> mirror -> rotate -> translate; for a child the
-// parent's (mirror -> rotate -> translate) is applied last.
-//
-// The plane maths under all of this — centroids, rotation, ring comparison —
-// belongs to src/geometry.ts, which the renderer shares. This module owns only
-// the part that knows what a *piece* is.
+// Source model: `position` anchors the footprint's area centroid, and
+// `rotation_degrees` and `mirror` apply about it. A child of `parent_area_id`
+// is placed in the parent's centred frame, then carried through the parent's
+// transform. Order: center -> mirror -> rotate -> translate, then the parent's
+// mirror -> rotate -> translate. Verified against the upstream
+// terrain-resolver conformance suite.
 
 import { centroid, rotate, toRadians } from "../src/geometry.ts";
 
@@ -49,15 +43,8 @@ function place(point, piece) {
 
 /**
  * The footprint a piece draws from - its own inline one, else its template's -
- * or `undefined` when it has neither.
- *
- * The one owner of that precedence. Callers that need the footprint without
- * resolving it used to restate it, which is one more place for inline-vs-
- * template to drift.
- *
- * Use {@link pieceFootprint} unless absence is a case you handle: this exists
- * for the callers that ask *whether* a piece has one at all, which would
- * otherwise have to spell the fallback themselves to avoid the throw.
+ * or `undefined` when it has neither. Prefer {@link pieceFootprint} unless
+ * absence is a case you handle.
  *
  * @param {object} piece - `footprint` or `template`.
  * @param {(id: string) => object | null | undefined} lookupFootprint
@@ -67,14 +54,10 @@ export function pieceFootprintIfAny(piece, lookupFootprint) {
 }
 
 /**
- * The footprint a piece draws from: its own inline one, else its template's.
- *
- * {@link pieceFootprintIfAny} with absence treated as a data fault, which is
- * what every converter wants.
+ * Like {@link pieceFootprintIfAny}, but throws when the piece has neither.
  *
  * @param {object} piece - `footprint` or `template`.
  * @param {(id: string) => object | null | undefined} lookupFootprint
- * @throws if the piece has neither.
  */
 export function pieceFootprint(piece, lookupFootprint) {
   const footprint = pieceFootprintIfAny(piece, lookupFootprint);
@@ -98,7 +81,6 @@ export function pieceFootprint(piece, lookupFootprint) {
 export function resolvePiece(piece, lookupFootprint, getParent) {
   const ring = footprintPolygon(pieceFootprint(piece, lookupFootprint));
   const c = centroid(ring);
-  // Centre on the centroid, apply this piece's own orientation, add its offset.
   const local = ring.map((p) => {
     const o = orient(p.x - c.x, p.y - c.y, piece);
     return { x: o.x + piece.position.x, y: o.y + piece.position.y };

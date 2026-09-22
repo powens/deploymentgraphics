@@ -28,17 +28,6 @@ import {
   type Ring,
 } from "./geometry.js";
 
-/**
- * These predicates used to be spelled per file — four bounding boxes in three
- * conventions, two incompatible `matvec`s, `((d % 360) + 360) % 360` four
- * times — and were only ever exercised incidentally, through whichever
- * converter happened to call them. One of them (the polygon gap in
- * `objective-icons.mjs`) sat one edit behind its twin for exactly that reason.
- *
- * So they get tested here, directly, on the cases that distinguish them from
- * the almost-right version.
- */
-
 const unitSquare: Ring = [
   { x: 0, y: 0 },
   { x: 1, y: 0 },
@@ -56,15 +45,9 @@ const rect = (x: number, y: number, w: number, h: number): Ring => [
 
 describe("the module itself", () => {
   it("imports nothing, so plain Node can load it from a .mjs converter", () => {
-    // Node's type stripping does not rewrite specifiers, so it cannot follow
-    // the `./foo.js`-means-`./foo.ts` convention the rest of src/ uses. One
-    // import here and `pnpm convert:40kdc` stops resolving.
     const source = readFileSync(new URL("./geometry.ts", import.meta.url), "utf8");
     expect(source).not.toMatch(/^\s*import\b/m);
-    // A bare `import` is not the only way to name another module: a re-export
-    // (`export { x } from "./y.js"`) and a dynamic `import("./y.js")` both
-    // carry a specifier Node cannot resolve either, and neither starts a line
-    // with `import`.
+    // Re-exports and dynamic imports carry specifiers too.
     expect(source).not.toMatch(/\bfrom\s*["']/);
     expect(source).not.toMatch(/\bimport\s*\(/);
   });
@@ -113,7 +96,6 @@ describe("2x2 maps", () => {
   });
 
   it("matvec takes and returns a point, not a pair", () => {
-    // The two old copies disagreed on exactly this, which is why there is one.
     expect(matvec(FLIP_Y, { x: 3, y: 4 })).toEqual({ x: 3, y: -4 });
   });
 });
@@ -128,8 +110,7 @@ describe("bounds", () => {
   });
 
   it("distinguishes extent from far edge when the box does not start at 0,0", () => {
-    // The converters need both, and conflating them shifts a placement by the
-    // offset — which is exactly what a `Math.max`-only bbox hides.
+    // Conflating them shifts a placement by the offset.
     expect(boundsSize(ring).width).toBe(6);
     expect(bounds(ring).maxX).toBe(4);
   });
@@ -146,8 +127,7 @@ describe("bounds", () => {
 
 describe("centroid", () => {
   it("is the area centroid, not the vertex average", () => {
-    // An L: vertex average and area centroid differ, which is the whole reason
-    // `anchorOffset` exists.
+    // An L, where vertex average and area centroid differ.
     const L: Ring = [
       { x: 0, y: 0 },
       { x: 2, y: 0 },
@@ -222,11 +202,8 @@ describe("segmentsCross", () => {
   });
 
   it("is false for a T-junction, whichever way the stem points", () => {
-    // An endpoint resting on the other segment's interior does not straddle
-    // it. Reading the sign as `d > 0` folds the zero in with the negatives,
-    // which answers the two mirror-image Ts differently — and that asymmetry
-    // reaches `ringsOverlap`, where a touching pair would then read true or
-    // false depending only on which side of the contact it sits.
+    // Treating a zero cross product as negative would answer the two
+    // mirror-image Ts differently.
     const stem = { x: 2, y: 0 };
     expect(segmentsCross(h[0], h[1], stem, { x: 2, y: 2 })).toBe(false);
     expect(segmentsCross(h[0], h[1], stem, { x: 2, y: -2 })).toBe(false);
@@ -239,10 +216,8 @@ describe("ringGap", () => {
   });
 
   it("is zero for crossing rings with no vertex inside either", () => {
-    // The plus shape: a wide bar laid across a tall bar. Every vertex of each
-    // is well outside the other, so a vertex-to-edge gap reads it as clear —
-    // the bug the crossing test exists to close. This is the "catwalk resting
-    // on a ruin arm" case, and the 40kdc objective clustering hits it too.
+    // A plus: every vertex of each bar is well outside the other, so a
+    // vertex-to-edge gap alone reads it as clear.
     const wide = rect(-3, -0.25, 6, 0.5);
     const tall = rect(-0.25, -3, 0.5, 6);
     const vertexOnly = Math.min(
@@ -276,16 +251,12 @@ describe("ringsOverlap", () => {
   });
 
   it("decides touching rings inconsistently, which is why gap is the contact test", () => {
-    // Characterization, not a guarantee. `pointInRing` documents edge points
-    // as undefined, and that undefinedness reaches ringsOverlap: whether a
-    // touching pair reads true comes down to which vertex the ray cast
-    // happens to catch, so the answer changes with how the contact is shaped.
+    // Characterization, not a guarantee: `pointInRing` leaves edge points
+    // undefined.
     expect(ringsOverlap(unitSquare, unitSquare)).toBe(true);
     expect(ringsOverlap(unitSquare, rect(1, 0, 1, 1))).toBe(true);
     expect(ringsOverlap(unitSquare, rect(1, 0.25, 1, 0.5))).toBe(false);
 
-    // `ringGap` is exact on all three, which is why the objective-icon
-    // clustering asks it rather than ringsOverlap.
     expect(ringGap(unitSquare, unitSquare)).toBe(0);
     expect(ringGap(unitSquare, rect(1, 0, 1, 1))).toBe(0);
     expect(ringGap(unitSquare, rect(1, 0.25, 1, 0.5))).toBe(0);

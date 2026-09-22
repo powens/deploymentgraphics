@@ -2,11 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { STORAGE_KEY, STORAGE_VERSION, loadState, saveState } from "./state.js";
 
 /**
- * Runs in the node environment with a stubbed store rather than under
- * happy-dom: Node ships its own `localStorage` global, which is `undefined`
- * unless the process was started with `--localstorage-file`, and it shadows the
- * one happy-dom would otherwise install. It is a configurable accessor, so a
- * stub can simply take its place.
+ * Uses a stubbed store in the node environment rather than happy-dom: Node's
+ * own `localStorage` global (undefined without `--localstorage-file`) shadows
+ * happy-dom's, but it is a configurable accessor, so a stub can replace it.
  */
 function installStore(store) {
   Object.defineProperty(globalThis, "localStorage", {
@@ -44,8 +42,6 @@ describe("viewer state storage", () => {
   });
 
   it("drops state saved under an older control set", () => {
-    // The version is the only guard against half-restoring a blob whose
-    // control set no longer exists, and nothing exercised it until now.
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ version: STORAGE_VERSION - 1, mode: "controls" }),
@@ -64,8 +60,6 @@ describe("viewer state storage", () => {
   });
 
   it("stays quiet when the store itself is unavailable", () => {
-    // Persistence is a convenience: a disabled or full localStorage must not
-    // take the page down with it.
     installStore({
       getItem: () => {
         throw new Error("denied");

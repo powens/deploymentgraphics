@@ -13,14 +13,9 @@ import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
 
 /**
- * The board pieces a render pass actually draws, with the "is a layout
- * selected?" and "top-level array unioned with the layout's?" rules already
- * applied. `buildings` and `icons` come from the selected layout alone (empty
- * when none is selected); `features` unions the board's top-level array with
- * the layout's, so features draw with or without a layout.
- *
- * This is "layout-resolution" — assembling placement arrays — distinct from
- * `Resolve` in CONTEXT.md, which maps a single placement to a `Placed`.
+ * The pieces a render pass draws. `buildings` and `icons` come from the
+ * selected layout alone (empty when none is selected); `features` is the
+ * board's top-level array plus the layout's.
  */
 export type ResolvedLayout = {
   buildings: BuildingPlacement[];
@@ -29,10 +24,8 @@ export type ResolvedLayout = {
 };
 
 /**
- * Collects the pieces to draw for `config`'s selected layout. Always returns a
- * `ResolvedLayout` — an unbuilt layout yields empty `buildings`/`icons` rather
- * than throwing — so callers never guard on layout existence. The union order
- * is top-level first, then the layout's, matching draw order.
+ * An unknown or unbuilt layout yields empty `buildings`/`icons` rather than
+ * throwing. Features are top-level first, then the layout's (draw order).
  */
 export function resolveLayout(config: FullConfig): ResolvedLayout {
   const layout = config.terrain.layout[config.terrain.layout_name];
@@ -44,28 +37,12 @@ export function resolveLayout(config: FullConfig): ResolvedLayout {
 }
 
 /**
- * One drawable layer of the card.
- *
- * A layer owns both halves of what it takes to put one kind of piece on the
- * board: the shared shapes it hangs in `<defs>`, and the node that references
- * them. Those halves used to be two functions called from two places, agreeing
- * by hand on a presence guard and on a bare def id that nothing type-checked —
- * so adding a piece kind was four coordinated edits, and a dangling `href` was
- * only caught by rendering all 45 layouts and looking.
- *
- * `injectDefs` is optional because most layers draw straight from `config`.
- * Every layer that does hang a def also emits its own reference to it, so the
- * id never crosses a module edge.
+ * One drawable layer of the card: the shared shapes it hangs in `<defs>` (if
+ * any) and the node that references them. A layer that emits a def also emits
+ * every reference to it, so def ids stay private to the layer.
  */
 export interface Layer {
-  /**
-   * Names the row, so the list reads as the card's draw order. A label for the
-   * reader only — the renderer never emits it, and several layers draw a node
-   * carrying no `id` at all (`grid`, `half-way-lines`) or one named by the
-   * shape inside (a masked deployment zone). Anything that *did* read it would
-   * be the unchecked agreement between a row and its markup that this list
-   * exists to remove.
-   */
+  /** A label for the reader only; it is not the emitted node's `id`. */
   readonly id: string;
   /** Appends this layer's shared shapes to the card's single `<defs>`. */
   injectDefs?(doc: SvgDocument, defs: SvgNode): void;
@@ -73,25 +50,16 @@ export interface Layer {
   draw(doc: SvgDocument): SvgNode;
 }
 
-/** A layer plus its presence rule: written once, read by both halves. */
+/** A layer plus whether it draws at all. */
 type LayerRow = Layer & { readonly draws: boolean };
 
 /**
- * Read one of `BaseConfig`'s `{ draw?: boolean }` toggles.
+ * Read one of `BaseConfig`'s `{ draw?: boolean }` toggles; the default for an
+ * absent `draw` differs per toggle.
  *
- * An absent `draw` means something different per toggle - half-way lines and
- * the territory line default on, the grid defaults off - and it used to be
- * spelled three different ways in three places, one of them optional-chaining
- * through fields `FullConfig` declares required. Each row names its own default
- * here instead, beside the layer the toggle gates.
- *
- * The `Boolean` is not redundant with the declared type. `draw` is *typed*
- * `boolean`, but the viewer's YAML tab hands `makeMissionCard` an unvalidated
- * object, and js-yaml 4 parses `no`, `off`, `yes` and `on` as *strings* under
- * the YAML 1.2 core schema - only `true`/`false` arrive as booleans. So
- * `draw: no` reaches here as `"no"`, and without the coercion `LayerRow.draws`
- * would carry a string while declaring a boolean. (`"no"` is truthy either way:
- * this keeps the declaration honest, it does not make `draw: no` mean false.)
+ * `Boolean` is needed despite the type: the viewer's YAML tab passes unvalidated
+ * input, and js-yaml 4 parses `no`/`off`/`yes`/`on` as strings. (`"no"` is still
+ * truthy; this only keeps `draws` a real boolean.)
  */
 const drawn = (toggle: { draw?: boolean }, whenAbsent: boolean): boolean =>
   Boolean(toggle.draw ?? whenAbsent);
@@ -218,7 +186,7 @@ function territoryLine(
   return line;
 }
 
-/** Numbered objective markers sit on top of zones, terrain, and buildings. */
+/** Objective marker radius, in inches. */
 const OBJECTIVE_RADIUS = 1.5;
 
 function objectives(
@@ -298,12 +266,8 @@ function annotations(
 }
 
 /**
- * The layers this card draws, in draw order.
- *
- * One row per layer, each stating its own presence rule once — adding a piece
- * kind is one row here rather than four coordinated edits across two functions.
- * Rows that draw nothing are dropped, so neither half of the render pass
- * guards again.
+ * The layers this card draws, in draw order, with non-drawing rows dropped.
+ * Adding a piece kind means adding a row here.
  */
 export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
   const layout = resolveLayout(config);
@@ -311,8 +275,6 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
     width: config.base.size.width,
     height: config.base.size.height,
   };
-  // Resolved here so the territory row's presence rule and the value its
-  // `draw` needs are the same expression, two lines apart.
   const territory = config.deployment.territory;
 
   const rows: LayerRow[] = [
@@ -326,7 +288,7 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
       draws: true,
       draw: (doc) => deploymentZone(doc, config, "defender", theme),
     },
-    // Grid first so it sits behind everything else.
+    // Grid goes under everything except the zones.
     {
       id: "grid",
       draws: drawn(config.base.grid, false),
@@ -344,10 +306,9 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
       draw: (doc) => territoryLine(doc, territory!, theme),
     },
     {
-      // An unbuilt layout yields empty placements, so this is an empty
-      // `<g id="buildings">` — matching the legacy renderer's warn-and-skip.
-      // The template defs go in whether or not anything references them: they
-      // are the board's template set, not this layout's.
+      // Always drawn (an unbuilt layout gives an empty `<g id="buildings">`).
+      // Template defs belong to the board's template set, so they go in even
+      // when this layout references none.
       id: "buildings",
       draws: true,
       injectDefs: (doc, defs) =>
@@ -356,9 +317,8 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
         makeBuildings(doc, layout.buildings, config.terrain.templates, canvas, theme),
     },
     {
-      // Features draw after buildings: the imported 40kdc area pieces render
-      // as opaque buildings, and the smaller pieces (l-ruins, generators,
-      // gantries) sit on top of them.
+      // After buildings: 40kdc area pieces render as opaque buildings, and
+      // the smaller pieces (l-ruins, generators, gantries) sit on top.
       id: "features",
       draws: layout.features.length > 0,
       injectDefs: (doc, defs) => injectFeatureDefs(doc, layout.features, defs),
@@ -372,8 +332,7 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
     {
       id: "annotations",
       draws: (config.annotations?.length ?? 0) > 0,
-      // Only an arrow annotation references the marker; text-only boards emit
-      // no def for it.
+      // Only arrows reference the marker.
       injectDefs: config.annotations?.some((a) => a.kind === "arrow")
         ? injectArrowhead
         : undefined,

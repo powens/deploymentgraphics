@@ -14,8 +14,7 @@ const themed = (building: Theme["building"]): Theme => ({
 const unstyled = themed({ group: {}, template: { default: {} } });
 
 const doc = browserSvgDocument();
-// The renderer builds against the minimal `SvgNode` contract; the browser
-// backend hands back real DOM nodes, which is what the assertions query.
+// The browser backend's `SvgNode`s are real DOM nodes.
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
 
 const canvas = { width: 60, height: 44 };
@@ -89,8 +88,6 @@ describe("makeBuildings", () => {
 });
 
 describe("per-template styling", () => {
-  // The rule both halves read: the shared group props as a base, then the
-  // template's own entry, falling back to `default`.
   const styled = themed({
     group: { stroke_width: 1.2 },
     template: {
@@ -109,9 +106,8 @@ describe("per-template styling", () => {
   it("merges the group props under the template's own", () => {
     const defs = doc.createElement("defs");
     injectTemplateDefs(doc, { pipe: { width: 5.5, height: 1 }, "4x6": { width: 4, height: 6 } }, defs, styled);
-    // `4x6` has no entry of its own, so it takes the group's stroke width...
+    // `4x6` has no entry of its own.
     expect(defs.querySelector("#template-4x6")!.getAttribute("stroke-width")).toBe("1.2");
-    // ...and `pipe` overrides it.
     expect(defs.querySelector("#template-pipe")!.getAttribute("stroke-width")).toBe("0.3");
   });
 

@@ -1,61 +1,35 @@
 // Turns a 40kdc layout's `is_objective` pieces into objective markers.
 //
-// Most layouts mark each objective with a single piece, but the central
-// objective is often built from TWO pieces whose footprints touch (a pair of
-// `area-trapezoid` "shoe" halves, or a pair of `area-medium`/`area-large`
-// pieces). Those represent ONE objective and so collapse to a single marker at
-// the pair's midpoint (usually the board centre; `bm-disrupt-vs-disrupt-01`'s
-// pair sits 0.35in off it, as upstream's own objective positions do). Pieces whose
-// footprints sit clearly apart each keep their own marker — even when, by
-// symmetry, their midpoint is also the board centre.
+// The central objective is often built from two pieces whose footprints touch
+// (a pair of `area-trapezoid` halves, or of `area-medium`/`area-large`); those
+// collapse to one marker at the pair's midpoint. Pieces clearly apart keep
+// their own marker even when their midpoint is the board centre.
 //
-// Each source objective carries an `objective_role` (center / home /
-// expansion). It picks the icon - `home` renders as the keep/fortress, every
-// other role as the neutral skull - and is not carried onto the marker.
-//
-// Touching is measured as the crossing-aware gap between the two resolved
-// footprint polygons (ringGap). Across the vendored layouts: 25 of the 28
-// touching pairs gap by exactly 0, three sit at 0.35-0.38in, and the nearest
-// genuinely-separate pair gaps by 1.98in. So the empty band is (0.38, 1.98) —
-// real, but not the rounding-error sliver the figures below the threshold
-// suggest, and the three outliers are what the threshold is absorbing.
+// Touching is the gap between resolved footprints (ringGap). Across the vendored
+// layouts, 25 of 28 touching pairs gap by 0, three by 0.35-0.38in, and the
+// nearest separate pair by 1.98in.
 
 import { round } from "./emit-placement.mjs";
 import { pieceFootprintIfAny } from "./terrain-resolver.mjs";
 import { ringGap } from "../src/geometry.ts";
 
-// Footprint gap (inches) at or below which two objective pieces count as one
-// objective. Sits in the empty band between the touching pairs (<=0.38) and the
-// nearest genuinely-separate pair (1.98).
+// Inches; sits in the empty band (0.38, 1.98) measured above.
 const TOUCH_GAP = 0.5;
 
 /**
- * Build the objective markers for a layout. Each `is_objective` piece is one
- * marker, except that pieces whose footprints touch are clustered and emitted
- * as a single marker at the average of their positions.
- *
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @returns {Array<{ type: "skull" | "fortress", pos: { x: number, y: number } }>}
  */
 export function objectiveIcons(layout) {
   const objectives = layout.pieces.filter((p) => p.is_objective);
-  // Resolve each objective to an absolute polygon for the touch test. A piece
-  // without a footprint (no template) degenerates to a one-point ring, which
-  // `ringGap` still measures — it clusters only if it lands within TOUCH_GAP of
-  // another objective's edge, which no piece in the corpus does. Every other
-  // resolve failure (a missing parent, an unsupported footprint type) is a data
-  // fault and propagates.
+  // A piece without a footprint degenerates to a one-point ring, which ringGap
+  // still measures. Other resolve failures are data faults and propagate.
   const polys = objectives.map((p) => {
-    // `pieceFootprintIfAny` rather than the inline-else-template fallback
-    // spelled out here: this is the one caller that treats absence as a case
-    // instead of a fault, and restating the precedence is how it would drift
-    // from the converters if inline ever stopped winning.
     const footprint = pieceFootprintIfAny(p, layout.footprintOf);
     return footprint ? layout.resolve(p) : [p.position];
   });
 
-  // Union-find over touching pairs so a cluster of mutually-touching pieces
-  // collapses to one marker.
+  // Union-find over touching pairs.
   const parent = objectives.map((_, i) => i);
   const find = (i) => {
     while (parent[i] !== i) i = parent[i] = parent[parent[i]];
@@ -69,9 +43,8 @@ export function objectiveIcons(layout) {
     }
   }
 
-  // Group member positions by cluster root, preserving first-seen order. The
-  // members of a cluster share an objective_role (only the touching `center`
-  // pair ever clusters), so the root's role labels the whole marker.
+  // Only `center` pairs ever cluster, so the root's objective_role labels the
+  // whole marker.
   const clusters = new Map();
   objectives.forEach((p, i) => {
     const root = find(i);
@@ -84,8 +57,6 @@ export function objectiveIcons(layout) {
     const n = positions.length;
     const x = positions.reduce((s, p) => s + p.x, 0) / n;
     const y = positions.reduce((s, p) => s + p.y, 0) / n;
-    // The "home" objective renders as the keep/fortress icon; every other role
-    // keeps the neutral skull.
     return {
       type: role === "home" ? "fortress" : "skull",
       pos: { x: round(x), y: round(y) },

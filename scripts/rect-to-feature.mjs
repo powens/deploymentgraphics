@@ -1,15 +1,8 @@
-// Converts 40kdc rectangle feature pieces (generators, gantries) into
-// `generator` / `gantry` feature placements.
-//
-// A generator or gantry piece resolves (via resolvePiece) to a proper rectangle
-// in perimeter order. The feature renderer places a box with
-// `translate(x, y) . rotate(rotation, w/2, h/2)`, so a placement centred on the
-// rectangle's centroid, sized to its two side lengths and rotated to its first
-// edge reproduces the resolved outline exactly. A rectangle outline is
-// reflection-symmetric, so centring covers both mirror parities without a
-// mirror variant (the asymmetric generator interior may flip cosmetically).
-//
-// Parallels scripts/ruin-to-feature.mjs and scripts/area-to-building.mjs.
+// Converts 40kdc generator/gantry pieces into feature placements. The piece
+// resolves to a rectangle in perimeter order; a box centred on its centroid,
+// sized to its side lengths and rotated to its first edge reproduces it. A
+// rectangle is reflection-symmetric, so no mirror variant is needed (the
+// asymmetric generator interior may flip cosmetically).
 
 import { featureRow } from "./emit-placement.mjs";
 import { centroid, distance, toDegrees } from "../src/geometry.ts";
@@ -21,10 +14,8 @@ const RECT_FEATURES = {
   gantry: "gantry",
 };
 
-// Feature type -> theme.yml palette key. Both sit on top of the grey buildings,
-// so both take a hue rather than a value: generators an industrial teal,
-// gantries indigo. Gantries were gunmetal, which is the buildings' own hue a
-// few steps darker and barely separated from them.
+// Feature type -> theme.yml palette key. Both sit on grey buildings, so both
+// take a distinct hue; a grey would barely separate from them.
 const RECT_FEATURE_COLORS = {
   generator: "teal",
   gantry: "indigo",
@@ -46,8 +37,7 @@ export function rectFeaturePlacement(piece, layout) {
   const size = { width: distance(r[0], r[1]), height: distance(r[1], r[2]) };
   const rotDeg = toDegrees(Math.atan2(u.y, u.x));
   const type = RECT_FEATURES[piece.template];
-  // The pinned point is the box centre, which the rectangle's centroid gives
-  // directly — the degenerate case of the same fit ruin-to-feature.mjs uses.
+  // Pin the box centre to the rectangle's centroid.
   const centre = { x: size.width / 2, y: size.height / 2 };
   return featureRow(
     placedFromPin(type, size, rotDeg, centre, centroid(r)),

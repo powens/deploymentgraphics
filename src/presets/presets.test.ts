@@ -12,10 +12,7 @@ import { templateBounds, type Template } from "../building-coordinates.js";
 
 type Point = { x: number; y: number };
 
-// The presets are generated from the YAML the browser app loads (see
-// scripts/gen-presets.mjs). These tests confirm the generated modules
-// still deep-equal their YAML source — a correctness check on the
-// generator, complementing CI's `gen:presets:check` staleness check.
+// Checks the generator's correctness; `gen:presets:check` only checks staleness.
 const dataDir = fileURLToPath(new URL("../../static/data/", import.meta.url));
 const loadYaml = (relPath: string): unknown =>
   yaml.load(readFileSync(dataDir + relPath, "utf8"));
@@ -25,9 +22,6 @@ describe("presets match the YAML source", () => {
     expect(baseConfig).toEqual(loadYaml("base.yml"));
   });
 
-  // gwTerrain merges templates-simple.yml (building templates) with
-  // combined.yml (the demo + ported 40kdc layouts), mirroring buildTerrain()
-  // in scripts/gen-presets.mjs.
   it("gwTerrain matches templates-simple.yml + combined.yml", () => {
     expect(gwTerrain).toEqual({
       ...(loadYaml("terrain/templates-simple.yml") as object),
@@ -35,8 +29,6 @@ describe("presets match the YAML source", () => {
     });
   });
 
-  // gwTemplatesReal is the detailed GW footprints alone (no layouts), swapped
-  // onto gwTerrain by consumers who want the higher-fidelity shapes.
   it("gwTemplatesReal matches templates-real.yml", () => {
     expect(gwTemplatesReal).toEqual(loadYaml("terrain/templates-real.yml"));
   });
@@ -51,7 +43,6 @@ describe("presets match the YAML source", () => {
     expect(baseTheme).toEqual(loadYaml("theme.yml"));
   });
 
-  // The preset exports just the `matrix:` map from the YAML.
   it("eventMatrix matches event_companion_matrix.yml", () => {
     expect(eventMatrix).toEqual(
       (loadYaml("event_companion_matrix.yml") as { matrix: unknown }).matrix,
@@ -59,12 +50,9 @@ describe("presets match the YAML source", () => {
   });
 });
 
-// templates-real.yml documents `shoe-mirror` as the vertical flip of `shoe`,
-// which is what lets a piece and its 180-degree copy interlock into a clean
-// rectangle. Both files' polygons are hand-traced and get re-fitted from time
-// to time; nothing else checks that the two stay each other's reflection, and
-// the last re-fit (a clamp-outward pass applied to each polygon on its own)
-// broke it at 4 of 32 vertices by up to 0.02in before anyone noticed.
+// `shoe-mirror` must be the vertical flip of `shoe` so a piece and its
+// 180-degree copy interlock. Both are hand-traced and re-fitted independently,
+// which has broken this before.
 describe("templates-real shoe / shoe-mirror", () => {
   it("are exact vertical flips of one another", () => {
     const templates = (
@@ -76,9 +64,7 @@ describe("templates-real shoe / shoe-mirror", () => {
     const mirror = templates["shoe-mirror"];
     expect(mirror.height).toBe(shoe.height);
     expect(mirror.points).toHaveLength(shoe.points.length);
-    // Compared with a tolerance rather than toEqual: the flip is exact in the
-    // YAML's two-decimal source values, but shoe.height - p.y is not exact in
-    // binary (11.5 - 11.49 lands on 0.010000000000000675).
+    // Tolerance, not toEqual: 11.5 - 11.49 is 0.010000000000000675 in binary.
     const worst = Math.max(
       ...shoe.points.map((p, i) =>
         Math.max(
@@ -91,15 +77,10 @@ describe("templates-real shoe / shoe-mirror", () => {
   });
 });
 
-// The **Template box** (CONTEXT.md) of a shared name must be the same in both
-// template files. Two things rest on it: consumers swapping `gwTemplatesReal`
-// onto `gwTerrain`, and the 40kdc converters, which compute combined.yml's
-// corner pins against templates-simple.yml while the viewer may render them
-// against either set. The boxes agree today only because both files say so —
-// the traced geometry does not, and must not be asked: templates-real declares
-// a box on six polygons whose points run past it (`shoe` declares 8x11.5 and
-// traces to 8.03x11.89), which is exactly the protruding-nubbin case
-// `templateBounds` exists to arbitrate.
+// Corner pins in combined.yml are computed against templates-simple, but may
+// render against either set, so each shared name's Template box must match.
+// Compare declared boxes, not traced geometry: real footprints protrude past
+// theirs (`shoe` declares 8x11.5, traces to 8.03x11.89).
 describe("templates-simple and templates-real agree on the Template box", () => {
   const templatesOf = (relPath: string): Record<string, Template> =>
     (loadYaml(relPath) as { templates: Record<string, Template> }).templates;

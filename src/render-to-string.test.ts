@@ -7,13 +7,8 @@ import { missions } from "./presets/missions.js";
 import type { FullConfig } from "./types.js";
 
 /**
- * Serializes the DOM path's node as XML, giving the string path something to
- * be compared against byte for byte.
- *
- * Comparing markup rather than parsing ours back matters: happy-dom's
- * `DOMParser` is not a strict XML parser. It accepts a bare `&` in text and
- * silently re-emits it as `&amp;`, so a round-trip would launder markup that a
- * real browser rejects with a `parsererror`.
+ * Compare markup rather than parsing ours back: happy-dom's `DOMParser` accepts
+ * a bare `&` and re-emits it as `&amp;`, hiding markup a browser would reject.
  */
 function domMarkup(node: SVGElement): string {
   return new XMLSerializer().serializeToString(node);

@@ -1,11 +1,9 @@
-// Converts a 40kdc `area` piece into a templates-simple.yml building-template
-// placement.
-// The piece's own affine transform (centre on centroid -> mirror -> rotate ->
-// translate, matching terrain-resolver.mjs) is composed with a fixed rigid map
-// G (gw-local -> area-local). The G variant is chosen so its determinant
-// matches the piece's mirror parity, making the composed linear part a pure
-// rotation -- which is all the building renderer can reproduce. We then pin the
-// gw template's TL and TR bounding-box corners (mirror:false).
+// Converts a 40kdc `area` piece into a templates-simple.yml building placement.
+// The piece's affine transform (centre on centroid -> mirror -> rotate ->
+// translate, as in terrain-resolver.mjs) is composed with a rigid map G
+// (gw-local -> area-local) whose determinant matches the piece's mirror parity,
+// so the result is a pure rotation -- all the building renderer can reproduce.
+// We then pin the gw template's TL and TR corners (mirror:false).
 
 import { footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
@@ -32,9 +30,8 @@ const AREA_TO_TEMPLATE = {
   "area-trapezoid": { kind: "trapezoid" },
 };
 
-// Rigid map G (gw-local -> area-local) as { Glin, Gtrans }. The variant's
-// determinant matches det(M) (i.e. the piece's mirror parity) so that M*G is a
-// pure rotation. Wa/Ha are the area template's bbox dims.
+// Rigid map G (gw-local -> area-local). det(G) matches det(M) so M*G is a pure
+// rotation. Wa/Ha: see the note at the call site.
 const gMap = (kind, mirrored, Wa, Ha) => {
   if (kind === "exact") {
     return mirrored
@@ -66,10 +63,8 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
   if (!map) {
     throw new Error(`no gw template mapping for area template ${piece.template}`);
   }
-  // The *template's* footprint, deliberately, not `pieceFootprint`'s inline-first
-  // precedence: an area piece carrying an inline footprint would resolve through
-  // one polygon and draw through another, which is why battlemaster-normalize
-  // throws rather than emitting one.
+  // The template's footprint, not `pieceFootprint`'s inline-first precedence;
+  // battlemaster-normalize refuses to emit an inline footprint on an area piece.
   const areaFootprint = layout.footprintOf(piece.template);
   if (!areaFootprint) {
     throw new Error(`no 40kdc footprint for area template ${piece.template}`);
@@ -81,12 +76,9 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
 
   const ring = footprintPolygon(areaFootprint);
   const c = centroid(ring);
-  // Wa/Ha are the *far edge coordinates* of the area footprint in its own
-  // frame, not its extents — gMap uses them to name a bbox corner (e.g.
-  // `{ x: Wa, y: 0 }` is the top-right), and a corner is an absolute position.
-  // The two coincide for the named templates, whose footprints start at 0,0,
-  // but not for the inline footprints battlemaster-normalize emits: 450 of
-  // those have a bbox running to -0.48in on one axis.
+  // Wa/Ha are the footprint's far-edge coordinates, not its extents: gMap uses
+  // them as absolute bbox corners. They differ for the inline footprints
+  // battlemaster-normalize emits, whose bbox can run to -0.48in on one axis.
   const { maxX: Wa, maxY: Ha } = bounds(ring);
 
   // M = R(theta) * diag(sx, sy)
@@ -103,10 +95,8 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
   const tx = shifted.x + piece.position.x;
   const ty = shifted.y + piece.position.y;
 
-  // The gw template's own placement box, from the module that owns it. A
-  // declared box wins over the traced geometry, which is what keeps the pins
-  // valid against templates-real.yml as well as templates-simple.yml (see the
-  // Template box note in CONTEXT.md).
+  // The declared template box, so the pins hold for templates-real.yml too
+  // (see Template box in CONTEXT.md).
   const Wg = templateBounds(gwTemplates[type], type).width;
   const tr = matvec(TgwLin, { x: Wg, y: 0 }); // TL is the origin, so TL_abs = (tx, ty)
   return {

@@ -6,8 +6,7 @@ import { placedRing, resolvePlacement } from "../src/placement.ts";
 
 const CANVAS = { width: 60, height: 44 };
 
-// The two building templates this converter targets (plus a parent area
-// footprint used by the parented-piece test).
+// The two target templates, plus a parent area for the parented-piece test.
 const TEMPLATES = {
   pipe: { width: 5.5, height: 1 },
   barricade: {
@@ -25,8 +24,6 @@ const TEMPLATES = {
   "area-large": { width: 11.5, height: 7 },
 };
 
-// 40kdc footprints for the *named* templates (inline footprints are carried on
-// the piece itself).
 const FOOTPRINTS = {
   pipe: { type: "rectangle", width: 5.5, height: 1 },
   barricade: { type: "polygon", points: TEMPLATES.barricade.points },
@@ -34,7 +31,6 @@ const FOOTPRINTS = {
 };
 const lookupFootprint = (id) => FOOTPRINTS[id];
 
-// Template-local closed ring (rectangle from width/height, or explicit points).
 const ringOf = (t) =>
   t.points
     ? t.points.map((p) => ({ x: p.x, y: p.y }))
@@ -45,12 +41,11 @@ const ringOf = (t) =>
         { x: 0, y: t.height },
       ];
 
-// Draw a named template's ring through a `Placed`, crossing the same seam the
-// renderer does rather than re-spelling the centre-pivot transform here.
+// Via placedRing, the renderer's own transform.
 const placedTemplateRing = (templateName, placed) =>
   placedRing(ringOf(TEMPLATES[templateName]), placed);
 
-// Compare two polygons as point SETS (order-independent), within tolerance.
+// Order-independent polygon comparison, within tolerance.
 const sameSet = (a, b) => {
   expect(a.length).toBe(b.length);
   const key = (p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
@@ -64,9 +59,6 @@ const sameSet = (a, b) => {
   }
 };
 
-// The converters take a resolved layout and read their lookups off it, the
-// same way the pipeline hands them one - so the fixture is a layout holding
-// the piece and, where there is one, its parent.
 const layoutOf = (piece, parent) =>
   withLookups(
     { id: "t", pieces: parent ? [parent, piece] : [piece] },
@@ -81,7 +73,7 @@ const roundTrip = (piece, parent) => {
   );
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, TEMPLATES, CANVAS);
-  expect(placed).toHaveLength(1); // mirror:false -> single placement
+  expect(placed).toHaveLength(1);
   const expected = resolvePiece(
     piece,
     lookupFootprint,

@@ -1,17 +1,10 @@
 // Converts the vendored 40kdc-data terrain JSON into
-// static/data/terrain/combined.yml (layouts only — the building templates live in templates-simple.yml, which
-// gen-presets merges back in). Each `area` piece becomes a building
-// placement referencing a gw template; corner-ruin pieces become `l-ruin`
-// features; catwalk pieces are dropped; pipe/barricade pieces become building
-// placements (via feature-to-building.mjs); a piece no converter claims fails
-// the run; is_objective pieces become skull icons
-// (a touching pair of objective pieces collapses to one marker — see
-// objective-icons.mjs). Deterministic + re-runnable.
+// static/data/terrain/combined.yml (layouts only; gen-presets merges in the
+// building templates from templates-simple.yml). Piece classification lives in
+// layout-to-placements.mjs; is_objective pieces become skull icons.
 //
-// Run: pnpm convert:40kdc — the script reaches into src/geometry.ts, so it
-// needs --experimental-strip-types, which the package script passes. Bare
-// `node scripts/convert-40kdc-terrain.mjs` only works on Node >=22.18, where
-// stripping is the default.
+// Run via `pnpm convert:40kdc`: it imports src/*.ts, so needs
+// --experimental-strip-types below Node 22.18.
 
 import { readFileSync, writeFileSync } from "node:fs";
 import * as yaml from "js-yaml";
@@ -22,43 +15,23 @@ import { objectiveIcons } from "./objective-icons.mjs";
 
 const outPath = new URL("../static/data/terrain/combined.yml", import.meta.url);
 
-// One bootstrap for the whole 40kdc corpus: read, normalize, and hand back
-// layouts that already carry their own footprint/parent/resolve lookups.
 const corpus = loadCorpus();
 
-// Every layout is a ported battlemaster mission layout; nothing is
-// hand-authored. Building templates come from templates-simple.yml (via the
-// corpus); they are only read to size `area` placements and are NOT written to
-// combined.yml (gen-presets merges them into the preset).
 const out = { layout: {} };
 
-// Fan-format layouts that fall outside GW's mission system are left out. These
-// carry no mission_matchup_id and bring their own terrain templates that have
-// no gw-template mapping (e.g. the "kotc-colosseum" King-of-the-Colosseum
-// layout with its impassable-wall / kotc-ruin-* pieces). Rendering them is a
-// separate feature; excluding them keeps `make update-terrain` re-runnable and
-// auto-skips any future fan variant (also matchup-less) rather than throwing on
-// an unmapped template. `corpus.missionLayouts` is what keeps that true: the
-// corpus normalizes the mission set without ever normalizing the layouts
-// skipped here.
+// Fan-format layouts (no mission_matchup_id, e.g. "kotc-colosseum") bring
+// templates with no gw mapping, so they are skipped rather than failing the
+// run; `corpus.missionLayouts` already excludes them.
 const skipped = corpus.rawLayouts
   .filter((l) => !l.mission_matchup_id)
   .map((l) => l.id);
 
 for (const layout of corpus.missionLayouts) {
-  // One classification pass per layout: areas and pipes/barricades become
-  // building placements, corner-ruins and generators/gantries become features,
-  // catwalks are dropped, and an unclaimed piece throws. See
-  // scripts/layout-to-placements.mjs.
   const { templates, features } = layoutPlacements(layout, corpus.gwTemplates);
-  // A second walk over the same pieces, deliberately: `is_objective` is
-  // orthogonal to a piece's kind - an objective piece is both a building and a
-  // marker - so it cannot ride along on the classification above, which gives
-  // each piece exactly one kind.
+  // Separate walk: `is_objective` is orthogonal to kind (an objective piece is
+  // also a building), and the classification gives each piece one kind.
   const icons = objectiveIcons(layout);
-  // 40kdc layout metadata: the deployment pattern and the mission matchup
-  // split into its two dispositions. `resolveTerrainLayout` joins on both to
-  // pick a mission pairing's layout.
+  // `resolveTerrainLayout` joins on deployment pattern and dispositions.
   const dispositions = matchupToDispositions(layout.mission_matchup_id);
   const entry = {};
   if (layout.deployment_pattern_id)

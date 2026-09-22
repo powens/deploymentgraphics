@@ -144,9 +144,7 @@ describe("pieceFootprint", () => {
     expect(pieceFootprint({ template: "t" }, () => TEMPLATE)).toEqual(TEMPLATE);
   });
 
-  // The guard exists so an upstream pull that drops a template fails by name
-  // here rather than reaching footprintPolygon(undefined) and throwing a bare
-  // TypeError from somewhere further down.
+  // Rather than a bare TypeError from footprintPolygon(undefined).
   it("throws by name for a piece with neither", () => {
     expect(() =>
       pieceFootprint({ id: "p7", template: "gone" }, () => undefined),
@@ -155,8 +153,6 @@ describe("pieceFootprint", () => {
 });
 
 describe("pieceFootprintIfAny", () => {
-  // The same precedence without the throw, for the one caller that asks
-  // whether a piece has a footprint at all rather than demanding one.
   it("returns undefined instead of throwing when a piece has neither", () => {
     expect(
       pieceFootprintIfAny({ id: "p7", template: "gone" }, () => undefined),

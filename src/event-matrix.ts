@@ -1,11 +1,7 @@
 /**
  * The event-companion matrix: which deployment two force dispositions play
- * under a given layout. Parsed from the event companion pack into
- * `static/data/event_companion_matrix.yml` and bundled as the `eventMatrix`
- * preset (see `scripts/gen-presets.mjs`).
- *
- * The matrix is keyed by the two dispositions as an *unordered* pair, so a
- * matchup resolves the same regardless of which side holds which disposition.
+ * under a given layout. Source: `static/data/event_companion_matrix.yml`,
+ * bundled as the `eventMatrix` preset.
  */
 
 /** A layout variant within a disposition pairing. */
@@ -22,10 +18,7 @@ interface EventMatrixEntry {
 /** All disposition pairings, keyed by {@link eventMatrixKey}. */
 export type EventMatrix = Record<string, EventMatrixEntry>;
 
-/**
- * The lookup key for a disposition pairing: the two dispositions sorted and
- * joined with `" | "`. Order-independent, so `(a, b)` and `(b, a)` match.
- */
+/** The order-independent lookup key for a disposition pairing. */
 export function eventMatrixKey(a: string, b: string): string {
   return [a, b].sort().join(" | ");
 }
@@ -51,7 +44,6 @@ export function resolveMission(
   return cell.deployment;
 }
 
-/** The sorted, unique force dispositions present in the matrix. */
 export function dispositions(matrix: EventMatrix): string[] {
   const set = new Set<string>();
   for (const key of Object.keys(matrix)) {
@@ -69,13 +61,9 @@ export interface TerrainLayoutMeta {
 }
 
 /**
- * Finds the terrain layout whose disposition pair *and* deployment match this
- * pairing, joining on the metadata each ported 40kdc layout already carries.
- * Returns the layout id, or `undefined` when no layout matches (the 40kdc
- * source does not cover every matrix cell).
- *
- * `deployment` may use either `-` or `_`: the matrix uses `_`
- * (`sweeping_engagement`) while the layouts use `-` (`sweeping-engagement`).
+ * Finds the terrain layout whose disposition pair and deployment match, or
+ * `undefined` (the 40kdc source does not cover every matrix cell).
+ * `deployment` may use `-` or `_`: the matrix uses `_`, the layouts `-`.
  */
 export function resolveTerrainLayout(
   layouts: Record<string, TerrainLayoutMeta>,

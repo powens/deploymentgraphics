@@ -11,9 +11,8 @@ type FeatureArt = { body: IconShape[]; accent: IconShape[] };
 /** Maps a bounding box (inches) to feature geometry in local 0..w / 0..h. */
 export type FeatureDraw = (w: number, h: number) => FeatureArt;
 
-// L-shaped ruin: thin walls — a vertical wall down the left and a horizontal
-// wall along the bottom — drawn as a single path so the body reads as standing
-// wall sections, plus a few rubble dots along the walls and inner corner.
+// L-shaped ruin: walls down the left and along the bottom as one path, plus
+// rubble dots.
 const lRuin: FeatureDraw = (w, h) => {
   const wall = Math.min(0.5, w, h);
   const d = `M0 0 H${wall} V${h - wall} H${w} V${h} H0 Z`;
@@ -28,9 +27,8 @@ const lRuin: FeatureDraw = (w, h) => {
   };
 };
 
-// Generator: a body box, three vent slots on the left, and a turbine disc on
-// the right held to a fixed-ish radius and vertically centered so it stays
-// round when the box is stretched.
+// Generator: body box, three vent slots, and a turbine disc whose radius is
+// capped by both w and h so it stays round when the box is stretched.
 const generator: FeatureDraw = (w, h) => {
   const ventW = Math.max(0.15, w * 0.04);
   const accent: IconShape[] = [];
@@ -48,11 +46,9 @@ const generator: FeatureDraw = (w, h) => {
   return { body: [{ tag: "rect", x: 0, y: 0, width: w, height: h }], accent };
 };
 
-// Horizontal mirror of `lRuin` (reflected across x = w/2): the outer corner
-// sits bottom-right with walls along the right and bottom edges. Needed for the
-// opposite-chirality 40kdc corner ruins (balanced-right, corner-right), which a
-// rotation of `lRuin` alone can never reproduce — the same reason `shoe` has a
-// `shoe-mirror` building template.
+// `lRuin` reflected across x = w/2 (outer corner bottom-right). The
+// opposite-chirality 40kdc ruins (balanced-right, corner-right) cannot be
+// reached by rotating `lRuin`.
 const lRuinMirror: FeatureDraw = (w, h) => {
   const wall = Math.min(0.5, w, h);
   const d = `M${w} 0 H${w - wall} V${h - wall} H0 V${h} H${w} Z`;
@@ -67,10 +63,8 @@ const lRuinMirror: FeatureDraw = (w, h) => {
   };
 };
 
-// Gantry: a square deck (body) with an X cross-brace and four corner posts on
-// top (accent), reading as a braced raised platform. The two brace beams are
-// thin quads along the deck's diagonals; their thickness and the post radius
-// derive from w/h so the structure scales with the box.
+// Gantry: a deck (body) with an X cross-brace and four corner posts (accent),
+// all sized from w/h.
 const gantry: FeatureDraw = (w, h) => {
   const t = Math.min(0.3, w * 0.14, h * 0.14); // brace beam thickness
   // A thin quad beam between two corners, `t` wide, centred on the diagonal.
@@ -119,13 +113,9 @@ function featureDefId(
 }
 
 /**
- * Appends one color-free `<g id="feature-…">` per distinct (type, width, height)
- * used in `placements` (deduplicated by def id). Body shapes carry
- * `style="fill:var(--body);stroke:var(--accent)"` and accent shapes
- * `style="fill:var(--accent)"`; the concrete colours are supplied per placement
- * by each `<use>` (see `makeFeatures`) as inherited custom properties, and
- * `stroke-width` is inherited from the `#features` group. Throws on an unknown
- * feature type.
+ * Appends one colour-free `<g id="feature-…">` per distinct (type, width,
+ * height). Shapes are styled with `var(--body)`/`var(--accent)`, which each
+ * `<use>` sets (see `makeFeatures`). Throws on an unknown feature type.
  */
 export function injectFeatureDefs(
   doc: SvgDocument,
@@ -159,12 +149,9 @@ export function injectFeatureDefs(
 }
 
 /**
- * Builds `<g id="features">` of `<use>` elements — one per resolved placement
- * (mirror copies included) — each referencing its `#feature-…` def (see
- * `injectFeatureDefs`), translated to its position and rotated about its box
- * centre. The shared `stroke-width` is set once on the group and inherited; each
- * `<use>` sets the `--body`/`--accent` custom properties from the palette, which
- * the def's `var()` styles resolve against. Throws on an unknown feature type or
+ * Builds `<g id="features">` with a `<use>` per resolved placement (mirror
+ * copies included). Each `<use>` sets `--body`/`--accent` from the palette;
+ * `stroke-width` is set once on the group. Throws on an unknown feature type or
  * palette colour.
  */
 export function makeFeatures(
@@ -178,8 +165,7 @@ export function makeFeatures(
   group.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
   let counter = 0;
   for (const placement of placements) {
-    // Re-guarded here (injectFeatureDefs validates the same) so makeFeatures
-    // stays safe when called standalone, e.g. in tests.
+    // Also checked in injectFeatureDefs; repeated for standalone callers.
     if (!features[placement.type]) {
       throw new Error(`unknown feature type: ${placement.type}`);
     }
