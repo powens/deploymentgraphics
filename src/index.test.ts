@@ -5,31 +5,18 @@ import * as pkg from "./index.js";
 import * as presets from "./presets/index.js";
 
 /**
- * The package's published interface, pinned.
- *
- * `index.ts` used to be thirteen `export *` lines, which made every geometry,
- * placement and SVG-backend primitive a semver commitment by accident. Naming
- * the exports fixed that once; this list keeps it fixed, so widening the
- * interface stays a deliberate edit to a visible list rather than a side
- * effect of adding an `export` somewhere in the implementation.
- *
- * Types can't be enumerated at runtime, so this covers the value exports —
- * the ones that carry code, and the ones re-exporting a whole module would
- * leak. `pnpm type-check` covers the type side.
- *
- * `package.json` publishes a second entry, `./presets`, so pinning the root
- * alone would leave half the committed surface unguarded — which is why the
- * lists below are split by entry point and composed, rather than one flat
- * list the presets assertion re-derives.
+ * The published value exports, pinned so widening the API is a deliberate
+ * edit here. Types can't be enumerated at runtime; `pnpm type-check` covers them.
  */
 const RENDERERS = ["makeMissionCard", "renderMissionCardToString"] as const;
 
-/** Everything `deploymentgraphics/presets` publishes — bundled data, no logic. */
+/** Everything `deploymentgraphics/presets` publishes. */
 const PRESETS = [
   "baseConfig",
   "baseTheme",
   "buildConfig",
   "gwTerrain",
+  "gwTerrainIndex",
   "gwTemplatesReal",
   "eventMatrix",
   "missions",
@@ -41,7 +28,6 @@ const PRESETS = [
   "tippingPoint",
 ] as const;
 
-/** Two dispositions -> the mission they play, and the layout that covers it. */
 const RESOLUTION = [
   "resolveMission",
   "resolveTerrainLayout",
@@ -57,9 +43,6 @@ describe("the package root", () => {
   });
 
   it("keeps the implementation primitives internal", () => {
-    // A sample of what the old barrel published: geometry, the placement
-    // seam, and the SVG backend. Each still has internal callers, which
-    // import it by path.
     for (const name of [
       "rotate",
       "localCorner",
@@ -83,10 +66,8 @@ describe("the package root", () => {
 });
 
 /**
- * The subpaths `package.json` publishes, and which this file therefore has to
- * pin. Listed rather than derived, so the assertion below is a tripwire: a
- * third entry point added to `exports` fails here until someone comes back and
- * guards its surface too.
+ * Listed rather than read from `package.json`, so a new entry point fails
+ * here until its surface is pinned too.
  */
 const GUARDED_SUBPATHS = [".", "./presets"];
 

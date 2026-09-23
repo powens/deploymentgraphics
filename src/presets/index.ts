@@ -1,15 +1,11 @@
 /**
- * Ready-to-use configuration: the default board styling, the six standard
- * missions, the built-in terrain, and {@link buildConfig} to assemble them
- * into a `FullConfig` for `makeMissionCard`.
- *
- * This is a published entry point (`deploymentgraphics/presets`), so it holds
- * exactly what the package root holds — no more. That includes the event
- * matrix: no renderer reads it, but resolving a matchup to its mission is a
- * published operation (`resolveMission`), and the matrix is what it reads.
+ * `deploymentgraphics/presets`: the default board styling, the six standard
+ * missions, the built-in terrain, the event matrix, and {@link buildConfig}.
+ * Must stay a subset of the package root.
  */
 export { baseConfig } from "./base.js";
 export { gwTerrain } from "./terrain.js";
+export { gwTerrainIndex } from "./terrain-index.js";
 export { gwTemplatesReal } from "./templates-real.js";
 export {
   missions,

@@ -1,17 +1,25 @@
 import type { TerrainConfig } from "../terrain-config.js";
 import type { BaseConfig, DeploymentConfig, FullConfig } from "../types.js";
 import { baseConfig } from "./base.js";
-import { gwTerrain } from "./terrain.js";
+
+/**
+ * Empty rather than `gwTerrain`: a default argument is a use, so defaulting to
+ * the corpus would pull all of it into any bundle that imports `buildConfig`.
+ */
+const emptyTerrain: TerrainConfig = { templates: {}, layout: {} };
 
 /** Inputs for {@link buildConfig}. Only `mission` is required. */
 export interface BuildConfigOptions {
   /** The mission deployment map to render. */
   mission: DeploymentConfig;
-  /** Terrain templates and layouts. Defaults to {@link gwTerrain}. */
+  /**
+   * Terrain templates and layouts. Defaults to empty; pass `gwTerrain` to
+   * draw buildings.
+   */
   terrain?: TerrainConfig;
   /**
-   * Which terrain layout to draw. Defaults to `""` (no layout), which
-   * renders no buildings.
+   * Which terrain layout to draw: a key in `terrain.layout`. Defaults to `""`
+   * (no layout), which renders no buildings.
    */
   layout?: string;
   /** Board size and draw flags. Defaults to {@link baseConfig}. */
@@ -23,15 +31,12 @@ export interface BuildConfigOptions {
 }
 
 /**
- * Assembles a {@link FullConfig} — the object `makeMissionCard` consumes —
- * from a mission plus optional terrain, base styling, and UI overrides.
- *
- * All overrides are applied by spreading, never by mutation, so the
- * shared preset objects are safe to reuse across many calls.
+ * Assembles the {@link FullConfig} `makeMissionCard` consumes. Never mutates
+ * its inputs, so preset objects are safe to reuse.
  */
 export function buildConfig({
   mission,
-  terrain = gwTerrain,
+  terrain = emptyTerrain,
   layout = "",
   base = baseConfig,
   grid,

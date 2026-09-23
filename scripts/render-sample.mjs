@@ -15,11 +15,9 @@ import {
 const outDir = fileURLToPath(new URL("../assets/", import.meta.url));
 mkdirSync(outDir, { recursive: true });
 
-// The README sample has always shown the detailed GW footprints, which
-// buildConfig does not pick by default - it defaults to gwTerrain, whose
-// templates are the illustrative rectangles from templates-simple.yml. Pass the
-// swap explicitly: leaving it implicit is what quietly downgraded the committed
-// asset to plain rectangles the first time the script was re-run.
+// The README sample shows the detailed GW footprints. buildConfig defaults to
+// empty terrain and gwTerrain carries the plain rectangles, so pass the swap
+// explicitly.
 const samples = [
   {
     file: "sample.svg",
@@ -32,8 +30,8 @@ const samples = [
   },
 ];
 
-// The board is measured in inches; render at 15px/inch so GitHub shows the
-// card at a sensible size (the markup itself only carries a viewBox).
+// px per board inch, so GitHub shows the card at a sensible size (the markup
+// itself only carries a viewBox).
 const SCALE = 15;
 
 for (const { file, opts } of samples) {
