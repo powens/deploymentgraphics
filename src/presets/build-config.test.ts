@@ -4,6 +4,7 @@ import { makeMissionCard } from "../main.js";
 import { baseConfig } from "./base.js";
 import { buildConfig } from "./build-config.js";
 import { missions } from "./missions.js";
+import { gwTerrain } from "./terrain.js";
 
 describe("buildConfig", () => {
   it("renders every built-in mission preset", () => {
@@ -27,14 +28,24 @@ describe("buildConfig", () => {
     expect(() => makeMissionCard(config)).not.toThrow();
   });
 
+  // Not `gwTerrain`, so `buildConfig` doesn't pull the corpus into bundles.
+  it("defaults to an empty terrain config", () => {
+    const config = buildConfig({ mission: missions.dawn_of_war });
+    expect(config.terrain).toEqual({ templates: {}, layout: {}, layout_name: "" });
+  });
+
+  it("draws the built-in corpus when gwTerrain is passed explicitly", () => {
+    const layout = Object.keys(gwTerrain.layout)[0];
+    const config = buildConfig({ mission: missions.dawn_of_war, terrain: gwTerrain, layout });
+    expect(config.terrain.layout[layout]).toBe(gwTerrain.layout[layout]);
+  });
+
   it("leaves base untouched when no override is passed", () => {
     const config = buildConfig({ mission: missions.dawn_of_war });
     expect(config.base).toBe(baseConfig);
   });
 
-  // The browser app assembles its config this way — a terrain config feeding
-  // buildConfig — and serialises the result to the raw-YAML tab, so the shape
-  // is user-visible. Guard it against drift.
+  // The viewer's raw-YAML tab shows this shape, so it is user-visible.
   it("assembles the browser app's FullConfig shape from a terrain config", () => {
     const mission = missions.dawn_of_war;
     const base = {

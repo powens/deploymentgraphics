@@ -29,18 +29,28 @@ document.body.appendChild(svg);
 ```
 
 Add terrain, or toggle the grid and territory line, via `buildConfig`
-overrides:
+overrides. `terrain` defaults to empty, so pass `gwTerrain` to draw the
+bundled battlemaster layouts:
 
 ```ts
+import { gwTerrain } from "deploymentgraphics/presets";
+
 const svg = makeMissionCard(
   buildConfig({
     mission: missions.search_and_destroy,
+    terrain: gwTerrain,
     layout: "bm-take-vs-take-03", // a battlemaster layout; search_and_destroy
     grid: true,
     territory: false,
   }),
 );
 ```
+
+`gwTerrain` is ~220kB of layout geometry, and it is a static import: a
+bundle that names it ships all 45 layouts. Import it only where a board is
+actually drawn — ideally behind a dynamic `import()` — and use
+`gwTerrainIndex` for everything else (see
+[Resolving a matchup](#resolving-a-matchup)).
 
 The presets are also exported from the package root, so a single import
 works too:
@@ -52,9 +62,37 @@ import { makeMissionCard, buildConfig, missions } from "deploymentgraphics";
 The root exports the two renderers, the presets, and the types of the
 config they consume — `makeMissionCard`, `renderMissionCardToString`,
 `buildConfig`, `missions` (and each mission by name), `gwTerrain`,
-`gwTemplatesReal`, `baseConfig`, `baseTheme`, and the `FullConfig` type
-graph. The geometry, placement and SVG-backend primitives the renderers
-are built from are implementation and are not published.
+`gwTerrainIndex`, `gwTemplatesReal`, `baseConfig`, `baseTheme`, the
+matchup-resolution API, and the `FullConfig` type graph. The geometry,
+placement and SVG-backend primitives the renderers are built from are
+implementation and are not published.
+
+### Resolving a matchup
+
+To render the board two force dispositions actually play, resolve the
+pairing to a mission and a layout id first. Resolution reads only metadata,
+so it needs `gwTerrainIndex` rather than the full corpus:
+
+```ts
+import { resolveMission, resolveTerrainLayout } from "deploymentgraphics";
+import { eventMatrix, gwTerrainIndex, missions } from "deploymentgraphics/presets";
+
+const deployment = resolveMission(eventMatrix, "Purge the Foe", "Reconnaissance", "A");
+const layout = resolveTerrainLayout(gwTerrainIndex, "Purge the Foe", "Reconnaissance", deployment);
+// -> resolveTerrainLayout returns undefined for the matrix cells 40kdc
+//    does not cover; those render as bare deployment zones.
+```
+
+Keeping `gwTerrain` out of that path is what makes it cheap — the two calls
+above cost ~3kB gzipped, against ~38kB if they read `gwTerrain.layout`.
+Load the geometry only where you draw:
+
+```ts
+const { gwTerrain } = await import("deploymentgraphics/presets");
+const svg = makeMissionCard(
+  buildConfig({ mission: missions[deployment], terrain: gwTerrain, layout }),
+);
+```
 
 ### Server-side rendering
 
@@ -98,10 +136,13 @@ YAML parsing or file IO at runtime:
   `sweeping_engagement`, `tipping_point`). Each is also exported by name
   (`dawnOfWar`, …).
 - `gwTerrain` — building templates and the 45 battlemaster mission layouts
-  ported from 40kdc, keyed by layout id (`bm-take-vs-take-01`, …).
+  ported from 40kdc, keyed by layout id (`bm-take-vs-take-01`, …). ~220kB.
+- `gwTerrainIndex` — the same 45 layouts' matchup metadata with the geometry
+  left out (~5kB): everything `resolveTerrainLayout` reads, and nothing else.
 - `baseConfig` — default board size (60×44 inches) and styling.
 - `buildConfig(options)` — merges a mission, terrain, and base into the
-  `FullConfig` that `makeMissionCard` consumes.
+  `FullConfig` that `makeMissionCard` consumes. `terrain` defaults to empty
+  (nothing drawn), so it never pulls `gwTerrain` into a bundle on its own.
 
 Build a config by hand instead of using `buildConfig` for full control —
 see the `FullConfig` type, which is exported from the package root.

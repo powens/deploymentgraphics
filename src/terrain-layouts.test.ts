@@ -5,38 +5,21 @@ import { gwTerrain } from "./presets/terrain.js";
 import { missions } from "./presets/missions.js";
 
 /**
- * The pipeline seam test.
- *
- * `gwTerrain` is generated — `make update-terrain` reruns the converters and
- * rewrites `src/presets/terrain.ts` wholesale. Everything downstream of that
- * generation is checked structurally: `presets.test.ts` deep-equals the modules
- * against their YAML source, and the `--check` modes only verify each generator
- * agrees with its own last output. None of that crosses into the renderer.
- *
- * But the generated data carries *strings that must match the renderer's
- * registries* — a feature `type` keying `features`, a `color` keying
- * `theme.feature.palette`, an icon `type`, a building `type` keying
- * `templates`. A converter emitting an unregistered one is only discovered when
- * something renders it (`features.ts` throws at that point), which today means
- * at a consumer's render call, not at generation time.
- *
- * Rendering every bundled layout once puts that whole cross-seam agreement
- * under test, so a bad pull fails here instead of downstream.
+ * Renders every generated layout. The converters emit strings that must match
+ * renderer registries (feature `type`, palette `color`, icon and building
+ * `type`); an unregistered one only throws at render time, so a bad terrain
+ * pull should fail here rather than at a consumer.
  */
 
 const layoutNames = Object.keys(gwTerrain.layout);
 
-/**
- * Renders through the string backend, which needs no DOM. Memoised: both
- * assertions below run over the same 46 layouts, and rendering each one twice
- * buys nothing.
- */
+/** Memoised: both per-layout tests render the same layouts. */
 const markupCache = new Map<string, string>();
 const render = (layout: string): string => {
   let markup = markupCache.get(layout);
   if (markup === undefined) {
     markup = renderMissionCardToString(
-      buildConfig({ mission: missions.dawn_of_war, layout }),
+      buildConfig({ mission: missions.dawn_of_war, terrain: gwTerrain, layout }),
     );
     markupCache.set(layout, markup);
   }
@@ -44,36 +27,21 @@ const render = (layout: string): string => {
 };
 
 /**
- * How many `<use>` elements a `<prefix>-<n>` counter emitted.
- *
- * What counting buys is a check on the *renderer*: a pass that silently skips
- * placements (a wrong `length > 0` guard, a mirror expansion that stopped
- * expanding) still emits `building-0`, so probing for the first id would miss
- * it. It is not a guard against the converters dropping placements — the
- * expected counts below are derived from the same generated `gwTerrain`, so a
- * shrunken layout shrinks both sides. Dropped *layouts* are caught by the
- * corpus-size pin; dropped pieces within a layout are not caught here.
- *
- * The `\d+` suffix is what separates placements from defs — `injectFeatureDefs`
- * and `injectIconDefs` emit `feature-<type>-<w>x<h>` and `icon-<type>` ids into
- * the same document.
+ * How many `<prefix>-<n>` ids were emitted. Counting (not probing for `-0`)
+ * catches a renderer that skips some placements, e.g. a broken mirror
+ * expansion. The `\d+` suffix excludes def ids like `icon-<type>`.
  */
 const drawn = (markup: string, prefix: string) =>
   markup.match(new RegExp(`id="${prefix}-\\d+"`, "g"))?.length ?? 0;
 
-/**
- * Placements draw twice unless `mirror: false` — the same default `withMirror`
- * applies in `placement.ts`. Icons never mirror, so they are counted directly.
- */
+/** Placements draw twice unless `mirror: false`; icons never mirror. */
 const expanded = (placements: { mirror?: boolean }[] | undefined) =>
   (placements ?? []).reduce((n, p) => n + (p.mirror === false ? 1 : 2), 0);
 
 describe("every bundled terrain layout", () => {
   it("ships the whole bundled corpus", () => {
-    // Pinned exactly, not as a lower bound: the suite below only covers what
-    // this list holds, so a converter that silently drops layouts would
-    // otherwise shrink the coverage without failing anything. Update the
-    // number deliberately when the 40kdc corpus gains or loses a layout.
+    // Exact, so a converter dropping layouts can't silently shrink coverage.
+    // Update when the 40kdc corpus changes.
     expect(layoutNames.length).toBe(45);
   });
 
@@ -85,10 +53,7 @@ describe("every bundled terrain layout", () => {
     const layout = gwTerrain.layout[name];
     const markup = render(name);
 
-    // A `<use>` counts as drawn only if its def is actually in the document:
-    // counting ids alone would pass a card whose every reference dangled and
-    // which therefore renders blank. (`area_terrain` shapes carry no ids and
-    // are not covered by either check; the bundled corpus declares none.)
+    // Counting ids alone would pass a card whose every `href` dangles.
     const ids = new Set(
       [...markup.matchAll(/id="([^"]+)"/g)].map((m) => m[1]),
     );

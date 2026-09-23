@@ -118,7 +118,38 @@ knowing if you author YAML: under js-yaml 4's YAML 1.2 core schema only
 Previously `base.grid` alone tested `=== true`, so `draw: no` did not draw the
 grid while the same spelling already drew the other two.
 
+**`buildConfig` no longer defaults `terrain` to `gwTerrain`.** The default is now
+an empty terrain config — no templates, no layouts, nothing drawn. Pass the corpus
+explicitly to draw it:
+
+```ts
+buildConfig({ mission, terrain: gwTerrain, layout: "bm-purge-vs-recon-01" })
+```
+
+`buildConfig({ mission })` is unaffected: `layout` already defaulted to `""`, so a
+call that named no layout drew no buildings either way. The break is a call that
+passes `layout` but not `terrain` — it now renders bare deployment zones instead
+of that layout, silently.
+
+The default argument was a static dependency: importing `buildConfig` pulled all
+45 battlemaster layouts (~220kB, ~28kB gzipped) into the bundle, and no bundler
+could shake them out, whether or not the consumer ever drew terrain. Assembling a
+config without terrain now costs 14kB gzipped instead of 51kB.
+
 ### Added
+
+- `gwTerrainIndex` — the matchup metadata of all 45 bundled layouts
+  (`dispositions` and `deployment_pattern_id`) with the geometry left out:
+  ~5kB against `gwTerrain`'s ~220kB. It is exactly what `resolveTerrainLayout`
+  reads, and its parameter type is unchanged, so it is a drop-in swap:
+
+  ```ts
+  resolveTerrainLayout(gwTerrainIndex, dispA, dispB, deployment)
+  ```
+
+  Resolving a matchup this way costs ~3kB gzipped against ~38kB via
+  `gwTerrain.layout`. Exported from both the root and
+  `deploymentgraphics/presets`, like every other preset.
 
 - Published the matchup-resolution API: `resolveMission`, `resolveTerrainLayout`,
   `eventMatrixKey`, `dispositions`, the `eventMatrix` preset, and the
