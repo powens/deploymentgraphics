@@ -5,7 +5,7 @@ import * as bundle from "./bundle.js";
 
 /**
  * The demo's contract with its entry point. `static/app.js` is not
- * type-checked or linted, so a mismatch between its imports and `bundle.ts`'s
+ * type-checked, so a mismatch between its imports and `bundle.ts`'s
  * exports would otherwise only show up as the page failing at load. It is read
  * as text because importing it runs it against `document`.
  */

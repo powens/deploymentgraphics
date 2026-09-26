@@ -6,10 +6,9 @@ import {
   controlElement,
   controlSpec,
   defaultControls,
-  deriveControls,
   readControlsFromDom,
+  setControlsLocked,
   writeControlsToDom,
-  writeDerivedControlsToDom,
 } from "./viewer-controls.js";
 
 /**
@@ -121,6 +120,18 @@ describe("readControlsFromDom", () => {
 });
 
 describe("writeControlsToDom", () => {
+  // A `<select>` silently ignores a value it has no `<option>` for.
+  for (const row of selectRows) {
+    it(`throws when "${row.key}"'s dropdown has no option for the value`, () => {
+      const root = panel();
+      const value = otherValue(row) as string;
+      root.querySelector(`#${row.elementId} option[value="${value}"]`)!.remove();
+      expect(() => writeControlsToDom(root, withControl(row, value))).toThrow(
+        `Control "${row.key}" has no option "${value}"`,
+      );
+    });
+  }
+
   it("names the control and the element when one is missing", () => {
     const root = panel();
     root.querySelector("#show-grid")!.remove();
@@ -130,36 +141,18 @@ describe("writeControlsToDom", () => {
   });
 });
 
-describe("writeDerivedControlsToDom", () => {
-  it("writes the derived deployment and terrain layout", () => {
+describe("setControlsLocked", () => {
+  it("locks every control but the view-only ones, and unlocks them all", () => {
     const root = panel();
-    const derived = deriveControls(defaultControls());
-    writeDerivedControlsToDom(root, derived);
-    expect((root.querySelector("#deployment") as HTMLSelectElement).value).toBe(
-      derived.m,
-    );
-    expect((root.querySelector("#terrain") as HTMLSelectElement).value).toBe(
-      derived.t,
-    );
-  });
-
-  // A `<select>` silently ignores a value it has no `<option>` for.
-  it("throws when a dropdown has no option for the derived value", () => {
-    const root = panel();
-    const terrain = root.querySelector("#terrain") as HTMLSelectElement;
-    const derived = deriveControls(defaultControls());
-    terrain.querySelector(`option[value="${derived.t}"]`)!.remove();
-    expect(() => writeDerivedControlsToDom(root, derived)).toThrow(
-      `Control "t" has no option "${derived.t}"`,
-    );
-  });
-
-  it("names the control and the element when one is missing", () => {
-    const root = panel();
-    root.querySelector("#deployment")!.remove();
-    expect(() =>
-      writeDerivedControlsToDom(root, deriveControls(defaultControls())),
-    ).toThrow('Control "m" has no element #deployment');
+    setControlsLocked(root, true);
+    const locked = controlSpec
+      .filter((row) => controlElement(root, row).hasAttribute("disabled"))
+      .map((row) => row.key);
+    expect(locked).toEqual(controlSpec.map((row) => row.key).filter((key) => key !== "rot"));
+    setControlsLocked(root, false);
+    for (const row of controlSpec) {
+      expect(controlElement(root, row).hasAttribute("disabled")).toBe(false);
+    }
   });
 });
 
