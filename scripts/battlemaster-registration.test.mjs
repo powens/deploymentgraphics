@@ -279,7 +279,7 @@ describe("registration tables", () => {
       "small-l-flip": 180,
       tower: 0,
     });
-    // decompose would round-trip an off-axis turn, so nothing else catches it.
+    // poseFromMatrix would round-trip an off-axis turn, so nothing else catches it.
     for (const [part, t] of Object.entries(turns)) {
       expect(Number.isInteger(t / 90), `${part} turn ${t} is not a quarter-turn`).toBe(true);
     }

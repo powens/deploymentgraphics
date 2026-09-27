@@ -1,4 +1,8 @@
-import { footprintPolygon } from "./terrain-resolver.mjs";
+import {
+  footprintPolygon,
+  poseFromMatrix,
+  poseMatrix,
+} from "./terrain-resolver.mjs";
 import {
   FLIP_X,
   FLIP_Y,
@@ -13,7 +17,6 @@ import {
   normalizeDegrees,
   pointSegmentDistance,
   rotationMatrix,
-  toDegrees,
 } from "../src/geometry.ts";
 
 // Translates upstream 40kdc "battlemaster-11e" composite layouts into the
@@ -242,7 +245,7 @@ const FEATURE_KEYS = new Set([
 
 /**
  * Snap a rigid matrix to integers. `rotationMatrix` leaves 1e-17 noise on a
- * quarter-turn, which would leak into `decompose`'s angle and into deep-equals
+ * quarter-turn, which would leak into `poseFromMatrix`'s angle and into deep-equals
  * on a variant; `+ 0` also canonicalizes -0, which deep-equal distinguishes.
  */
 const roundMatrix = (M) => M.map((row) => row.map((x) => Math.round(x) + 0));
@@ -450,32 +453,6 @@ function partOf(templateId) {
   return part;
 }
 
-/**
- * `normalizeDegrees` plus a float-noise snap: angles from `atan2` on composed
- * matrices arrive as 89.99999999999999 or just under 360, and would otherwise
- * be written into the emitted corpus verbatim.
- */
-const normDeg = (deg) => {
-  const r = Math.round(normalizeDegrees(deg) * 1e6) / 1e6;
-  return r === 360 ? 0 : r;
-};
-
-/**
- * Factor an orthogonal 2x2 back into the `{ rotation_degrees, mirror }` pair
- * resolvePiece consumes, which applies mirror first then rotation (A = R . S).
- * An improper map always comes back as a horizontal mirror; the rotation
- * absorbs the difference between the two mirror axes.
- */
-function decompose(A) {
-  const improper = det(A) < 0;
-  const R = improper ? matmul(A, FLIP_X) : A;
-  const out = {
-    rotation_degrees: normDeg(toDegrees(Math.atan2(R[1][0], R[0][0]))),
-  };
-  if (improper) out.mirror = "horizontal";
-  return out;
-}
-
 function bboxSize(footprint) {
   return boundsSize(footprintPolygon(footprint));
 }
@@ -516,7 +493,7 @@ function partExtent(part) {
  * W2: the composite-frame correction from a *mirrored* feature's `position` to
  * its roof centre: (I - S) . roofCentre, where S is the feature's mirror alone,
  * raised into the composite frame by the feature's rotation. Zero for an
- * unmirrored feature (903 of 904). Not the full `pieceMatrix`: rotation is not
+ * unmirrored feature (903 of 904). Not the full `poseMatrix`: rotation is not
  * what upstream mis-anchors, and that would fire on all 96 rotated features.
  *
  * One instance ships: the generator in
@@ -538,8 +515,8 @@ function partExtent(part) {
  */
 function mirrorAnchorFix(part, feature) {
   const roof = boundsCentre(footprintPolygon(part.footprint));
-  const reflected = matvec(mirrorMatrix(feature), roof);
-  return matvec(rotationMatrix(feature.rotation_degrees ?? 0), {
+  const reflected = matvec(poseMatrix({ mirror: feature.mirror }), roof);
+  return matvec(poseMatrix({ rotation_degrees: feature.rotation_degrees }), {
     x: roof.x - reflected.x,
     y: roof.y - reflected.y,
   });
@@ -596,7 +573,7 @@ function scaleToUpstream(legacy, upstream, turn, part = "?") {
   const ring = footprintPolygon(legacy);
   const l = bboxSize(legacy);
   const u = bboxSize(upstream);
-  const quarter = normDeg(turn) === 90 || normDeg(turn) === 270;
+  const quarter = normalizeDegrees(turn) === 90 || normalizeDegrees(turn) === 270;
   const want = {
     width: quarter ? u.height : u.width,
     height: quarter ? u.width : u.height,
@@ -637,20 +614,6 @@ function anchorOffset(footprint) {
   return { x: c.x - b.x, y: c.y - b.y };
 }
 
-/** The piece's own mirror, on its own: diag(sx, sy). */
-function mirrorMatrix(piece) {
-  return piece.mirror === "horizontal"
-    ? FLIP_X
-    : piece.mirror === "vertical"
-      ? FLIP_Y
-      : IDENTITY;
-}
-
-/** The piece's own linear map: R(rotation_degrees) . diag(sx, sy). */
-function pieceMatrix(piece) {
-  return matmul(rotationMatrix(piece.rotation_degrees ?? 0), mirrorMatrix(piece));
-}
-
 /**
  * Rewrite a Battlemaster composite layout into the legacy piece vocabulary:
  * each `area` piece renamed onto its legacy archetype (with the composite's
@@ -680,7 +643,7 @@ export function normalizeLayout(layout, templatesById) {
     // orientation and anchor. Not every variant is self-inverse (the `-flip`
     // Triangle registers R270), so this is the real inverse.
     const Vinv = orthoInverse(V);
-    const M = pieceMatrix(piece);
+    const M = poseMatrix(piece);
 
     const area = { ...piece, template: SIZE_CLASS[classOf(composite)] };
     delete area.mirror;
@@ -693,7 +656,7 @@ export function normalizeLayout(layout, templatesById) {
         `piece ${piece.id} carries an inline footprint; composite retemplating to ${area.template} would discard it`,
       );
     }
-    Object.assign(area, decompose(matmul(M, V)));
+    Object.assign(area, poseFromMatrix(matmul(M, V)));
     pieces.push(area);
 
     for (const feature of composite.features ?? []) {
@@ -709,7 +672,7 @@ export function normalizeLayout(layout, templatesById) {
       }
       // A feature-level `mirror` expresses the other hand of a part; it is the
       // same `{ rotation, mirror }` pair a piece carries.
-      const Mf = pieceMatrix(feature);
+      const Mf = poseMatrix(feature);
       const part = partOf(feature.template);
       const { template, flip, turn, upstreamFootprint, upstreamSize, drop } =
         PART_TO_TEMPLATE[part];
@@ -773,7 +736,7 @@ export function normalizeLayout(layout, templatesById) {
         ...(upstreamFootprint || upstreamSize ? { footprint } : {}),
         parent_area_id: piece.id,
         position: { x: anchor.x + S.x, y: anchor.y + S.y },
-        ...decompose(A),
+        ...poseFromMatrix(A),
       };
       pieces.push(child);
     }

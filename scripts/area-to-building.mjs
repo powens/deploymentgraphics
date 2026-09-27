@@ -1,20 +1,14 @@
 // Converts a 40kdc `area` piece into a templates-simple.yml building placement.
-// The piece's affine transform (centre on centroid -> mirror -> rotate ->
-// translate, as in terrain-resolver.mjs) is composed with a rigid map G
-// (gw-local -> area-local) whose determinant matches the piece's mirror parity,
-// so the result is a pure rotation -- all the building renderer can reproduce.
+// The piece's frame (its Piece pose, from terrain-resolver.mjs) is composed
+// with a rigid map G (gw-local -> area-local) whose determinant matches the
+// pose's parity, so the result is a pure rotation -- all the building renderer
+// can reproduce.
 // We then pin the gw template's TL and TR corners (mirror:false).
 
-import { footprintPolygon } from "./terrain-resolver.mjs";
+import { footprintPolygon, pieceFrame } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
 import { templateBounds } from "../src/building-coordinates.ts";
-import {
-  bounds,
-  centroid,
-  matmul,
-  matvec,
-  rotationMatrix,
-} from "../src/geometry.ts";
+import { bounds, det, matmul, matvec } from "../src/geometry.ts";
 
 // 40kdc area template id -> gw template + footprint relationship.
 //   exact     : identical dims (lines/pipes).
@@ -69,31 +63,19 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
   if (!areaFootprint) {
     throw new Error(`no 40kdc footprint for area template ${piece.template}`);
   }
-  const mirrored =
-    piece.mirror === "horizontal" || piece.mirror === "vertical";
+  const { matrix: M, place } = pieceFrame(piece, areaFootprint);
+  const mirrored = det(M) < 0;
   const type =
     map.kind === "trapezoid" ? (mirrored ? "shoe" : "shoe-mirror") : map.gw;
 
-  const ring = footprintPolygon(areaFootprint);
-  const c = centroid(ring);
   // Wa/Ha are the footprint's far-edge coordinates, not its extents: gMap uses
   // them as absolute bbox corners. They differ for the inline footprints
   // battlemaster-normalize emits, whose bbox can run to -0.48in on one axis.
-  const { maxX: Wa, maxY: Ha } = bounds(ring);
-
-  // M = R(theta) * diag(sx, sy)
-  const sx = piece.mirror === "horizontal" ? -1 : 1;
-  const sy = piece.mirror === "vertical" ? -1 : 1;
-  const M = matmul(rotationMatrix(piece.rotation_degrees ?? 0), [
-    [sx, 0],
-    [0, sy],
-  ]);
+  const { maxX: Wa, maxY: Ha } = bounds(footprintPolygon(areaFootprint));
 
   const { Glin, Gtrans } = gMap(map.kind, mirrored, Wa, Ha);
   const TgwLin = matmul(M, Glin);
-  const shifted = matvec(M, { x: Gtrans.x - c.x, y: Gtrans.y - c.y });
-  const tx = shifted.x + piece.position.x;
-  const ty = shifted.y + piece.position.y;
+  const { x: tx, y: ty } = place(Gtrans);
 
   // The declared template box, so the pins hold for templates-real.yml too
   // (see Template box in CONTEXT.md).
