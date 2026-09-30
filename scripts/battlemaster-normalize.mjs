@@ -20,10 +20,11 @@ import {
 } from "../src/geometry.ts";
 
 // Translates upstream 40kdc "battlemaster-11e" composite layouts into the
-// legacy piece vocabulary the rest of this pipeline consumes. Upstream lists
-// one composite `area` piece whose parts live in `features[]` on its template;
+// piece vocabulary the rest of this pipeline consumes. Upstream lists one
+// composite `area` piece whose parts live in `features[]` on its template;
 // this emits the area retemplated onto one of the five legacy archetypes, plus
-// one parented `feature` child per part drawn with a legacy part template.
+// one parented `feature` child per part, named by its Battlemaster `part` and
+// drawn with a legacy polygon or upstream's own rectangle.
 //
 // The corrections, by the letters used throughout this file:
 //
@@ -35,8 +36,8 @@ import {
 //
 //   K - a Battlemaster part is a physical model, so its handedness is fixed
 //       however its parent is oriented. The legacy `corner-*` polygons are
-//       chiral and `featureFromRefs` reads chirality from the *resolved* arms,
-//       which a mirrored parent flips. K cancels the parent's parity and applies
+//       chiral, and ruin-to-feature.mjs checks each part's hand against the
+//       *resolved* arms, which a mirrored parent flips. K cancels the parent's parity and applies
 //       a per-part flip bit. It is the composition of those two reflections,
 //       not one reflection of the same parity: they differ by a half-turn (see
 //       the K comment in normalizeLayout).
@@ -52,10 +53,9 @@ import {
 //       plain rectangle does not. For the chiral `corner-*` parts it carries the
 //       L shape and wins. Where the legacy footprint is itself a rectangle it
 //       adds only a size, and one that disagrees by up to (1.5, 2)in, so those
-//       parts (`generator`, `tower`) carry upstream's footprint inline and keep
-//       the legacy template id only for the feature type and colour
-//       rect-to-feature.mjs reads off it. See PART_TO_TEMPLATE for the two
-//       rectangle parts this rule does not reach.
+//       parts (`generator`, `tower`) carry upstream's footprint inline and no
+//       legacy template at all. See PART_TO_TEMPLATE for the two rectangle
+//       parts this rule does not reach.
 //
 //   Z - the legacy `corner-*` polygons are up to 1.25in oversize. Only their
 //       bbox reaches the render (ruin-to-feature.mjs reads the outer corner and
@@ -104,11 +104,11 @@ export const SIZE_CLASS = {
 //            `upstreamFootprint` part, which is already in the part's frame.
 //   `upstreamFootprint`
 //          - emit the upstream part's own footprint instead of the legacy
-//            polygon (F).
+//            polygon (F). Such a part has no legacy `template`.
 //   `upstreamSize`
 //          - keep the legacy shape, rescaled onto upstream's rectangle (Z).
 //            Mutually exclusive with `upstreamFootprint`.
-//   `drop` - emit no child for this part.
+//   `drop` - emit no child for this part. The only place a part is dropped.
 //
 // `turn` and `flip` were measured by matching each emitted child to the
 // nearest pre-pull piece of its template and sweeping all four turns and both
@@ -159,8 +159,10 @@ export const SIZE_CLASS = {
 //     distance disagrees with the template edge by more than 0.1in, and
 //     feature-to-building.mjs pins on a 5.5in edge. Adopting upstream's size
 //     means redrawing the template, not setting a flag.
-//   pipes - maps onto `catwalk`, which layout-to-placements.mjs drops after
-//     reading only its centroid; switching it changes no emitted output.
+//
+// `pipes` is dropped: its parent area already becomes a building covering
+// upstream's 6x1in part, and the 7x2in legacy `catwalk` polygon overhung its
+// 6x2in parent by 0.5in each end.
 export const PART_TO_TEMPLATE = {
   ab: {
     template: "corner-ruin-balanced-left",
@@ -214,7 +216,7 @@ export const PART_TO_TEMPLATE = {
     turn: 90,
     upstreamSize: true,
   },
-  // Dropped, as layout-to-placements.mjs drops `catwalk`. The only part with no
+  // Dropped. The only part with no
   // walls (a plain 1x1 square, no roof), used twice in one composite
   // (`bm-composite-bigrect-cd-gh-03-...`) with nothing at that spot in the
   // pre-pull corpus. Emitting it as `corner-tiny` would give
@@ -222,16 +224,11 @@ export const PART_TO_TEMPLATE = {
   // layout carries (ruin-to-feature.test.mjs). Give it a mapping if upstream
   // grows it a wall or uses it more widely.
   "ruin-part": { drop: true },
-  tower: { template: "gantry", flip: false, turn: 0, upstreamFootprint: true },
-  generator: {
-    template: "generator",
-    flip: false,
-    turn: 0,
-    upstreamFootprint: true,
-  },
+  tower: { flip: false, turn: 0, upstreamFootprint: true },
+  generator: { flip: false, turn: 0, upstreamFootprint: true },
   "long-barrier": { template: "pipe", flip: false, turn: 0 },
   "short-barrier": { template: "barricade", flip: false, turn: 0 },
-  pipes: { template: "catwalk", flip: false, turn: 0 },
+  pipes: { drop: true },
 };
 
 /** Every field this module reads off a composite's `features[]` entry. */
@@ -470,8 +467,9 @@ function bboxSize(footprint) {
  * The bbox of the footprint plus the wall centrelines is the extent under
  * both, and reproduces the pre-pull rectangles exactly. Walls alone would not:
  * a barrier's centreline runs along one edge of its footprint, not down the
- * middle. `partAnchorShift` handles the anchor half. A part with no walls
- * falls back to its footprint.
+ * middle. Only the extent is read under both: the earlier schema's anchor
+ * sat up to (1.25, 1.5)in off the extent's centre, and nothing corrects for
+ * that any more. A part with no walls falls back to its footprint.
  */
 function extentBounds(part) {
   const roof = footprintPolygon(part.footprint);
@@ -520,22 +518,6 @@ function mirrorAnchorFix(part, feature) {
     x: roof.x - reflected.x,
     y: roof.y - reflected.y,
   });
-}
-
-/**
- * Part-frame vector from the footprint centre `position` anchors to the centre
- * of `partExtent`. Zero under the current schema; up to (1.25, 1.5)in for the
- * big L-ruins under the roof-footprint one, where omitting it pushed 270 of
- * 360 children outside their parent. See W.
- */
-function partAnchorShift(part) {
-  if (!part.walls?.length) return { x: 0, y: 0 };
-  const b = extentBounds(part);
-  const roof = boundsCentre(footprintPolygon(part.footprint));
-  return {
-    x: (b.minX + b.maxX) / 2 - roof.x,
-    y: (b.minY + b.maxY) / 2 - roof.y,
-  };
 }
 
 /**
@@ -615,13 +597,11 @@ function anchorOffset(footprint) {
 }
 
 /**
- * Rewrite a Battlemaster composite layout into the legacy piece vocabulary:
- * each `area` piece renamed onto its legacy archetype (with the composite's
- * rigid variant folded into its own transform), plus one parented `feature`
- * child per composite part.
- *
- * Pieces that do not reference a composite template pass through untouched, so
- * a layout that predates the battlemaster re-source is returned as-is.
+ * Rewrite a Battlemaster composite layout into the pipeline's piece
+ * vocabulary: each `area` piece renamed onto its legacy archetype (with the
+ * composite's rigid variant folded into its own transform), plus one parented
+ * `feature` child per composite part that PART_TO_TEMPLATE does not drop.
+ * Each child names its `part`, which is what the converters dispatch on.
  *
  * @param {object} layout - a 40kdc layout ({ id, pieces, ... }).
  * @param {Map<string, object>} templatesById - the vendored template table.
@@ -631,8 +611,9 @@ export function normalizeLayout(layout, templatesById) {
   const pieces = [];
   for (const piece of layout.pieces) {
     if (!isCompositeTemplate(piece.template)) {
-      pieces.push(piece);
-      continue;
+      throw new Error(
+        `layout ${layout.id} piece ${piece.id} is not a Battlemaster composite (${piece.template})`,
+      );
     }
     const composite = templatesById.get(piece.template);
     if (!composite) {
@@ -677,13 +658,13 @@ export function normalizeLayout(layout, templatesById) {
       const { template, flip, turn, upstreamFootprint, upstreamSize, drop } =
         PART_TO_TEMPLATE[part];
       if (drop) continue;
-      const legacy = templatesById.get(template);
+      const legacy = template && templatesById.get(template);
       // Not `feature.template`: where upstream draws one model twice, every
       // drawing of it emits from the registered one. See PART_CANONICAL.
       const upstreamId = canonicalPartId(feature.template);
       const upstream = templatesById.get(upstreamId);
       for (const [id, t] of [
-        [template, legacy],
+        ...(upstreamFootprint ? [] : [[template, legacy]]),
         [upstreamId, upstream],
       ]) {
         if (!t) {
@@ -718,21 +699,19 @@ export function normalizeLayout(layout, templatesById) {
       // oriented, not as drawn. Zero for a rectangle.
       const S = matvec(A, anchorOffset(footprint));
       // Undo V so the child lands at M . feature.position whatever the
-      // variant. `shift` steps from the footprint centre to the extent centre
-      // (W); `fix` corrects a mirrored feature's anchor (W2).
-      const shift = matvec(Mf, partAnchorShift(upstream));
+      // variant. `fix` corrects a mirrored feature's anchor (W2).
       const fix = mirrorAnchorFix(upstream, feature);
       const anchor = matvec(Vinv, {
-        x: feature.position.x + fix.x + shift.x,
-        y: feature.position.y + fix.y + shift.y,
+        x: feature.position.x + fix.x,
+        y: feature.position.y + fix.y,
       });
       const child = {
         id: `${piece.id}-${feature.id}`,
         name: feature.id,
         piece_type: "feature",
-        template,
-        // resolvePiece prefers an inline footprint, while the downstream
-        // converters key feature type and colour off `template`.
+        part,
+        // resolvePiece prefers an inline footprint over the template's.
+        ...(template ? { template } : {}),
         ...(upstreamFootprint || upstreamSize ? { footprint } : {}),
         parent_area_id: piece.id,
         position: { x: anchor.x + S.x, y: anchor.y + S.y },

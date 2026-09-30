@@ -1,34 +1,38 @@
-// Converts 40kdc corner-ruin pieces into `l-ruin` feature placements.
+// Converts the Battlemaster L-ruin parts into `l-ruin` feature placements.
 //
 // The renderer's `lRuin` draws a fixed-chirality L (outer corner bottom-left,
-// walls left + bottom) and features are only rotated, never mirrored. The
-// opposite-chirality templates (balanced-right, corner-right) therefore map to
-// `l-ruin-mirror`, picked by the sign of the resolved arm cross product.
+// walls left + bottom) and features are only rotated, never mirrored, so each
+// part's hand picks `l-ruin` or `l-ruin-mirror`.
 //
-// No ruin gets a roof: upstream never places a catwalk on a ruin (the 90
-// catwalk-to-nearest-ruin gaps run 0.002-6.98in with no cluster at zero, and
-// none shares a composite); see ruin-to-feature.test.mjs.
+// No ruin gets a roof: upstream never places its catwalk (`pipes`) on a ruin;
+// see ruin-to-feature.test.mjs.
 
 import { footprintPolygon, pieceFootprint } from "./terrain-resolver.mjs";
 import { featureRow } from "./emit-placement.mjs";
 import { boundsCorners, cross, distance, toDegrees } from "../src/geometry.ts";
 import { placedFromPin } from "../src/placement.ts";
 
-/** True for the 40kdc corner-ruin templates (l-ruin family). */
-export const isRuinTemplate = (id) =>
-  typeof id === "string" && id.startsWith("corner-");
-
 /**
- * True when a footprint is an L: exactly three of its four bounding-box corners
- * are vertices (the open quadrant's corner is absent).
+ * The l-ruin variant each whole-L part is drawn with: its hand. Upstream's
+ * data does not encode chirality, so these were measured against the pre-pull
+ * corpus (see PART_TO_TEMPLATE in battlemaster-normalize.mjs), and
+ * `ruinFeaturePlacement` throws on a piece that resolves with the other hand.
+ * `small-l` and `small-l-flip` are the two hands of one model; `corner` has
+ * equal arms, so its hand is cosmetic.
  */
-export function isLFootprint(footprint) {
-  const ring = footprintPolygon(footprint);
-  const present = boundsCorners(ring).filter((c) =>
-    ring.some((p) => distance(p, c) < 1e-6),
-  );
-  return present.length === 3;
-}
+const RUIN_HAND = {
+  ab: "l-ruin-mirror",
+  cd: "l-ruin",
+  co: "l-ruin",
+  corner: "l-ruin-mirror",
+  ef: "l-ruin-mirror",
+  gh: "l-ruin-mirror",
+  "small-l": "l-ruin-mirror",
+  "small-l-flip": "l-ruin",
+};
+
+/** True for a Battlemaster part drawn as an l-ruin. */
+export const isRuinPart = (part) => Object.hasOwn(RUIN_HAND, part);
 
 /**
  * Ring indices of an L footprint's outer corner (diagonal from the open
@@ -54,22 +58,19 @@ function lRefIndices(ring) {
 
 /**
  * Fit an l-ruin placement to three absolute reference points: the L's outer
- * corner and its two arm ends. The sign of the arms' cross product selects
- * `l-ruin` (+) vs `l-ruin-mirror` (-).
+ * corner and its two arm ends, whose cross product is positive for `l-ruin`
+ * and negative for `l-ruin-mirror`.
  *
  * @returns {object} an emitted `features` row (see emit-placement.mjs).
  */
-export function featureFromRefs(Oa, A1, A2) {
+function featureFromRefs(base, Oa, A1, A2) {
   const v = { x: A2.x - Oa.x, y: A2.y - Oa.y }; // horizontal-wall arm
-  const chirality = cross(Oa, A1, A2);
-  const base = chirality > 0 ? "l-ruin" : "l-ruin-mirror";
-
   const h = distance(Oa, A1); // vertical-wall length
   const w = distance(Oa, A2); // horizontal-wall length
   // The variant's local horizontal wall is (sh, 0), sh = +1 (l-ruin) or -1
   // (mirror), so the rotation is the angle of the horizontal arm times sh; the
   // arms are perpendicular, so that fixes the whole map.
-  const sh = chirality > 0 ? 1 : -1;
+  const sh = base === "l-ruin" ? 1 : -1;
   const rotDeg = toDegrees(Math.atan2(v.y * sh, v.x * sh));
 
   // Pin the variant's local outer corner to the resolved one.
@@ -80,7 +81,7 @@ export function featureFromRefs(Oa, A1, A2) {
   );
 }
 
-/** Outer corner + arm ends of a single whole-L corner-ruin piece. */
+/** Outer corner + arm ends of a single whole-L ruin piece. */
 function lPieceRefs(piece, layout) {
   const ring = footprintPolygon(pieceFootprint(piece, layout.footprintOf));
   const { Oidx, armIdx } = lRefIndices(ring);
@@ -89,12 +90,24 @@ function lPieceRefs(piece, layout) {
 }
 
 /**
- * Build a placement for a single whole-L corner-ruin piece.
+ * Build a placement for a single whole-L ruin piece.
  *
- * @param {object} piece - a whole-L corner-ruin piece.
+ * @param {object} piece - a piece whose `part` is an L-ruin part.
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
+ * @throws if the piece resolves with the other hand from its part's.
  */
 export function ruinFeaturePlacement(piece, layout) {
+  const base = RUIN_HAND[piece.part];
+  if (!base) {
+    throw new Error(`piece ${piece.id ?? "?"}: part ${piece.part} is not an L-ruin part`);
+  }
   const { Oa, A1, A2 } = lPieceRefs(piece, layout);
-  return featureFromRefs(Oa, A1, A2);
+  const resolved = cross(Oa, A1, A2) > 0 ? "l-ruin" : "l-ruin-mirror";
+  if (resolved !== base) {
+    throw new Error(
+      `piece ${piece.id ?? "?"}: part ${piece.part} is drawn as ${base} ` +
+        `but resolves as ${resolved}`,
+    );
+  }
+  return featureFromRefs(base, Oa, A1, A2);
 }
