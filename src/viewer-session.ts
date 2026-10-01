@@ -262,8 +262,19 @@ export function renderCard(
 
 /**
  * The text to put in the YAML editor when it opens: the controls' config, or
- * null to leave the visitor's own YAML (and their cursor) alone.
+ * null to leave the visitor's own YAML (and their cursor) alone. Only the
+ * selected layout is kept: the rest of the corpus draws nothing, and would
+ * fill the editor (and storage, on every edit) with hundreds of KB.
  */
 export function editorYaml(session: Session): string | null {
-  return session.mode === "yaml" ? null : yaml.dump(configFor(session.controls));
+  if (session.mode === "yaml") return null;
+  const config = configFor(session.controls);
+  const { layout, layout_name: selected } = config.terrain;
+  return yaml.dump({
+    ...config,
+    terrain: {
+      ...config.terrain,
+      layout: Object.prototype.hasOwnProperty.call(layout, selected) ? { [selected]: layout[selected] } : {},
+    },
+  });
 }

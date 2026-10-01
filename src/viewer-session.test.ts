@@ -268,11 +268,24 @@ describe("filenameStem", () => {
 });
 
 describe("editorYaml", () => {
-  it("fills the editor with the controls' config", () => {
+  it("fills the editor with the controls' config, less the unselected layouts", () => {
     const snapshot = fresh();
-    expect(yaml.load(editorYaml(snapshot.session)!)).toEqual(
-      rendered(snapshot).config,
-    );
+    const { config } = rendered(snapshot);
+    const { t } = snapshot.session.controls;
+    expect(yaml.load(editorYaml(snapshot.session)!)).toEqual({
+      ...config,
+      terrain: { ...config.terrain, layout: { [t]: config.terrain.layout[t] } },
+    });
+  });
+
+  it("dumps no layout when the controls select none", () => {
+    const session: Session = {
+      controls: { ...defaultControls(), t: "" },
+      mode: "controls",
+      yaml: null,
+    };
+    const dumped = yaml.load(editorYaml(session)!) as { terrain: { layout: object } };
+    expect(dumped.terrain.layout).toEqual({});
   });
 
   it("leaves the visitor's own YAML in place", () => {
