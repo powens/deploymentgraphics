@@ -10,6 +10,7 @@ import {
   type Placed,
 } from "./placement";
 import type {
+  BuildingPlacement,
   PolygonTemplate,
   Template,
 } from "./building-coordinates";
@@ -166,6 +167,29 @@ describe("resolvePlacement validation", () => {
         canvas,
       ),
     ).toThrow(/measure .* apart but template edge/);
+  });
+
+  // Each would otherwise fall off a switch and reach `rotate()` as undefined.
+  it.each([
+    [
+      "an unknown corner `from`",
+      { type: "4x6", corners: { TL: { x: 10, y: 5, from: "XX" } } },
+      'building 4x6: corners.TL.from: expected one of TL, TR, BL, BR, got "XX"',
+    ],
+    [
+      "an unknown placement `from`",
+      { type: "4x6", from: "top", corners: { TL: { x: 10, y: 5 } } },
+      'building 4x6: from: expected one of TL, TR, BL, BR, got "top"',
+    ],
+    [
+      "an unknown corner name",
+      { type: "4x6", corners: { TL: { x: 10, y: 5 }, MID: { x: 12, y: 5 } } },
+      'building 4x6: corners key: expected one of TL, TR, BL, BR, got "MID"',
+    ],
+  ])("names %s", (_name, placement, message) => {
+    expect(() =>
+      resolvePlacement(placement as unknown as BuildingPlacement, templates, canvas),
+    ).toThrow(message);
   });
 
   it("accepts a corner distance within the 0.1\" tolerance", () => {

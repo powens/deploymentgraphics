@@ -14,7 +14,7 @@ import {
   type IconPlacement,
 } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
-import type { FullConfig } from "./types.js";
+import type { BaseConfig, FullConfig } from "./types.js";
 
 /**
  * The pieces a render pass draws. `buildings` and `icons` come from the
@@ -61,14 +61,35 @@ type LayerRow = Layer & { readonly draws: boolean };
 
 /**
  * Read one of `BaseConfig`'s `{ draw?: boolean }` toggles; the default for an
- * absent `draw` differs per toggle.
+ * absent `draw` differs per toggle. Throws naming the toggle if it is not an
+ * object at all.
  *
  * `Boolean` is needed despite the type: the viewer's YAML tab passes unvalidated
  * input, and js-yaml 4 parses `no`/`off`/`yes`/`on` as strings. (`"no"` is still
  * truthy; this only keeps `draws` a real boolean.)
  */
-const drawn = (toggle: { draw?: boolean }, whenAbsent: boolean): boolean =>
-  Boolean(toggle.draw ?? whenAbsent);
+function drawn(
+  base: BaseConfig,
+  key: "grid" | "half_way_lines" | "territory",
+  whenAbsent: boolean,
+): boolean {
+  const toggle: unknown = base[key];
+  if (typeof toggle !== "object" || toggle === null || Array.isArray(toggle)) {
+    throw new Error(
+      `config.base.${key}: expected an object (e.g. {} or { draw: false }), ` +
+        `got ${JSON.stringify(toggle)}`,
+    );
+  }
+  return Boolean(base[key].draw ?? whenAbsent);
+}
+
+/** Validates an untyped value as a number, throwing with `context` on failure. */
+function toNumber(value: unknown, context: string): number {
+  if (typeof value !== "number") {
+    throw new Error(`${context}: expected a number, got ${JSON.stringify(value)}`);
+  }
+  return value;
+}
 
 function deploymentZone(
   doc: SvgDocument,
@@ -202,21 +223,23 @@ function objectives(
 ): SvgNode {
   const group = doc.createElement("g");
   group.setAttribute("id", "objectives");
-  for (const item of config.objectives ?? []) {
+  for (const [i, item] of (config.objectives ?? []).entries()) {
+    const { x, y } = toPoint(item, `objectives[${i}]`);
+    const number = toNumber(item.number, `objectives[${i}].number`);
     const marker = doc.createElement("circle");
-    marker.setAttribute("cx", `${item.x}`);
-    marker.setAttribute("cy", `${item.y}`);
+    marker.setAttribute("cx", `${x}`);
+    marker.setAttribute("cy", `${y}`);
     marker.setAttribute("r", `${OBJECTIVE_RADIUS}`);
     applyAttributes(marker, theme.objective.marker);
     group.appendChild(marker);
 
     const label = doc.createElement("text");
-    label.setAttribute("x", `${item.x}`);
-    label.setAttribute("y", `${item.y}`);
+    label.setAttribute("x", `${x}`);
+    label.setAttribute("y", `${y}`);
     label.setAttribute("text-anchor", "middle");
     label.setAttribute("dominant-baseline", "central");
     applyAttributes(label, theme.objective.label);
-    label.textContent = `${item.number}`;
+    label.textContent = `${number}`;
     group.appendChild(label);
   }
   return group;
@@ -249,20 +272,30 @@ function annotations(
   const group = doc.createElement("g");
   group.setAttribute("id", "annotations");
   applyAttributes(group, theme.annotation.text);
-  for (const item of config.annotations ?? []) {
+  for (const [i, item] of (config.annotations ?? []).entries()) {
+    const context = `annotations[${i}]`;
+    // Checked first: an unknown kind would otherwise draw as an arrow.
+    if (item?.kind !== "text" && item?.kind !== "arrow") {
+      throw new Error(
+        `${context}.kind: expected "text" or "arrow", got ${JSON.stringify(item?.kind)}`,
+      );
+    }
+    const { x, y } = toPoint(item, context);
     if (item.kind === "text") {
       const el = doc.createElement("text");
-      el.setAttribute("x", `${item.x}`);
-      el.setAttribute("y", `${item.y}`);
+      el.setAttribute("x", `${x}`);
+      el.setAttribute("y", `${y}`);
       applyAttributes(el, theme.annotation.text_outline);
       el.textContent = item.text ?? "";
       group.appendChild(el);
     } else {
+      const endX = item.endX === undefined ? x : toNumber(item.endX, `${context}.endX`);
+      const endY = item.endY === undefined ? y : toNumber(item.endY, `${context}.endY`);
       const line = doc.createElement("line");
-      line.setAttribute("x1", `${item.x}`);
-      line.setAttribute("y1", `${item.y}`);
-      line.setAttribute("x2", `${item.endX ?? item.x}`);
-      line.setAttribute("y2", `${item.endY ?? item.y}`);
+      line.setAttribute("x1", `${x}`);
+      line.setAttribute("y1", `${y}`);
+      line.setAttribute("x2", `${endX}`);
+      line.setAttribute("y2", `${endY}`);
       applyAttributes(line, theme.annotation.arrow);
       line.setAttribute("marker-end", `url(#${ARROWHEAD_ID})`);
       group.appendChild(line);
@@ -297,18 +330,18 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
     // Grid goes under everything except the zones.
     {
       id: "grid",
-      draws: drawn(config.base.grid, false),
+      draws: drawn(config.base, "grid", false),
       draw: (doc) => grid(doc, config, theme),
     },
     {
       id: "half-way-lines",
-      draws: drawn(config.base.half_way_lines, true),
+      draws: drawn(config.base, "half_way_lines", true),
       draw: (doc) => halfwayLines(doc, config, theme),
     },
     {
       // A mission with no `territory` draws nothing regardless of the toggle.
       id: "territory",
-      draws: Boolean(territory) && drawn(config.base.territory, true),
+      draws: Boolean(territory) && drawn(config.base, "territory", true),
       draw: (doc) => territoryLine(doc, territory!, theme),
     },
     {

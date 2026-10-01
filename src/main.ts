@@ -6,6 +6,7 @@ import {
   type SvgNode,
 } from "./svg-backend.js";
 import { baseTheme } from "./presets/theme.js";
+import { checkConfig } from "./check-config.js";
 import { cardLayers } from "./layers.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
@@ -15,6 +16,7 @@ function buildTree(
   config: FullConfig,
   theme: Theme,
 ): SvgNode {
+  checkConfig(config);
   const svg = doc.createElement("svg");
   svg.setAttribute(
     "viewBox",

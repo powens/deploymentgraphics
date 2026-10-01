@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { resolveCorner, templateBounds, toPoint } from "./building-coordinates";
-import type { PolygonTemplate } from "./building-coordinates";
+import { localCorner, resolveCorner, templateBounds, toPoint } from "./building-coordinates";
+import type { Anchor, PolygonTemplate } from "./building-coordinates";
 
 const canvas = { width: 60, height: 44 };
 
@@ -23,6 +23,20 @@ describe("resolveCorner", () => {
 
   it("lets a 'from' field override the default anchor", () => {
     expect(resolveCorner({ x: 10, y: 5, from: "TL" }, "BR", canvas)).toEqual({ x: 10, y: 5 });
+  });
+
+  it("throws on an unknown anchor rather than returning undefined", () => {
+    expect(() =>
+      resolveCorner({ x: 10, y: 5, from: "XX" as Anchor }, "TL", canvas),
+    ).toThrow('building corner from: expected one of TL, TR, BL, BR, got "XX"');
+  });
+});
+
+describe("localCorner", () => {
+  it("throws on an unknown corner rather than returning undefined", () => {
+    expect(() => localCorner("XX" as Anchor, { width: 4, height: 6 })).toThrow(
+      'building corner: expected one of TL, TR, BL, BR, got "XX"',
+    );
   });
 });
 

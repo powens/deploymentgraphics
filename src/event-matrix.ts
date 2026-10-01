@@ -40,7 +40,8 @@ export function eventMatrixKey(a: string, b: string): string {
  * Resolves the deployment (mission id) for a disposition pairing and layout.
  * Typed as the matrix's deployment ids: with the bundled `eventMatrix` that is
  * a {@link MissionId}, so the result indexes `missions` directly. Throws if
- * the pairing or layout is not in the matrix.
+ * the pairing or layout is not in the matrix, listing the valid dispositions
+ * or layouts.
  */
 export function resolveMission<D extends string>(
   matrix: EventMatrix<D>,
@@ -48,17 +49,32 @@ export function resolveMission<D extends string>(
   b: string,
   layout: Layout,
 ): D {
-  const entry = matrix[eventMatrixKey(a, b)];
-  if (!entry) {
+  const key = eventMatrixKey(a, b);
+  if (!Object.hasOwn(matrix, key)) {
+    const known = dispositions(matrix);
+    const unknown = [a, b].find((d) => !known.includes(d));
+    if (unknown !== undefined) {
+      throw new Error(
+        `unknown disposition ${JSON.stringify(unknown)}: expected one of ` +
+          known.map((d) => JSON.stringify(d)).join(", "),
+      );
+    }
     throw new Error(`No event-matrix entry for "${a}" / "${b}"`);
   }
-  const cell = entry.layouts[layout];
-  if (!cell) {
-    throw new Error(`No layout "${layout}" for "${a}" / "${b}"`);
+  const { layouts } = matrix[key];
+  if (!Object.hasOwn(layouts, layout)) {
+    throw new Error(
+      `No layout "${layout}" for "${a}" / "${b}": expected one of ` +
+        Object.keys(layouts).join(", "),
+    );
   }
-  return cell.deployment;
+  return layouts[layout].deployment;
 }
 
+/**
+ * Every force disposition `matrix` pairs, sorted and deduplicated — the valid
+ * `a`/`b` arguments to {@link resolveMission}, e.g. for a picker's options.
+ */
 export function dispositions(matrix: EventMatrix<string>): string[] {
   const set = new Set<string>();
   for (const key of Object.keys(matrix)) {

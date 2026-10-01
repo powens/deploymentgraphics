@@ -198,3 +198,26 @@ for a board with no terrain. Prototype keys no longer count as layouts either:
   at 46 / 998 / 904; the movement within them is upstream's own content — 7 more
   objective icons, 4 ruins swapping hands, and 31 of the 45 mission layouts
   re-laid out, always in symmetric pairs.
+
+- A malformed config now fails naming the field at fault, instead of with a
+  `TypeError` from inside a layer. `renderMissionCardToString({})` used to throw
+  `Cannot read properties of undefined (reading 'size')`; it now throws
+  `config.base: expected an object, got undefined`. The renderers check the
+  config's containers (`base`, `base.size`, `deployment`, each side's
+  `deployment_zone`, `terrain` and its `templates`/`layout`/`layout_name`, and
+  that `objectives`/`annotations`/`features` are arrays) before drawing, and
+  the pieces where they are read:
+  - a `base` toggle that is not an object: `config.base.grid: expected an
+    object (e.g. {} or { draw: false }), got undefined`;
+  - an objective or annotation without numeric `x`/`y`, a non-numeric
+    `number`/`endX`/`endY`, or an annotation `kind` other than `"text"` or
+    `"arrow"` (which used to draw as an arrow): `annotations[0].kind: expected
+    "text" or "arrow", got "label"`;
+  - a building corner anchor other than `TL`/`TR`/`BL`/`BR`, in `from` or as a
+    `corners` key, which used to fall through to an `undefined` point: `building
+    4x6: corners.TL.from: expected one of TL, TR, BL, BR, got "XX"`.
+
+  `resolveMission` names an unknown disposition and lists the valid ones
+  (`unknown disposition "Nope": expected one of "Disruption", …`) and lists the
+  valid layouts for an unknown one; a pairing of known dispositions the matrix
+  lacks still throws `No event-matrix entry for …`.

@@ -77,8 +77,29 @@ describe("resolveMission", () => {
     expect(Object.keys(matrix)).toEqual(["X | Y"]);
   });
 
-  it("throws for an unknown pairing", () => {
-    expect(() => resolveMission(eventMatrix, "Nope", "Take and Hold", "A")).toThrow();
+  it("throws for an unknown disposition, listing the valid ones", () => {
+    expect(() => resolveMission(eventMatrix, "Nope", "Take and Hold", "A")).toThrow(
+      'unknown disposition "Nope": expected one of "Disruption", "Priority Assets", ' +
+        '"Purge the Foe", "Reconnaissance", "Take and Hold"',
+    );
+  });
+
+  it("throws for a pairing of known dispositions the matrix lacks", () => {
+    const partial: EventMatrix<string> = {
+      "X | X": eventMatrix["Disruption | Disruption"],
+      "Y | Y": eventMatrix["Disruption | Disruption"],
+    };
+    expect(() => resolveMission(partial, "X", "Y", "A")).toThrow(
+      'No event-matrix entry for "X" / "Y"',
+    );
+  });
+
+  it("throws for an unknown layout, listing the valid ones", () => {
+    for (const layout of ["D", "constructor"]) {
+      expect(() =>
+        resolveMission(eventMatrix, "Disruption", "Take and Hold", layout as Layout),
+      ).toThrow(`No layout "${layout}" for "Disruption" / "Take and Hold": expected one of A, B, C`);
+    }
   });
 });
 

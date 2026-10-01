@@ -4,6 +4,7 @@ import {
   localCorner,
   resolveCorner,
   templateBounds,
+  toAnchor,
   type Anchor,
   type BuildingPlacement,
   type CanvasSize,
@@ -131,7 +132,16 @@ function resolvePrimary(
       `building ${placement.type}: expected 1 or 2 corners, got ${entries.length}`,
     );
   }
-  const defaultFrom: Anchor = placement.from ?? "TL";
+  // Checked here for the building's name in the message; `resolveCorner` and
+  // `localCorner` guard again for their other callers.
+  const context = `building ${placement.type}`;
+  const defaultFrom = toAnchor(placement.from ?? "TL", `${context}: from`);
+  for (const [corner, spec] of entries) {
+    toAnchor(corner, `${context}: corners key`);
+    if (spec?.from !== undefined) {
+      toAnchor(spec.from, `${context}: corners.${corner}.from`);
+    }
+  }
   const size = templateBounds(template, placement.type);
 
   const [[cornerA, specA]] = entries;
