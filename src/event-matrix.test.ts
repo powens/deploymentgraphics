@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import {
+  type EventMatrix,
   type Layout,
   dispositions,
   eventMatrixKey,
@@ -8,7 +9,7 @@ import {
 } from "./event-matrix.js";
 import { eventMatrix } from "./presets/event-matrix.js";
 import { gwTerrain } from "./presets/terrain.js";
-import { missions } from "./presets/missions.js";
+import { missions, type MissionId } from "./presets/missions.js";
 
 describe("eventMatrixKey", () => {
   it("is order-independent", () => {
@@ -44,6 +45,36 @@ describe("resolveMission", () => {
         resolveMission(eventMatrix, "Take and Hold", "Disruption", layout),
       );
     }
+  });
+
+  it("is typed as the matrix's deployment ids", () => {
+    const id = resolveMission(eventMatrix, "Disruption", "Take and Hold", "A");
+    expectTypeOf(id).toEqualTypeOf<MissionId>();
+
+    const custom: EventMatrix<string> = {
+      "X | Y": {
+        missions: {},
+        layouts: {
+          A: { deployment: "my_deployment", page: 1 },
+          B: { deployment: "my_deployment", page: 1 },
+          C: { deployment: "my_deployment", page: 1 },
+        },
+      },
+    };
+    expectTypeOf(resolveMission(custom, "X", "Y", "A")).toEqualTypeOf<string>();
+    expect(resolveMission(custom, "X", "Y", "A")).toBe("my_deployment");
+  });
+
+  it("only accepts mission ids in a default-typed matrix", () => {
+    const cell = { deployment: "dawn_of_war", page: 1 } as const;
+    const matrix: EventMatrix = {
+      "X | Y": {
+        missions: {},
+        // @ts-expect-error -- "not_a_mission" is not a MissionId
+        layouts: { A: cell, B: cell, C: { deployment: "not_a_mission", page: 1 } },
+      },
+    };
+    expect(Object.keys(matrix)).toEqual(["X | Y"]);
   });
 
   it("throws for an unknown pairing", () => {

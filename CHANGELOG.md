@@ -159,6 +159,13 @@ config without terrain now costs 14kB gzipped instead of 51kB.
   mission cannot get there without them. `eventMatrix` is exported from both
   the root and `deploymentgraphics/presets`, like every other preset.
 
+  `resolveMission` returns the matrix's deployment id type rather than
+  `string`: a `MissionId` for the bundled `eventMatrix`, so
+  `missions[resolveMission(...)]` compiles under `strict` (it was TS7053).
+  `EventMatrix` takes that type as a parameter, defaulting to `MissionId`, which
+  also means the bundled matrix stops compiling if a cell names a deployment
+  `missions` lacks. A matrix over your own deployments is `EventMatrix<string>`.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's

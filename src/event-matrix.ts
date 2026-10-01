@@ -4,19 +4,32 @@
  * bundled as the `eventMatrix` preset.
  */
 
+import type { MissionId } from "./presets/missions.js";
+
 /** A layout variant within a disposition pairing. */
 export type Layout = "A" | "B" | "C";
 
-/** One disposition pairing: per-disposition mission and per-layout deployment. */
-interface EventMatrixEntry {
+/**
+ * One disposition pairing: per-disposition mission and per-layout deployment.
+ * `D` is the deployment id type (see {@link EventMatrix}).
+ */
+interface EventMatrixEntry<D extends string> {
   /** Each disposition's primary mission for this pairing. */
   missions: Record<string, string>;
   /** The deployment (a mission/deployment id) used by each layout. */
-  layouts: Record<Layout, { deployment: string; page: number }>;
+  layouts: Record<Layout, { deployment: D; page: number }>;
 }
 
-/** All disposition pairings, keyed by {@link eventMatrixKey}. */
-export type EventMatrix = Record<string, EventMatrixEntry>;
+/**
+ * All disposition pairings, keyed by {@link eventMatrixKey}. `D` types the
+ * deployment ids its cells name: {@link MissionId} by default, so the bundled
+ * `eventMatrix` only compiles while every cell names a key of `missions`. A
+ * matrix over your own deployments can widen it (`EventMatrix<string>`).
+ */
+export type EventMatrix<D extends string = MissionId> = Record<
+  string,
+  EventMatrixEntry<D>
+>;
 
 /** The order-independent lookup key for a disposition pairing. */
 export function eventMatrixKey(a: string, b: string): string {
@@ -25,14 +38,16 @@ export function eventMatrixKey(a: string, b: string): string {
 
 /**
  * Resolves the deployment (mission id) for a disposition pairing and layout.
- * Throws if the pairing or layout is not in the matrix.
+ * Typed as the matrix's deployment ids: with the bundled `eventMatrix` that is
+ * a {@link MissionId}, so the result indexes `missions` directly. Throws if
+ * the pairing or layout is not in the matrix.
  */
-export function resolveMission(
-  matrix: EventMatrix,
+export function resolveMission<D extends string>(
+  matrix: EventMatrix<D>,
   a: string,
   b: string,
   layout: Layout,
-): string {
+): D {
   const entry = matrix[eventMatrixKey(a, b)];
   if (!entry) {
     throw new Error(`No event-matrix entry for "${a}" / "${b}"`);
@@ -44,7 +59,7 @@ export function resolveMission(
   return cell.deployment;
 }
 
-export function dispositions(matrix: EventMatrix): string[] {
+export function dispositions(matrix: EventMatrix<string>): string[] {
   const set = new Set<string>();
   for (const key of Object.keys(matrix)) {
     for (const disposition of key.split(" | ")) {
