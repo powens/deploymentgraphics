@@ -4,6 +4,8 @@ Render Warhammer 40k mission deployment maps as SVG, driven entirely by
 typed config. Ships the renderer plus ready-to-use presets for the six
 standard missions and a built-in terrain set.
 
+Try it in the browser: [live demo](https://powens.github.io/deploymentgraphics/).
+
 ![Search and Destroy deployment map with terrain, rendered by deploymentgraphics](assets/sample.svg)
 
 ## Install
@@ -173,6 +175,11 @@ YAML parsing or file IO at runtime:
 
 Build a config by hand instead of using `buildConfig` for full control —
 see the `FullConfig` type, which is exported from the package root.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the test and build
+commands, and how the generated presets and terrain are produced.
 
 ## License
 
