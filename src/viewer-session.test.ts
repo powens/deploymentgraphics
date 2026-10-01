@@ -234,6 +234,19 @@ describe("step: yamlSettled", () => {
     expect(snapshot.render).toBe(null);
   });
 
+  it("names a layout_name the YAML does not define", () => {
+    const text = "terrain: { layout_name: bm-other, layout: { bm-mine: {} } }";
+    const snapshot = step(inYaml(text), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toMatch(/^unknown layout "bm-other"/);
+    expect(snapshot.render).toBe(null);
+  });
+
+  it("renders a layout_name the YAML defines", () => {
+    const text = "terrain: { layout_name: bm-mine, layout: { bm-mine: {} } }";
+    const snapshot = step(inYaml(text), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toBe(null);
+  });
+
   for (const text of ["just a string", "- a list"]) {
     it(`rejects ${JSON.stringify(text)}, which is no config object`, () => {
       const snapshot = step(inYaml(text), { type: "yamlSettled" });
