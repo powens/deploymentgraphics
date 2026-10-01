@@ -9,7 +9,7 @@
     // declarations, hence scripts/rewrite-dts-extensions.mjs in build:lib.
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
-    "lib": ["ES2021", "DOM"],
+    "lib": ["ES2022", "DOM"],
     "types": ["node"],
     "declaration": true,
     "outDir": "./dist",

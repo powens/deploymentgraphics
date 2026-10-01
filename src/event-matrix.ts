@@ -79,16 +79,18 @@ export interface TerrainLayoutMeta {
  * Finds the terrain layout whose disposition pair and deployment match, or
  * `undefined` (the 40kdc source does not cover every matrix cell).
  * `deployment` may use `-` or `_`: the matrix uses `_`, the layouts `-`.
+ * Typed as `layouts`' keys, so `gwTerrainIndex` yields a `LayoutId`.
  */
-export function resolveTerrainLayout(
-  layouts: Record<string, TerrainLayoutMeta>,
+export function resolveTerrainLayout<K extends string>(
+  layouts: Record<K, TerrainLayoutMeta>,
   a: string,
   b: string,
   deployment: string,
-): string | undefined {
+): K | undefined {
   const wantPair = eventMatrixKey(a, b);
   const wantDeployment = deployment.replace(/-/g, "_");
-  for (const [id, meta] of Object.entries(layouts)) {
+  // Safe cast: `Object.entries` widens own keys of a `Record<K, …>` to string.
+  for (const [id, meta] of Object.entries(layouts) as [K, TerrainLayoutMeta][]) {
     if (!meta.dispositions || !meta.deployment_pattern_id) {
       continue;
     }

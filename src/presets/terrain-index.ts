@@ -3,8 +3,56 @@
 
 import type { TerrainLayoutMeta } from "../event-matrix.js";
 
+/** The id of a bundled layout: a key of `gwTerrain.layout`. */
+export type LayoutId =
+  | "bm-assets-vs-assets-01"
+  | "bm-assets-vs-assets-02"
+  | "bm-assets-vs-assets-03"
+  | "bm-disrupt-vs-assets-01"
+  | "bm-disrupt-vs-assets-02"
+  | "bm-disrupt-vs-assets-03"
+  | "bm-disrupt-vs-disrupt-01"
+  | "bm-disrupt-vs-disrupt-02"
+  | "bm-disrupt-vs-disrupt-03"
+  | "bm-disrupt-vs-recon-01"
+  | "bm-disrupt-vs-recon-02"
+  | "bm-disrupt-vs-recon-03"
+  | "bm-purge-vs-assets-01"
+  | "bm-purge-vs-assets-02"
+  | "bm-purge-vs-assets-03"
+  | "bm-purge-vs-disrupt-01"
+  | "bm-purge-vs-disrupt-02"
+  | "bm-purge-vs-disrupt-03"
+  | "bm-purge-vs-purge-01"
+  | "bm-purge-vs-purge-02"
+  | "bm-purge-vs-purge-03"
+  | "bm-purge-vs-recon-01"
+  | "bm-purge-vs-recon-02"
+  | "bm-purge-vs-recon-03"
+  | "bm-recon-vs-assets-01"
+  | "bm-recon-vs-assets-02"
+  | "bm-recon-vs-assets-03"
+  | "bm-recon-vs-recon-01"
+  | "bm-recon-vs-recon-02"
+  | "bm-recon-vs-recon-03"
+  | "bm-take-vs-disrupt-01"
+  | "bm-take-vs-disrupt-02"
+  | "bm-take-vs-disrupt-03"
+  | "bm-take-vs-prio-01"
+  | "bm-take-vs-prio-02"
+  | "bm-take-vs-prio-03"
+  | "bm-take-vs-purge-01"
+  | "bm-take-vs-purge-02"
+  | "bm-take-vs-purge-03"
+  | "bm-take-vs-recon-01"
+  | "bm-take-vs-recon-02"
+  | "bm-take-vs-recon-03"
+  | "bm-take-vs-take-01"
+  | "bm-take-vs-take-02"
+  | "bm-take-vs-take-03";
+
 /** Matchup metadata for each bundled layout, without the geometry. */
-export const gwTerrainIndex: Record<string, TerrainLayoutMeta> = {
+export const gwTerrainIndex: Record<LayoutId, TerrainLayoutMeta> = {
   "bm-assets-vs-assets-01": {
     deployment_pattern_id: "sweeping-engagement",
     dispositions: ["Priority Assets", "Priority Assets"],

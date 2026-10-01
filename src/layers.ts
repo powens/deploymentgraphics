@@ -8,7 +8,11 @@ import {
   type BuildingPlacement,
   type CanvasSize,
 } from "./building-coordinates.js";
-import type { FeaturePlacement, IconPlacement } from "./terrain-config.js";
+import {
+  selectLayout,
+  type FeaturePlacement,
+  type IconPlacement,
+} from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
 
@@ -24,11 +28,13 @@ export type ResolvedLayout = {
 };
 
 /**
- * An unknown or unbuilt layout yields empty `buildings`/`icons` rather than
- * throwing. Features are top-level first, then the layout's (draw order).
+ * No layout (`layout_name: ""`) yields empty `buildings`/`icons`; an unknown
+ * layout id throws (see `selectLayout`). Checked here as well as in
+ * `buildConfig` because a hand-built config never passes through that.
+ * Features are top-level first, then the layout's (draw order).
  */
 export function resolveLayout(config: FullConfig): ResolvedLayout {
-  const layout = config.terrain.layout[config.terrain.layout_name];
+  const layout = selectLayout(config.terrain.layout, config.terrain.layout_name);
   return {
     buildings: layout?.templates ?? [],
     icons: layout?.icons ?? [],
@@ -306,7 +312,7 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
       draw: (doc) => territoryLine(doc, territory!, theme),
     },
     {
-      // Always drawn (an unbuilt layout gives an empty `<g id="buildings">`).
+      // Always drawn (no layout gives an empty `<g id="buildings">`).
       // Template defs belong to the board's template set, so they go in even
       // when this layout references none.
       id: "buildings",

@@ -45,13 +45,23 @@ describe("makeMissionCard", () => {
     expect(svg.querySelectorAll("#buildings use").length).toBe(2);
   });
 
-  it("skips buildings when the selected layout is absent", () => {
+  it("skips buildings when no layout is selected", () => {
     const missing = {
       ...config,
-      terrain: { ...config.terrain, layout_name: "99" },
+      terrain: { ...config.terrain, layout_name: "" },
     } as FullConfig;
     const svg = makeMissionCard(missing);
     expect(svg.querySelectorAll("#buildings use").length).toBe(0);
+  });
+
+  // A hand-built config never passes through `buildConfig`, so the render
+  // path checks the layout id itself.
+  it("throws on an unknown layout id in a hand-built config", () => {
+    const unknown = {
+      ...config,
+      terrain: { ...config.terrain, layout_name: "99" },
+    } as FullConfig;
+    expect(() => makeMissionCard(unknown)).toThrow('unknown layout "99"');
   });
 
   // Template defs belong to the board, not the layout. A layer that does not
@@ -61,7 +71,7 @@ describe("makeMissionCard", () => {
   it("still injects the board's template defs when the layout is empty", () => {
     const missing = {
       ...config,
-      terrain: { ...config.terrain, layout_name: "99" },
+      terrain: { ...config.terrain, layout_name: "" },
     } as FullConfig;
     const svg = makeMissionCard(missing);
     expect(svg.querySelectorAll("#buildings use").length).toBe(0);

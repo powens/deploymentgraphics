@@ -77,7 +77,8 @@ drew (`home` → `fortress`).
 
 **The demo layout `"1"` is removed; `gwTerrain` holds only the battlemaster
 layouts.** It was the one hand-authored layout (from `gw.yml`, now deleted),
-so `buildConfig({ layout: "1" })` now draws no terrain. Pick a 40kdc id instead,
+so `buildConfig({ layout: "1" })` now throws (see the unknown-layout entry
+below). Pick a 40kdc id instead,
 e.g. `bm-take-vs-take-02`, which the demo viewer now opens on. With it go the
 `l-ruin-roof` and `pipe` **feature** types, which only that layout used: a
 `FeaturePlacement` naming either now throws `unknown feature type`. (The `pipe`
@@ -128,15 +129,39 @@ buildConfig({ mission, terrain: gwTerrain, layout: "bm-purge-vs-recon-01" })
 
 `buildConfig({ mission })` is unaffected: `layout` already defaulted to `""`, so a
 call that named no layout drew no buildings either way. The break is a call that
-passes `layout` but not `terrain` — it now renders bare deployment zones instead
-of that layout, silently.
+passes `layout` but not `terrain` — it now throws, with a message saying to pass
+`terrain: gwTerrain` (see the unknown-layout entry below).
 
 The default argument was a static dependency: importing `buildConfig` pulled all
 45 battlemaster layouts (~220kB, ~28kB gzipped) into the bundle, and no bundler
 could shake them out, whether or not the consumer ever drew terrain. Assembling a
 config without terrain now costs 14kB gzipped instead of 51kB.
 
+**An unknown layout id now throws.** A `layout` (or a hand-built config's
+`terrain.layout_name`) that is not a key of `terrain.layout` used to render
+bare deployment zones, indistinguishable from a deliberately empty board. Both
+`buildConfig` and the renderers now throw instead, naming the id:
+
+```
+unknown layout "bm-nope": not a key of terrain.layout
+unknown layout "bm-take-vs-take-03": terrain.layout is empty; pass the terrain that defines it (e.g. terrain: gwTerrain)
+```
+
+The second form is the `terrain` default above biting: a layout named without
+the corpus. To migrate, pass the terrain that defines the layout, correct the
+id (renamed ids are in the table above), or pass `layout: ""` — still valid —
+for a board with no terrain. Prototype keys no longer count as layouts either:
+`layout: "constructor"` throws rather than reading `Object.prototype`.
+
 ### Added
+
+- `LayoutId` — the union of the bundled layout ids, generated with
+  `gwTerrainIndex` and exported from the root and `deploymentgraphics/presets`.
+  `BuildConfigOptions.layout` is typed `LayoutId | "" | (string & {})`, so an
+  editor completes the bundled ids while a custom terrain's ids still compile.
+  `gwTerrainIndex` is a `Record<LayoutId, TerrainLayoutMeta>`, and
+  `resolveTerrainLayout` returns its argument's key type, so resolving against
+  `gwTerrainIndex` yields `LayoutId | undefined`.
 
 - `gwTerrainIndex` — the matchup metadata of all 45 bundled layouts
   (`dispositions` and `deployment_pattern_id`) with the geometry left out:

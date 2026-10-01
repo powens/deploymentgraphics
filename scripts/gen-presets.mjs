@@ -121,12 +121,17 @@ function buildTerrainIndex() {
       { deployment_pattern_id, dispositions },
     ]),
   );
+  // The ids as a union, here rather than in terrain.ts so naming a layout
+  // type-only never reaches for the corpus module.
+  const ids = Object.keys(layout).map((id) => `  | ${JSON.stringify(id)}`);
   return (
     header("static/data/terrain/combined.yml") +
     'import type { TerrainLayoutMeta } from "../event-matrix.js";\n\n' +
+    "/** The id of a bundled layout: a key of `gwTerrain.layout`. */\n" +
+    `export type LayoutId =\n${ids.join("\n")};\n\n` +
     declaration(
       "gwTerrainIndex",
-      "Record<string, TerrainLayoutMeta>",
+      "Record<LayoutId, TerrainLayoutMeta>",
       index,
       "/** Matchup metadata for each bundled layout, without the geometry. */",
     )

@@ -67,7 +67,8 @@ the list twice (defs, then draw) and knows nothing about what is in it.
 
 **Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
 pass draws into a `ResolvedLayout` (buildings, icons, features). Buildings and
-icons come from the selected layout alone (empty arrays when none is selected);
+icons come from the selected layout alone (empty arrays when none is selected,
+a throw when the selected id is not in `terrain.layout`);
 features are unioned with the board's top-level array. Distinct from
 **Resolve** above: that maps one placement to a `Placed`; this assembles
 placement *arrays* and applies the "is a layout selected / union with

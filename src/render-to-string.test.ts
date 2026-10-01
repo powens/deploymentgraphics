@@ -4,6 +4,7 @@ import { makeMissionCard, renderMissionCardToString } from "./main.js";
 import { baseTheme } from "./presets/theme.js";
 import { buildConfig } from "./presets/build-config.js";
 import { missions } from "./presets/missions.js";
+import { gwTerrain } from "./presets/terrain.js";
 import type { FullConfig } from "./types.js";
 
 /**
@@ -36,6 +37,7 @@ const cases: [string, FullConfig][] = [
     "a masked-centre mission with grid and a terrain layout",
     buildConfig({
       mission: missions.search_and_destroy,
+      terrain: gwTerrain,
       layout: "bm-take-vs-take-03",
       grid: true,
     }),
@@ -45,6 +47,7 @@ const cases: [string, FullConfig][] = [
     withExtras(
       buildConfig({
         mission: missions.tipping_point,
+        terrain: gwTerrain,
         layout: "bm-take-vs-take-01",
         territory: false,
       }),
