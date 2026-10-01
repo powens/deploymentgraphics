@@ -50,6 +50,9 @@ jobs:
       - name: Check and build
         run: pnpm run prepublishOnly
 
+      - name: Smoke-test the packed tarball
+        run: pnpm pack:smoke
+
       - name: Pack
         run: pnpm pack --pack-destination "$RUNNER_TEMP"
 
