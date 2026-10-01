@@ -47,8 +47,8 @@ const generator: FeatureDraw = (w, h) => {
 };
 
 // `lRuin` reflected across x = w/2 (outer corner bottom-right). The
-// opposite-chirality 40kdc ruins (balanced-right, corner-right) cannot be
-// reached by rotating `lRuin`.
+// opposite-hand 40kdc ruin parts (see RUIN_HAND in
+// scripts/ruin-to-feature.mjs) cannot be reached by rotating `lRuin`.
 const lRuinMirror: FeatureDraw = (w, h) => {
   const wall = Math.min(0.5, w, h);
   const d = `M${w} 0 H${w - wall} V${h - wall} H0 V${h} H${w} Z`;

@@ -86,6 +86,7 @@ const roundTrip = (piece, parent) => {
 describe("featureBuildingPlacement", () => {
   it("places a named pipe (5.5x1 rectangle)", () => {
     const p = roundTrip({
+      part: "long-barrier",
       template: "pipe",
       position: { x: 30, y: 20 },
       rotation_degrees: 0,
@@ -95,6 +96,7 @@ describe("featureBuildingPlacement", () => {
 
   it("places a rotated named barricade (8-vertex polygon)", () => {
     const p = roundTrip({
+      part: "short-barrier",
       template: "barricade",
       position: { x: 25, y: 15 },
       rotation_degrees: 35,
@@ -111,6 +113,7 @@ describe("featureBuildingPlacement", () => {
       rotation_degrees: 30,
     };
     const child = {
+      part: "short-barrier",
       template: "barricade",
       parent_area_id: "a",
       position: { x: 1, y: -1 },
@@ -118,5 +121,19 @@ describe("featureBuildingPlacement", () => {
     };
     const p = roundTrip(child, parent);
     expect(p.type).toBe("barricade");
+  });
+
+  it("throws when a barrier's footprint loses the template's profile", () => {
+    // The 3.5in long edge still matches; only the vertex count sees the reshape.
+    const piece = {
+      id: "b1",
+      part: "short-barrier",
+      footprint: { type: "rectangle", width: 3.5, height: 1 },
+      position: { x: 10, y: 10 },
+    };
+    const layout = withLookups({ id: "t", pieces: [piece] }, lookupFootprint);
+    expect(() => featureBuildingPlacement(piece, layout, TEMPLATES)).toThrow(
+      /part short-barrier footprint \(long edge 3.500, 4 verts\)/,
+    );
   });
 });

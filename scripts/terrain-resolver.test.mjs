@@ -3,8 +3,19 @@ import {
   resolvePiece,
   pieceFootprint,
   pieceFootprintIfAny,
+  pieceFrame,
+  poseFromMatrix,
+  poseMatrix,
 } from "./terrain-resolver.mjs";
-import { centroid } from "../src/geometry.ts";
+import {
+  centroid,
+  FLIP_X,
+  FLIP_Y,
+  IDENTITY,
+  matmul,
+  matvec,
+  rotationMatrix,
+} from "../src/geometry.ts";
 
 const TRAPEZOID = {
   type: "polygon",
@@ -168,5 +179,76 @@ describe("pieceFootprintIfAny", () => {
         height: 9,
       })),
     ).toEqual(inline);
+  });
+});
+
+const nearMatrix = (got, want) => {
+  got.forEach((row, i) =>
+    row.forEach((x, j) => expect(x).toBeCloseTo(want[i][j], 9)),
+  );
+};
+
+describe("poseMatrix", () => {
+  it("is the identity for a piece with no pose", () => {
+    expect(poseMatrix({})).toEqual(IDENTITY);
+  });
+
+  it("names each reflection by the axis it negates", () => {
+    nearMatrix(poseMatrix({ mirror: "horizontal" }), FLIP_X);
+    nearMatrix(poseMatrix({ mirror: "vertical" }), FLIP_Y);
+  });
+
+  it("reflects before it rotates", () => {
+    const M = poseMatrix({ rotation_degrees: 90, mirror: "horizontal" });
+    const p = matvec(M, { x: 1, y: 0 });
+    expect(p.x).toBeCloseTo(0, 9);
+    expect(p.y).toBeCloseTo(-1, 9);
+  });
+});
+
+describe("poseFromMatrix", () => {
+  const maps = [0, 90, 180, 270, 37, 212.5].flatMap((d) => [
+    [`R${d}`, rotationMatrix(d)],
+    [`R${d}.FX`, matmul(rotationMatrix(d), FLIP_X)],
+  ]);
+  for (const [name, A] of maps) {
+    it(`inverts poseMatrix for ${name}`, () => {
+      nearMatrix(poseMatrix(poseFromMatrix(A)), A);
+    });
+  }
+
+  it("gives back a quarter-turn without float noise", () => {
+    expect(poseFromMatrix(rotationMatrix(90))).toEqual({ rotation_degrees: 90 });
+    expect(poseFromMatrix(rotationMatrix(-1e-12))).toEqual({ rotation_degrees: 0 });
+  });
+
+  it("writes a vertical reflection as a horizontal one turned a half-turn", () => {
+    expect(
+      poseFromMatrix(poseMatrix({ rotation_degrees: 30, mirror: "vertical" })),
+    ).toEqual({ rotation_degrees: 210, mirror: "horizontal" });
+  });
+});
+
+describe("pieceFrame", () => {
+  const piece = {
+    position: { x: 10, y: 20 },
+    rotation_degrees: 55,
+    mirror: "horizontal",
+  };
+
+  it("carries the piece's pose", () => {
+    expect(pieceFrame(piece, TRAPEZOID).matrix).toEqual(poseMatrix(piece));
+  });
+
+  it("lands the footprint's area centroid on the piece's position", () => {
+    const { place } = pieceFrame(piece, TRAPEZOID);
+    expect(place(centroid(TRAPEZOID.points))).toEqual({ x: 10, y: 20 });
+  });
+
+  it("places the footprint exactly where resolvePiece resolves it", () => {
+    const { place } = pieceFrame(piece, TRAPEZOID);
+    expect(TRAPEZOID.points.map(place)).toEqual(
+      resolvePiece({ ...piece, footprint: TRAPEZOID }, () => null),
+    );
   });
 });

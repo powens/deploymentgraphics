@@ -123,7 +123,7 @@ describe("areaBuildingPlacement", () => {
       piece_type: "area",
       position: { x: 30, y: 20 },
       rotation_degrees: 90,
-      mirror: "vertical",
+      mirror: "horizontal",
     });
     expect(p.type).toBe("shoe");
   });

@@ -10,14 +10,10 @@ import {
 import { placedRing, resolveFeature } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import { footprintPolygon } from "./terrain-resolver.mjs";
-import {
-  isRuinTemplate,
-  isLFootprint,
-  ruinFeaturePlacement,
-} from "./ruin-to-feature.mjs";
+import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 import { layoutPlacements } from "./layout-to-placements.mjs";
 
-const { missionLayouts, footprintOf, gwTemplates } = loadCorpus();
+const { missionLayouts, rawLayouts, templatesById, gwTemplates } = loadCorpus();
 
 const ruinsOf = (L) =>
   layoutPlacements(L, gwTemplates).features.filter((f) =>
@@ -73,42 +69,33 @@ function featureFootprint(pl) {
   return placedRing(local, placed);
 }
 
-// One representative L-ruin piece (with its layout) per corner template.
+// One representative L-ruin piece (with its layout) per part.
 const sample = {};
 for (const L of missionLayouts) {
   for (const p of L.pieces) {
-    if (!isRuinTemplate(p.template)) continue;
-    const fp = p.footprint ?? footprintOf(p.template);
-    if (!isLFootprint(fp)) continue;
-    sample[p.template] ??= { piece: p, layout: L };
+    if (!isRuinPart(p.part)) continue;
+    sample[p.part] ??= { piece: p, layout: L };
   }
 }
 
-describe("isLFootprint", () => {
-  it("accepts an L template and rejects a bar", () => {
-    expect(isLFootprint(footprintOf("corner-tiny"))).toBe(true);
-    expect(
-      isLFootprint({ type: "rectangle", width: 2, height: 0.25 }),
-    ).toBe(false);
-  });
-});
-
 describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
-  it("covers all six corner templates", () => {
+  it("covers every L-ruin part", () => {
     expect(Object.keys(sample).sort()).toEqual([
-      "corner-ruin-balanced-left",
-      "corner-ruin-balanced-right",
-      "corner-ruin-left",
-      "corner-ruin-right",
-      "corner-short",
-      "corner-tiny",
+      "ab",
+      "cd",
+      "co",
+      "corner",
+      "ef",
+      "gh",
+      "small-l",
+      "small-l-flip",
     ]);
   });
 
   const placementOf = ({ piece, layout }) => ruinFeaturePlacement(piece, layout);
 
-  for (const [template, entry] of Object.entries(sample)) {
-    it(`reproduces the ${template} footprint`, () => {
+  for (const [part, entry] of Object.entries(sample)) {
+    it(`reproduces the ${part} footprint`, () => {
       const target = entry.layout.resolve(entry.piece);
       expect(
         ringMismatch(featureFootprint(placementOf(entry)), target),
@@ -116,13 +103,28 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
     });
   }
 
-  it("picks the mirror variant for opposite-chirality templates", () => {
-    expect(placementOf(sample["corner-ruin-right"]).type).toBe("l-ruin-mirror");
-    expect(placementOf(sample["corner-ruin-left"]).type).toBe("l-ruin");
+  it("draws the two hands of one model with the two variants", () => {
+    expect(placementOf(sample["small-l"]).type).toBe("l-ruin-mirror");
+    expect(placementOf(sample["small-l-flip"]).type).toBe("l-ruin");
   });
 
-  for (const [template, entry] of Object.entries(sample)) {
-    it(`lands the ${template} outer corner on the resolved one`, () => {
+  it("throws on a piece that resolves with the other hand from its part's", () => {
+    const { piece, layout } = sample["small-l"];
+    const swapped = { ...piece, part: "small-l-flip" };
+    expect(() => ruinFeaturePlacement(swapped, layout)).toThrow(
+      /part small-l-flip is drawn as l-ruin but resolves as l-ruin-mirror/,
+    );
+  });
+
+  it("throws on a part that is not an L-ruin", () => {
+    const { piece, layout } = sample.ab;
+    expect(() =>
+      ruinFeaturePlacement({ ...piece, part: "tower" }, layout),
+    ).toThrow(/part tower is not an L-ruin part/);
+  });
+
+  for (const [part, entry] of Object.entries(sample)) {
+    it(`lands the ${part} outer corner on the resolved one`, () => {
       // Drawn through the placement transform, so this checks the pivot
       // convention rather than a pinned constant.
       const placement = placementOf(entry);
@@ -140,7 +142,8 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 });
 
 // The corpus roofing check below is the only tripwire for a catwalk seated on a
-// ruin, so its geometry primitives get their own test.
+// ruin, so its geometry primitives get their own test. Upstream's catwalk is
+// the `pipes` part.
 describe("roofing guard geometry", () => {
   // Outer corner at the origin: a 5x0.5in horizontal arm and a 0.5x4.5in
   // vertical one, the shape of a resolved l-ruin.
@@ -192,11 +195,11 @@ describe("roofing guard geometry", () => {
 });
 
 describe("ruins over the corpus", () => {
-  it("emits an l-ruin or l-ruin-mirror for every corner piece", () => {
+  it("emits an l-ruin or l-ruin-mirror for every L-ruin piece", () => {
     const L = missionLayouts.find((l) => l.id === "bm-purge-vs-purge-02");
     const features = ruinsOf(L);
     expect(features.length).toBe(
-      L.pieces.filter((p) => isRuinTemplate(p.template)).length,
+      L.pieces.filter((p) => isRuinPart(p.part)).length,
     );
     for (const f of features) {
       expect(["l-ruin", "l-ruin-mirror"]).toContain(f.type);
@@ -204,52 +207,49 @@ describe("ruins over the corpus", () => {
   });
 
   it("emits no -roof variant, because no catwalk rests on a ruin", () => {
-    // Upstream ships `pipes` (the catwalk part) as its own standalone composite
-    // (composite-03, composite-30), never as a sibling of a ruin part.
-    // Catwalk-to-nearest-ruin gaps over all 90, sorted:
+    // battlemaster-normalize.mjs drops the `pipes` part, so this reads it where
+    // upstream ships it: the whole of its own ShortLine composite, never a
+    // sibling of a ruin part. Measured against upstream's traced outline of
+    // that composite, the catwalk-to-nearest-ruin gaps over all 90, sorted:
     //
-    //   0.002 x2  0.005 x4 | 0.435 x2  0.461 x2  0.498 x12  0.502 x10 .. 6.98
+    //   0.459 x2  0.498 x4  0.499 x6  0.501 x4 .. 6.724
     //
-    // The closest six sit 3.996-5.037in centre-to-centre, so a centroid
-    // threshold picks the wrong ones; the check is about contact. If a future
-    // pull seats a catwalk on a ruin, this fails and a roof variant is needed.
-    const missions = missionLayouts;
-    const catwalks = missions
-      .flatMap((l) => l.pieces)
-      .filter((p) => p.template === "catwalk");
-    expect(catwalks.length).toBe(90);
-    const features = missions.flatMap(ruinsOf);
+    // The check is about contact, not centre distance. If a future pull seats
+    // a catwalk on a ruin, this fails and a roof variant is needed.
+    const features = missionLayouts.flatMap(ruinsOf);
     expect(features.length).toBe(720);
     expect(features.filter((f) => f.type.includes("roof")).length).toBe(0);
 
+    const partOf = (id) =>
+      id.replace(/^bm-part-/, "").replace(/-[0-9a-f]{10}$/, "");
+    const raw = rawLayouts.filter((l) => l.mission_matchup_id);
+    let catwalks = 0;
     let touching = 0;
     let siblings = 0;
-    let minGap = Infinity;
-    for (const L of missions) {
+    const gaps = [];
+    raw.forEach((src, i) => {
+      const L = missionLayouts[i];
       const ruins = L.pieces
-        .filter(
-          (p) =>
-            isRuinTemplate(p.template) &&
-            isLFootprint(p.footprint ?? footprintOf(p.template)),
-        )
+        .filter((p) => isRuinPart(p.part))
         .map((p) => ({ p, ring: L.resolve(p) }));
-      for (const p of L.pieces.filter((q) => q.template === "catwalk")) {
-        const ring = L.resolve(p);
+      for (const area of src.pieces) {
+        const { features: parts } = templatesById.get(area.template);
+        if (!parts.some((f) => partOf(f.template) === "pipes")) continue;
+        catwalks += 1;
+        const ring = src.resolve(area);
+        let nearest = Infinity;
         for (const r of ruins) {
-          const gap = ringGap(ring, r.ring);
-          minGap = Math.min(minGap, gap);
-          if (ringsOverlap(ring, r.ring)) {
-            touching += 1;
-          }
-          if (p.parent_area_id && p.parent_area_id === r.p.parent_area_id) {
-            siblings += 1;
-          }
+          nearest = Math.min(nearest, ringGap(ring, r.ring));
+          if (ringsOverlap(ring, r.ring)) touching += 1;
+          if (r.p.parent_area_id === area.id) siblings += 1;
         }
+        gaps.push(nearest);
       }
-    }
+    });
+    expect(catwalks).toBe(90);
     expect(touching).toBe(0);
     expect(siblings).toBe(0);
-    expect(minGap).toBeGreaterThan(0);
+    expect(Math.min(...gaps)).toBeGreaterThan(0);
   });
 
   it("emits 16 whole-L ruins for every mission layout", () => {
