@@ -333,6 +333,11 @@ function start() {
   // Before `show`: opening the YAML tab clears the error `show` may report.
   activateTab(session.mode);
   show(snapshot);
+  // A stored YAML override that does not draw leaves the markup's loading
+  // message up; say why instead.
+  if (document.getElementById("stage-loading")) {
+    setStageMessage("No card yet: see the YAML error above.");
+  }
 }
 
 start();
