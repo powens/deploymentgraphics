@@ -1,6 +1,12 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from "vitest";
-import { openSession, renderCard, type RenderInstruction } from "./viewer-session.js";
+import {
+  editorYaml,
+  openSession,
+  renderCard,
+  step,
+  type RenderInstruction,
+} from "./viewer-session.js";
 
 function controlsInstruction(search = ""): RenderInstruction {
   const { render } = openSession({ search, saved: null });
@@ -43,5 +49,17 @@ describe("renderCard", () => {
 
   it("passes an instruction's error straight through", () => {
     expect(renderCard({ error: "drift" })).toEqual({ error: "drift" });
+  });
+});
+
+describe("editorYaml", () => {
+  it("round-trips to the same card the controls draw", () => {
+    const opened = openSession({ search: "?rot=90", saved: null });
+    const text = editorYaml(opened.session);
+    if (text === null) throw new Error("expected the controls' YAML");
+    const typed = step(opened.session, { type: "yamlTyped", text });
+    const settled = step(typed.session, { type: "yamlSettled" });
+    if (settled.render === null) throw new Error(settled.yamlError ?? "no render");
+    expect(card(settled.render).outerHTML).toBe(card(controlsInstruction("?rot=90")).outerHTML);
   });
 });

@@ -234,6 +234,19 @@ describe("step: yamlSettled", () => {
     expect(snapshot.render).toBe(null);
   });
 
+  it("names a layout_name the YAML does not define", () => {
+    const text = "terrain: { layout_name: bm-other, layout: { bm-mine: {} } }";
+    const snapshot = step(inYaml(text), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toMatch(/^unknown layout "bm-other"/);
+    expect(snapshot.render).toBe(null);
+  });
+
+  it("renders a layout_name the YAML defines", () => {
+    const text = "terrain: { layout_name: bm-mine, layout: { bm-mine: {} } }";
+    const snapshot = step(inYaml(text), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toBe(null);
+  });
+
   for (const text of ["just a string", "- a list"]) {
     it(`rejects ${JSON.stringify(text)}, which is no config object`, () => {
       const snapshot = step(inYaml(text), { type: "yamlSettled" });
@@ -268,11 +281,24 @@ describe("filenameStem", () => {
 });
 
 describe("editorYaml", () => {
-  it("fills the editor with the controls' config", () => {
+  it("fills the editor with the controls' config, less the unselected layouts", () => {
     const snapshot = fresh();
-    expect(yaml.load(editorYaml(snapshot.session)!)).toEqual(
-      rendered(snapshot).config,
-    );
+    const { config } = rendered(snapshot);
+    const { t } = snapshot.session.controls;
+    expect(yaml.load(editorYaml(snapshot.session)!)).toEqual({
+      ...config,
+      terrain: { ...config.terrain, layout: { [t]: config.terrain.layout[t] } },
+    });
+  });
+
+  it("dumps no layout when the controls select none", () => {
+    const session: Session = {
+      controls: { ...defaultControls(), t: "" },
+      mode: "controls",
+      yaml: null,
+    };
+    const dumped = yaml.load(editorYaml(session)!) as { terrain: { layout: object } };
+    expect(dumped.terrain.layout).toEqual({});
   });
 
   it("leaves the visitor's own YAML in place", () => {

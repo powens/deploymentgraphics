@@ -10,11 +10,14 @@ import {
   renderCard,
   step,
   STORAGE_KEY,
+  bindTabKeys,
+  selectTab,
 } from "./bundle.js";
 
 // The Viewer session (mode, YAML text, derivation, what to store, what to
-// render) lives in `src/viewer-session.ts`, and the controls in
-// `src/viewer-controls.ts`. This file only binds them to the page; the option
+// render) lives in `src/viewer-session.ts`, the controls in
+// `src/viewer-controls.ts` and the tabs' keyboard model in
+// `src/viewer-tabs.ts`. This file only binds them to the page; the option
 // labels are the one thing defined here.
 
 function downloadBlob(blob, filename) {
@@ -40,10 +43,9 @@ const exportPngButton = document.getElementById("export-png");
 const exportSvgButton = document.getElementById("export-svg");
 const copyLinkButton = document.getElementById("copy-link");
 
+const tablist = document.getElementById("editor-tabs");
 const tabControls = document.getElementById("tab-controls");
 const tabYaml = document.getElementById("tab-yaml");
-const panelControls = document.getElementById("panel-controls");
-const panelYaml = document.getElementById("panel-yaml");
 const yamlEditor = document.getElementById("yaml-editor");
 const yamlError = document.getElementById("yaml-error");
 const resetBanner = document.getElementById("reset-banner");
@@ -177,10 +179,7 @@ function openYamlTab() {
 
 function activateTab(name) {
   const isControls = name === "controls";
-  tabControls.setAttribute("aria-selected", String(isControls));
-  tabYaml.setAttribute("aria-selected", String(!isControls));
-  panelControls.hidden = !isControls;
-  panelYaml.hidden = isControls;
+  selectTab(tablist, isControls ? tabControls : tabYaml);
   if (!isControls) {
     openYamlTab();
   }
@@ -217,6 +216,7 @@ resetButton.addEventListener("click", () => {
 });
 tabControls.addEventListener("click", () => activateTab("controls"));
 tabYaml.addEventListener("click", () => activateTab("yaml"));
+bindTabKeys(tablist, (tab) => activateTab(tab === tabControls ? "controls" : "yaml"));
 
 // --- Export ---------------------------------------------------------------
 
@@ -333,6 +333,11 @@ function start() {
   // Before `show`: opening the YAML tab clears the error `show` may report.
   activateTab(session.mode);
   show(snapshot);
+  // A stored YAML override that does not draw leaves the markup's loading
+  // message up; say why instead.
+  if (document.getElementById("stage-loading")) {
+    setStageMessage("No card yet: see the YAML error above.");
+  }
 }
 
 start();
