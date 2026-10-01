@@ -191,6 +191,15 @@ for a board with no terrain. Prototype keys no longer count as layouts either:
   also means the bundled matrix stops compiling if a cell names a deployment
   `missions` lacks. A matrix over your own deployments is `EventMatrix<string>`.
 
+- `idPrefix`, an option on both renderers (`makeMissionCard` gains a third
+  `MissionCardOptions` argument; `RenderToStringOptions` extends it). Card ids
+  are fixed (`template-<name>`, `arrowhead`, `center-hole-attacker`, …), so two
+  cards inline in one HTML page resolved every `href="#…"` and `url(#…)` to the
+  first card's defs. With `idPrefix: "left-"` every id the card emits, and
+  every reference to one, carries the prefix; a reference to a def outside the
+  card (a theme's `url(#page-gradient)`) is left alone. The default `""`
+  leaves the markup byte-identical.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's

@@ -137,6 +137,22 @@ const svg = renderMissionCardToString(
 );
 ```
 
+### Several cards on one page
+
+A card names its shared shapes with fixed ids (`template-shoe`,
+`arrowhead`, …) and draws them by reference, so two cards inline in one HTML
+page would both draw the first card's shapes. Give each card an `idPrefix`
+— both renderers take it — and its ids and every reference to them stay its
+own:
+
+```ts
+const left = renderMissionCardToString(configA, baseTheme, { idPrefix: "left-" });
+const right = makeMissionCard(configB, baseTheme, { idPrefix: "right-" });
+```
+
+The prefix must start with a letter or `_`. Without one, the markup is
+unchanged.
+
 ## Presets
 
 `deploymentgraphics/presets` exports plain, typed config objects — no

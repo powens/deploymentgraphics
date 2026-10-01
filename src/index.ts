@@ -10,7 +10,7 @@
 
 // --- Renderers ---
 export { makeMissionCard, renderMissionCardToString } from "./main.js";
-export type { RenderToStringOptions } from "./main.js";
+export type { MissionCardOptions, RenderToStringOptions } from "./main.js";
 
 // --- Presets ---
 export { baseConfig } from "./presets/base.js";
