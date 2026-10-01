@@ -111,8 +111,8 @@ export function injectIconDefs(
     const id = iconDefId(type, player);
     if (seen.has(id)) continue;
     seen.add(id);
+    if (!Object.hasOwn(icons, type)) throw new Error(`unknown icon type: ${type}`);
     const def = icons[type];
-    if (!def) throw new Error(`unknown icon type: ${type}`);
 
     const diskFill = player
       ? `${theme.deployment[player].fill}`
@@ -159,7 +159,7 @@ export function makeIcons(
   group.setAttribute("id", "icons");
   let counter = 0;
   for (const placement of placements) {
-    if (!icons[placement.type]) {
+    if (!Object.hasOwn(icons, placement.type)) {
       throw new Error(`unknown icon type: ${placement.type}`);
     }
     const use = doc.createElement("use");

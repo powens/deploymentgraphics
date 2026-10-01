@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import {
   eventMatrixKey,
   resolveMission,
@@ -8,7 +8,7 @@ import {
 } from "../event-matrix.js";
 import { eventMatrix } from "./event-matrix.js";
 import { gwTerrain } from "./terrain.js";
-import { gwTerrainIndex } from "./terrain-index.js";
+import { gwTerrainIndex, type LayoutId } from "./terrain-index.js";
 
 /**
  * `gwTerrainIndex` must resolve matchups identically to `gwTerrain.layout`
@@ -41,6 +41,13 @@ describe("gwTerrainIndex", () => {
 
   it("holds one entry per bundled layout", () => {
     expect(Object.keys(gwTerrainIndex)).toEqual(Object.keys(gwTerrain.layout));
+  });
+
+  it("is keyed by LayoutId, which resolveTerrainLayout passes through", () => {
+    expectTypeOf<keyof typeof gwTerrainIndex>().toEqualTypeOf<LayoutId>();
+    expectTypeOf(
+      resolveTerrainLayout(gwTerrainIndex, "Take and Hold", "Take and Hold", "dawn_of_war"),
+    ).toEqualTypeOf<LayoutId | undefined>();
   });
 
   it("carries matchup metadata and no geometry", () => {

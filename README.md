@@ -46,6 +46,17 @@ const svg = makeMissionCard(
 );
 ```
 
+`layout` is typed as a `LayoutId` — the union of the bundled ids — so an
+editor completes it, but any id your own terrain defines is accepted too. An
+id the terrain does not define throws rather than drawing a bare board, and
+that includes naming a battlemaster layout without passing `gwTerrain`:
+
+```ts
+buildConfig({ mission: missions.search_and_destroy, layout: "bm-take-vs-take-03" });
+// Error: unknown layout "bm-take-vs-take-03": terrain.layout is empty;
+//   pass the terrain that defines it (e.g. terrain: gwTerrain)
+```
+
 `gwTerrain` is ~220kB of layout geometry, and it is a static import: a
 bundle that names it ships all 45 layouts. Import it only where a board is
 actually drawn — ideally behind a dynamic `import()` — and use
@@ -125,6 +136,22 @@ const svg = renderMissionCardToString(
   { width: 60 * 15, height: 44 * 15 },
 );
 ```
+
+### Several cards on one page
+
+A card names its shared shapes with fixed ids (`template-shoe`,
+`arrowhead`, …) and draws them by reference, so two cards inline in one HTML
+page would both draw the first card's shapes. Give each card an `idPrefix`
+— both renderers take it — and its ids and every reference to them stay its
+own:
+
+```ts
+const left = renderMissionCardToString(configA, baseTheme, { idPrefix: "left-" });
+const right = makeMissionCard(configB, baseTheme, { idPrefix: "right-" });
+```
+
+The prefix must start with a letter or `_`. Without one, the markup is
+unchanged.
 
 ## Presets
 

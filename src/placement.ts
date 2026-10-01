@@ -4,6 +4,7 @@ import {
   localCorner,
   resolveCorner,
   templateBounds,
+  toAnchor,
   type Anchor,
   type BuildingPlacement,
   type CanvasSize,
@@ -98,7 +99,7 @@ export function mirror(placed: Placed, canvas: CanvasSize): Placed {
       width: placed.box.width,
       height: placed.box.height,
     },
-    rotation: (placed.rotation + 180) % 360,
+    rotation: normalizeDegrees(placed.rotation + 180),
   };
 }
 
@@ -121,7 +122,9 @@ function resolvePrimary(
   templates: Record<string, Template>,
   canvas: CanvasSize,
 ): Placed {
-  const template = templates[placement.type];
+  const template = Object.hasOwn(templates, placement.type)
+    ? templates[placement.type]
+    : undefined;
   if (!template) {
     throw new Error(`building references unknown template: ${placement.type}`);
   }
@@ -131,7 +134,16 @@ function resolvePrimary(
       `building ${placement.type}: expected 1 or 2 corners, got ${entries.length}`,
     );
   }
-  const defaultFrom: Anchor = placement.from ?? "TL";
+  // Checked here for the building's name in the message; `resolveCorner` and
+  // `localCorner` guard again for their other callers.
+  const context = `building ${placement.type}`;
+  const defaultFrom = toAnchor(placement.from ?? "TL", `${context}: from`);
+  for (const [corner, spec] of entries) {
+    toAnchor(corner, `${context}: corners key`);
+    if (spec?.from !== undefined) {
+      toAnchor(spec.from, `${context}: corners.${corner}.from`);
+    }
+  }
   const size = templateBounds(template, placement.type);
 
   const [[cornerA, specA]] = entries;
@@ -205,9 +217,24 @@ export function placeBuildings(
 }
 
 /**
+ * A feature's authored rotation, `0` when absent. Throws on anything but a
+ * finite number: a quoted YAML `"30"` would string-concatenate in `mirror`.
+ */
+function featureRotation(feature: FeaturePlacement): number {
+  const { rotation } = feature;
+  if (rotation === undefined) return 0;
+  if (typeof rotation !== "number" || !Number.isFinite(rotation)) {
+    throw new Error(
+      `feature ${feature.type}: rotation: expected a number, got ${JSON.stringify(rotation)}`,
+    );
+  }
+  return rotation;
+}
+
+/**
  * Resolves a feature placement to its primary plus mirrored copy (unless
  * `mirror: false`). Features are already box + centre rotation, so the
- * primary is the placement verbatim.
+ * primary is the placement verbatim, its rotation normalised to [0, 360).
  */
 export function resolveFeature(
   feature: FeaturePlacement,
@@ -216,7 +243,7 @@ export function resolveFeature(
   const primary: Placed = {
     name: feature.type,
     box: { x: feature.x, y: feature.y, width: feature.width, height: feature.height },
-    rotation: feature.rotation ?? 0,
+    rotation: normalizeDegrees(featureRotation(feature)),
   };
   return withMirror(primary, feature.mirror, canvas);
 }

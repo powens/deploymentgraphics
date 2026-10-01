@@ -10,7 +10,7 @@
 
 // --- Renderers ---
 export { makeMissionCard, renderMissionCardToString } from "./main.js";
-export type { RenderToStringOptions } from "./main.js";
+export type { MissionCardOptions, RenderToStringOptions } from "./main.js";
 
 // --- Presets ---
 export { baseConfig } from "./presets/base.js";
@@ -21,6 +21,7 @@ export { gwTerrain } from "./presets/terrain.js";
 // `gwTerrain.layout`'s matchup metadata without geometry (~1% of the bytes);
 // enough for `resolveTerrainLayout`.
 export { gwTerrainIndex } from "./presets/terrain-index.js";
+export type { LayoutId } from "./presets/terrain-index.js";
 export { gwTemplatesReal } from "./presets/templates-real.js";
 export {
   missions,
