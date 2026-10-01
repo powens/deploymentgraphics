@@ -45,10 +45,33 @@ describe("resolveLayout", () => {
 
   it("returns empty buildings and icons when no layout is selected", () => {
     const config = configWith();
-    config.terrain.layout_name = "99";
+    config.terrain.layout_name = "";
     const r = resolveLayout(config);
     expect(r.buildings).toEqual([]);
     expect(r.icons).toEqual([]);
+  });
+
+  it("throws on an unknown layout id, naming it", () => {
+    const config = configWith();
+    config.terrain.layout_name = "99";
+    expect(() => resolveLayout(config)).toThrow(
+      'unknown layout "99": not a key of terrain.layout',
+    );
+  });
+
+  it("does not resolve a layout id from the object prototype", () => {
+    const config = configWith();
+    config.terrain.layout_name = "constructor";
+    expect(() => resolveLayout(config)).toThrow('unknown layout "constructor"');
+  });
+
+  it("hints at passing the corpus when terrain.layout is empty", () => {
+    const config = configWith();
+    config.terrain = { templates: {}, layout: {}, layout_name: "bm-take-vs-take-02" };
+    expect(() => resolveLayout(config)).toThrow(
+      'unknown layout "bm-take-vs-take-02": terrain.layout is empty; ' +
+        "pass the terrain that defines it (e.g. terrain: gwTerrain)",
+    );
   });
 
   it("returns empty arrays for a selected layout that omits the optional pieces", () => {
@@ -71,7 +94,7 @@ describe("resolveLayout", () => {
 
   it("still surfaces top-level features when no layout is selected", () => {
     const config = configWith();
-    config.terrain.layout_name = "99";
+    config.terrain.layout_name = "";
     config.features = [
       { type: "generator", x: 0, y: 0, width: 2, height: 2, color: "gunmetal" },
     ];

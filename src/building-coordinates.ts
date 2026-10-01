@@ -26,6 +26,18 @@ export function toPoint(value: unknown, context: string): Point {
   return value as Point;
 }
 
+const ANCHORS: readonly Anchor[] = ["TL", "TR", "BL", "BR"];
+
+/** Validates an untyped value as an Anchor, throwing with `context` on failure. */
+export function toAnchor(value: unknown, context: string): Anchor {
+  if (!ANCHORS.includes(value as Anchor)) {
+    throw new Error(
+      `${context}: expected one of ${ANCHORS.join(", ")}, got ${JSON.stringify(value)}`,
+    );
+  }
+  return value as Anchor;
+}
+
 /**
  * Resolves a corner spec to an absolute canvas point. x/y are measured
  * inward from the spec's anchor (its `from` field, or `defaultFrom`).
@@ -36,7 +48,7 @@ export function resolveCorner(
   canvas: CanvasSize,
 ): Point {
   const { x, y } = toPoint(spec, "building corner");
-  const from: Anchor = spec.from ?? defaultFrom;
+  const from = toAnchor(spec.from ?? defaultFrom, "building corner from");
   switch (from) {
     case "TL":
       return { x, y };
@@ -118,7 +130,7 @@ export function localCorner(
   corner: Anchor,
   size: { width: number; height: number },
 ): Point {
-  switch (corner) {
+  switch (toAnchor(corner, "building corner")) {
     case "TL":
       return { x: 0, y: 0 };
     case "TR":

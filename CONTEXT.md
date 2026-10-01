@@ -54,6 +54,17 @@ seam directly; see the `.ts` specifier note in `tsconfig.json` for why they can.
 A piece emits a mirrored copy unless its placement says `mirror: false`; the default
 is *mirror on*. One formula, owned by the placement module.
 
+**Piece pose** — how a 40kdc piece sits on the board: its `rotation_degrees` and
+`mirror`, applied reflection first, about the footprint's area centroid, which
+its `position` anchors. A child of `parent_area_id` is posed in its parent's
+centred frame, then carried through the parent's pose. `terrain-resolver.mjs`
+owns three views of that one convention, as the placement module does for
+**Centre-pivot**: the forward map (`poseMatrix`, `pieceFrame`), the resolved ring
+(`resolvePiece`), and the inverse (`poseFromMatrix`), which factors a map back
+into the `{ rotation_degrees, mirror }` pair a piece carries.
+_Avoid_: calling a piece's `mirror` a **Mirror**, which is the canvas
+point-reflection of a `Placed`; say it *reflects*, or speak of its handedness.
+
 **Canvas** — the board, `{width, height}` in inches (standard 60×44). Anchors
 (TL/TR/BL/BR) and mirroring are all measured against it.
 
@@ -67,7 +78,8 @@ the list twice (defs, then draw) and knows nothing about what is in it.
 
 **Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
 pass draws into a `ResolvedLayout` (buildings, icons, features). Buildings and
-icons come from the selected layout alone (empty arrays when none is selected);
+icons come from the selected layout alone (empty arrays when none is selected,
+a throw when the selected id is not in `terrain.layout`);
 features are unioned with the board's top-level array. Distinct from
 **Resolve** above: that maps one placement to a `Placed`; this assembles
 placement *arrays* and applies the "is a layout selected / union with

@@ -37,8 +37,63 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # `prepare` only checks tsconfig.build.json, which skips the demo entry
+      # and the tests.
+      - name: Type-check
+        run: pnpm type-check
+
       - name: Test
         run: pnpm test
 
       - name: Build
         run: pnpm build
+
+      - name: Build library
+        run: pnpm build:lib
+
+      # Installs the packed tarball into a throwaway consumer and renders a card.
+      - name: Pack smoke test
+        run: pnpm pack:smoke
+
+  # The demo deploys only once `check` has passed for the same commit.
+  deploy-pages:
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: "pages"
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: make build-gh-pages
+
+      - name: Archive production artifacts
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub pages
+        id: deployment
+        uses: actions/deploy-pages@v5

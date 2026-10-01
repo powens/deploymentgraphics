@@ -91,8 +91,10 @@ Past pulls carried non-obvious payloads:
 **Every layout passes through `scripts/battlemaster-normalize.mjs` before conversion.**
 Upstream's `battlemaster-11e` source keeps corner ruins, pipes, generators, etc. on the
 composite area template's `features[]` rather than the layout's `pieces[]`; the normalizer
-rewrites a composite layout back into the flat legacy piece vocabulary the rest of the
-pipeline expects, so nothing downstream has to change. Read the module's header first — it
+rewrites a composite layout into flat pieces: each area retemplated onto a legacy archetype,
+and one child per part naming its Battlemaster `part`, which is what the converters
+dispatch on. Parts the pipeline does not draw (`pipes`, `ruin-part`) are dropped there, in
+`PART_TO_TEMPLATE`, and nowhere else. Read the module's header first — it
 names each correction (`V` variant, `K` chirality, `Q` turn, `W` extent, `F`/`Z` footprint,
 `S` anchor) and that vocabulary is used throughout below.
 
@@ -110,7 +112,9 @@ It throws loudly rather than guessing on:
   whether the "new" part is actually a duplicate before registering it (`cd` turned out to
   be byte-identical to `co` — same footprint, walls, thickness and roof flag — and simply
   takes `co`'s row). A part with no legacy counterpart at all can be registered
-  `{ drop: true }`, as `ruin-part` is.
+  `{ drop: true }`, as `ruin-part` is. A part that is drawn must also be claimed by a
+  converter's part table (`RUIN_HAND`, `FEATURE_BUILDINGS` or `RECT_FEATURES`), or
+  `classifyPiece` throws `matches no converter`.
 - **Two drawings of one part** — a *test* failure (`registers a canonical drawing wherever
   upstream ships a part twice`). `partOf` collapses the hashes onto one legacy row but
   `partExtent` does not: it reads whichever drawing the feature names, so a model upstream
@@ -181,7 +185,8 @@ It throws loudly rather than guessing on:
 A new part's `flip` bit and `turn` must be **derived**, never guessed — guessing wrong is
 invisible to the suite. Match the new part against the nearest pre-pull piece of the same
 legacy template and read off the rigid map between the two rings, and which l-ruin variant
-it actually rendered as. See the chirality-pin test in `battlemaster-registration.test.mjs`.
+it actually rendered as, which goes in `RUIN_HAND` (`ruinFeaturePlacement` throws where the
+two disagree). See the chirality-pin test in `battlemaster-registration.test.mjs`.
 
 Do **not** use a bounding-box aspect ratio to pick `turn`: it is blind to a half-turn and
 gets `ab` wrong. And note that for `upstreamSize` parts a sweep can only ever resolve
@@ -192,8 +197,9 @@ geometry.
 
 ### W — the extent, and the anchor
 
-This part of upstream's schema has changed twice, and `partExtent`/`partAnchorShift` handle
-both versions. **Current (since 40kdc-data `39661875`):** part `footprint` is the model's
+This part of upstream's schema has changed twice. `partExtent` reads the extent under both
+versions; the anchor shift the previous one needed was removed in #237, once the current
+schema made it zero for every part. **Current (since 40kdc-data `39661875`):** part `footprint` is the model's
 extent again. The roof lives in `upper_floor.footprint`, and a composite feature's
 `position` anchors the extent's centre. With this schema the union below equals the
 footprint and the shift is zero for every part. The pull that brought this change moved
@@ -220,8 +226,8 @@ alone lose a barrier's whole 0.5in depth (its centreline runs along one edge of 
 footprint, not down its middle), and the roof alone is a corner of an L-ruin.
 
 The half of this that hides: **`position` anchored the centre of the *roof***, so for the
-five big L-ruins it was up to (1.25, 1.5)in off the model's centre. `partAnchorShift` is that
-offset. Nothing in the suite catches it directly — it shows up only as children drifting out
+five big L-ruins it was up to (1.25, 1.5)in off the model's centre. `partAnchorShift` was that
+offset; a pull that reverts to that schema needs it back. Nothing in the suite catches it directly — it shows up only as children drifting out
 of their own parents, so use the containment check below.
 
 ### F / Z — which footprint a child draws from
@@ -232,14 +238,13 @@ it is carrying shape upstream discarded (the `corner-*` L, the 8-vertex `barrica
 must stay. Where the legacy template is itself a **rectangle**, it adds only a size — and
 the sizes disagree by up to (1.5, 2)in with no consistent margin convention — so upstream's
 own extent wins: set `upstreamFootprint: true` (as `generator` and `tower` do), which
-carries that extent onto the child and keeps the legacy template id only for the downstream
-feature type and colour.
+carries that extent onto the child with no legacy template at all.
 
 Two rectangle parts are exceptions, for reasons worth knowing before you add a third:
 `long-barrier` maps onto the `pipe` **building** template, which is drawn at its
 `templates-simple.yml` size and throws in `placement.ts` if the pinned edge disagrees by
->0.1in (adopting upstream's size there means redrawing the gw template); `pipes` maps onto
-`catwalk`, which is consumed and dropped, so switching it is provably output-neutral.
+>0.1in (adopting upstream's size there means redrawing the gw template); `pipes` is dropped
+outright.
 
 A polygon part keeps its *shape* but not its *size*: set `upstreamSize: true` (all six
 `corner-*` templates do) and Z resizes the legacy L onto the upstream extent, moving only
@@ -251,10 +256,11 @@ to pick the `barricade` template, so its polygon is load-bearing beyond its bbox
 
 ### Don't reintroduce a proximity heuristic for catwalk roofing
 
-`ruin-to-feature.mjs` emits plain `l-ruin` everywhere and only *drops* catwalks; the `-roof`
-feature variants were deleted in #201 once nothing produced them. Upstream ships `pipes` as its own
-standalone composite, so no catwalk is ever a sibling of a ruin part, and no catwalk overlaps
-or bridges one anywhere in the corpus. This was a centroid-distance threshold
+`ruin-to-feature.mjs` emits plain `l-ruin` everywhere, and the normalizer drops `pipes` (the
+catwalk); the `-roof` feature variants were deleted in #201 once nothing produced them.
+Upstream ships `pipes` as its own standalone composite, so no catwalk is ever a sibling of a
+ruin part, and no catwalk's composite outline comes within 0.45in of one anywhere in the
+corpus. This was a centroid-distance threshold
 (`ROOF_DISTANCE`) that had to be re-tuned every time a ruin was resized, and it was selecting
 catwalks ~0.5in clear of a ruin while skipping six that are flush against one. If
 `emits no -roof variant, because no catwalk rests on a ruin` fails, upstream genuinely has
@@ -311,7 +317,7 @@ Verify a port on three things, in this order — each catches what the others ca
    parent — measured against *upstream's own composite outline*, not the coarse archetype.
    This is the only check that catches an anchor error, and it is what caught W's roof/extent
    offset (270 of 360 BigRect children up to 1.25in outside; 0 of 360 after). Expect a small
-   irreducible residual: 90 catwalks at 0.5in (pre-existing, and they get dropped), and five
+   irreducible residual: 90 legacy catwalks at 0.5in (since dropped in the normalizer), and five
    composites where **upstream's own** parts overhang **upstream's own** outlines — three of
    them materially, up to 3.7in. Verify that claim against the raw data (place the wall
    centrelines through upstream's own frame) before writing anything off as upstream's.

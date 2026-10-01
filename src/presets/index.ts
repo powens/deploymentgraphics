@@ -6,6 +6,7 @@
 export { baseConfig } from "./base.js";
 export { gwTerrain } from "./terrain.js";
 export { gwTerrainIndex } from "./terrain-index.js";
+export type { LayoutId } from "./terrain-index.js";
 export { gwTemplatesReal } from "./templates-real.js";
 export {
   missions,

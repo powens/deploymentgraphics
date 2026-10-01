@@ -72,6 +72,99 @@ export function virtualSvgDocument(): SvgDocument {
   return { createElement: (tagName) => new VirtualSvgElement(tagName) };
 }
 
+/** A letter or `_`, then letters, digits, `_`, `-` or `.`: safe in `url(#…)`. */
+const ID_PREFIX = /^[A-Za-z_][\w.-]*$/;
+
+/** `href="#…"` / `xlink:href="#…"`. */
+const isHref = (name: string, value: string): boolean =>
+  (name === "href" || name === "xlink:href") && value.startsWith("#");
+
+/** An href, or any attribute holding a `url(#…)`. */
+const isReference = (name: string, value: string): boolean =>
+  isHref(name, value) || value.includes("url(#");
+
+/** What a prefixed render records, so references are rewritten once ids are known. */
+type PrefixLog = {
+  ids: Set<string>;
+  references: { node: SvgNode; name: string; value: string }[];
+};
+
+/**
+ * A node whose `id`s carry a prefix and whose references are logged for
+ * {@link withIdPrefix} to rewrite. Wraps rather than patches the backend's
+ * node, so a browser element handed back to the caller keeps the DOM's own
+ * `setAttribute`.
+ */
+class PrefixedNode implements SvgNode {
+  constructor(
+    readonly inner: SvgNode,
+    private readonly prefix: string,
+    private readonly log: PrefixLog,
+  ) {}
+
+  setAttribute(name: string, value: string): void {
+    if (name === "id") {
+      this.log.ids.add(value);
+      this.inner.setAttribute(name, `${this.prefix}${value}`);
+      return;
+    }
+    if (isReference(name, value)) {
+      this.log.references.push({ node: this.inner, name, value });
+    }
+    this.inner.setAttribute(name, value);
+  }
+
+  appendChild(child: SvgNode): void {
+    this.inner.appendChild(child instanceof PrefixedNode ? child.inner : child);
+  }
+
+  get textContent(): string | null {
+    return this.inner.textContent;
+  }
+
+  set textContent(value: string | null) {
+    this.inner.textContent = value;
+  }
+}
+
+/**
+ * Renders `draw` against `doc` with every id it sets, and every reference to
+ * one of those ids (`href="#…"`, `xlink:href="#…"`, `url(#…)`), prefixed by
+ * `prefix`, so several cards can share one HTML document. A reference to an id
+ * the card did not emit (a theme's `url(#page-gradient)`) is left alone. An
+ * empty prefix renders against `doc` itself, byte-identical to no prefix.
+ * Returns the backend's own node, never a wrapper.
+ */
+export function withIdPrefix(
+  doc: SvgDocument,
+  prefix: string,
+  draw: (doc: SvgDocument) => SvgNode,
+): SvgNode {
+  if (prefix === "") return draw(doc);
+  if (typeof prefix !== "string" || !ID_PREFIX.test(prefix)) {
+    throw new Error(
+      "idPrefix: expected a letter or _ followed by letters, digits, _, - or ., " +
+        `got ${JSON.stringify(prefix)}`,
+    );
+  }
+  const log: PrefixLog = { ids: new Set(), references: [] };
+  const root = draw({
+    createElement: (tagName) =>
+      new PrefixedNode(doc.createElement(tagName), prefix, log),
+  });
+
+  // Rewritten after the draw, since a reference may precede its def. Setting
+  // an existing attribute keeps its position, so only the value changes.
+  const own = (id: string): string => (log.ids.has(id) ? `${prefix}${id}` : id);
+  for (const { node, name, value } of log.references) {
+    const rewritten = isHref(name, value)
+      ? `#${own(value.slice(1))}`
+      : value.replace(/url\(#([^)]*)\)/g, (_, id: string) => `url(#${own(id)})`);
+    node.setAttribute(name, rewritten);
+  }
+  return root instanceof PrefixedNode ? root.inner : root;
+}
+
 // `>` only needs escaping in `]]>`, but escaping it everywhere is simpler.
 function escapeAttribute(value: string): string {
   return escapeText(value).replaceAll('"', "&quot;");

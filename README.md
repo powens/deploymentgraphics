@@ -4,6 +4,8 @@ Render Warhammer 40k mission deployment maps as SVG, driven entirely by
 typed config. Ships the renderer plus ready-to-use presets for the six
 standard missions and a built-in terrain set.
 
+Try it in the browser: [live demo](https://powens.github.io/deploymentgraphics/).
+
 ![Search and Destroy deployment map with terrain, rendered by deploymentgraphics](assets/sample.svg)
 
 ## Install
@@ -44,6 +46,17 @@ const svg = makeMissionCard(
     territory: false,
   }),
 );
+```
+
+`layout` is typed as a `LayoutId` — the union of the bundled ids — so an
+editor completes it, but any id your own terrain defines is accepted too. An
+id the terrain does not define throws rather than drawing a bare board, and
+that includes naming a battlemaster layout without passing `gwTerrain`:
+
+```ts
+buildConfig({ mission: missions.search_and_destroy, layout: "bm-take-vs-take-03" });
+// Error: unknown layout "bm-take-vs-take-03": terrain.layout is empty;
+//   pass the terrain that defines it (e.g. terrain: gwTerrain)
 ```
 
 `gwTerrain` is ~220kB of layout geometry, and it is a static import: a
@@ -126,6 +139,22 @@ const svg = renderMissionCardToString(
 );
 ```
 
+### Several cards on one page
+
+A card names its shared shapes with fixed ids (`template-shoe`,
+`arrowhead`, …) and draws them by reference, so two cards inline in one HTML
+page would both draw the first card's shapes. Give each card an `idPrefix`
+— both renderers take it — and its ids and every reference to them stay its
+own:
+
+```ts
+const left = renderMissionCardToString(configA, baseTheme, { idPrefix: "left-" });
+const right = makeMissionCard(configB, baseTheme, { idPrefix: "right-" });
+```
+
+The prefix must start with a letter or `_`. Without one, the markup is
+unchanged.
+
 ## Presets
 
 `deploymentgraphics/presets` exports plain, typed config objects — no
@@ -146,6 +175,11 @@ YAML parsing or file IO at runtime:
 
 Build a config by hand instead of using `buildConfig` for full control —
 see the `FullConfig` type, which is exported from the package root.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the test and build
+commands, and how the generated presets and terrain are produced.
 
 ## License
 

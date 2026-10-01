@@ -2,10 +2,12 @@ import {
   browserSvgDocument,
   serializeSvg,
   virtualSvgDocument,
+  withIdPrefix,
   type SvgDocument,
   type SvgNode,
 } from "./svg-backend.js";
 import { baseTheme } from "./presets/theme.js";
+import { checkConfig } from "./check-config.js";
 import { cardLayers } from "./layers.js";
 import type { Theme } from "./theme.js";
 import type { FullConfig } from "./types.js";
@@ -15,6 +17,7 @@ function buildTree(
   config: FullConfig,
   theme: Theme,
 ): SvgNode {
+  checkConfig(config);
   const svg = doc.createElement("svg");
   svg.setAttribute(
     "viewBox",
@@ -48,6 +51,19 @@ function buildTree(
   return svg;
 }
 
+/** Options both renderers take. */
+export interface MissionCardOptions {
+  /**
+   * Prepended to every `id` the card emits and to every reference to one
+   * (`href="#…"`, `url(#…)`). Ids are otherwise fixed (`template-<name>`,
+   * `arrowhead`, …), so two cards inline on one page would resolve their
+   * references to the first card's defs; give each card its own prefix, e.g.
+   * `"card1-"`. A letter or `_`, then letters, digits, `_`, `-` or `.`.
+   * Defaults to `""`, which leaves the markup unchanged.
+   */
+  idPrefix?: string;
+}
+
 /**
  * Renders the card as an `<svg>` element. Needs a DOM: nodes are created with
  * `document.createElementNS`. For Node, `renderMissionCardToString` renders the
@@ -56,16 +72,15 @@ function buildTree(
 export function makeMissionCard(
   config: FullConfig,
   theme: Theme = baseTheme,
+  { idPrefix = "" }: MissionCardOptions = {},
 ): SVGElement {
-  return buildTree(
-    browserSvgDocument(),
-    config,
-    theme,
+  return withIdPrefix(browserSvgDocument(), idPrefix, (doc) =>
+    buildTree(doc, config, theme),
   ) as unknown as SVGElement;
 }
 
-/** Root `<svg>` sizing for `renderMissionCardToString`. */
-export interface RenderToStringOptions {
+/** {@link MissionCardOptions} plus root `<svg>` sizing, for `renderMissionCardToString`. */
+export interface RenderToStringOptions extends MissionCardOptions {
   /** `width` attribute: a number of pixels, or any SVG length (`"100%"`). */
   width?: number | string;
   /** `height` attribute, in the same terms as `width`. */
@@ -80,9 +95,11 @@ export interface RenderToStringOptions {
 export function renderMissionCardToString(
   config: FullConfig,
   theme: Theme = baseTheme,
-  { width, height }: RenderToStringOptions = {},
+  { width, height, idPrefix = "" }: RenderToStringOptions = {},
 ): string {
-  const svg = buildTree(virtualSvgDocument(), config, theme);
+  const svg = withIdPrefix(virtualSvgDocument(), idPrefix, (doc) =>
+    buildTree(doc, config, theme),
+  );
   if (width !== undefined) svg.setAttribute("width", `${width}`);
   if (height !== undefined) svg.setAttribute("height", `${height}`);
   return serializeSvg(svg);

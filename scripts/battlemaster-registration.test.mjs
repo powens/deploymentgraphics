@@ -14,7 +14,7 @@ import {
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
-import { ruinFeaturePlacement } from "./ruin-to-feature.mjs";
+import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 
 const CANVAS = { width: 60, height: 44 };
 
@@ -119,7 +119,7 @@ describe("registration tables", () => {
     for (const id of Object.values(SIZE_CLASS))
       expect(footprintOf(id), id).toBeDefined();
     for (const [part, v] of Object.entries(PART_TO_TEMPLATE)) {
-      if (v.drop) continue;
+      if (v.drop || v.upstreamFootprint) continue;
       expect(footprintOf(v.template), part).toBeDefined();
     }
   });
@@ -148,8 +148,8 @@ describe("registration tables", () => {
       SmallRect: 180,
       Triangle: 90,
     });
-    // `cd` and `co` are two ids for one model. `ruin-part` is the dropped
-    // wall-less fragment.
+    // `cd` and `co` are two ids for one model. `pipes` (the catwalk) and
+    // `ruin-part` (a wall-less fragment) are dropped.
     expect(parts).toEqual({
       ab: 90,
       cd: 72,
@@ -207,29 +207,31 @@ describe("registration tables", () => {
   const orientations = (layout) => {
     const out = normalizeLayout(layout, byId);
     const children = out.pieces.filter((p) => p.piece_type === "feature");
-    expect(children).toHaveLength(96);
+    // 96 parts, less the two dropped `pipes`.
+    expect(children).toHaveLength(94);
     const oriented = {};
     for (const child of children) {
       const A = `${child.rotation_degrees ?? 0}${child.mirror ? `.${child.mirror}` : ""}`;
-      oriented[child.template] = { ...oriented[child.template] };
-      oriented[child.template][A] = (oriented[child.template][A] ?? 0) + 1;
+      oriented[child.part] = { ...oriented[child.part] };
+      oriented[child.part][A] = (oriented[child.part][A] ?? 0) + 1;
     }
     return oriented;
   };
 
   it("composes every child's orientation out of the parent variant, K and Q", () => {
     expect(orientations(everyComposite())).toEqual({
-      "barricade": { "0": 4, "0.horizontal": 2 },
-      "catwalk": { "180": 1, "180.horizontal": 1 },
-      "corner-ruin-balanced-left": { "0": 1, "270": 2, "270.horizontal": 1 },
-      "corner-ruin-balanced-right": { "0": 2, "0.horizontal": 1, "180": 3, "180.horizontal": 1, "270": 1, "90": 2 },
-      "corner-ruin-left": { "0": 5, "0.horizontal": 2, "180": 4, "270": 4, "270.horizontal": 1, "90": 4 },
-      "corner-ruin-right": { "0": 3, "0.horizontal": 1, "180": 2, "270": 4, "270.horizontal": 1, "90": 2 },
-      "corner-short": { "0": 2, "0.horizontal": 7, "180": 2, "180.horizontal": 6, "270": 1, "270.horizontal": 2, "90": 2, "90.horizontal": 3 },
-      "corner-tiny": { "0": 2, "180.horizontal": 1, "270": 1 },
-      "gantry": { "0": 2, "0.horizontal": 1 },
-      "generator": { "0": 1, "180": 2, "180.horizontal": 2 },
-      "pipe": { "180": 3, "180.horizontal": 1 },
+      ab: { "0": 1, "270": 2, "270.horizontal": 1 },
+      cd: { "0": 4, "0.horizontal": 2, "180": 2, "270": 3, "270.horizontal": 1, "90": 3 },
+      co: { "0": 1, "180": 2, "270": 1, "90": 1 },
+      corner: { "0": 2, "180.horizontal": 1, "270": 1 },
+      ef: { "0": 2, "0.horizontal": 1, "180": 3, "180.horizontal": 1, "270": 1, "90": 2 },
+      generator: { "0": 1, "180": 2, "180.horizontal": 2 },
+      gh: { "0": 3, "0.horizontal": 1, "180": 2, "270": 4, "270.horizontal": 1, "90": 2 },
+      "long-barrier": { "180": 3, "180.horizontal": 1 },
+      "short-barrier": { "0": 4, "0.horizontal": 2 },
+      "small-l": { "0": 1, "0.horizontal": 6, "180": 1, "180.horizontal": 5, "270.horizontal": 2, "90": 1, "90.horizontal": 3 },
+      "small-l-flip": { "0": 1, "0.horizontal": 1, "180": 1, "180.horizontal": 1, "270": 1, "90": 1 },
+      tower: { "0": 2, "0.horizontal": 1 },
     });
   });
 
@@ -237,17 +239,18 @@ describe("registration tables", () => {
   // above.
   it("cancels the parent's parity in every child's orientation", () => {
     expect(orientations(everyComposite({ mirror: "horizontal" }))).toEqual({
-      "barricade": { "180": 2, "180.horizontal": 4 },
-      "catwalk": { "0": 1, "0.horizontal": 1 },
-      "corner-ruin-balanced-left": { "180.horizontal": 1, "90": 1, "90.horizontal": 2 },
-      "corner-ruin-balanced-right": { "0": 1, "0.horizontal": 2, "180": 1, "180.horizontal": 3, "270.horizontal": 1, "90.horizontal": 2 },
-      "corner-ruin-left": { "0": 2, "0.horizontal": 5, "180.horizontal": 4, "270": 1, "270.horizontal": 4, "90.horizontal": 4 },
-      "corner-ruin-right": { "0.horizontal": 2, "180": 1, "180.horizontal": 3, "270.horizontal": 2, "90": 1, "90.horizontal": 4 },
-      "corner-short": { "0": 6, "0.horizontal": 2, "180": 7, "180.horizontal": 2, "270": 3, "270.horizontal": 2, "90": 2, "90.horizontal": 1 },
-      "corner-tiny": { "0.horizontal": 2, "180": 1, "270.horizontal": 1 },
-      "gantry": { "180": 1, "180.horizontal": 2 },
-      "generator": { "0": 2, "0.horizontal": 2, "180.horizontal": 1 },
-      "pipe": { "0": 1, "0.horizontal": 3 },
+      ab: { "180.horizontal": 1, "90": 1, "90.horizontal": 2 },
+      cd: { "0": 2, "0.horizontal": 4, "180.horizontal": 2, "270": 1, "270.horizontal": 3, "90.horizontal": 3 },
+      co: { "0.horizontal": 1, "180.horizontal": 2, "270.horizontal": 1, "90.horizontal": 1 },
+      corner: { "0.horizontal": 2, "180": 1, "270.horizontal": 1 },
+      ef: { "0": 1, "0.horizontal": 2, "180": 1, "180.horizontal": 3, "270.horizontal": 1, "90.horizontal": 2 },
+      generator: { "0": 2, "0.horizontal": 2, "180.horizontal": 1 },
+      gh: { "0.horizontal": 2, "180": 1, "180.horizontal": 3, "270.horizontal": 2, "90": 1, "90.horizontal": 4 },
+      "long-barrier": { "0": 1, "0.horizontal": 3 },
+      "short-barrier": { "180": 2, "180.horizontal": 4 },
+      "small-l": { "0": 5, "0.horizontal": 1, "180": 6, "180.horizontal": 1, "270": 3, "270.horizontal": 1, "90": 2 },
+      "small-l-flip": { "0": 1, "0.horizontal": 1, "180": 1, "180.horizontal": 1, "270.horizontal": 1, "90.horizontal": 1 },
+      tower: { "180": 1, "180.horizontal": 2 },
     });
   });
 
@@ -273,13 +276,12 @@ describe("registration tables", () => {
       generator: 0,
       gh: 0,
       "long-barrier": 0,
-      pipes: 0,
       "short-barrier": 0,
       "small-l": 180,
       "small-l-flip": 180,
       tower: 0,
     });
-    // decompose would round-trip an off-axis turn, so nothing else catches it.
+    // poseFromMatrix would round-trip an off-axis turn, so nothing else catches it.
     for (const [part, t] of Object.entries(turns)) {
       expect(Number.isInteger(t / 90), `${part} turn ${t} is not a quarter-turn`).toBe(true);
     }
@@ -312,6 +314,7 @@ describe("normalized layouts conform to upstream geometry", () => {
           (f) => `${areaId}-${f.id}` === child.id,
         );
         const part = partNameOf(feature.template);
+        expect(child.part, child.id).toBe(part);
         const rule = PART_TO_TEMPLATE[part];
         if (!rule.upstreamFootprint) {
           // Parts under neither F nor Z resolve through their template alone.
@@ -364,37 +367,32 @@ describe("normalized layouts conform to upstream geometry", () => {
     expect(worst).toBeLessThan(1.0);
   });
 
-  it("renders each chiral part as exactly one l-ruin variant", () => {
+  it("draws each L-ruin part with its measured hand", () => {
     const seen = {};
     for (const layout of normalized) {
       for (const piece of layout.pieces) {
-        if (piece.piece_type !== "feature") continue;
-        if (!piece.template.startsWith("corner-")) continue;
+        if (!isRuinPart(piece.part)) continue;
         const placement = ruinFeaturePlacement(piece, layout);
-        (seen[piece.template] ??= new Set()).add(placement.type);
+        (seen[piece.part] ??= new Set()).add(placement.type);
       }
     }
-    // corner-short carries both hands because small-l and small-l-flip are the
-    // two hands of one model; every other legacy template takes one part.
-    //
     // Upstream's data does not encode chirality, so these hands are measured
-    // against the pre-pull corpus (see PART_TO_TEMPLATE) and pinned exactly:
-    // `toHaveLength(1)` would pass with every `flip` bit inverted, as would the
-    // rest of the suite, so this is the only check that pins a hand.
-    expect([...(seen["corner-short"] ?? [])].sort()).toEqual([
-      "l-ruin",
-      "l-ruin-mirror",
-    ]);
-    const EXPECTED_HAND = {
-      "corner-ruin-balanced-left": ["l-ruin-mirror"],
-      "corner-ruin-balanced-right": ["l-ruin-mirror"],
-      "corner-ruin-left": ["l-ruin"],
-      "corner-ruin-right": ["l-ruin-mirror"],
-      "corner-tiny": ["l-ruin-mirror"], // cosmetic: corner-tiny has equal arms
-    };
-    for (const [template, expected] of Object.entries(EXPECTED_HAND)) {
-      expect([...seen[template]].sort(), template).toEqual(expected);
-    }
+    // against the pre-pull corpus (see PART_TO_TEMPLATE) and pinned exactly.
+    // ruinFeaturePlacement throws where a part's `flip` bit and its hand in
+    // RUIN_HAND disagree, but inverting both together would pass the rest of
+    // the suite, so this is the only check that pins a hand.
+    expect(
+      Object.fromEntries(Object.entries(seen).map(([p, s]) => [p, [...s]])),
+    ).toEqual({
+      ab: ["l-ruin-mirror"],
+      cd: ["l-ruin"],
+      co: ["l-ruin"],
+      corner: ["l-ruin-mirror"], // cosmetic: equal arms
+      ef: ["l-ruin-mirror"],
+      gh: ["l-ruin-mirror"],
+      "small-l": ["l-ruin-mirror"],
+      "small-l-flip": ["l-ruin"],
+    });
   });
 });
 
@@ -408,17 +406,12 @@ describe("parts sit inside the composite that contains them", () => {
   //
   //   `ab` in the two Triangle composites: upstream's own; the pre-pull corpus
   //   overhangs identically.
-  //   `pipes`: keeps the legacy `catwalk` polygon (neither F nor Z), which is
-  //   half an inch longer than upstream's rectangle.
   //
-  // Keyed on upstream's feature id too, since (template, composite) is not
-  // unique and a second such part would inherit an allowance never measured
-  // for it.
+  // Keyed on upstream's feature id too, since (part, composite) is not unique
+  // and a second such part would inherit an allowance never measured for it.
   const KNOWN_OVERHANG = {
-    "feature-1 (corner-ruin-balanced-left) in bm-composite-triangle-ab-corner-02-4b8322162e": 2.88,
-    "feature-1 (corner-ruin-balanced-left) in bm-composite-triangle-ab-corner-02-8d39f1ed78": 2.88,
-    "feature-1 (catwalk) in bm-composite-shortline-pipe-14782bdeaa": 0.51,
-    "feature-1 (catwalk) in bm-composite-shortline-pipe-flip-b222534f1a": 0.51,
+    "feature-1 (ab) in bm-composite-triangle-ab-corner-02-4b8322162e": 2.88,
+    "feature-1 (ab) in bm-composite-triangle-ab-corner-02-8d39f1ed78": 2.88,
   };
 
   it("keeps every emitted part within its composite's traced outline", () => {
@@ -448,14 +441,14 @@ describe("parts sit inside the composite that contains them", () => {
             ),
         );
         // 0.01in absorbs the hand trace: one part sits 0.0015in proud.
-        const key = `${child.name} (${child.template}) in ${area.template}`;
+        const key = `${child.name} (${child.part}) in ${area.template}`;
         expect(out, `${normalized[i].id} ${child.id}: ${key}`).toBeLessThan(
           KNOWN_OVERHANG[key] ?? 0.01,
         );
         checked++;
       }
     }
-    expect(checked).toBe(1260);
+    expect(checked).toBe(1170);
   });
 });
 

@@ -77,7 +77,8 @@ drew (`home` → `fortress`).
 
 **The demo layout `"1"` is removed; `gwTerrain` holds only the battlemaster
 layouts.** It was the one hand-authored layout (from `gw.yml`, now deleted),
-so `buildConfig({ layout: "1" })` now draws no terrain. Pick a 40kdc id instead,
+so `buildConfig({ layout: "1" })` now throws (see the unknown-layout entry
+below). Pick a 40kdc id instead,
 e.g. `bm-take-vs-take-02`, which the demo viewer now opens on. With it go the
 `l-ruin-roof` and `pipe` **feature** types, which only that layout used: a
 `FeaturePlacement` naming either now throws `unknown feature type`. (The `pipe`
@@ -112,7 +113,7 @@ instead of quietly dropping the layer. Supply `grid: {}` to keep the previous
 behaviour.
 
 All three toggles are read the same way, by truthiness of `draw`. That is worth
-knowing if you author YAML: under js-yaml 4's YAML 1.2 core schema only
+knowing if you author YAML: under js-yaml's YAML 1.2 core schema only
 `true`/`false` are booleans, so `draw: no` and `draw: off` parse as the *strings*
 `"no"` and `"off"` — which are truthy, and therefore draw. Write `draw: false`.
 Previously `base.grid` alone tested `=== true`, so `draw: no` did not draw the
@@ -128,15 +129,39 @@ buildConfig({ mission, terrain: gwTerrain, layout: "bm-purge-vs-recon-01" })
 
 `buildConfig({ mission })` is unaffected: `layout` already defaulted to `""`, so a
 call that named no layout drew no buildings either way. The break is a call that
-passes `layout` but not `terrain` — it now renders bare deployment zones instead
-of that layout, silently.
+passes `layout` but not `terrain` — it now throws, with a message saying to pass
+`terrain: gwTerrain` (see the unknown-layout entry below).
 
 The default argument was a static dependency: importing `buildConfig` pulled all
 45 battlemaster layouts (~220kB, ~28kB gzipped) into the bundle, and no bundler
 could shake them out, whether or not the consumer ever drew terrain. Assembling a
 config without terrain now costs 14kB gzipped instead of 51kB.
 
+**An unknown layout id now throws.** A `layout` (or a hand-built config's
+`terrain.layout_name`) that is not a key of `terrain.layout` used to render
+bare deployment zones, indistinguishable from a deliberately empty board. Both
+`buildConfig` and the renderers now throw instead, naming the id:
+
+```
+unknown layout "bm-nope": not a key of terrain.layout
+unknown layout "bm-take-vs-take-03": terrain.layout is empty; pass the terrain that defines it (e.g. terrain: gwTerrain)
+```
+
+The second form is the `terrain` default above biting: a layout named without
+the corpus. To migrate, pass the terrain that defines the layout, correct the
+id (renamed ids are in the table above), or pass `layout: ""` — still valid —
+for a board with no terrain. Prototype keys no longer count as layouts either:
+`layout: "constructor"` throws rather than reading `Object.prototype`.
+
 ### Added
+
+- `LayoutId` — the union of the bundled layout ids, generated with
+  `gwTerrainIndex` and exported from the root and `deploymentgraphics/presets`.
+  `BuildConfigOptions.layout` is typed `LayoutId | "" | (string & {})`, so an
+  editor completes the bundled ids while a custom terrain's ids still compile.
+  `gwTerrainIndex` is a `Record<LayoutId, TerrainLayoutMeta>`, and
+  `resolveTerrainLayout` returns its argument's key type, so resolving against
+  `gwTerrainIndex` yields `LayoutId | undefined`.
 
 - `gwTerrainIndex` — the matchup metadata of all 45 bundled layouts
   (`dispositions` and `deployment_pattern_id`) with the geometry left out:
@@ -159,6 +184,22 @@ config without terrain now costs 14kB gzipped instead of 51kB.
   mission cannot get there without them. `eventMatrix` is exported from both
   the root and `deploymentgraphics/presets`, like every other preset.
 
+  `resolveMission` returns the matrix's deployment id type rather than
+  `string`: a `MissionId` for the bundled `eventMatrix`, so
+  `missions[resolveMission(...)]` compiles under `strict` (it was TS7053).
+  `EventMatrix` takes that type as a parameter, defaulting to `MissionId`, which
+  also means the bundled matrix stops compiling if a cell names a deployment
+  `missions` lacks. A matrix over your own deployments is `EventMatrix<string>`.
+
+- `idPrefix`, an option on both renderers (`makeMissionCard` gains a third
+  `MissionCardOptions` argument; `RenderToStringOptions` extends it). Card ids
+  are fixed (`template-<name>`, `arrowhead`, `center-hole-attacker`, …), so two
+  cards inline in one HTML page resolved every `href="#…"` and `url(#…)` to the
+  first card's defs. With `idPrefix: "left-"` every id the card emits, and
+  every reference to one, carries the prefix; a reference to a def outside the
+  card (a theme's `url(#page-gradient)`) is left alone. The default `""`
+  leaves the markup byte-identical.
+
 ### Changed
 
 - Re-sourced the bundled 40kdc terrain corpus (`gwTerrain`) against upstream's
@@ -166,3 +207,39 @@ config without terrain now costs 14kB gzipped instead of 51kB.
   at 46 / 998 / 904; the movement within them is upstream's own content — 7 more
   objective icons, 4 ruins swapping hands, and 31 of the 45 mission layouts
   re-laid out, always in symmetric pairs.
+
+- A malformed config now fails naming the field at fault, instead of with a
+  `TypeError` from inside a layer. `renderMissionCardToString({})` used to throw
+  `Cannot read properties of undefined (reading 'size')`; it now throws
+  `config.base: expected an object, got undefined`. The renderers check the
+  config's containers (`base`, `base.size`, `deployment`, each side's
+  `deployment_zone`, `terrain` and its `templates`/`layout`/`layout_name`, and
+  that `objectives`/`annotations`/`features` are arrays) before drawing, and
+  the pieces where they are read:
+  - a `base` toggle that is not an object: `config.base.grid: expected an
+    object (e.g. {} or { draw: false }), got undefined`;
+  - an objective or annotation without numeric `x`/`y`, a non-numeric
+    `number`/`endX`/`endY`, or an annotation `kind` other than `"text"` or
+    `"arrow"` (which used to draw as an arrow): `annotations[0].kind: expected
+    "text" or "arrow", got "label"`;
+  - a building corner anchor other than `TL`/`TR`/`BL`/`BR`, in `from` or as a
+    `corners` key, which used to fall through to an `undefined` point: `building
+    4x6: corners.TL.from: expected one of TL, TR, BL, BR, got "XX"`.
+
+  `resolveMission` names an unknown disposition and lists the valid ones
+  (`unknown disposition "Nope": expected one of "Disruption", …`) and lists the
+  valid layouts for an unknown one; a pairing of known dispositions the matrix
+  lacks still throws `No event-matrix entry for …`.
+
+- Registry lookups match own keys only. A feature `type` or `color`, an icon
+  `type` or a building template named after an `Object.prototype` member
+  (`"constructor"`, `"toString"`, …) used to find that member and fail somewhere
+  unhelpful; it now throws the usual `unknown feature type`/`unknown feature
+  colour`/`unknown icon type`/`unknown template` error.
+
+- A feature's `rotation` is normalised into [0, 360), as `Placed` documents,
+  and its mirrored copy is too (a rotation below -180 used to mirror to a
+  negative angle). The drawn result is unchanged; only the `rotate()` angle in
+  the markup is spelled differently. A non-numeric rotation now throws
+  (`feature gantry: rotation: expected a number, got "30"`) — a quoted YAML
+  `rotation: "30"` used to string-concatenate into `"30180"` on the mirror.

@@ -151,7 +151,7 @@ describe("deriveControls", () => {
   it("throws for a pairing the event matrix has no entry for", () => {
     expect(() =>
       deriveControls({ ...defaultControls(), da: "Nonesuch" }),
-    ).toThrow(/No event-matrix entry/);
+    ).toThrow(/unknown disposition "Nonesuch"/);
   });
 });
 
