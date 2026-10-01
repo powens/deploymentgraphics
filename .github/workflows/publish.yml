@@ -45,6 +45,16 @@ jobs:
             exit 1
           fi
 
-      # `prepublishOnly` runs the gates and `build:lib`.
+      # `prepublishOnly` runs the gates and `build:lib`. It is run by hand
+      # because publishing a tarball skips lifecycle scripts.
+      - name: Check and build
+        run: pnpm run prepublishOnly
+
+      - name: Pack
+        run: pnpm pack --pack-destination "$RUNNER_TEMP"
+
+      # npm refuses to run inside this project: `devEngines.packageManager`
+      # names pnpm (EBADDEVENGINES). Publish the tarball from outside it.
       - name: Publish
-        run: npm publish --provenance --access public
+        working-directory: ${{ runner.temp }}
+        run: npm publish ./deploymentgraphics-*.tgz --provenance --access public
