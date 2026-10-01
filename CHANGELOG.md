@@ -112,7 +112,7 @@ instead of quietly dropping the layer. Supply `grid: {}` to keep the previous
 behaviour.
 
 All three toggles are read the same way, by truthiness of `draw`. That is worth
-knowing if you author YAML: under js-yaml 4's YAML 1.2 core schema only
+knowing if you author YAML: under js-yaml's YAML 1.2 core schema only
 `true`/`false` are booleans, so `draw: no` and `draw: off` parse as the *strings*
 `"no"` and `"off"` — which are truthy, and therefore draw. Write `draw: false`.
 Previously `base.grid` alone tested `=== true`, so `draw: no` did not draw the
