@@ -107,3 +107,13 @@ viewer fetches nothing at runtime); `da`, `db` and `lay` name nothing directly
 source does not cover; and `rot` post-processes the rendered card. Viewer-only:
 the controls reach the demo through `bundle.ts`, and the published package has
 no concept of them.
+
+**Viewer session** — what one visitor has in front of them: their **Controls**,
+which editor drives the render (*controls* or *yaml*), and the YAML text when
+the YAML editor drives it. The first YAML edit switches the session to *yaml*,
+which freezes the Controls; *reset* switches back. A shared link carries only
+Controls, so a *yaml* session keeps the URL bare. Rotation applies to the card
+in either mode. The session is what the viewer persists between visits, in one
+versioned stored form; a link that carries any control wins over it on load
+and is not persisted.
+_Avoid_: state, app state (too vague — say which part: Controls, mode, or YAML).

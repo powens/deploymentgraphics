@@ -12,7 +12,7 @@
         --border: #23262e;
         --border-bright: #2f333d;
         --text: #c9ccd4;
-        --text-muted: #6b7080;
+        --text-muted: #868b9a;
         --accent: #b9842f;
       }
 
@@ -307,6 +307,11 @@
         color: var(--text);
       }
 
+      .tab:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: -2px;
+      }
+
       .panel {
         background: var(--panel);
         border-bottom: 1px solid var(--border);
@@ -422,6 +427,13 @@
         }
       }
     </style>
+    <noscript>
+      <style>
+        #stage-loading {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <header class="app-header">
@@ -439,7 +451,7 @@
       </div>
     </header>
 
-    <nav class="tabs" role="tablist" aria-label="Editor mode">
+    <nav id="editor-tabs" class="tabs" role="tablist" aria-label="Editor mode">
       <button
         id="tab-controls"
         class="tab"
@@ -456,6 +468,7 @@
         type="button"
         role="tab"
         aria-selected="false"
+        tabindex="-1"
         aria-controls="panel-yaml"
       >
         YAML
@@ -469,7 +482,7 @@
       aria-labelledby="tab-controls"
     >
       <div id="reset-banner" class="reset-banner" hidden>
-        <span>Editing raw YAML — controls are disabled.</span>
+        <span>Editing raw YAML — only rotation still applies.</span>
         <button id="reset-controls" class="btn ghost" type="button">
           Reset to controls
         </button>
@@ -560,13 +573,38 @@
       ></textarea>
     </section>
 
-    <main class="stage" id="stage" aria-live="polite"></main>
+    <!-- app.js replaces the loading message with the card (or the reason
+         there is none); the guard below covers app.js never getting that far. -->
+    <main class="stage" id="stage" aria-live="polite">
+      <p id="stage-loading" class="stage-msg">Loading the map…</p>
+      <noscript>
+        <p class="stage-msg error">The deployment map viewer needs JavaScript.</p>
+      </noscript>
+    </main>
 
     <footer class="attribution">
       Powered by
       <a href="https://40kdc.alpacasoft.dev" target="_blank" rel="noopener">40kdc-data</a>
     </footer>
 
+    <script>
+      // Classic and inline, so it runs even when app.js or bundle.js cannot:
+      // until app.js draws over the loading message, an error (a throw during
+      // setup, or a script that fails to load) replaces it with one that
+      // says so. Capture phase, since a failed <script> load does not bubble.
+      window.addEventListener(
+        "error",
+        (event) => {
+          const loading = document.getElementById("stage-loading");
+          if (!loading) return;
+          const reason = event.message || "a script did not load";
+          loading.removeAttribute("id");
+          loading.className = "stage-msg error";
+          loading.textContent = `The viewer failed to start (${reason}). Try reloading the page.`;
+        },
+        true,
+      );
+    </script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

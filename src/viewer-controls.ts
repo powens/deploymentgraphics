@@ -65,6 +65,11 @@ interface SelectRow {
   readonly key: ControlKey;
   readonly elementId: string;
   readonly kind: "select";
+  /**
+   * Set when the control only changes how the card is shown, not what it
+   * draws, so it stays live while the YAML editor drives the render.
+   */
+  readonly viewOnly?: true;
   readonly default: string;
   /** The accepted values; anything else sanitizes to `default`. */
   readonly allowed: readonly string[];
@@ -184,6 +189,7 @@ const controlRows = [
     default: "0",
     allowed: ROTATIONS,
     staticOptions: true,
+    viewOnly: true,
   },
 ] as const satisfies readonly ControlRow[];
 
@@ -217,17 +223,6 @@ export interface DerivedControls {
   /** Terrain layout: the 40kdc layout matching that pairing and deployment. */
   t: string;
 }
-
-/**
- * The control keys {@link deriveControls} produces. A `Record` over
- * `keyof DerivedControls` so a new derived field is a type error until listed
- * (otherwise its dropdown would silently never be written).
- */
-const DERIVED_KEYS = Object.keys({
-  m: true,
-  t: true,
-} satisfies Record<keyof DerivedControls, true>) as readonly (keyof DerivedControls &
-  ControlKey)[];
 
 /**
  * Derives the deployment (`m`, via the event matrix) and terrain layout (`t`,
@@ -326,71 +321,6 @@ export function controlsFromSearch(search: string): Controls {
   return sanitizeControls(raw);
 }
 
-/** True when the query string carries any control, i.e. it is a shared link. */
-function searchHasControls(search: string): boolean {
-  const params = new URLSearchParams(search);
-  return controlSpec.some((row) => params.has(row.key));
-}
-
-/** What a page load should come up showing, and whether to persist it. */
-export interface InitialControls {
-  readonly controls: Controls;
-  /** Which editor drives the render. */
-  readonly mode: "controls" | "yaml";
-  /**
-   * Text for the YAML editor, or null to leave the markup's text. Non-null
-   * exactly when `mode` is `"yaml"`.
-   */
-  readonly yaml: string | null;
-  /**
-   * Whether to write this state back to storage on load. False for a
-   * URL-driven load, so following a link does not clobber the visitor's saved
-   * session; later edits persist as usual.
-   */
-  readonly persist: boolean;
-}
-
-/**
- * Resolves a page load's starting state from the query string and whatever
- * storage handed back (`saved` is untrusted, any shape). A query string
- * carrying any control wins outright, including over a saved YAML override,
- * and is not persisted (see `persist`).
- */
-export function initialControls({
-  search,
-  saved,
-}: {
-  search: string;
-  saved: unknown;
-}): InitialControls {
-  if (searchHasControls(search)) {
-    return {
-      controls: controlsFromSearch(search),
-      mode: "controls",
-      yaml: null,
-      persist: false,
-    };
-  }
-  if (saved === null || typeof saved !== "object") {
-    return {
-      controls: defaultControls(),
-      mode: "controls",
-      yaml: null,
-      persist: true,
-    };
-  }
-  const blob = saved as { controls?: unknown; mode?: unknown; yaml?: unknown };
-  // A saved yaml mode without yaml text falls back to controls mode.
-  const yaml =
-    blob.mode === "yaml" && typeof blob.yaml === "string" ? blob.yaml : null;
-  return {
-    controls: sanitizeControls(blob.controls),
-    mode: yaml === null ? "controls" : "yaml",
-    yaml,
-    persist: true,
-  };
-}
-
 /**
  * A document or any element containing the controls. Elements are found with
  * `querySelector` so a plain container works as a root (as in tests).
@@ -432,34 +362,14 @@ export function readControlsFromDom(root: ControlsRoot): Controls {
 }
 
 /**
- * Writes the two derived controls into a DOM subtree.
- *
- * A derived value need not be in the dropdown's options, and a `<select>`
- * silently ignores such a value, so the write is read back and a mismatch
- * thrown rather than letting the UI and the render disagree.
- *
- * @throws if a control's element is absent, or its dropdown has no option for
- * the derived value.
- */
-export function writeDerivedControlsToDom(
-  root: ControlsRoot,
-  derived: DerivedControls,
-): void {
-  for (const key of DERIVED_KEYS) {
-    const row = controlSpec.find((candidate) => candidate.key === key);
-    if (!row) throw new Error(`Control "${key}" has no spec row`);
-    const element = controlElement(root, row) as HTMLSelectElement;
-    element.value = derived[key];
-    if (element.value !== derived[key]) {
-      throw new Error(`Control "${key}" has no option "${derived[key]}"`);
-    }
-  }
-}
-
-/**
  * Writes every control into a DOM subtree.
  *
- * Throws if any control's element is absent.
+ * A `<select>` silently ignores a value it has no `<option>` for, so each
+ * write is read back and a mismatch thrown rather than letting the UI and the
+ * render disagree.
+ *
+ * @throws if a control's element is absent, or its dropdown has no option for
+ * the value.
  */
 export function writeControlsToDom(
   root: ControlsRoot,
@@ -471,7 +381,22 @@ export function writeControlsToDom(
     if (row.kind === "checkbox") {
       (element as HTMLInputElement).checked = values[row.key] === true;
     } else {
-      (element as HTMLSelectElement).value = String(values[row.key]);
+      const select = element as HTMLSelectElement;
+      select.value = String(values[row.key]);
+      if (select.value !== String(values[row.key])) {
+        throw new Error(`Control "${row.key}" has no option "${values[row.key]}"`);
+      }
     }
+  }
+}
+
+/**
+ * Locks the controls while the YAML editor drives the render, all but the
+ * {@link SelectRow.viewOnly} ones; unlocks them all otherwise.
+ */
+export function setControlsLocked(root: ControlsRoot, locked: boolean): void {
+  for (const row of controlSpec) {
+    const element = controlElement(root, row) as HTMLInputElement | HTMLSelectElement;
+    element.disabled = locked && !(row.kind === "select" && row.viewOnly);
   }
 }

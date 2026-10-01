@@ -5,7 +5,6 @@ import {
   controlsToSearch,
   defaultControls,
   deriveControls,
-  initialControls,
   sanitizeControls,
   type ControlRow,
   type Controls,
@@ -21,7 +20,7 @@ import { gwTerrain } from "./presets/terrain";
 
 /**
  * The control set, pinned. Changing it changes the persisted shape: bump
- * `STORAGE_VERSION` in `static/state.js`.
+ * `STORAGE_VERSION` in `viewer-session.ts`.
  */
 const EXPECTED_KEYS = [
   "da",
@@ -243,122 +242,5 @@ describe("controlsFromSearch", () => {
 
   it("sanitizes what the URL carries", () => {
     expect(controlsFromSearch("t=no-such-layout").t).toBe("bm-take-vs-take-02");
-  });
-});
-
-describe("initialControls", () => {
-  /** A saved session, in the shape `static/state.js` hands back. */
-  function savedSession(overrides: Record<string, unknown> = {}) {
-    return { version: 2, mode: "controls", controls: {}, yaml: null, ...overrides };
-  }
-
-  it("falls back to the defaults with no URL and nothing saved", () => {
-    expect(initialControls({ search: "", saved: null })).toEqual({
-      controls: defaultControls(),
-      mode: "controls",
-      yaml: null,
-      persist: true,
-    });
-  });
-
-  it("ignores a query string carrying no control", () => {
-    // Non-control params (analytics etc.) do not make a shared link.
-    const saved = savedSession({ controls: { rot: "90" } });
-    const initial = initialControls({ search: "?utm_source=x", saved });
-    expect(initial.controls.rot).toBe("90");
-    expect(initial.persist).toBe(true);
-  });
-
-  for (const row of controlSpec) {
-    it(`treats a bare "${row.key}" as a shared link`, () => {
-      // Even a valueless control param makes it a shared link.
-      const initial = initialControls({
-        search: `?${row.key}=`,
-        saved: savedSession({ controls: { rot: "90" } }),
-      });
-      expect(initial.persist).toBe(false);
-      expect(initial.controls.rot).toBe("0");
-    });
-  }
-
-  it("restores a saved session, and lets it persist", () => {
-    const initial = initialControls({
-      search: "",
-      saved: savedSession({ controls: { t: "bm-take-vs-take-01", grid: true } }),
-    });
-    expect(initial.controls).toEqual({
-      ...defaultControls(),
-      t: "bm-take-vs-take-01",
-      grid: true,
-    });
-    expect(initial.mode).toBe("controls");
-    expect(initial.yaml).toBe(null);
-    expect(initial.persist).toBe(true);
-  });
-
-  it("sanitizes the saved controls rather than trusting them", () => {
-    const initial = initialControls({
-      search: "",
-      saved: savedSession({ controls: { t: "no-such-layout", grid: "yes" } }),
-    });
-    expect(initial.controls.t).toBe("bm-take-vs-take-02");
-    expect(initial.controls.grid).toBe(false);
-  });
-
-  it("comes up in yaml mode when the saved session holds an override", () => {
-    const initial = initialControls({
-      search: "",
-      saved: savedSession({ mode: "yaml", yaml: "canvas: {}" }),
-    });
-    expect(initial.mode).toBe("yaml");
-    expect(initial.yaml).toBe("canvas: {}");
-    expect(initial.persist).toBe(true);
-  });
-
-  it("keeps a URL over a saved yaml override, which a URL cannot express", () => {
-    // A shared link must render the link, not the visitor's saved YAML.
-    const initial = initialControls({
-      search: "?rot=90",
-      saved: savedSession({ mode: "yaml", yaml: "canvas: {}" }),
-    });
-    expect(initial.mode).toBe("controls");
-    expect(initial.yaml).toBe(null);
-    expect(initial.controls.rot).toBe("90");
-    expect(initial.persist).toBe(false);
-  });
-
-  it("falls back to controls mode when the saved yaml is not text", () => {
-    for (const yaml of [null, undefined, 42]) {
-      const initial = initialControls({
-        search: "",
-        saved: savedSession({ mode: "yaml", yaml }),
-      });
-      expect(initial.mode).toBe("controls");
-      expect(initial.yaml).toBe(null);
-    }
-  });
-
-  it("keeps an empty saved override, which is still an override", () => {
-    // An empty editor is still the visitor's state; don't discard it.
-    const initial = initialControls({
-      search: "",
-      saved: savedSession({ mode: "yaml", yaml: "" }),
-    });
-    expect(initial.mode).toBe("yaml");
-    expect(initial.yaml).toBe("");
-  });
-
-  for (const saved of [undefined, "not an object", 7, {}]) {
-    it(`survives ${JSON.stringify(saved) ?? "undefined"} from storage`, () => {
-      const initial = initialControls({ search: "", saved });
-      expect(initial.controls).toEqual(defaultControls());
-      expect(initial.persist).toBe(true);
-    });
-  }
-
-  it("hands out a fresh controls object each time", () => {
-    const first = initialControls({ search: "", saved: null }).controls;
-    first.rot = "90";
-    expect(initialControls({ search: "", saved: null }).controls.rot).toBe("0");
   });
 });

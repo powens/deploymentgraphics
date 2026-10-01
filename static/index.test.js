@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 import { describe, expect, it } from "vitest";
+import { Window } from "happy-dom";
 // `?raw` rather than `readFileSync`: this file runs under happy-dom, where
 // `import.meta.url` is an http URL and cannot be turned back into a path.
 import markup from "./index.html?raw";
@@ -91,4 +92,92 @@ describe("the markup's initial state", () => {
       });
     }
   }
+});
+
+describe("the stage before app.js draws", () => {
+  const stage = doc.getElementById("stage");
+
+  it("says the map is loading", () => {
+    expect(stage.querySelector("#stage-loading")?.textContent).toMatch(/loading/i);
+  });
+
+  it("says when JavaScript is off", () => {
+    expect(stage.querySelector("noscript")?.textContent).toMatch(/JavaScript/);
+  });
+});
+
+describe("the boot guard", () => {
+  // The page's one inline script, run against a fresh window per test so its
+  // listener does not outlive the test.
+  const guard = [...doc.querySelectorAll("script:not([src])")]
+    .map((script) => script.textContent)
+    .join("\n");
+
+  function page() {
+    const win = new Window();
+    win.document.body.innerHTML = doc.body.innerHTML;
+    new Function("window", "document", guard)(win, win.document);
+    return win;
+  }
+
+  function stageMessage(win) {
+    const message = win.document.querySelector("#stage .stage-msg");
+    return { text: message.textContent, error: message.classList.contains("error") };
+  }
+
+  it("turns the loading message into an error when setup throws", () => {
+    const win = page();
+    win.dispatchEvent(new win.ErrorEvent("error", { message: "boom" }));
+    expect(stageMessage(win)).toEqual({ text: expect.stringContaining("boom"), error: true });
+  });
+
+  it("catches a script that fails to load, which does not bubble", () => {
+    const win = page();
+    const script = win.document.querySelector("script[src]");
+    script.dispatchEvent(new win.Event("error"));
+    expect(stageMessage(win)).toEqual({ text: expect.stringMatching(/load/), error: true });
+  });
+
+  it("keeps the first error", () => {
+    const win = page();
+    win.dispatchEvent(new win.ErrorEvent("error", { message: "first" }));
+    win.dispatchEvent(new win.ErrorEvent("error", { message: "second" }));
+    expect(stageMessage(win).text).toContain("first");
+  });
+
+  it("leaves the stage alone once app.js has drawn over the message", () => {
+    const win = page();
+    const card = win.document.createElement("svg");
+    win.document.getElementById("stage").replaceChildren(card);
+    win.dispatchEvent(new win.ErrorEvent("error", { message: "late" }));
+    expect(win.document.getElementById("stage").firstChild).toBe(card);
+  });
+});
+
+describe("the editor tabs", () => {
+  const tabs = [...doc.querySelectorAll("#editor-tabs [role=tab]")];
+
+  it("are the ones app.js binds the keyboard model to", () => {
+    expect(tabs.map((tab) => tab.id)).toEqual(["tab-controls", "tab-yaml"]);
+  });
+
+  for (const tab of tabs) {
+    it(`#${tab.id} controls a tabpanel labelled by it`, () => {
+      const tabpanel = doc.getElementById(tab.getAttribute("aria-controls"));
+      expect(tabpanel.getAttribute("role")).toBe("tabpanel");
+      expect(tabpanel.getAttribute("aria-labelledby")).toBe(tab.id);
+    });
+  }
+
+  it("start with the selected tab as the only tab stop", () => {
+    // Before app.js runs `selectTab`, the markup must already agree with it.
+    const state = tabs.map((tab) => [
+      tab.getAttribute("aria-selected"),
+      tab.getAttribute("tabindex") ?? "0",
+    ]);
+    expect(state).toEqual([
+      ["true", "0"],
+      ["false", "-1"],
+    ]);
+  });
 });

@@ -1,34 +1,24 @@
 import {
-  makeMissionCard,
-  buildConfig,
-  baseConfig,
   missions,
-  yaml,
   controlElement,
   controlSpec,
-  controlsToSearch,
-  deriveControls,
-  initialControls,
   readControlsFromDom,
-  terrainForTemplateSet,
+  setControlsLocked,
   writeControlsToDom,
-  writeDerivedControlsToDom,
+  editorYaml,
+  openSession,
+  renderCard,
+  step,
+  STORAGE_KEY,
+  bindTabKeys,
+  selectTab,
 } from "./bundle.js";
-import { loadState, saveState } from "./state.js";
 
-// Control defaults, allowlists, element ids and derivation all live in
-// `src/viewer-controls.ts`; only the option labels are defined here.
-
-function configFromControls(controls) {
-  return buildConfig({
-    mission: missions[controls.m],
-    base: baseConfig,
-    terrain: terrainForTemplateSet(controls.tpl),
-    layout: controls.t,
-    grid: controls.grid,
-    territory: controls.territory,
-  });
-}
+// The Viewer session (mode, YAML text, derivation, what to store, what to
+// render) lives in `src/viewer-session.ts`, the controls in
+// `src/viewer-controls.ts` and the tabs' keyboard model in
+// `src/viewer-tabs.ts`. This file only binds them to the page; the option
+// labels are the one thing defined here.
 
 function downloadBlob(blob, filename) {
   const url = URL.createObjectURL(blob);
@@ -43,18 +33,9 @@ function downloadBlob(blob, filename) {
 
 // --- DOM references -------------------------------------------------------
 
-const SPEC = new Map(controlSpec.map((row) => [row.key, row]));
-
 // Throws naming the control if the markup lacks it, rather than returning
 // null and failing later with a blank page.
-function controlEl(key) {
-  return controlElement(document, SPEC.get(key));
-}
-
-const controlEls = controlSpec.map((row) => controlEl(row.key));
-// Changing these re-derives the deployment and terrain; other controls just
-// re-render.
-const derivedFromControls = ["da", "db", "lay"].map((key) => controlEl(key));
+const controlEls = controlSpec.map((row) => controlElement(document, row));
 
 const stage = document.getElementById("stage");
 const exportMenu = document.getElementById("export-menu");
@@ -62,10 +43,9 @@ const exportPngButton = document.getElementById("export-png");
 const exportSvgButton = document.getElementById("export-svg");
 const copyLinkButton = document.getElementById("copy-link");
 
+const tablist = document.getElementById("editor-tabs");
 const tabControls = document.getElementById("tab-controls");
 const tabYaml = document.getElementById("tab-yaml");
-const panelControls = document.getElementById("panel-controls");
-const panelYaml = document.getElementById("panel-yaml");
 const yamlEditor = document.getElementById("yaml-editor");
 const yamlError = document.getElementById("yaml-error");
 const resetBanner = document.getElementById("reset-banner");
@@ -85,7 +65,7 @@ for (const row of controlSpec) {
   if (row.kind !== "select" || row.staticOptions) {
     continue;
   }
-  const select = controlEl(row.key);
+  const select = controlElement(document, row);
   const label = OPTION_LABEL[row.key] ?? identity;
   for (const id of row.allowed) {
     const option = document.createElement("option");
@@ -95,9 +75,10 @@ for (const row of controlSpec) {
   }
 }
 
-// Which editor drives the render: "controls" or "yaml". The first YAML edit
-// switches to "yaml".
-let mode = "controls";
+// The current Viewer session, as the last snapshot left it.
+let session;
+// The export filename (no extension), as the last snapshot named it.
+let filenameStem;
 
 // --- Rendering ------------------------------------------------------------
 
@@ -118,92 +99,79 @@ function setYamlError(message) {
   yamlError.hidden = !message;
 }
 
-const SVG_NS = "http://www.w3.org/2000/svg";
+// --- Snapshots ------------------------------------------------------------
 
-// Rotate the card by ±90° inside the SVG (swap the viewBox, wrap content in a
-// rotated group) rather than via CSS, so layout sizing and exports match the
-// screen. The <title> stays a direct child for accessibility.
-function rotateCard(svg, deg) {
-  if (deg !== 90 && deg !== -90) {
-    return svg;
-  }
-  const { width: w, height: h } = svg.viewBox.baseVal;
-  const group = document.createElementNS(SVG_NS, "g");
-  group.setAttribute(
-    "transform",
-    deg === 90 ? `translate(${h} 0) rotate(90)` : `translate(0 ${w}) rotate(-90)`,
-  );
-  for (const child of Array.from(svg.childNodes)) {
-    if (child.nodeName !== "title") {
-      group.appendChild(child);
-    }
-  }
-  svg.appendChild(group);
-  svg.setAttribute("viewBox", `0 0 ${h} ${w}`);
-  return svg;
-}
-
-// Synchronous (presets are in memory), so no stale-render guard is needed.
-function renderFromControls() {
-  setExportEnabled(false);
-  try {
-    const controls = readControlsFromDom(document);
-    const config = configFromControls(controls);
-    // makeMissionCard builds off-DOM: a throw never blanks the stage.
-    const card = rotateCard(makeMissionCard(config), Number(controls.rot));
-    stage.replaceChildren(card);
+function draw(render) {
+  const result = renderCard(render);
+  if ("card" in result) {
+    stage.replaceChildren(result.card);
     setExportEnabled(true);
-  } catch (error) {
-    setStageMessage(error.message, true);
+  } else if (session.mode === "yaml") {
+    // Leave the last good render on stage, still exportable.
+    setYamlError(`Render failed: ${result.error}`);
+  } else {
+    setExportEnabled(false);
+    setStageMessage(result.error, true);
   }
 }
 
-function renderFromYaml() {
-  // Error paths leave the last good render on stage, still exportable.
-  let config;
+function storeSession(text) {
   try {
-    config = yaml.load(yamlEditor.value);
-  } catch (error) {
-    setYamlError(error.message);
-    return;
-  }
-  if (!config || typeof config !== "object") {
-    setYamlError("YAML must describe a config object.");
-    return;
-  }
-  try {
-    // Build off-DOM first so a throw leaves the stage untouched.
-    const card = makeMissionCard(config);
-    stage.replaceChildren(card);
-    setExportEnabled(true);
-    setYamlError(null);
-  } catch (error) {
-    setYamlError(`Render failed: ${error.message}`);
+    localStorage.setItem(STORAGE_KEY, text);
+  } catch {
+    // Ignore: persistence is a convenience; storage may be disabled or full.
   }
 }
 
-// --- Tabs & mode ----------------------------------------------------------
-
-function updateModeUi() {
-  const yamlMode = mode === "yaml";
-  for (const el of controlEls) {
-    el.disabled = yamlMode;
+function storedSession() {
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
   }
+}
+
+// Write a whole snapshot back to the page. Every part is written every time,
+// so nothing depends on the order events arrive in.
+function show(snapshot) {
+  session = snapshot.session;
+  filenameStem = snapshot.filenameStem;
+  const yamlMode = session.mode === "yaml";
+  setControlsLocked(document, yamlMode);
   resetBanner.hidden = !yamlMode;
   // The URL cannot carry a YAML override, so Copy link is meaningless here.
   copyLinkButton.disabled = yamlMode;
+  window.history.replaceState(
+    null,
+    "",
+    snapshot.query ? `?${snapshot.query}` : window.location.pathname,
+  );
+  if (snapshot.stored !== null) {
+    storeSession(snapshot.stored);
+  }
+  setYamlError(snapshot.yamlError);
+  try {
+    writeControlsToDom(document, session.controls);
+  } catch (error) {
+    setExportEnabled(false);
+    setStageMessage(error.message, true);
+    return;
+  }
+  if (snapshot.render !== null) {
+    draw(snapshot.render);
+  }
 }
+
+// --- Tabs -----------------------------------------------------------------
 
 function openYamlTab() {
   setYamlError(null);
-  // In yaml mode the editor already holds the user's edits.
-  if (mode === "yaml") {
-    return;
-  }
-  // In controls mode, refill the editor with the current merged config.
   try {
-    yamlEditor.value = yaml.dump(configFromControls(readControlsFromDom(document)));
-    setYamlError(null);
+    // Null in yaml mode: the editor already holds the visitor's edits.
+    const text = editorYaml(session);
+    if (text !== null) {
+      yamlEditor.value = text;
+    }
   } catch (error) {
     setYamlError(error.message);
   }
@@ -211,107 +179,46 @@ function openYamlTab() {
 
 function activateTab(name) {
   const isControls = name === "controls";
-  tabControls.setAttribute("aria-selected", String(isControls));
-  tabYaml.setAttribute("aria-selected", String(!isControls));
-  panelControls.hidden = !isControls;
-  panelYaml.hidden = isControls;
+  selectTab(tablist, isControls ? tabControls : tabYaml);
   if (!isControls) {
     openYamlTab();
   }
 }
 
-// --- Persistence ----------------------------------------------------------
-
-function syncUrl() {
-  // In yaml mode keep the URL bare: it cannot carry the override, and a
-  // bare URL lets a reload fall through to the localStorage-restored state.
-  const query =
-    mode === "yaml" ? "" : controlsToSearch(readControlsFromDom(document));
-  window.history.replaceState(
-    null,
-    "",
-    query ? `?${query}` : window.location.pathname,
-  );
-}
-
-function persist() {
-  saveState({
-    mode,
-    controls: readControlsFromDom(document),
-    yaml: mode === "yaml" ? yamlEditor.value : null,
-  });
-}
-
 // --- Event wiring ---------------------------------------------------------
 
-function onControlChange() {
-  syncUrl();
-  persist();
-  renderFromControls();
-}
-
-// Re-derive the deployment and terrain dropdowns, then render; a derivation
-// failure is reported on the stage.
-function onDerivedControlChange() {
-  try {
-    writeDerivedControlsToDom(
-      document,
-      deriveControls(readControlsFromDom(document)),
-    );
-  } catch (error) {
-    setExportEnabled(false);
-    setStageMessage(error.message, true);
-    return;
-  }
-  onControlChange();
-}
-
 for (const el of controlEls) {
-  el.addEventListener(
-    "change",
-    derivedFromControls.includes(el) ? onDerivedControlChange : onControlChange,
-  );
+  el.addEventListener("change", () => {
+    show(
+      step(session, {
+        type: "controlsEdited",
+        controls: readControlsFromDom(document),
+      }),
+    );
+  });
 }
 
 let yamlRenderTimer;
 
 yamlEditor.addEventListener("input", () => {
-  if (mode === "controls") {
-    mode = "yaml";
-    updateModeUi();
-    syncUrl();
-  }
-  // Debounce re-render.
+  show(step(session, { type: "yamlTyped", text: yamlEditor.value }));
+  // Debounce the render.
   clearTimeout(yamlRenderTimer);
   yamlRenderTimer = setTimeout(() => {
-    renderFromYaml();
-    persist();
+    show(step(session, { type: "yamlSettled" }));
   }, 300);
 });
 
-function resetToControls() {
-  mode = "controls";
+resetButton.addEventListener("click", () => {
   clearTimeout(yamlRenderTimer);
-  updateModeUi();
-  syncUrl();
-  persist();
   activateTab("controls");
-  renderFromControls();
-}
-
-resetButton.addEventListener("click", resetToControls);
+  show(step(session, { type: "reset" }));
+});
 tabControls.addEventListener("click", () => activateTab("controls"));
 tabYaml.addEventListener("click", () => activateTab("yaml"));
+bindTabKeys(tablist, (tab) => activateTab(tab === tabControls ? "controls" : "yaml"));
 
 // --- Export ---------------------------------------------------------------
-
-function filenameStem() {
-  if (mode === "yaml") {
-    return "deployment-graphics";
-  }
-  const controls = readControlsFromDom(document);
-  return `${controls.m.replace(/_/g, "-")}-layout-${controls.lay}`;
-}
 
 function exportSvg() {
   const svg = stage.querySelector("svg");
@@ -320,7 +227,7 @@ function exportSvg() {
   }
   const markup = new XMLSerializer().serializeToString(svg);
   const blob = new Blob([markup], { type: "image/svg+xml" });
-  downloadBlob(blob, `${filenameStem()}.svg`);
+  downloadBlob(blob, `${filenameStem}.svg`);
   exportMenu.removeAttribute("open");
 }
 
@@ -365,7 +272,7 @@ function exportPng() {
         alert("PNG export failed: the image could not be encoded.");
         return;
       }
-      downloadBlob(blob, `${filenameStem()}.png`);
+      downloadBlob(blob, `${filenameStem}.png`);
     }, "image/png");
   };
   image.src = svgUrl;
@@ -415,29 +322,21 @@ document.addEventListener("keydown", (event) => {
 
 function start() {
   setExportEnabled(false);
-
-  const initial = initialControls({
+  const snapshot = openSession({
     search: window.location.search,
-    saved: loadState(),
+    saved: storedSession(),
   });
-  writeControlsToDom(document, initial.controls);
-  mode = initial.mode;
-  if (initial.yaml !== null) {
-    yamlEditor.value = initial.yaml;
+  session = snapshot.session;
+  if (session.yaml !== null) {
+    yamlEditor.value = session.yaml;
   }
-
-  updateModeUi();
-  syncUrl();
-  if (initial.persist) {
-    persist();
-  }
-
-  if (mode === "yaml") {
-    activateTab("yaml");
-    renderFromYaml();
-  } else {
-    activateTab("controls");
-    renderFromControls();
+  // Before `show`: opening the YAML tab clears the error `show` may report.
+  activateTab(session.mode);
+  show(snapshot);
+  // A stored YAML override that does not draw leaves the markup's loading
+  // message up; say why instead.
+  if (document.getElementById("stage-loading")) {
+    setStageMessage("No card yet: see the YAML error above.");
   }
 }
 
