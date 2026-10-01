@@ -1,0 +1,50 @@
+name: Publish to npm
+
+# Publishes with provenance through npm trusted publishing (OIDC); no npm token
+# is stored. The npm package must list this repo and workflow (publish.yml) as
+# a trusted publisher, or the publish is rejected.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+          registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing needs npm >= 11.5.1; Node 22 bundles npm 10.
+      - name: Update npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check tag matches package version
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          if [ "$GITHUB_REF_NAME" != "$expected" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json ($expected)"
+            exit 1
+          fi
+
+      # `prepublishOnly` runs the gates and `build:lib`.
+      - name: Publish
+        run: npm publish --provenance --access public
