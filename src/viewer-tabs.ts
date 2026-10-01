@@ -36,7 +36,9 @@ export function bindTabKeys(
   activate: (tab: HTMLElement) => void,
 ): void {
   tablist.addEventListener("keydown", (event) => {
-    const { key } = event as KeyboardEvent;
+    const { key, altKey, ctrlKey, metaKey } = event as KeyboardEvent;
+    // Leave browser shortcuts (Alt+Left is Back) to the browser.
+    if (altKey || ctrlKey || metaKey) return;
     const tabs = tabsOf(tablist);
     const current = tabs.indexOf(event.target as HTMLElement);
     if (current === -1) return;

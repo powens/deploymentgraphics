@@ -66,8 +66,8 @@ describe("bindTabKeys", () => {
     });
   });
 
-  function press(from: number, key: string): KeyboardEvent {
-    const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true });
+  function press(from: number, key: string, init: { altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean } = {}): KeyboardEvent {
+    const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, ...init });
     tabs(list)[from].dispatchEvent(event);
     return event;
   }
@@ -92,6 +92,14 @@ describe("bindTabKeys", () => {
     press(0, "ArrowRight");
     expect(tabs(list).map((tab) => tab.tabIndex)).toEqual([-1, 0, -1]);
   });
+
+  for (const modifier of ["altKey", "ctrlKey", "metaKey"] as const) {
+    it(`leaves ${modifier} shortcuts to the browser`, () => {
+      const event = press(1, "ArrowLeft", { [modifier]: true });
+      expect(activated).toEqual([]);
+      expect(event.defaultPrevented).toBe(false);
+    });
+  }
 
   it("leaves other keys to the browser", () => {
     const event = press(0, "Enter");
