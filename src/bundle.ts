@@ -22,3 +22,4 @@ export {
   STORAGE_KEY,
 } from "./viewer-session.js";
 export { missions } from "./presets/missions.js";
+export { bindTabKeys, selectTab } from "./viewer-tabs.js";

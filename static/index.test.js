@@ -92,3 +92,31 @@ describe("the markup's initial state", () => {
     }
   }
 });
+
+describe("the editor tabs", () => {
+  const tabs = [...doc.querySelectorAll("#editor-tabs [role=tab]")];
+
+  it("are the ones app.js binds the keyboard model to", () => {
+    expect(tabs.map((tab) => tab.id)).toEqual(["tab-controls", "tab-yaml"]);
+  });
+
+  for (const tab of tabs) {
+    it(`#${tab.id} controls a tabpanel labelled by it`, () => {
+      const tabpanel = doc.getElementById(tab.getAttribute("aria-controls"));
+      expect(tabpanel.getAttribute("role")).toBe("tabpanel");
+      expect(tabpanel.getAttribute("aria-labelledby")).toBe(tab.id);
+    });
+  }
+
+  it("start with the selected tab as the only tab stop", () => {
+    // Before app.js runs `selectTab`, the markup must already agree with it.
+    const state = tabs.map((tab) => [
+      tab.getAttribute("aria-selected"),
+      tab.getAttribute("tabindex") ?? "0",
+    ]);
+    expect(state).toEqual([
+      ["true", "0"],
+      ["false", "-1"],
+    ]);
+  });
+});
