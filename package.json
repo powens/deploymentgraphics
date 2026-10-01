@@ -47,6 +47,7 @@
     "serve": "rollup --config rollup.config.mjs --watch",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
+    "pack:smoke": "node scripts/pack-smoke.mjs",
     "lint:fix": "eslint . --fix",
     "prepublishOnly": "pnpm run gen:presets:check && pnpm run lint && pnpm run type-check && pnpm run test && pnpm run build:lib"
   },

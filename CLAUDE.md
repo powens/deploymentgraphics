@@ -8,15 +8,18 @@ centre-pivot, Controls): read `CONTEXT.md` first.
 
 ```sh
 pnpm test                      # vitest: src/**/*.test.ts, scripts/*.test.mjs, static/*.test.js
-pnpm lint && pnpm type-check   # CI does NOT type-check; run it yourself
+pnpm lint && pnpm type-check
 pnpm gen:presets[:check]       # static/data/*.yml -> src/presets/*.ts
 pnpm convert:40kdc[:check]     # vendored 40kdc JSON -> static/data/terrain/combined.yml
 make serve                     # demo with live reload (serves static/ over dist/)
 pnpm build                     # demo bundle -> dist/bundle.js (CI's "build" step)
 pnpm build:lib                 # publishable lib/ (tsc + scripts/rewrite-dts-extensions.mjs)
+pnpm pack:smoke                # after build:lib: install the tarball in a throwaway consumer
 ```
 
-CI order: convert:40kdc:check, gen:presets:check, lint, test, build (the demo bundle, not build:lib).
+CI order: convert:40kdc:check, gen:presets:check, lint, type-check, test, build, build:lib,
+pack:smoke. Pages deploys from ci.yml only after that passes on main; `v*` tags publish
+to npm (publish.yml).
 
 ## Layout
 
