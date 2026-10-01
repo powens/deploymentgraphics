@@ -32,12 +32,12 @@ const fixtureFootprint = (cls) => ringUnder(REFERENCE[cls][1]);
 
 // A minimal stand-in for the vendored data: one composite registered at the
 // identity carrying two parts, one with a flip bit and one without, plus the
-// legacy templates they map onto. Footprints are copied from
+// legacy template the L maps onto. Footprints are copied from
 // terrain-templates.json.
 //
 // The upstream parts carry `footprint` and no `walls`, so partExtent falls back
-// to the footprint and partAnchorShift to zero, isolating F, Z, K, Q and S. The
-// `walls` path is tested at the end of this file.
+// to the footprint, isolating F, Z, K, Q and S. The `walls` path is tested at
+// the end of this file.
 const templatesById = new Map([
   [
     "corner-short",
@@ -62,9 +62,7 @@ const templatesById = new Map([
       footprint: { type: "rectangle", width: 1.5, height: 2.5 },
     },
   ],
-  // A rectangle, so its anchor offset is 0. `tower` takes upstream's 2x2.5
-  // footprint over this one, so both are here.
-  ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
+  // A rectangle, so its anchor offset is 0.
   [
     "bm-part-tower-ddab4cb687",
     {
@@ -72,9 +70,6 @@ const templatesById = new Map([
       footprint: { type: "rectangle", width: 2, height: 2.5 },
     },
   ],
-  // The legacy generator is 3x4 and Battlemaster's part 4.5x2, so `generator`
-  // carries upstream's footprint onto the child (F).
-  ["generator", { id: "generator", footprint: { type: "rectangle", width: 3, height: 4 } }],
   [
     "bm-part-generator-2aeba08b62",
     {
@@ -150,7 +145,8 @@ describe("normalizeLayout", () => {
       "area-01-feature-1",
       "area-01-feature-2",
     ]);
-    expect(kids.map((k) => k.template)).toEqual(["corner-short", "gantry"]);
+    expect(kids.map((k) => k.part)).toEqual(["small-l", "tower"]);
+    expect(kids.map((k) => k.template)).toEqual(["corner-short", undefined]);
     for (const k of kids) expect(k.parent_area_id).toBe("area-01");
     expect(kids[1].rotation_degrees).toBe(0);
   });
@@ -171,8 +167,8 @@ describe("normalizeLayout", () => {
   it("carries upstream's own footprint for the tower part", () => {
     const out = normalizeLayout(layoutWith({ rotation_degrees: 0 }), templatesById);
     const tower = out.pieces[2];
-    // Upstream's 2x2.5, not the legacy gantry's 2x2.
-    expect(tower.template).toBe("gantry");
+    // Upstream's own 2x2.5, with no legacy template behind it.
+    expect("template" in tower).toBe(false);
     expect(tower.footprint).toEqual({ type: "rectangle", width: 2, height: 2.5 });
   });
 
@@ -185,9 +181,9 @@ describe("normalizeLayout", () => {
       templatesById,
     );
     const gen = out.pieces[1];
-    // Upstream's 4.5x2, not the legacy 3x4. The template id stays so
-    // rect-to-feature.mjs still types and colours it as a generator.
-    expect(gen.template).toBe("generator");
+    // Upstream's 4.5x2, not the legacy 3x4.
+    expect(gen.part).toBe("generator");
+    expect("template" in gen).toBe(false);
     expect(gen.footprint).toEqual({ type: "rectangle", width: 4.5, height: 2 });
     // Turn 0 and a zero anchor offset, so upstream's placement carries through.
     expect(gen.position).toEqual({ x: 2, y: -1 });
@@ -299,13 +295,15 @@ describe("normalizeLayout", () => {
     expect("mirror" in out.pieces[0]).toBe(false);
   });
 
-  it("passes a layout with no composite pieces through untouched", () => {
+  it("throws on a piece that is not a Battlemaster composite", () => {
     const layout = {
       id: "legacy",
       pieces: [{ id: "a", piece_type: "area", template: "area-large",
                  position: { x: 1, y: 2 } }],
     };
-    expect(normalizeLayout(layout, new Map()).pieces).toEqual(layout.pieces);
+    expect(() => normalizeLayout(layout, new Map())).toThrow(
+      /legacy piece a is not a Battlemaster composite/,
+    );
   });
 
   it("throws on an unhandled composite feature field", () => {
@@ -380,12 +378,10 @@ describe("normalizeLayout", () => {
   });
 });
 
-// The earlier upstream schema: `footprint` is only the roof and the rest of
-// the model is in `walls`. A wrong extent shows up as a wrong footprint, but a
-// wrong anchor only as a part drifting out of its parent, which nothing else
-// in this file catches.
-describe("a part's extent and anchor", () => {
-  // An L-ruin: the roof is one corner, the walls reach the full extent.
+// Upstream's `walls` are wall centrelines; the extent is their bbox together
+// with the footprint's.
+describe("a part's extent", () => {
+  // A wall running past the footprint.
   const walled = {
     id: "bm-part-tower-ddab4cb687",
     footprint: {
@@ -401,11 +397,10 @@ describe("a part's extent and anchor", () => {
     footprint: { type: "rectangle", width: 4, height: 1 },
   };
 
-  // `tower` is an upstreamFootprint part, so the child's footprint and
-  // position read the extent and anchor directly.
+  // `tower` is an upstreamFootprint part, so the child's footprint reads the
+  // extent directly.
   const towerChild = (part) => {
     const templates = new Map([
-      ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
       ["bm-part-tower-ddab4cb687", part],
       referenceEntry("ShortLine"),
       ["bm-composite-shortline-90-cccccccccc", {
@@ -426,15 +421,10 @@ describe("a part's extent and anchor", () => {
   };
 
   it("reads the extent from the roof and the walls together", () => {
-    // Roof alone is 2x2 and the wall centreline 0x3; the union is 2x3.
+    // The footprint alone is 2x2 and the wall centreline 0x3; the union is 2x3.
     expect(towerChild(walled).footprint).toEqual({
       type: "rectangle", width: 2, height: 3,
     });
-  });
-
-  it("anchors the child on the extent centre, not the roof centre", () => {
-    // Roof centre (1, -1), extent centre (1, -1.5).
-    expect(towerChild(walled).position).toEqual({ x: 3, y: 6.5 });
   });
 
   it("falls back to the footprint for a part with no walls", () => {
@@ -446,7 +436,6 @@ describe("a part's extent and anchor", () => {
 
 describe("fields the re-source introduced", () => {
   const templates = new Map([
-    ["gantry", { id: "gantry", footprint: { type: "rectangle", width: 2, height: 2 } }],
     ["bm-part-tower-ddab4cb687", {
       id: "bm-part-tower-ddab4cb687",
       footprint: { type: "rectangle", width: 2, height: 2.5 },

@@ -2,10 +2,7 @@ import { describe, it, expect } from "vitest";
 import { ringMismatch } from "../src/geometry.ts";
 import { placedRing, resolveFeature } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
-import {
-  isRectFeatureTemplate,
-  rectFeaturePlacement,
-} from "./rect-to-feature.mjs";
+import { isRectFeaturePart, rectFeaturePlacement } from "./rect-to-feature.mjs";
 
 const { missionLayouts } = loadCorpus();
 
@@ -26,34 +23,37 @@ function featureFootprint(pl) {
   return placedRing(local, placed);
 }
 
-// One representative piece (with its layout) per rectangle-feature template.
+// One representative piece (with its layout) per rectangle-feature part.
 const sample = {};
 for (const L of missionLayouts) {
   for (const p of L.pieces) {
-    if (!isRectFeatureTemplate(p.template)) continue;
-    sample[p.template] ??= { piece: p, layout: L };
+    if (!isRectFeaturePart(p.part)) continue;
+    sample[p.part] ??= { piece: p, layout: L };
   }
 }
 
-describe("isRectFeatureTemplate", () => {
-  it("accepts generator and gantry, rejects others", () => {
-    expect(isRectFeatureTemplate("generator")).toBe(true);
-    expect(isRectFeatureTemplate("gantry")).toBe(true);
-    expect(isRectFeatureTemplate("pipe")).toBe(false);
-    expect(isRectFeatureTemplate("corner-tiny")).toBe(false);
+describe("isRectFeaturePart", () => {
+  it("accepts generator and tower, rejects others", () => {
+    expect(isRectFeaturePart("generator")).toBe(true);
+    expect(isRectFeaturePart("tower")).toBe(true);
+    expect(isRectFeaturePart("long-barrier")).toBe(false);
+    expect(isRectFeaturePart("corner")).toBe(false);
   });
 });
 
 describe("rectFeaturePlacement round-trips through resolvePiece", () => {
-  it("covers generator and gantry", () => {
-    expect(Object.keys(sample).sort()).toEqual(["gantry", "generator"]);
+  it("covers generator and tower", () => {
+    expect(Object.keys(sample).sort()).toEqual(["generator", "tower"]);
   });
 
-  for (const [template, { piece, layout }] of Object.entries(sample)) {
-    it(`reproduces the ${template} footprint`, () => {
+  const EXPECTED = {
+    generator: { type: "generator", color: "teal" },
+    tower: { type: "gantry", color: "indigo" },
+  };
+  for (const [part, { piece, layout }] of Object.entries(sample)) {
+    it(`reproduces the ${part} footprint`, () => {
       const pl = rectFeaturePlacement(piece, layout);
-      expect(pl.type).toBe(template);
-      expect(pl.color).toBe(template === "generator" ? "teal" : "indigo");
+      expect({ type: pl.type, color: pl.color }).toEqual(EXPECTED[part]);
       const target = layout.resolve(piece);
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });

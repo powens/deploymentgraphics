@@ -47,7 +47,7 @@ const gMap = (kind, mirrored, Wa, Ha) => {
  * Build a `buildings` placement for a 40kdc `area` piece.
  *
  * @param {object} piece - area piece: template, position, optional
- *   rotation_degrees, optional mirror ("horizontal"|"vertical").
+ *   rotation_degrees, optional mirror ("horizontal").
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
  * @returns {{type: string, corners: object, mirror: false}}
@@ -69,8 +69,8 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
     map.kind === "trapezoid" ? (mirrored ? "shoe" : "shoe-mirror") : map.gw;
 
   // Wa/Ha are the footprint's far-edge coordinates, not its extents: gMap uses
-  // them as absolute bbox corners. They differ for the inline footprints
-  // battlemaster-normalize emits, whose bbox can run to -0.48in on one axis.
+  // them as absolute bbox corners. They differ for three of the archetype
+  // polygons, whose bbox runs to between -0.26 and -0.6in on one axis.
   const { maxX: Wa, maxY: Ha } = bounds(footprintPolygon(areaFootprint));
 
   const { Glin, Gtrans } = gMap(map.kind, mirrored, Wa, Ha);
