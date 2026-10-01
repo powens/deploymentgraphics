@@ -221,3 +221,16 @@ for a board with no terrain. Prototype keys no longer count as layouts either:
   (`unknown disposition "Nope": expected one of "Disruption", …`) and lists the
   valid layouts for an unknown one; a pairing of known dispositions the matrix
   lacks still throws `No event-matrix entry for …`.
+
+- Registry lookups match own keys only. A feature `type` or `color`, an icon
+  `type` or a building template named after an `Object.prototype` member
+  (`"constructor"`, `"toString"`, …) used to find that member and fail somewhere
+  unhelpful; it now throws the usual `unknown feature type`/`unknown feature
+  colour`/`unknown icon type`/`unknown template` error.
+
+- A feature's `rotation` is normalised into [0, 360), as `Placed` documents,
+  and its mirrored copy is too (a rotation below -180 used to mirror to a
+  negative angle). The drawn result is unchanged; only the `rotate()` angle in
+  the markup is spelled differently. A non-numeric rotation now throws
+  (`feature gantry: rotation: expected a number, got "30"`) — a quoted YAML
+  `rotation: "30"` used to string-concatenate into `"30180"` on the mirror.

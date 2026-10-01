@@ -287,6 +287,15 @@ describe("mirror", () => {
     expect(back.box).toEqual(placed.box);
     expect(back.rotation % 360).toBe(placed.rotation % 360);
   });
+
+  it.each([
+    [-270, 270],
+    [-30, 150],
+    [540, 0],
+  ])("keeps the mirrored rotation of %d in [0, 360)", (rotation, want) => {
+    const placed: Placed = { name: "x", box: { x: 7, y: 9, width: 5, height: 2 }, rotation };
+    expect(mirror(placed, canvas).rotation).toBe(want);
+  });
 });
 
 describe("resolveFeature", () => {
@@ -302,6 +311,38 @@ describe("resolveFeature", () => {
     });
     expect(result[1].box).toEqual({ x: 38, y: 35.5, width: 10, height: 2.5 });
     expect(result[1].rotation).toBe(225);
+  });
+
+  it.each([
+    [-30, [330, 150]],
+    [-270, [90, 270]],
+    [720, [0, 180]],
+    [undefined, [0, 180]],
+  ])("normalises rotation %s into [0, 360)", (rotation, want) => {
+    const result = resolveFeature(
+      { type: "gantry", x: 12, y: 6, width: 10, height: 2.5, rotation, color: "indigo" },
+      canvas,
+    );
+    expect(result.map((p) => p.rotation)).toEqual(want);
+  });
+
+  // A quoted YAML `rotation: "30"` would otherwise string-concatenate in
+  // `mirror` ("30" + 180 = "30180").
+  it.each([["30"], [null], [Number.NaN]])("rejects a non-numeric rotation (%j)", (rotation) => {
+    expect(() =>
+      resolveFeature(
+        {
+          type: "gantry",
+          x: 12,
+          y: 6,
+          width: 10,
+          height: 2.5,
+          rotation: rotation as unknown as number,
+          color: "indigo",
+        },
+        canvas,
+      ),
+    ).toThrow(`feature gantry: rotation: expected a number, got ${JSON.stringify(rotation)}`);
   });
 });
 

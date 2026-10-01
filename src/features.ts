@@ -128,8 +128,10 @@ export function injectFeatureDefs(
     if (seen.has(id)) continue;
     seen.add(id);
 
+    if (!Object.hasOwn(features, placement.type)) {
+      throw new Error(`unknown feature type: ${placement.type}`);
+    }
     const draw = features[placement.type];
-    if (!draw) throw new Error(`unknown feature type: ${placement.type}`);
 
     const { body, accent } = draw(placement.width, placement.height);
     const group = doc.createElement("g");
@@ -166,11 +168,13 @@ export function makeFeatures(
   let counter = 0;
   for (const placement of placements) {
     // Also checked in injectFeatureDefs; repeated for standalone callers.
-    if (!features[placement.type]) {
+    if (!Object.hasOwn(features, placement.type)) {
       throw new Error(`unknown feature type: ${placement.type}`);
     }
+    if (!Object.hasOwn(theme.feature.palette, placement.color)) {
+      throw new Error(`unknown feature colour: ${placement.color}`);
+    }
     const palette = theme.feature.palette[placement.color];
-    if (!palette) throw new Error(`unknown feature colour: ${placement.color}`);
 
     const href = `#${featureDefId(
       placement.type,
