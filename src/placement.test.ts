@@ -110,17 +110,17 @@ describe("resolvePlacement (single corner)", () => {
   });
 
   it("pins a single TR corner (box offset by the template width)", () => {
-    // building TR corner -> canvas point (10,5); localCorner(TR)=(4,0)
+    // building TR corner -> canvas point (10,5); its template-local TR is (4,0)
     expect(pin({ TR: { x: 10, y: 5 } }).box).toEqual({ x: 6, y: 5, width: 4, height: 6 });
   });
 
   it("pins a single BL corner (box offset by the template height)", () => {
-    // building BL corner -> canvas point (10,5); localCorner(BL)=(0,6)
+    // building BL corner -> canvas point (10,5); its template-local BL is (0,6)
     expect(pin({ BL: { x: 10, y: 5 } }).box).toEqual({ x: 10, y: -1, width: 4, height: 6 });
   });
 
   it("pins a single BR corner (offset by width and height)", () => {
-    // building BR corner -> canvas point (10,5); localCorner(BR)=(4,6)
+    // building BR corner -> canvas point (10,5); its template-local BR is (4,6)
     expect(pin({ BR: { x: 10, y: 5 } }).box).toEqual({ x: 6, y: -1, width: 4, height: 6 });
   });
 
@@ -132,6 +132,29 @@ describe("resolvePlacement (single corner)", () => {
       width: 4,
       height: 6,
     });
+  });
+
+  it.each([
+    ["TL", { x: 10, y: 5 }],
+    ["TR", { x: 50, y: 5 }],
+    ["BL", { x: 10, y: 39 }],
+    ["BR", { x: 50, y: 39 }],
+  ] as const)("measures inward from the placement's %s anchor", (from, at) => {
+    const [primary] = resolvePlacement(
+      { type: "4x6", mirror: false, from, corners: { TL: { x: 10, y: 5 } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box).toEqual({ ...at, width: 4, height: 6 });
+  });
+
+  it("lets a corner's own anchor override the placement's", () => {
+    const [primary] = resolvePlacement(
+      { type: "4x6", mirror: false, from: "BR", corners: { TL: { x: 10, y: 5, from: "TL" } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box).toEqual({ x: 10, y: 5, width: 4, height: 6 });
   });
 });
 

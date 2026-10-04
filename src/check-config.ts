@@ -1,9 +1,4 @@
-import {
-  templateBounds,
-  toAnchor,
-  toPoint,
-  type Template,
-} from "./building-coordinates.js";
+import { templateBounds, type Template } from "./building-coordinates.js";
 import { features } from "./features.js";
 import { iconTypes } from "./icons.js";
 import type { Theme } from "./theme.js";
@@ -82,6 +77,20 @@ function oneOf(value: unknown, allowed: readonly string[], field: string): void 
   }
 }
 
+/** A `{ x, y }` of numbers, returned so a caller can read its other fields. */
+function point(value: unknown, field: string): Record<string, unknown> {
+  if (!isObject(value) || typeof value.x !== "number" || typeof value.y !== "number") {
+    throw expected(field, "{ x, y }", value);
+  }
+  return value;
+}
+
+const ANCHORS = ["TL", "TR", "BL", "BR"];
+
+function anchor(value: unknown, field: string): void {
+  oneOf(value, ANCHORS, field);
+}
+
 /**
  * A `terrain.layout_name` that is not a key of `terrain.layout`. Its own class
  * so a caller that knows where the config came from (the viewer's editor) can
@@ -120,15 +129,13 @@ function checkTemplate(value: unknown, field: string, name: string): void {
   if ("points" in template) {
     const { points } = template;
     if (!Array.isArray(points)) throw expected(`${field}.points`, "an array", points);
-    points.forEach((point, i) => toPoint(point, `${field}.points[${i}]`));
+    points.forEach((p, i) => point(p, `${field}.points[${i}]`));
   } else {
     positive(template.width, `${field}.width`);
     positive(template.height, `${field}.height`);
   }
   templateBounds(template as Template, name);
 }
-
-const ANCHORS = ["TL", "TR", "BL", "BR"];
 
 function checkBuilding(
   value: unknown,
@@ -140,7 +147,7 @@ function checkBuilding(
   if (typeof type !== "string" || !Object.hasOwn(templates, type)) {
     throw expected(`${field}.type`, "a key of config.terrain.templates", type);
   }
-  optional(building.from, `${field}.from`, toAnchor);
+  optional(building.from, `${field}.from`, anchor);
   const corners = objectAt(building, "corners", field);
   const names = Object.keys(corners);
   if (names.length < 1 || names.length > 2) {
@@ -151,8 +158,8 @@ function checkBuilding(
   }
   for (const name of names) {
     const corner = `${field}.corners.${name}`;
-    const spec = toPoint(corners[name], corner) as unknown as { from?: unknown };
-    optional(spec.from, `${corner}.from`, toAnchor);
+    const spec = point(corners[name], corner);
+    optional(spec.from, `${corner}.from`, anchor);
   }
   optional(building.mirror, `${field}.mirror`, boolean);
 }
@@ -160,7 +167,7 @@ function checkBuilding(
 function checkIcon(value: unknown, field: string): void {
   const icon = object(value, field);
   oneOf(icon.type, iconTypes, `${field}.type`);
-  toPoint(icon.pos, `${field}.pos`);
+  point(icon.pos, `${field}.pos`);
   const { player } = icon;
   if (!absent(player) && player !== "attacker" && player !== "defender") {
     throw expected(`${field}.player`, '"attacker" or "defender"', player);
@@ -204,7 +211,7 @@ function checkLayout(
 }
 
 function checkObjective(value: unknown, field: string): void {
-  const objective = toPoint(value, field) as unknown as { number?: unknown };
+  const objective = point(value, field);
   number(objective.number, `${field}.number`);
 }
 
@@ -214,7 +221,7 @@ function checkAnnotation(value: unknown, field: string): void {
   if (kind !== "text" && kind !== "arrow") {
     throw expected(`${field}.kind`, '"text" or "arrow"', kind);
   }
-  const arrow = toPoint(value, field) as unknown as { endX?: unknown; endY?: unknown };
+  const arrow = point(value, field);
   optional(arrow.endX, `${field}.endX`, number);
   optional(arrow.endY, `${field}.endY`, number);
 }
@@ -252,12 +259,12 @@ export function checkConfig(config: unknown, theme?: Theme): asserts config is F
     const field = `config.deployment.${side}.deployment_zone`;
     const zone = objectAt(deployment, side, "config.deployment").deployment_zone;
     if (!Array.isArray(zone)) throw expected(field, "an array", zone);
-    zone.forEach((point, i) => toPoint(point, `${field}[${i}]`));
+    zone.forEach((p, i) => point(p, `${field}[${i}]`));
   }
   if (!absent(deployment.territory)) {
     const territory = objectAt(deployment, "territory", "config.deployment");
-    toPoint(territory.start, "config.deployment.territory.start");
-    toPoint(territory.end, "config.deployment.territory.end");
+    point(territory.start, "config.deployment.territory.start");
+    point(territory.end, "config.deployment.territory.end");
   }
 
   const terrain = objectAt(
