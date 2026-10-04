@@ -248,8 +248,21 @@ describe("step: yamlSettled", () => {
   // The editor holds only the selected layout, so renaming it is easy to do.
   it("names a layout_name the YAML does not define, and leaves the stage alone", () => {
     const snapshot = step(inYaml(selecting("bm-other")), { type: "yamlSettled" });
-    expect(snapshot.yamlError).toBe('unknown layout "bm-other": not a key of terrain.layout');
+    expect(snapshot.yamlError).toBe(
+      'unknown layout "bm-other": the editor holds only the layout the controls selected; ' +
+        "pick another layout there, or add it under terrain.layout.",
+    );
     expect(snapshot.render).toBe(null);
+  });
+
+  // With layout "none" selected the editor holds `layout: {}`.
+  it("gives the editor's hint, not the library's, when terrain.layout is empty", () => {
+    const text = yaml.dump({
+      ...(CONFIG as object),
+      terrain: { templates: {}, layout: {}, layout_name: "bm-mine" },
+    });
+    const snapshot = step(inYaml(text), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toMatch(/^unknown layout "bm-mine": the editor holds only/);
   });
 
   it("renders a layout_name the YAML defines", () => {
