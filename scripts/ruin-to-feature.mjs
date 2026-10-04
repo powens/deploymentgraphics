@@ -7,7 +7,6 @@
 // No ruin gets a roof: upstream never places its catwalk (`pipes`) on a ruin;
 // see ruin-to-feature.test.mjs.
 
-import { footprintPolygon, pieceFootprint } from "./terrain-resolver.mjs";
 import { featureRow } from "./emit-placement.mjs";
 import { boundsCorners, cross, distance, toDegrees } from "../src/geometry.ts";
 import { placedFromPin } from "../src/placement.ts";
@@ -80,10 +79,9 @@ function featureFromRefs(base, Oa, A1, A2) {
 
 /** Outer corner + arm ends of a single whole-L ruin piece. */
 function lPieceRefs(piece, layout) {
-  const ring = footprintPolygon(pieceFootprint(piece, layout.footprintOf));
-  const { Oidx, armIdx } = lRefIndices(ring);
-  const resolved = layout.resolve(piece);
-  return { Oa: resolved[Oidx], A1: resolved[armIdx[0]], A2: resolved[armIdx[1]] };
+  const { local, ring } = layout.resolve(piece);
+  const { Oidx, armIdx } = lRefIndices(local);
+  return { Oa: ring[Oidx], A1: ring[armIdx[0]], A2: ring[armIdx[1]] };
 }
 
 /**

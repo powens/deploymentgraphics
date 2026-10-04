@@ -9,7 +9,6 @@ import {
 } from "../src/geometry.ts";
 import { placedRing, resolveFeature } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
-import { footprintPolygon } from "./terrain-resolver.mjs";
 import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 import { layoutPlacements } from "./layout-to-placements.mjs";
 
@@ -30,16 +29,14 @@ const CANVAS = { width: 60, height: 44 };
  * the wrong corner.
  */
 const outerCornerOf = (entry) => {
-  const footprint =
-    entry.piece.footprint ?? entry.layout.footprintOf(entry.piece.template);
-  const local = footprintPolygon(footprint);
+  const { local, ring } = entry.layout.resolve(entry.piece);
   const corners = boundsCorners(local); // TL, TR, BR, BL
   const at = corners.map((c) => local.findIndex((p) => distance(p, c) < 1e-6));
   const openIdx = at.indexOf(-1);
   if (openIdx === -1 || at.filter((i) => i >= 0).length !== 3) {
     throw new Error("ruin footprint is not an L (expected 3 of 4 bbox corners)");
   }
-  return entry.layout.resolve(entry.piece)[at[(openIdx + 2) % 4]];
+  return ring[at[(openIdx + 2) % 4]];
 };
 
 // Absolute outline of a placed l-ruin feature, drawn the way makeFeatures does.
@@ -96,7 +93,7 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
   for (const [part, entry] of Object.entries(sample)) {
     it(`reproduces the ${part} footprint`, () => {
-      const target = entry.layout.resolve(entry.piece);
+      const target = entry.layout.resolve(entry.piece).ring;
       expect(
         ringMismatch(featureFootprint(placementOf(entry)), target),
       ).toBeLessThan(0.02);
@@ -223,12 +220,12 @@ describe("ruins over the corpus", () => {
       const L = missionLayouts[i];
       const ruins = L.pieces
         .filter((p) => isRuinPart(p.part))
-        .map((p) => ({ p, ring: L.resolve(p) }));
+        .map((p) => ({ p, ring: L.resolve(p).ring }));
       for (const area of src.pieces) {
         const { features: parts } = templatesById.get(area.template);
         if (!parts.some((f) => partOf(f.template) === "pipes")) continue;
         catwalks += 1;
-        const ring = src.resolve(area);
+        const { ring } = src.resolve(area);
         let nearest = Infinity;
         for (const r of ruins) {
           nearest = Math.min(nearest, ringGap(ring, r.ring));

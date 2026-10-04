@@ -60,17 +60,34 @@ describe("withLookups", () => {
     expect(a.parentOf(pieceOfB.id)).not.toBe(pieceOfB);
   });
 
-  it("resolves a piece exactly as resolvePiece does", () => {
-    let checked = 0;
+  // The function-valued `place` compares by identity, so it is checked
+  // through the ring it produced.
+  const plain = ({ local, ring, matrix }) => ({ local, ring, matrix });
+
+  it("resolves a piece exactly as resolvePiece does, parent included", () => {
+    let parented = 0;
     for (const layout of corpus.missionLayouts) {
       for (const piece of layout.pieces) {
-        expect(layout.resolve(piece)).toEqual(
-          resolvePiece(piece, corpus.footprintOf, (id) => layout.parentOf(id)),
+        const want = resolvePiece(piece, corpus.footprintOf, (id) =>
+          layout.parentOf(id),
         );
-        checked++;
+        expect(plain(layout.resolve(piece))).toEqual(plain(want));
+        expect(plain(layout.resolveIfAny(piece))).toEqual(plain(want));
+        if (piece.parent_area_id) parented++;
       }
     }
-    expect(checked).toBeGreaterThan(0);
+    expect(parented).toBeGreaterThan(0);
+  });
+
+  it("resolves nothing for a footprintless piece, unless asked to throw", () => {
+    const layout = withLookups(
+      { id: "synthetic", pieces: [{ id: "p1", position: { x: 0, y: 0 } }] },
+      () => undefined,
+    );
+    expect(layout.resolveIfAny(layout.pieces[0])).toBeUndefined();
+    expect(() => layout.resolve(layout.pieces[0])).toThrow(
+      /piece p1 has no footprint or known template/,
+    );
   });
 
   it("wraps a layout that never went through loadCorpus", () => {
@@ -87,7 +104,7 @@ describe("withLookups", () => {
     const wrapped = withLookups(layout, () => undefined);
     expect(wrapped.id).toBe("synthetic");
     expect(wrapped.parentOf("p1")).toBe(layout.pieces[0]);
-    expect(wrapped.resolve(layout.pieces[0])).toEqual([
+    expect(wrapped.resolve(layout.pieces[0]).ring).toEqual([
       { x: 8, y: 9 },
       { x: 12, y: 9 },
       { x: 12, y: 11 },
@@ -113,7 +130,7 @@ describe("a derived layout reads its own pieces", () => {
     const derived = { ...layout, pieces: [first] };
     expect(derived.parentOf(first.id)).toBe(first);
     expect(derived.parentOf(second.id)).toBeUndefined();
-    expect(derived.resolve(first)).toEqual(layout.resolve(first));
+    expect(derived.resolve(first).ring).toEqual(layout.resolve(first).ring);
   });
 
   it("still wraps a bare layout that never went through loadCorpus", () => {

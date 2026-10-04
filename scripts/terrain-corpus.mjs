@@ -4,7 +4,7 @@
 import { readFileSync } from "node:fs";
 import * as yaml from "js-yaml";
 import { normalizeLayout } from "./battlemaster-normalize.mjs";
-import { resolvePiece } from "./terrain-resolver.mjs";
+import { resolvePiece, resolvePieceIfAny } from "./terrain-resolver.mjs";
 
 const srcDir = new URL("../static/data/terrain/source/40kdc/", import.meta.url);
 const templatesPath = new URL(
@@ -27,26 +27,29 @@ const indexOf = (pieces) => {
 /**
  * Attach the corpus lookups to a layout (raw or normalized).
  *
- * `parentOf` and `resolve` are methods reading `this.pieces`, so a spread
- * `{ ...layout, pieces }` resolves against its own pieces; they need their
- * receiver (`layout.resolve(piece)`, not a detached reference). Do not mutate a
- * piece list in place: the id index is memoized per array.
+ * `parentOf`, `resolve` and `resolveIfAny` are methods reading `this.pieces`,
+ * so a spread `{ ...layout, pieces }` resolves against its own pieces; they
+ * need their receiver (`layout.resolve(piece)`, not a detached reference). Do
+ * not mutate a piece list in place: the id index is memoized per array.
  *
  * @param {object} layout - a 40kdc layout ({ id, pieces }).
  * @param {(id: string) => object | undefined} footprintOf
- * @returns {object} the layout plus `footprintOf`, `parentOf`, `resolve` and
+ * @returns {object} the layout plus `parentOf`, `resolve`, `resolveIfAny` and
  *   `withPieces`.
  */
 export function withLookups(layout, footprintOf) {
   return {
     ...layout,
-    footprintOf,
     parentOf(id) {
       return indexOf(this.pieces).get(id);
     },
-    /** Absolute board polygon for one of this layout's pieces. */
+    /** One of this layout's pieces, resolved (see `resolvePiece`). */
     resolve(piece) {
-      return resolvePiece(piece, this.footprintOf, (id) => this.parentOf(id));
+      return resolvePiece(piece, footprintOf, (id) => this.parentOf(id));
+    },
+    /** As `resolve`, but `undefined` for a piece with no footprint. */
+    resolveIfAny(piece) {
+      return resolvePieceIfAny(piece, footprintOf, (id) => this.parentOf(id));
     },
     /** This layout with a different piece list; lookups answer against it. */
     withPieces(pieces) {

@@ -59,9 +59,13 @@ is *mirror on*. One formula, owned by the placement module.
 its `position` anchors. A child of `parent_area_id` is posed in its parent's
 centred frame, then carried through the parent's pose. `terrain-resolver.mjs`
 owns three views of that one convention, as the placement module does for
-**Centre-pivot**: the forward map (`poseMatrix`, `pieceFrame`), the resolved ring
+**Centre-pivot**: the forward map (`poseMatrix`), the resolved piece
 (`resolvePiece`), and the inverse (`poseFromMatrix`), which factors a map back
-into the `{ rotation_degrees, mirror }` pair a piece carries.
+into the `{ rotation_degrees, mirror }` pair a piece carries. The resolved
+piece is the one place footprint precedence (inline before template) and
+parent composition happen: it carries the local ring, the board ring vertex
+for vertex, and the composed map between them. Converters reach it through a
+corpus layout's `resolve`.
 _Avoid_: calling a piece's `mirror` a **Mirror**, which is the canvas
 point-reflection of a `Placed`; say it *reflects*, or speak of its handedness.
 

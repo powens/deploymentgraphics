@@ -632,8 +632,9 @@ export function normalizeLayout(layout, templatesById) {
     delete area.mirror;
     // Composite pieces carry no inline footprint today, but upstream uses them
     // elsewhere (kotc-colosseum). Retemplating would silently split it:
-    // areaBuildingPlacement reads the archetype template while resolvePiece
-    // prefers `piece.footprint`, so the area and its children would disagree.
+    // resolvePiece prefers `piece.footprint`, while areaBuildingPlacement picks
+    // its gw building by the archetype template id, so the building would be
+    // fitted to a shape the archetype does not draw.
     if (piece.footprint) {
       throw new Error(
         `piece ${piece.id} carries an inline footprint; composite retemplating to ${area.template} would discard it`,
