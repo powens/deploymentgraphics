@@ -113,7 +113,7 @@ It throws loudly rather than guessing on:
   be byte-identical to `co` — same footprint, walls, thickness and roof flag — and simply
   takes `co`'s row). A part with no legacy counterpart at all can be registered
   `{ drop: true }`, as `ruin-part` is. A part that is drawn must also be claimed by a
-  converter's part table (`RUIN_HAND`, `FEATURE_BUILDINGS` or `RECT_FEATURES`), or
+  converter's part table (`RUIN_PARTS`, `FEATURE_BUILDINGS` or `RECT_FEATURES`), or
   `classifyPiece` throws `matches no converter`.
 - **Two drawings of one part** — a *test* failure (`registers a canonical drawing wherever
   upstream ships a part twice`). `partOf` collapses the hashes onto one legacy row but
@@ -184,9 +184,10 @@ It throws loudly rather than guessing on:
 
 A new part's `flip` bit and `turn` must be **derived**, never guessed — guessing wrong is
 invisible to the suite. Match the new part against the nearest pre-pull piece of the same
-legacy template and read off the rigid map between the two rings, and which l-ruin variant
-it actually rendered as, which goes in `RUIN_HAND` (`ruinFeaturePlacement` throws where the
-two disagree). See the chirality-pin test in `battlemaster-registration.test.mjs`.
+legacy template and read off the rigid map between the two rings. `flip` is the only record
+of an L part's hand: `ruinFeaturePlacement` reads the l-ruin variant off the resolved arms,
+so check the variant it comes out as against the pre-pull rendering. See the chirality-pin
+test in `battlemaster-registration.test.mjs`.
 
 Do **not** use a bounding-box aspect ratio to pick `turn`: it is blind to a half-turn and
 gets `ab` wrong. And note that for `upstreamSize` parts a sweep can only ever resolve
