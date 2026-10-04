@@ -6,7 +6,7 @@
  * where its render lands. Demo-only (reached via `bundle.ts`).
  */
 import * as yaml from "js-yaml";
-import { checkConfig } from "./check-config.js";
+import { checkConfig, UnknownLayoutError } from "./check-config.js";
 import { makeMissionCard } from "./main.js";
 import { buildConfig } from "./presets/build-config.js";
 import { baseConfig } from "./presets/base.js";
@@ -127,7 +127,14 @@ function renderOf(session: Session): Pick<Snapshot, "render" | "yamlError"> {
   try {
     checkConfig(parsed, baseTheme);
   } catch (error) {
-    return { render: null, yamlError: errorMessage(error) };
+    // The editor holds only the selected layout, so renaming it is easy to do;
+    // the library's "pass the terrain" advice means nothing here.
+    const yamlError =
+      error instanceof UnknownLayoutError
+        ? `unknown layout ${JSON.stringify(error.layout)}: the editor holds only the ` +
+          "layout the controls selected; pick another layout there, or add it under terrain.layout."
+        : errorMessage(error);
+    return { render: null, yamlError };
   }
   return { render: { config: parsed, rotation }, yamlError: null };
 }
