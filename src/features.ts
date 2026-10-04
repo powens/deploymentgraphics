@@ -1,11 +1,11 @@
 import type { CanvasSize } from "./building-coordinates.js";
 import { makeShape, type IconShape } from "./icons.js";
-import type { SvgDocument, SvgNode } from "./svg-backend.js";
+import { useLayer, type LayerRow } from "./layer.js";
 import { placedTransform, resolveFeature } from "./placement.js";
 import type { FeaturePlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 
-/** A feature's geometry, split by how it is painted (see `makeFeatures`). */
+/** A feature's geometry, split by how it is painted (see `featureLayer`). */
 type FeatureArt = { body: IconShape[]; accent: IconShape[] };
 
 /** Maps a bounding box (inches) to feature geometry in local 0..w / 0..h. */
@@ -103,83 +103,53 @@ export const features: Record<string, FeatureDraw> = {
 };
 
 /** Deterministic def id for a feature shape, keyed by type + bounding box. */
-function featureDefId(
-  type: string,
-  width: number,
-  height: number,
-): string {
+function featureDefId({ type, width, height }: FeaturePlacement): string {
   const dim = (n: number): string => `${n}`.replace(".", "_");
   return `feature-${type}-${dim(width)}x${dim(height)}`;
 }
 
 /**
- * Appends one colour-free `<g id="feature-…">` per distinct (type, width,
- * height). Shapes are styled with `var(--body)`/`var(--accent)`, which each
- * `<use>` sets (see `makeFeatures`).
+ * The features layer, drawn when there are any. Defs are one colour-free
+ * `<g id="feature-…">` per distinct (type, width, height), styled with
+ * `var(--body)`/`var(--accent)`; each `<use>` (mirror copies included) sets
+ * those from the palette. `stroke-width` is set once on the group.
  */
-export function injectFeatureDefs(
-  doc: SvgDocument,
-  placements: FeaturePlacement[],
-  defs: SvgNode,
-): void {
-  const seen = new Set<string>();
-  for (const placement of placements) {
-    const id = featureDefId(placement.type, placement.width, placement.height);
-    if (seen.has(id)) continue;
-    seen.add(id);
-
-    const { body, accent } = features[placement.type](placement.width, placement.height);
-    const group = doc.createElement("g");
-    group.setAttribute("id", id);
-    for (const shape of body) {
-      const el = makeShape(doc, shape);
-      el.setAttribute("style", "fill:var(--body);stroke:var(--accent)");
-      group.appendChild(el);
-    }
-    for (const shape of accent) {
-      const el = makeShape(doc, shape);
-      el.setAttribute("style", "fill:var(--accent)");
-      group.appendChild(el);
-    }
-    defs.appendChild(group);
-  }
-}
-
-/**
- * Builds `<g id="features">` with a `<use>` per resolved placement (mirror
- * copies included). Each `<use>` sets `--body`/`--accent` from the palette;
- * `stroke-width` is set once on the group.
- */
-export function makeFeatures(
-  doc: SvgDocument,
+export function featureLayer(
   placements: FeaturePlacement[],
   theme: Theme,
   canvas: CanvasSize,
-): SvgNode {
-  const group = doc.createElement("g");
-  group.setAttribute("id", "features");
-  group.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
-  let counter = 0;
-  for (const placement of placements) {
-    const palette = theme.feature.palette[placement.color];
-
-    const href = `#${featureDefId(
-      placement.type,
-      placement.width,
-      placement.height,
-    )}`;
-    for (const placed of resolveFeature(placement, canvas)) {
-      const use = doc.createElement("use");
-      use.setAttribute("href", href);
-      use.setAttribute("transform", placedTransform(placed));
-      use.setAttribute("id", `feature-${counter}`);
-      use.setAttribute(
-        "style",
-        `--body:${palette.fill};--accent:${palette.accent}`,
-      );
-      group.appendChild(use);
-      counter++;
-    }
-  }
-  return group;
+): LayerRow {
+  return useLayer({
+    id: "features",
+    useId: "feature",
+    draws: placements.length > 0,
+    uses: placements.flatMap((placement) =>
+      resolveFeature(placement, canvas).map((placed) => ({ placement, placed })),
+    ),
+    defOf: (use) => use.placement,
+    defId: featureDefId,
+    def: (doc, placement, id) => {
+      const { body, accent } = features[placement.type](placement.width, placement.height);
+      const group = doc.createElement("g");
+      group.setAttribute("id", id);
+      for (const shape of body) {
+        const el = makeShape(doc, shape);
+        el.setAttribute("style", "fill:var(--body);stroke:var(--accent)");
+        group.appendChild(el);
+      }
+      for (const shape of accent) {
+        const el = makeShape(doc, shape);
+        el.setAttribute("style", "fill:var(--accent)");
+        group.appendChild(el);
+      }
+      return group;
+    },
+    transform: (use) => placedTransform(use.placed),
+    styleUse: (el, { placement }) => {
+      const palette = theme.feature.palette[placement.color];
+      el.setAttribute("style", `--body:${palette.fill};--accent:${palette.accent}`);
+    },
+    styleGroup: (el) =>
+      el.setAttribute("stroke-width", `${theme.feature.stroke_width}`),
+  });
 }

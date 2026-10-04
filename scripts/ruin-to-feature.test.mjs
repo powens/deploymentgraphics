@@ -42,7 +42,7 @@ const outerCornerOf = (entry) => {
   return entry.layout.resolve(entry.piece)[at[(openIdx + 2) % 4]];
 };
 
-// Absolute outline of a placed l-ruin feature, drawn the way makeFeatures does.
+// Absolute outline of a placed l-ruin feature, drawn the way featureLayer does.
 function featureFootprint(pl) {
   const { width: w, height: h } = pl;
   const wall = Math.min(0.5, w, h);

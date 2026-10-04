@@ -8,7 +8,7 @@ const { missionLayouts } = loadCorpus();
 
 const CANVAS = { width: 60, height: 44 };
 
-// Absolute outline of a placed rectangle feature, drawn the way makeFeatures
+// Absolute outline of a placed rectangle feature, drawn the way featureLayer
 // does. Reflection-symmetric, so it matches regardless of mirror parity.
 function featureFootprint(pl) {
   const { width: w, height: h } = pl;
