@@ -1,12 +1,33 @@
 // @vitest-environment happy-dom
 import { describe, it, expect } from "vitest";
-import { features, injectFeatureDefs, makeFeatures } from "./features.js";
+import { featureLayer, features } from "./features.js";
+import type { FeaturePlacement } from "./terrain-config.js";
 import { baseTheme } from "./presets/theme.js";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
 
 const doc = browserSvgDocument();
 // The browser backend's `SvgNode`s are real DOM nodes.
 const asElement = (node: SvgNode) => node as unknown as SVGElement;
+const CANVAS = { width: 60, height: 44 };
+
+/** Renders the layer's defs and its node together, as the card does. */
+function render(placements: FeaturePlacement[]) {
+  const layer = featureLayer(placements, baseTheme, CANVAS);
+  const defs = doc.createElement("defs");
+  layer.injectDefs?.(doc, defs);
+  return { layer, defs: asElement(defs), g: asElement(layer.draw(doc)) };
+}
+
+/** Every `<use>` in `g` names a def in `defs`. */
+function expectHrefsResolve(defs: SVGElement, g: SVGElement): void {
+  const uses = [...g.querySelectorAll("use")];
+  expect(uses.length).toBeGreaterThan(0);
+  for (const use of uses) {
+    const href = use.getAttribute("href")!;
+    expect(href.startsWith("#")).toBe(true);
+    expect(defs.querySelector(`[id="${href.slice(1)}"]`)).not.toBeNull();
+  }
+}
 
 describe("feature draw functions", () => {
   it("registers the four feature types", () => {
@@ -48,10 +69,9 @@ describe("feature draw functions", () => {
 
 });
 
-describe("makeFeatures", () => {
-  const CANVAS = { width: 60, height: 44 };
+describe("featureLayer", () => {
   // mirror:false by default so single-copy assertions are unambiguous.
-  const place = (over: Record<string, unknown> = {}) => ({
+  const place = (over: Partial<FeaturePlacement> = {}): FeaturePlacement => ({
     type: "generator",
     x: 10,
     y: 8,
@@ -62,21 +82,35 @@ describe("makeFeatures", () => {
     ...over,
   });
 
+  it("draws only when there are placements", () => {
+    expect(featureLayer([], baseTheme, CANVAS).draws).toBe(false);
+    expect(featureLayer([place()], baseTheme, CANVAS).draws).toBe(true);
+  });
+
+  it("references a def for every <use>, mirror copies included", () => {
+    const { defs, g } = render([
+      place(),
+      place({ mirror: true, type: "l-ruin", width: 4.5 }),
+      place({ type: "gantry", width: 2, height: 2, color: "indigo" }),
+    ]);
+    expect(g.childNodes.length).toBe(4);
+    expectHrefsResolve(defs, g);
+  });
+
   it("builds a <g id=features> with one <use> per placement", () => {
-    const g = asElement(
-      makeFeatures(
-        doc,
-        [place(), place({ type: "gantry", color: "indigo" })],
-        baseTheme,
-        CANVAS,
-      ),
-    );
+    const { g } = render([place(), place({ type: "gantry", color: "indigo" })]);
     expect(g.getAttribute("id")).toBe("features");
     expect(g.childNodes.length).toBe(2);
   });
 
+  it("numbers <use> ids across placements and their mirror copies", () => {
+    const { g } = render([place({ mirror: true }), place()]);
+    const ids = [...g.querySelectorAll("use")].map((u) => u.getAttribute("id"));
+    expect(ids).toEqual(["feature-0", "feature-1", "feature-2"]);
+  });
+
   it("translates and rotates around the box center", () => {
-    const g = asElement(makeFeatures(doc, [place({ rotation: 30 })], baseTheme, CANVAS));
+    const { g } = render([place({ rotation: 30 })]);
     const child = g.firstChild as SVGElement;
     expect(child.getAttribute("transform")).toBe(
       "translate(10 8) rotate(30 2.5 1.5)",
@@ -84,7 +118,7 @@ describe("makeFeatures", () => {
   });
 
   it("emits a second copy point-reflected through the canvas centre", () => {
-    const g = asElement(makeFeatures(doc, [place({ mirror: true, rotation: 30 })], baseTheme, CANVAS));
+    const { g } = render([place({ mirror: true, rotation: 30 })]);
     expect(g.childNodes.length).toBe(2);
     const mirror = g.childNodes[1] as SVGElement;
     // x' = 60-10-5 = 45, y' = 44-8-3 = 33, rotation' = 30+180 = 210.
@@ -94,17 +128,15 @@ describe("makeFeatures", () => {
   });
 
   it("omits the mirror copy when mirror is false", () => {
-    const g = asElement(makeFeatures(doc, [place({ mirror: false })], baseTheme, CANVAS));
-    expect(g.childNodes.length).toBe(1);
+    expect(render([place({ mirror: false })]).g.childNodes.length).toBe(1);
   });
 
   it("mirrors by default when mirror is unset", () => {
-    const g = asElement(makeFeatures(doc, [place({ mirror: undefined })], baseTheme, CANVAS));
-    expect(g.childNodes.length).toBe(2);
+    expect(render([place({ mirror: undefined })]).g.childNodes.length).toBe(2);
   });
 
   it("references the shape def and sets palette colours as custom properties", () => {
-    const g = asElement(makeFeatures(doc, [place({ color: "rust" })], baseTheme, CANVAS));
+    const { g } = render([place({ color: "rust" })]);
     const use = g.firstChild as SVGElement;
     expect(use.tagName.toLowerCase()).toBe("use");
     expect(use.getAttribute("href")).toBe("#feature-generator-5x3");
@@ -115,54 +147,30 @@ describe("makeFeatures", () => {
   });
 
   it("sets the shared stroke-width once on the group", () => {
-    const g = asElement(makeFeatures(doc, [place()], baseTheme, CANVAS));
+    const { g } = render([place()]);
     expect(g.getAttribute("stroke-width")).toBe(
       `${baseTheme.feature.stroke_width}`,
     );
   });
-});
-
-describe("injectFeatureDefs", () => {
-  const svgDefs = () => doc.createElement("defs");
-  const place = (over: Record<string, unknown> = {}) => ({
-    type: "generator",
-    x: 0,
-    y: 0,
-    width: 3,
-    height: 4,
-    color: "gunmetal",
-    ...over,
-  });
 
   it("emits one def per distinct (type, width, height)", () => {
-    const defs = svgDefs();
-    injectFeatureDefs(
-      doc,
-      [
-        place(),
-        place({ x: 9, color: "rust" }), // same shape, different colour/pos
-        place({ type: "gantry", width: 2, height: 2 }),
-      ],
-      defs,
-    );
+    const { defs } = render([
+      place({ width: 3, height: 4 }),
+      place({ width: 3, height: 4, x: 9, color: "rust" }), // same shape, different colour/pos
+      place({ type: "gantry", width: 2, height: 2 }),
+    ]);
     expect(defs.childNodes.length).toBe(2);
     expect(defs.querySelector("#feature-generator-3x4")).not.toBeNull();
     expect(defs.querySelector("#feature-gantry-2x2")).not.toBeNull();
   });
 
   it("sanitizes decimal dimensions in the def id", () => {
-    const defs = svgDefs();
-    injectFeatureDefs(
-      doc,
-      [place({ type: "l-ruin", width: 4.5, height: 5 })],
-      defs,
-    );
+    const { defs } = render([place({ type: "l-ruin", width: 4.5, height: 5 })]);
     expect(defs.querySelector("#feature-l-ruin-4_5x5")).not.toBeNull();
   });
 
   it("emits colour-free geometry styled with custom-property vars", () => {
-    const defs = svgDefs();
-    injectFeatureDefs(doc, [place({ width: 5, height: 3 })], defs);
+    const { defs } = render([place()]);
     const def = defs.querySelector("#feature-generator-5x3")!;
     const body = def.firstChild as SVGElement;
     expect(body.getAttribute("style")).toBe(

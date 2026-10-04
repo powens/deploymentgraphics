@@ -1,7 +1,8 @@
-import { injectTemplateDefs, makeBuildings } from "./buildings.js";
-import { injectFeatureDefs, makeFeatures } from "./features.js";
-import { injectIconDefs, makeIcons } from "./icons.js";
+import { buildingLayer } from "./buildings.js";
+import { featureLayer } from "./features.js";
+import { iconLayer } from "./icons.js";
 import { applyAttributes } from "./dom-helpers.js";
+import type { Layer, LayerRow } from "./layer.js";
 import type { SvgDocument, SvgNode } from "./svg-backend.js";
 import type { BuildingPlacement, CanvasSize } from "./building-coordinates.js";
 import type { FeaturePlacement, IconPlacement } from "./terrain-config.js";
@@ -33,23 +34,6 @@ export function resolveLayout(config: FullConfig): ResolvedLayout {
     features: [...(config.features ?? []), ...(layout?.features ?? [])],
   };
 }
-
-/**
- * One drawable layer of the card: the shared shapes it hangs in `<defs>` (if
- * any) and the node that references them. A layer that emits a def also emits
- * every reference to it, so def ids stay private to the layer.
- */
-export interface Layer {
-  /** A label for the reader only; it is not the emitted node's `id`. */
-  readonly id: string;
-  /** Appends this layer's shared shapes to the card's single `<defs>`. */
-  injectDefs?(doc: SvgDocument, defs: SvgNode): void;
-  /** The node to append, in draw order. */
-  draw(doc: SvgDocument): SvgNode;
-}
-
-/** A layer plus whether it draws at all. */
-type LayerRow = Layer & { readonly draws: boolean };
 
 /**
  * Read one of `BaseConfig`'s `{ draw?: boolean }` toggles; the default for an
@@ -307,25 +291,10 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
       draws: Boolean(territory) && drawn(config.base, "territory", true),
       draw: (doc) => territoryLine(doc, territory!, theme),
     },
-    {
-      // Always drawn (no layout gives an empty `<g id="buildings">`).
-      // Template defs belong to the board's template set, so they go in even
-      // when this layout references none.
-      id: "buildings",
-      draws: true,
-      injectDefs: (doc, defs) =>
-        injectTemplateDefs(doc, config.terrain.templates, defs, theme),
-      draw: (doc) =>
-        makeBuildings(doc, layout.buildings, config.terrain.templates, canvas, theme),
-    },
-    {
-      // After buildings: 40kdc area pieces render as opaque buildings, and
-      // the smaller pieces (l-ruins, generators, gantries) sit on top.
-      id: "features",
-      draws: layout.features.length > 0,
-      injectDefs: (doc, defs) => injectFeatureDefs(doc, layout.features, defs),
-      draw: (doc) => makeFeatures(doc, layout.features, theme, canvas),
-    },
+    buildingLayer(layout.buildings, config.terrain.templates, canvas, theme),
+    // After buildings: 40kdc area pieces render as opaque buildings, and the
+    // smaller pieces (l-ruins, generators, gantries) sit on top.
+    featureLayer(layout.features, theme, canvas),
     {
       id: "objectives",
       draws: (config.objectives?.length ?? 0) > 0,
@@ -340,12 +309,7 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
         : undefined,
       draw: (doc) => annotations(doc, config, theme),
     },
-    {
-      id: "icons",
-      draws: layout.icons.length > 0,
-      injectDefs: (doc, defs) => injectIconDefs(doc, layout.icons, defs, theme),
-      draw: (doc) => makeIcons(doc, layout.icons),
-    },
+    iconLayer(layout.icons, theme),
   ];
 
   return rows.filter((row) => row.draws);

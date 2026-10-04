@@ -4,7 +4,7 @@
 // and snapshots the absolute canvas positions, so anything that moves a
 // building (placement or mirroring) shows up as a snapshot diff.
 import { describe, it, expect } from "vitest";
-import { makeBuildings } from "./buildings";
+import { buildingLayer } from "./buildings";
 import { baseTheme } from "./presets/theme.js";
 import { templateBounds, type Template } from "./building-coordinates";
 import { browserSvgDocument, type SvgNode } from "./svg-backend.js";
@@ -76,8 +76,8 @@ function evalTransform(transform: string): (p: { x: number; y: number }) => { x:
 }
 
 /** Render placements, return absolute positions of every tracked local point. */
-function absolutePoints(placements: Parameters<typeof makeBuildings>[1]): string[] {
-  const group = asElement(makeBuildings(doc, placements, templates, canvas, baseTheme));
+function absolutePoints(placements: Parameters<typeof buildingLayer>[0]): string[] {
+  const group = asElement(buildingLayer(placements, templates, canvas, baseTheme).draw(doc));
   const out: string[] = [];
   for (const use of Array.from(group.querySelectorAll("use"))) {
     const href = use.getAttribute("href") ?? "";
@@ -94,7 +94,7 @@ function absolutePoints(placements: Parameters<typeof makeBuildings>[1]): string
 
 describe("rendered building geometry", () => {
   it("axis-aligned, rotated, nubbin, and mirrored buildings land at fixed canvas points", () => {
-    const placements: Parameters<typeof makeBuildings>[1] = [
+    const placements: Parameters<typeof buildingLayer>[0] = [
       // axis-aligned single corner, mirror on
       { type: "4x6", corners: { TL: { x: 10, y: 5 } } },
       // 90-degree rotation via a diagonal corner pair, mirror on
