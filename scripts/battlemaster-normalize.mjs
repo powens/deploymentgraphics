@@ -15,8 +15,8 @@ import {
   matmul,
   matvec,
   normalizeDegrees,
-  pointSegmentDistance,
   rotationMatrix,
+  shapeDistance,
 } from "../src/geometry.ts";
 
 // Translates upstream 40kdc "battlemaster-11e" composite layouts into the
@@ -290,26 +290,6 @@ const CLASS_REFERENCE = {
   ShortLine: ["bm-composite-shortline-barrier-348db27c93", "R180"],
   SmallRect: ["bm-composite-smallrect-generator-44c45681fa", "R0"],
   Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", "R90.FX"],
-};
-
-/**
- * Symmetric Hausdorff distance from each ring's vertices to the other ring's
- * *outline*. Vertex-to-vertex comparison fails against upstream's densely
- * traced outlines, where a mid-edge vertex can be inches from the nearest
- * vertex of a coarser ring of the same shape.
- */
-const shapeDistance = (a, b) => {
-  const toOutline = (ring, other) =>
-    Math.max(
-      ...ring.map((p) =>
-        Math.min(
-          ...other.map((_, i) =>
-            pointSegmentDistance(p, other[i], other[(i + 1) % other.length]),
-          ),
-        ),
-      ),
-    );
-  return Math.max(toOutline(a, b), toOutline(b, a));
 };
 
 /** A ring translated so its area centroid sits on the origin. */
