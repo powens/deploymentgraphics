@@ -36,6 +36,10 @@ function rendered(snapshot: Snapshot): Exclude<RenderInstruction, { error: strin
   return render;
 }
 
+/** A config the renderer accepts, as the YAML editor would hold it. */
+const CONFIG_YAML = yaml.dump(buildConfig({ mission: missions.dawn_of_war }));
+const CONFIG = yaml.load(CONFIG_YAML);
+
 function inYaml(text: string, controls: Controls = defaultControls()): Session {
   return { controls, mode: "yaml", yaml: text };
 }
@@ -160,9 +164,9 @@ describe("openSession", () => {
   it("renders a saved yaml override at the saved rotation", () => {
     const snapshot = openSession({
       search: "",
-      saved: stored({ mode: "yaml", yaml: "canvas: {}", controls: { rot: "90" } }),
+      saved: stored({ mode: "yaml", yaml: CONFIG_YAML, controls: { rot: "90" } }),
     });
-    expect(rendered(snapshot)).toEqual({ config: { canvas: {} }, rotation: 90 });
+    expect(rendered(snapshot)).toEqual({ config: CONFIG, rotation: 90 });
   });
 });
 
@@ -194,12 +198,12 @@ describe("step: controlsEdited", () => {
   });
 
   it("re-renders a yaml override at a new rotation", () => {
-    const snapshot = step(inYaml("canvas: {}"), {
+    const snapshot = step(inYaml(CONFIG_YAML), {
       type: "controlsEdited",
       controls: { ...defaultControls(), rot: "90" },
     });
     expect(snapshot.session.mode).toBe("yaml");
-    expect(rendered(snapshot)).toEqual({ config: { canvas: {} }, rotation: 90 });
+    expect(rendered(snapshot)).toEqual({ config: CONFIG, rotation: 90 });
   });
 });
 
@@ -223,8 +227,8 @@ describe("step: yamlTyped", () => {
 describe("step: yamlSettled", () => {
   it("renders the parsed YAML at the controls' rotation", () => {
     const controls = { ...defaultControls(), rot: "-90" };
-    const snapshot = step(inYaml("canvas: {}", controls), { type: "yamlSettled" });
-    expect(rendered(snapshot)).toEqual({ config: { canvas: {} }, rotation: -90 });
+    const snapshot = step(inYaml(CONFIG_YAML, controls), { type: "yamlSettled" });
+    expect(rendered(snapshot)).toEqual({ config: CONFIG, rotation: -90 });
     expect(snapshot.yamlError).toBe(null);
   });
 
@@ -234,17 +238,29 @@ describe("step: yamlSettled", () => {
     expect(snapshot.render).toBe(null);
   });
 
-  it("names a layout_name the YAML does not define", () => {
-    const text = "terrain: { layout_name: bm-other, layout: { bm-mine: {} } }";
-    const snapshot = step(inYaml(text), { type: "yamlSettled" });
-    expect(snapshot.yamlError).toMatch(/^unknown layout "bm-other"/);
+  /** `CONFIG_YAML` holding only layout `bm-mine`, with `name` selected. */
+  const selecting = (name: string): string =>
+    yaml.dump({
+      ...(CONFIG as object),
+      terrain: { templates: {}, layout: { "bm-mine": {} }, layout_name: name },
+    });
+
+  // The editor holds only the selected layout, so renaming it is easy to do.
+  it("names a layout_name the YAML does not define, and leaves the stage alone", () => {
+    const snapshot = step(inYaml(selecting("bm-other")), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toBe('unknown layout "bm-other": not a key of terrain.layout');
     expect(snapshot.render).toBe(null);
   });
 
   it("renders a layout_name the YAML defines", () => {
-    const text = "terrain: { layout_name: bm-mine, layout: { bm-mine: {} } }";
-    const snapshot = step(inYaml(text), { type: "yamlSettled" });
+    const snapshot = step(inYaml(selecting("bm-mine")), { type: "yamlSettled" });
     expect(snapshot.yamlError).toBe(null);
+  });
+
+  it("names the field of a config the renderer could not draw", () => {
+    const snapshot = step(inYaml("canvas: {}"), { type: "yamlSettled" });
+    expect(snapshot.yamlError).toBe("config.base: expected an object, got undefined");
+    expect(snapshot.render).toBe(null);
   });
 
   for (const text of ["just a string", "- a list"]) {

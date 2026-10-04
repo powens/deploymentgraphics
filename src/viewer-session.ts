@@ -6,10 +6,12 @@
  * `bundle.ts`).
  */
 import * as yaml from "js-yaml";
+import { checkConfig } from "./check-config.js";
 import { makeMissionCard } from "./main.js";
 import { buildConfig } from "./presets/build-config.js";
 import { baseConfig } from "./presets/base.js";
 import { missions } from "./presets/missions.js";
+import { baseTheme } from "./presets/theme.js";
 import type { FullConfig } from "./types.js";
 import {
   controlsFromSearch,
@@ -106,32 +108,14 @@ function renderOf(session: Session): Pick<Snapshot, "render" | "yamlError"> {
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
     return { render: null, yamlError: "YAML must describe a config object." };
   }
-  const missing = missingLayout(parsed);
-  if (missing !== null) {
-    return {
-      render: null,
-      yamlError:
-        `unknown layout "${missing}": the editor holds only the layout the ` +
-        "controls selected; pick another layout there, or add it under terrain.layout.",
-    };
+  // Checked against the theme `renderCard` draws with, so a malformed config
+  // is reported under the editor and the last good card stays on stage.
+  try {
+    checkConfig(parsed, baseTheme);
+  } catch (error) {
+    return { render: null, yamlError: errorMessage(error) };
   }
-  // Otherwise unvalidated: the renderer reports what it cannot draw.
-  return { render: { config: parsed as FullConfig, rotation }, yamlError: null };
-}
-
-/**
- * The `terrain.layout_name` the YAML names but does not define, or null. The
- * editor carries only the selected layout, so renaming it would otherwise draw
- * a bare board with no word of why.
- */
-function missingLayout(parsed: object): string | null {
-  const terrain = (parsed as { terrain?: unknown }).terrain;
-  if (!terrain || typeof terrain !== "object") return null;
-  const { layout, layout_name: name } = terrain as { layout?: unknown; layout_name?: unknown };
-  if (typeof name !== "string" || name === "") return null;
-  const defined =
-    layout !== null && typeof layout === "object" && Object.prototype.hasOwnProperty.call(layout, name);
-  return defined ? null : name;
+  return { render: { config: parsed, rotation }, yamlError: null };
 }
 
 function snapshotOf(

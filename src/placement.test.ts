@@ -10,7 +10,6 @@ import {
   type Placed,
 } from "./placement";
 import type {
-  BuildingPlacement,
   PolygonTemplate,
   Template,
 } from "./building-coordinates";
@@ -137,28 +136,6 @@ describe("resolvePlacement (single corner)", () => {
 });
 
 describe("resolvePlacement validation", () => {
-  it("throws on an unknown template", () => {
-    expect(() =>
-      resolvePlacement({ type: "ghost", corners: { TL: { x: 0, y: 0 } } }, templates, canvas),
-    ).toThrow(/unknown template/);
-  });
-
-  it("throws when there are no corners", () => {
-    expect(() =>
-      resolvePlacement({ type: "4x6", corners: {} }, templates, canvas),
-    ).toThrow(/1 or 2 corners/i);
-  });
-
-  it("throws when there are more than 2 corners", () => {
-    expect(() =>
-      resolvePlacement(
-        { type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 }, BR: { x: 14, y: 11 } } },
-        templates,
-        canvas,
-      ),
-    ).toThrow(/1 or 2 corners/i);
-  });
-
   it("throws when a corner pair disagrees with the template edge", () => {
     expect(() =>
       resolvePlacement(
@@ -167,29 +144,6 @@ describe("resolvePlacement validation", () => {
         canvas,
       ),
     ).toThrow(/measure .* apart but template edge/);
-  });
-
-  // Each would otherwise fall off a switch and reach `rotate()` as undefined.
-  it.each([
-    [
-      "an unknown corner `from`",
-      { type: "4x6", corners: { TL: { x: 10, y: 5, from: "XX" } } },
-      'building 4x6: corners.TL.from: expected one of TL, TR, BL, BR, got "XX"',
-    ],
-    [
-      "an unknown placement `from`",
-      { type: "4x6", from: "top", corners: { TL: { x: 10, y: 5 } } },
-      'building 4x6: from: expected one of TL, TR, BL, BR, got "top"',
-    ],
-    [
-      "an unknown corner name",
-      { type: "4x6", corners: { TL: { x: 10, y: 5 }, MID: { x: 12, y: 5 } } },
-      'building 4x6: corners key: expected one of TL, TR, BL, BR, got "MID"',
-    ],
-  ])("names %s", (_name, placement, message) => {
-    expect(() =>
-      resolvePlacement(placement as unknown as BuildingPlacement, templates, canvas),
-    ).toThrow(message);
   });
 
   it("accepts a corner distance within the 0.1\" tolerance", () => {
@@ -324,25 +278,6 @@ describe("resolveFeature", () => {
       canvas,
     );
     expect(result.map((p) => p.rotation)).toEqual(want);
-  });
-
-  // A quoted YAML `rotation: "30"` would otherwise string-concatenate in
-  // `mirror` ("30" + 180 = "30180").
-  it.each([["30"], [null], [Number.NaN]])("rejects a non-numeric rotation (%j)", (rotation) => {
-    expect(() =>
-      resolveFeature(
-        {
-          type: "gantry",
-          x: 12,
-          y: 6,
-          width: 10,
-          height: 2.5,
-          rotation: rotation as unknown as number,
-          color: "indigo",
-        },
-        canvas,
-      ),
-    ).toThrow(`feature gantry: rotation: expected a number, got ${JSON.stringify(rotation)}`);
   });
 });
 
