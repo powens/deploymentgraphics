@@ -23,6 +23,7 @@ import {
   rotate,
   rotationMatrix,
   segmentsCross,
+  shapeDistance,
   toDegrees,
   toRadians,
   type Ring,
@@ -229,6 +230,23 @@ describe("ringGap", () => {
     );
     expect(vertexOnly).toBeGreaterThan(0.2);
     expect(ringGap(wide, tall)).toBe(0);
+  });
+});
+
+describe("shapeDistance", () => {
+  it("is zero for the same outline traced with an extra mid-edge vertex", () => {
+    // `ringMismatch` reads the (0.5, 0) vertex as 0.5 off the square.
+    const traced: Ring = [{ x: 0.5, y: 0 }, ...unitSquare.slice(1), unitSquare[0]];
+    expect(ringMismatch(unitSquare, traced)).toBeCloseTo(0.5, 12);
+    expect(shapeDistance(unitSquare, traced)).toBe(0);
+  });
+
+  it("takes the worse of the two directions", () => {
+    // Each inner vertex is 0.25 from the outer outline, but each outer corner
+    // is 0.25 * sqrt(2) from the inner one.
+    const inner = rect(0.25, 0.25, 0.5, 0.5);
+    expect(shapeDistance(inner, unitSquare)).toBeCloseTo(0.25 * Math.SQRT2, 12);
+    expect(shapeDistance(unitSquare, inner)).toBeCloseTo(0.25 * Math.SQRT2, 12);
   });
 });
 

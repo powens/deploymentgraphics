@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
+  buildingRings,
+  featureRings,
   mirror,
   placeBuildings,
   placedFromPin,
@@ -14,6 +16,7 @@ import type {
   PolygonTemplate,
   Template,
 } from "./building-coordinates";
+import { ringMismatch, type Ring } from "./geometry";
 
 const canvas = { width: 60, height: 44 };
 const templates: Record<string, Template> = {
@@ -440,5 +443,133 @@ describe("placedFromPin (the last step of every converter fit)", () => {
     expect(placed.box.width).toBe(6);
     expect(placed.box.height).toBe(4);
     expect(placed.name).toBe("x");
+  });
+});
+
+describe("buildingRings / featureRings (the rings an emitted row draws)", () => {
+  // Board rings are compared as vertex sets: the order is the outline's own.
+  const expectRing = (got: Ring, want: Ring) => {
+    expect(got).toHaveLength(want.length);
+    expect(ringMismatch(got, want)).toBeLessThan(1e-9);
+  };
+
+  it("draws a rectangle template's box where the corner pin puts it", () => {
+    const rings = buildingRings(
+      { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 } } },
+      templates,
+      canvas,
+    );
+    expect(rings).toHaveLength(1);
+    expectRing(rings[0], [
+      { x: 10, y: 5 },
+      { x: 14, y: 5 },
+      { x: 14, y: 11 },
+      { x: 10, y: 11 },
+    ]);
+  });
+
+  it("draws a polygon template's points, not its declared box", () => {
+    // A declared box narrower than the points: the pin uses the box, the
+    // ring the points.
+    const poly: Record<string, Template> = {
+      wedge: {
+        points: [
+          { x: 0, y: 0 },
+          { x: 3, y: 0 },
+          { x: 0, y: 2 },
+        ],
+        width: 2,
+        height: 2,
+      },
+    };
+    const [ring] = buildingRings(
+      { type: "wedge", mirror: false, corners: { TL: { x: 10, y: 5 } } },
+      poly,
+      canvas,
+    );
+    expectRing(ring, [
+      { x: 10, y: 5 },
+      { x: 13, y: 5 },
+      { x: 10, y: 7 },
+    ]);
+  });
+
+  it("is placedRing over each resolved Placed, mirror copy included", () => {
+    const row: BuildingPlacement = {
+      type: "6x12",
+      corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 9.4721 } },
+    };
+    const resolved = resolvePlacement(row, templates, canvas);
+    const rings = buildingRings(row, templates, canvas);
+    expect(rings).toHaveLength(2);
+    resolved.forEach((placed, i) => {
+      expectRing(
+        rings[i],
+        placedRing(
+          [
+            { x: 0, y: 0 },
+            { x: 6, y: 0 },
+            { x: 6, y: 12 },
+            { x: 0, y: 12 },
+          ],
+          placed,
+        ),
+      );
+    });
+  });
+
+  it("throws on an unknown template, as resolving does", () => {
+    expect(() =>
+      buildingRings({ type: "nope", corners: { TL: { x: 0, y: 0 } } }, templates, canvas),
+    ).toThrow("building references unknown template: nope");
+  });
+
+  it("draws a feature's box about its centre by default", () => {
+    const [ring] = featureRings(
+      {
+        type: "generator",
+        x: 10,
+        y: 8,
+        width: 4,
+        height: 2,
+        rotation: 90,
+        color: "teal",
+        mirror: false,
+      },
+      canvas,
+    );
+    // A quarter turn about (12, 9): the 4x2 box stands up as 2x4.
+    expectRing(ring, [
+      { x: 11, y: 7 },
+      { x: 13, y: 7 },
+      { x: 13, y: 11 },
+      { x: 11, y: 11 },
+    ]);
+  });
+
+  it("draws a feature's own outline when given, mirror copy included", () => {
+    const row = {
+      type: "l-ruin",
+      x: 10,
+      y: 8,
+      width: 4,
+      height: 2,
+      rotation: 30,
+      color: "teal",
+    };
+    const outline: Ring = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 0, y: 2 },
+    ];
+    const rings = featureRings(row, canvas, outline);
+    const resolved = resolveFeature(row, canvas);
+    expect(rings).toHaveLength(2);
+    resolved.forEach((placed, i) => {
+      expectRing(rings[i], placedRing(outline, placed));
+    });
   });
 });

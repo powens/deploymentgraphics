@@ -247,3 +247,49 @@ export function resolveFeature(
   };
   return withMirror(primary, feature.mirror, canvas);
 }
+
+/** A `width` x `height` rectangle with its top-left at the origin. */
+function boxRing({ width, height }: { width: number; height: number }): Ring {
+  return [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ];
+}
+
+/**
+ * The board rings a `templates` row draws, one per `Placed` it resolves to
+ * (primary first, then any mirror copy): its template's points, else its
+ * rectangle, carried through `placedRing` as the renderer's `<use>` carries
+ * the template def. Converter tests check an emitted row against this rather
+ * than re-deriving the renderer's maths.
+ */
+export function buildingRings(
+  placement: BuildingPlacement,
+  templates: Record<string, Template>,
+  canvas: CanvasSize,
+): Ring[] {
+  return resolvePlacement(placement, templates, canvas).map((placed) => {
+    const template = templates[placed.name];
+    return placedRing(
+      "points" in template ? template.points : boxRing(template),
+      placed,
+    );
+  });
+}
+
+/**
+ * The board rings a `features` row draws, as `buildingRings` does for a
+ * building: `outline` (the feature type's local shape at the row's size)
+ * when given, else the row's box.
+ */
+export function featureRings(
+  feature: FeaturePlacement,
+  canvas: CanvasSize,
+  outline: Ring = boxRing(feature),
+): Ring[] {
+  return resolveFeature(feature, canvas).map((placed) =>
+    placedRing(outline, placed),
+  );
+}

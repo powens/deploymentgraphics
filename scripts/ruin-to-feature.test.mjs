@@ -7,7 +7,7 @@ import {
   ringMismatch,
   ringsOverlap,
 } from "../src/geometry.ts";
-import { placedRing, resolveFeature } from "../src/placement.ts";
+import { featureRings } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 import { layoutPlacements } from "./layout-to-placements.mjs";
@@ -39,12 +39,12 @@ const outerCornerOf = (entry) => {
   return ring[at[(openIdx + 2) % 4]];
 };
 
-// Absolute outline of a placed l-ruin feature, drawn the way makeFeatures does.
-function featureFootprint(pl) {
+// Local outline of an l-ruin feature, the shape makeFeatures draws.
+function ruinOutline(pl) {
   const { width: w, height: h } = pl;
   const wall = Math.min(0.5, w, h);
   const mirror = pl.type.includes("mirror");
-  const local = mirror
+  return mirror
     ? [
         { x: w, y: 0 },
         { x: w - wall, y: 0 },
@@ -61,9 +61,13 @@ function featureFootprint(pl) {
         { x: w, y: h },
         { x: 0, y: h },
       ];
-  // mirror:false, so the primary is the only `Placed`.
-  const [placed] = resolveFeature(pl, CANVAS);
-  return placedRing(local, placed);
+}
+
+// Absolute outline of a placed l-ruin feature.
+function featureFootprint(pl) {
+  const rings = featureRings(pl, CANVAS, ruinOutline(pl));
+  expect(rings).toHaveLength(1); // mirror:false
+  return rings[0];
 }
 
 // One representative L-ruin piece (with its layout) per part.
@@ -120,8 +124,7 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
       const { width: w, height: h } = placement;
       const localOuter =
         placement.type === "l-ruin" ? { x: 0, y: h } : { x: w, y: h };
-      const [placed] = resolveFeature(placement, CANVAS);
-      const [drawn] = placedRing([localOuter], placed);
+      const [[drawn]] = featureRings(placement, CANVAS, [localOuter]);
 
       const outer = outerCornerOf(entry);
       expect(distance(drawn, outer)).toBeLessThan(0.01);
