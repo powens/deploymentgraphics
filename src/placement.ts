@@ -1,8 +1,6 @@
 // `.ts` specifiers: the 40kdc converters load this module under plain Node,
 // which resolves specifiers literally. See the tsconfig note.
 import {
-  localCorner,
-  resolveCorner,
   templateBounds,
   type Anchor,
   type BuildingPlacement,
@@ -112,6 +110,38 @@ function withMirror(
 }
 
 /**
+ * The canvas point a corner spec names: x/y measured inward from its anchor
+ * (the spec's `from`, else the placement's).
+ */
+function canvasCorner(spec: CornerSpec, defaultFrom: Anchor, canvas: CanvasSize): Point {
+  const { x, y } = spec;
+  switch (spec.from ?? defaultFrom) {
+    case "TL":
+      return { x, y };
+    case "TR":
+      return { x: canvas.width - x, y };
+    case "BL":
+      return { x, y: canvas.height - y };
+    case "BR":
+      return { x: canvas.width - x, y: canvas.height - y };
+  }
+}
+
+/** Template-local position of a named template-box corner. */
+function localCorner(corner: Anchor, size: { width: number; height: number }): Point {
+  switch (corner) {
+    case "TL":
+      return { x: 0, y: 0 };
+    case "TR":
+      return { x: size.width, y: 0 };
+    case "BR":
+      return { x: size.width, y: size.height };
+    case "BL":
+      return { x: 0, y: size.height };
+  }
+}
+
+/**
  * Resolves a corner-pin placement to its primary `Placed` (no mirror). One
  * corner fixes position at rotation 0; a second derives the rotation and must
  * match the template edge length. The placement's shape is `checkConfig`'s.
@@ -126,13 +156,13 @@ function resolvePrimary(
   const size = templateBounds(templates[placement.type], placement.type);
 
   const [[cornerA, specA]] = entries;
-  const pA = resolveCorner(specA, defaultFrom, canvas);
+  const pA = canvasCorner(specA, defaultFrom, canvas);
   const lA = localCorner(cornerA, size);
 
   let theta = 0;
   if (entries.length === 2) {
     const [, [cornerB, specB]] = entries;
-    const pB = resolveCorner(specB, defaultFrom, canvas);
+    const pB = canvasCorner(specB, defaultFrom, canvas);
     const lB = localCorner(cornerB, size);
 
     const targetLength = distance(pA, pB);
