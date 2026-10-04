@@ -2,8 +2,8 @@
  * The viewer's **Viewer session**: the visitor's Controls, which editor drives
  * the render, and the YAML text when the YAML editor does. Every transition
  * returns a full {@link Snapshot} for `static/app.js` to write back, so the page
- * never depends on the order it applies them in. Demo-only (reached via
- * `bundle.ts`).
+ * never depends on the order it applies them in; {@link drawSnapshot} decides
+ * where its render lands. Demo-only (reached via `bundle.ts`).
  */
 import * as yaml from "js-yaml";
 import { checkConfig } from "./check-config.js";
@@ -51,6 +51,20 @@ export interface Snapshot {
   readonly yamlError: string | null;
   /** The export filename, without extension. */
   readonly filenameStem: string;
+  /** True for a page load's snapshot: the stage holds no card yet. */
+  readonly opening: boolean;
+}
+
+/** What the stage shows: a card (exportable) or a message (not). */
+export type Stage =
+  | { readonly card: SVGElement }
+  | { readonly message: string; readonly error: boolean };
+
+/** What drawing a snapshot puts on the page. */
+export interface Drawn {
+  /** The stage's new content, or null to leave it as it is. */
+  readonly stage: Stage | null;
+  readonly yamlError: string | null;
 }
 
 export type SessionEvent =
@@ -121,7 +135,7 @@ function renderOf(session: Session): Pick<Snapshot, "render" | "yamlError"> {
 function snapshotOf(
   session: Session,
   render: Pick<Snapshot, "render" | "yamlError">,
-  { store = true }: { store?: boolean } = {},
+  { store = true, opening = false }: { store?: boolean; opening?: boolean } = {},
 ): Snapshot {
   const { controls, mode } = session;
   return {
@@ -137,6 +151,7 @@ function snapshotOf(
       mode === "yaml"
         ? "deployment-graphics"
         : `${controls.m.replace(/_/g, "-")}-${controls.t}`,
+    opening,
   };
 }
 
@@ -185,14 +200,14 @@ export function openSession({
       mode: "controls",
       yaml: null,
     };
-    return snapshotOf(session, renderOf(session), { store: false });
+    return snapshotOf(session, renderOf(session), { store: false, opening: true });
   }
   const session = restore(saved) ?? {
     controls: defaultControls(),
     mode: "controls",
     yaml: null,
   };
-  return snapshotOf(session, renderOf(session));
+  return snapshotOf(session, renderOf(session), { opening: true });
 }
 
 /** The session after one event, and what the page shows for it. */
@@ -266,6 +281,29 @@ export function renderCard(
   } catch (error) {
     return { error: errorMessage(error) };
   }
+}
+
+const NO_CARD_YET: Stage = { message: "No card yet: see the YAML error above.", error: false };
+
+/**
+ * Draws a snapshot's render and decides where the outcome lands. A failure in
+ * yaml mode is the visitor's to fix: it is reported under the editor and the
+ * last good card stays on stage, still exportable (on a page load there is
+ * none, so the stage says why). A failure in controls mode replaces the stage.
+ * Needs a DOM (see {@link renderCard}).
+ */
+export function drawSnapshot({ session, render, yamlError, opening }: Snapshot): Drawn {
+  const result = render === null ? null : renderCard(render);
+  if (result !== null && "card" in result) {
+    return { stage: result, yamlError };
+  }
+  if (result !== null && session.mode === "controls") {
+    return { stage: { message: result.error, error: true }, yamlError };
+  }
+  return {
+    stage: opening ? NO_CARD_YET : null,
+    yamlError: result === null ? yamlError : `Render failed: ${result.error}`,
+  };
 }
 
 /**

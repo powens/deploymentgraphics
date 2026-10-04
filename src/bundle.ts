@@ -15,9 +15,9 @@ export {
   writeControlsToDom,
 } from "./viewer-controls.js";
 export {
+  drawSnapshot,
   editorYaml,
   openSession,
-  renderCard,
   step,
   STORAGE_KEY,
 } from "./viewer-session.js";
