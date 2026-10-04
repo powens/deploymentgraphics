@@ -1,6 +1,5 @@
 import { applyAttributes } from "./dom-helpers.js";
 import type { SvgDocument, SvgNode } from "./svg-backend.js";
-import { toPoint } from "./building-coordinates.js";
 import type { IconPlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 
@@ -63,6 +62,9 @@ const fortress: IconDef = {
 
 const icons: Record<string, IconDef> = { skull, fortress };
 
+/** The icon `type`s a placement may name. */
+export const iconTypes: readonly string[] = Object.keys(icons);
+
 export function makeShape(doc: SvgDocument, shape: IconShape): SvgNode {
   switch (shape.tag) {
     case "circle": {
@@ -98,7 +100,7 @@ function iconDefId(type: string, player?: "attacker" | "defender"): string {
  * used in `placements`. The disk fill resolves from `theme.deployment[player]`
  * when tagged, else `theme.icon.circle`; the glyph body takes `theme.icon.glyph`
  * and the cutouts take the resolved disk fill so they read as the disk showing
- * through. Throws on an unknown type.
+ * through.
  */
 export function injectIconDefs(
   doc: SvgDocument,
@@ -111,7 +113,6 @@ export function injectIconDefs(
     const id = iconDefId(type, player);
     if (seen.has(id)) continue;
     seen.add(id);
-    if (!Object.hasOwn(icons, type)) throw new Error(`unknown icon type: ${type}`);
     const def = icons[type];
 
     const diskFill = player
@@ -149,7 +150,7 @@ export function injectIconDefs(
 /**
  * Builds a `<g id="icons">` of `<use>` elements, one per placement, each
  * referencing its `#icon-<type>` def and translated so the 4×4" design box is
- * recentered on `pos`. Throws on an unknown type.
+ * recentered on `pos`.
  */
 export function makeIcons(
   doc: SvgDocument,
@@ -159,12 +160,9 @@ export function makeIcons(
   group.setAttribute("id", "icons");
   let counter = 0;
   for (const placement of placements) {
-    if (!Object.hasOwn(icons, placement.type)) {
-      throw new Error(`unknown icon type: ${placement.type}`);
-    }
     const use = doc.createElement("use");
     use.setAttribute("href", `#${iconDefId(placement.type, placement.player)}`);
-    const { x, y } = toPoint(placement.pos, `icon ${placement.type} pos`);
+    const { x, y } = placement.pos;
     use.setAttribute(
       "transform",
       `translate(${x - ICON_SIZE / 2} ${y - ICON_SIZE / 2})`,

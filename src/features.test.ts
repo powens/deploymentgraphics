@@ -120,18 +120,6 @@ describe("makeFeatures", () => {
       `${baseTheme.feature.stroke_width}`,
     );
   });
-
-  it("throws on an unknown feature type", () => {
-    expect(() =>
-      makeFeatures(doc, [place({ type: "nope" })], baseTheme, CANVAS),
-    ).toThrow(/unknown feature type/);
-  });
-
-  it("throws on an unknown colour", () => {
-    expect(() =>
-      makeFeatures(doc, [place({ color: "chartreuse" })], baseTheme, CANVAS),
-    ).toThrow(/unknown feature colour/);
-  });
 });
 
 describe("injectFeatureDefs", () => {
@@ -183,12 +171,5 @@ describe("injectFeatureDefs", () => {
     expect(body.getAttribute("fill")).toBeNull(); // no baked colour
     const accent = def.lastChild as SVGElement;
     expect(accent.getAttribute("style")).toBe("fill:var(--accent)");
-  });
-
-  it("throws on an unknown feature type", () => {
-    const defs = svgDefs();
-    expect(() =>
-      injectFeatureDefs(doc, [place({ type: "nope" })], defs),
-    ).toThrow(/unknown feature type/);
   });
 });
