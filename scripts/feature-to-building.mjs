@@ -37,9 +37,11 @@ function buildingFor(part, footprint, gwTemplates) {
   const long = Math.max(
     ...ring.map((p, i) => distance(p, ring[(i + 1) % ring.length])),
   );
-  const width = name && templateBounds(gwTemplates[name], name).width;
-  // Vertex count catches a reshaped barricade, the long edge a resized one.
-  if (name && near(long, width) && (name !== "barricade" || ring.length === 8)) {
+  const template = name && gwTemplates[name];
+  const width = name && templateBounds(template, name).width;
+  // Vertex count catches a reshaped footprint, the long edge a resized one.
+  const verts = template?.points?.length ?? 4;
+  if (name && near(long, width) && ring.length === verts) {
     return { name, width };
   }
   throw new Error(
