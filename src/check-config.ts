@@ -7,6 +7,13 @@ import type { FullConfig } from "./types.js";
 const isObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
+/**
+ * An optional field left out, or emptied in YAML (`mirror:` parses as `null`):
+ * either way the render uses its default.
+ */
+const absent = (value: unknown): value is undefined | null =>
+  value === undefined || value === null;
+
 function expected(field: string, what: string, value: unknown): Error {
   return new Error(`${field}: expected ${what}, got ${JSON.stringify(value)}`);
 }
@@ -28,14 +35,14 @@ function objectAt(
   return object(parent[key], `${field}.${key}`, what);
 }
 
-/** The array at `parent[key]`, `[]` when absent. */
+/** The array at `parent[key]`, `[]` when `absent`. */
 function optionalArrayAt(
   parent: Record<string, unknown>,
   key: string,
   field: string,
 ): unknown[] {
   const value = parent[key];
-  if (value === undefined) return [];
+  if (absent(value)) return [];
   if (!Array.isArray(value)) throw expected(`${field}.${key}`, "an array", value);
   return value;
 }
@@ -61,7 +68,7 @@ function optional(
   field: string,
   check: (value: unknown, field: string) => void,
 ): void {
-  if (value !== undefined) check(value, field);
+  if (!absent(value)) check(value, field);
 }
 
 function oneOf(value: unknown, allowed: readonly string[], field: string): void {
@@ -85,6 +92,21 @@ function anchor(value: unknown, field: string): void {
 }
 
 /**
+ * A `terrain.layout_name` that is not a key of `terrain.layout`. Its own class
+ * so a caller that knows where the config came from (the viewer's editor) can
+ * say how to fix it in its own words.
+ */
+export class UnknownLayoutError extends Error {
+  constructor(
+    readonly layout: string,
+    why: string,
+  ) {
+    super(`unknown layout ${JSON.stringify(layout)}: ${why}`);
+    this.name = "UnknownLayoutError";
+  }
+}
+
+/**
  * The layout `name` selects, or `undefined` for `""` (no layout). Throws on
  * any other id `layouts` does not own: a mistyped or stale id would otherwise
  * render a bare board that looks deliberate. With no layouts at all the likely
@@ -98,7 +120,7 @@ function selectedLayout(layouts: Record<string, unknown>, name: string): unknown
       ? "terrain.layout is empty; pass the terrain that defines it " +
         "(e.g. terrain: gwTerrain)"
       : "not a key of terrain.layout";
-  throw new Error(`unknown layout ${JSON.stringify(name)}: ${why}`);
+  throw new UnknownLayoutError(name, why);
 }
 
 /** A rectangle's size, or a polygon's points; `templateBounds` owns the box rules. */
@@ -147,7 +169,7 @@ function checkIcon(value: unknown, field: string): void {
   oneOf(icon.type, iconTypes, `${field}.type`);
   point(icon.pos, `${field}.pos`);
   const { player } = icon;
-  if (player !== undefined && player !== "attacker" && player !== "defender") {
+  if (!absent(player) && player !== "attacker" && player !== "defender") {
     throw expected(`${field}.player`, '"attacker" or "defender"', player);
   }
 }
@@ -239,7 +261,7 @@ export function checkConfig(config: unknown, theme?: Theme): asserts config is F
     if (!Array.isArray(zone)) throw expected(field, "an array", zone);
     zone.forEach((p, i) => point(p, `${field}[${i}]`));
   }
-  if (deployment.territory !== undefined) {
+  if (!absent(deployment.territory)) {
     const territory = objectAt(deployment, "territory", "config.deployment");
     point(territory.start, "config.deployment.territory.start");
     point(territory.end, "config.deployment.territory.end");
