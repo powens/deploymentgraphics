@@ -120,6 +120,20 @@ describe("render-boundary validation", () => {
     } satisfies FullConfig;
     expect(() => render(config)).not.toThrow();
   });
+
+  // An emptied YAML value (`mirror:`) parses as null: it means the default.
+  it.each([
+    ["deployment.territory", valid()],
+    ["objectives", valid()],
+    ["terrain.layout.1.templates", withTerrain()],
+    ["terrain.layout.1.templates.0.from", withTerrain()],
+    ["terrain.layout.1.templates.0.mirror", withTerrain()],
+    ["terrain.layout.1.icons.0.player", withTerrain()],
+    ["terrain.layout.1.features.0.rotation", withTerrain()],
+    ["terrain.layout.1.features.0.mirror", withTerrain()],
+  ])("reads a null %s as absent", (path, base) => {
+    expect(render(withField(path, null, base))).toBe(render(withField(path, undefined, base)));
+  });
 });
 
 describe("layout selection", () => {
@@ -225,7 +239,6 @@ describe("features", () => {
     ["height", "3", '.height: expected a positive number, got "3"'],
     // A quoted YAML `rotation: "30"` would string-concatenate in `mirror`.
     ["rotation", "30", '.rotation: expected a number, got "30"'],
-    ["rotation", null, ".rotation: expected a number, got null"],
     ["mirror", "no", '.mirror: expected a boolean, got "no"'],
   ])("names feature %s when it is %j", (path, value, message) => {
     expect(() => render(inLayout(`features.0.${path}`, value))).toThrow(

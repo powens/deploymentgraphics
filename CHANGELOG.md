@@ -238,7 +238,9 @@ for a board with no terrain. Prototype keys no longer count as layouts either:
   `buildConfig`, which has no theme, checks only that it is a string. A
   building whose two corners disagree with its template edge still throws
   `building 4x6: corners TL->TR measure …`, from placement. The unknown-layout
-  messages are unchanged.
+  messages are unchanged. An optional field set to `null` (an emptied YAML
+  value, `mirror:`) is read as absent and takes its default; a null
+  `rotation`, `endX`/`endY` or corner `from` used to throw.
 
   `resolveMission` names an unknown disposition and lists the valid ones
   (`unknown disposition "Nope": expected one of "Disruption", …`) and lists the
