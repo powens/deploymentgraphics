@@ -1,5 +1,5 @@
 // Owns the 40kdc piece pose (see Piece pose in CONTEXT.md), and resolves a
-// piece to an absolute board polygon.
+// piece through it: footprint precedence, its own frame and its parent's.
 //
 // Source model: `position` anchors the footprint's area centroid, and
 // `rotation_degrees` and `mirror` apply about it. A child of `parent_area_id`
@@ -94,58 +94,57 @@ function posed(piece, anchor) {
 }
 
 /**
- * A piece's own frame, ignoring any parent: `place` maps a footprint-local
- * point to where the piece's pose puts it, and `matrix` is its linear part.
- *
- * @param {object} piece - `position`, optional `rotation_degrees`, optional
- *   `mirror`.
- * @param {object} footprint - the footprint the piece draws from.
- */
-export function pieceFrame(piece, footprint) {
-  return posed(piece, centroid(footprintPolygon(footprint)));
-}
-
-/**
- * The footprint a piece draws from - its own inline one, else its template's -
- * or `undefined` when it has neither. Prefer {@link pieceFootprint} unless
+ * Resolve a piece onto the board, or `undefined` when it has neither an
+ * inline footprint nor a known template. Prefer {@link resolvePiece} unless
  * absence is a case you handle.
  *
- * @param {object} piece - `footprint` or `template`.
- * @param {(id: string) => object | null | undefined} lookupFootprint
- */
-export function pieceFootprintIfAny(piece, lookupFootprint) {
-  return piece.footprint ?? lookupFootprint(piece.template);
-}
-
-/**
- * Like {@link pieceFootprintIfAny}, but throws when the piece has neither.
+ * The piece draws from its own inline `footprint` when it has one, else its
+ * template's. Its frame anchors that footprint's area centroid on `position`;
+ * a child of `parent_area_id` lands in its parent's centred frame and is then
+ * carried through the parent's pose.
  *
- * @param {object} piece - `footprint` or `template`.
- * @param {(id: string) => object | null | undefined} lookupFootprint
- */
-export function pieceFootprint(piece, lookupFootprint) {
-  const footprint = pieceFootprintIfAny(piece, lookupFootprint);
-  if (!footprint) {
-    throw new Error(
-      `piece ${piece.id ?? "?"} has no footprint or known template`,
-    );
-  }
-  return footprint;
-}
-
-/**
- * Resolve a piece to absolute board-inch vertices.
  * @param {object} piece - `position`, optional `rotation_degrees`, optional
  *   `mirror` ("horizontal"|"vertical"), optional `parent_area_id`, and either
  *   `footprint` or `template`.
  * @param {(id: string) => object | null | undefined} lookupFootprint
  * @param {(id: string) => object | undefined} [getParent] - required only for
  *   pieces carrying a `parent_area_id`.
+ * @returns {{
+ *   local: Array<{x: number, y: number}>,
+ *   ring: Array<{x: number, y: number}>,
+ *   matrix: number[][],
+ *   place: (p: {x: number, y: number}) => {x: number, y: number},
+ * } | undefined} `local` is the footprint ring in its own coordinates; `place`
+ *   maps a footprint-local point onto the board, and `matrix` is its linear
+ *   part; `ring` is `local` placed, vertex for vertex.
+ */
+export function resolvePieceIfAny(piece, lookupFootprint, getParent) {
+  const footprint = piece.footprint ?? lookupFootprint(piece.template);
+  if (!footprint) return undefined;
+  const local = footprintPolygon(footprint);
+  const own = posed(piece, centroid(local));
+  const frame = piece.parent_area_id
+    ? withinParent(piece, own, getParent)
+    : own;
+  return { local, ring: local.map(frame.place), ...frame };
+}
+
+/**
+ * Like {@link resolvePieceIfAny}, but throws when the piece has neither an
+ * inline footprint nor a known template.
  */
 export function resolvePiece(piece, lookupFootprint, getParent) {
-  const footprint = pieceFootprint(piece, lookupFootprint);
-  const local = footprintPolygon(footprint).map(pieceFrame(piece, footprint).place);
-  if (!piece.parent_area_id) return local;
+  const resolved = resolvePieceIfAny(piece, lookupFootprint, getParent);
+  if (!resolved) {
+    throw new Error(
+      `piece ${piece.id ?? "?"} has no footprint or known template`,
+    );
+  }
+  return resolved;
+}
+
+/** `own`, a frame in the parent's centred frame, carried through its pose. */
+function withinParent(piece, own, getParent) {
   if (!getParent) {
     throw new Error(
       `piece ${piece.id ?? "?"} has parent_area_id but no getParent provided`,
@@ -157,7 +156,9 @@ export function resolvePiece(piece, lookupFootprint, getParent) {
       `piece ${piece.id ?? "?"} references missing parent ${piece.parent_area_id}`,
     );
   }
-  // `local` is in the parent's centred frame; carry it through the parent's
-  // pose.
-  return local.map(posed(parent, { x: 0, y: 0 }).place);
+  const outer = posed(parent, { x: 0, y: 0 });
+  return {
+    matrix: matmul(outer.matrix, own.matrix),
+    place: (p) => outer.place(own.place(p)),
+  };
 }

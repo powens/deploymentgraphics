@@ -1,11 +1,10 @@
 // Converts a 40kdc `area` piece into a templates-simple.yml building placement.
-// The piece's frame (its Piece pose, from terrain-resolver.mjs) is composed
-// with a rigid map G (gw-local -> area-local) whose determinant matches the
-// pose's parity, so the result is a pure rotation -- all the building renderer
-// can reproduce.
+// The piece's resolved frame (its Piece pose, from terrain-resolver.mjs) is
+// composed with a rigid map G (gw-local -> area-local) whose determinant
+// matches the pose's parity, so the result is a pure rotation -- all the
+// building renderer can reproduce.
 // We then pin the gw template's TL and TR corners (mirror:false).
 
-import { footprintPolygon, pieceFrame } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
 import { templateBounds } from "../src/building-coordinates.ts";
 import { bounds, det, matmul, matvec } from "../src/geometry.ts";
@@ -57,13 +56,10 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
   if (!map) {
     throw new Error(`no gw template mapping for area template ${piece.template}`);
   }
-  // The template's footprint, not `pieceFootprint`'s inline-first precedence;
-  // battlemaster-normalize refuses to emit an inline footprint on an area piece.
-  const areaFootprint = layout.footprintOf(piece.template);
-  if (!areaFootprint) {
-    throw new Error(`no 40kdc footprint for area template ${piece.template}`);
-  }
-  const { matrix: M, place } = pieceFrame(piece, areaFootprint);
+  // AREA_TO_TEMPLATE is keyed by template id, so this assumes the piece draws
+  // from that template's footprint; battlemaster-normalize refuses to emit an
+  // inline footprint on an area piece.
+  const { local, matrix: M, place } = layout.resolve(piece);
   const mirrored = det(M) < 0;
   const type =
     map.kind === "trapezoid" ? (mirrored ? "shoe" : "shoe-mirror") : map.gw;
@@ -71,7 +67,7 @@ export function areaBuildingPlacement(piece, layout, gwTemplates) {
   // Wa/Ha are the footprint's far-edge coordinates, not its extents: gMap uses
   // them as absolute bbox corners. They differ for three of the archetype
   // polygons, whose bbox runs to between -0.26 and -0.6in on one axis.
-  const { maxX: Wa, maxY: Ha } = bounds(footprintPolygon(areaFootprint));
+  const { maxX: Wa, maxY: Ha } = bounds(local);
 
   const { Glin, Gtrans } = gMap(map.kind, mirrored, Wa, Ha);
   const TgwLin = matmul(M, Glin);

@@ -54,7 +54,7 @@ describe("rectFeaturePlacement round-trips through resolvePiece", () => {
     it(`reproduces the ${part} footprint`, () => {
       const pl = rectFeaturePlacement(piece, layout);
       expect({ type: pl.type, color: pl.color }).toEqual(EXPECTED[part]);
-      const target = layout.resolve(piece);
+      const target = layout.resolve(piece).ring;
       expect(ringMismatch(featureFootprint(pl), target)).toBeLessThan(0.02);
     });
   }

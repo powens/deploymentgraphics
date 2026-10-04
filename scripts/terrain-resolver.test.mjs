@@ -1,9 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   resolvePiece,
-  pieceFootprint,
-  pieceFootprintIfAny,
-  pieceFrame,
+  resolvePieceIfAny,
   poseFromMatrix,
   poseMatrix,
 } from "./terrain-resolver.mjs";
@@ -49,7 +47,7 @@ describe("resolvePiece", () => {
       footprint: { type: "rectangle", width: 11.5, height: 7 },
       position: { x: 30, y: 22 },
     };
-    near(resolvePiece(piece, () => null), [
+    near(resolvePiece(piece, () => null).ring, [
       { x: 24.25, y: 18.5 },
       { x: 35.75, y: 18.5 },
       { x: 35.75, y: 25.5 },
@@ -63,7 +61,7 @@ describe("resolvePiece", () => {
       position: { x: 30, y: 22 },
       rotation_degrees: 55,
     };
-    near(resolvePiece(piece, () => null), [
+    near(resolvePiece(piece, () => null).ring, [
       { x: 29.569, y: 15.2824 },
       { x: 36.1651, y: 24.7026 },
       { x: 30.431, y: 28.7176 },
@@ -78,7 +76,7 @@ describe("resolvePiece", () => {
       rotation_degrees: 90,
       mirror: "vertical",
     };
-    near(resolvePiece(piece, () => null), [
+    near(resolvePiece(piece, () => null).ring, [
       { x: 35.4, y: 15.2 },
       { x: 35.4, y: 23.2 },
       { x: 46.9, y: 17.2 },
@@ -90,7 +88,7 @@ describe("resolvePiece", () => {
     const piece = { template: "area-large", position: { x: 30, y: 22 } };
     const lookup = (id) =>
       id === "area-large" ? { type: "rectangle", width: 11.5, height: 7 } : null;
-    near(resolvePiece(piece, lookup), [
+    near(resolvePiece(piece, lookup).ring, [
       { x: 24.25, y: 18.5 },
       { x: 35.75, y: 18.5 },
       { x: 35.75, y: 25.5 },
@@ -121,7 +119,7 @@ describe("resolvePiece", () => {
       position: { x: 0, y: -3 },
     };
     const getParent = (id) => (id === "a1" ? parent : undefined);
-    near(resolvePiece(child, () => null, getParent), [
+    near(resolvePiece(child, () => null, getParent).ring, [
       { x: 33.125, y: 25.5 },
       { x: 33.125, y: 18.5 },
       { x: 32.875, y: 18.5 },
@@ -141,44 +139,42 @@ describe("resolvePiece", () => {
   });
 });
 
-describe("pieceFootprint", () => {
+describe("footprint precedence", () => {
   const RECT = { type: "rectangle", width: 2, height: 3 };
   const TEMPLATE = { type: "rectangle", width: 5, height: 7 };
+  const at = { position: { x: 0, y: 0 } };
 
   it("prefers the piece's own footprint over its template's", () => {
-    expect(
-      pieceFootprint({ footprint: RECT, template: "t" }, () => TEMPLATE),
-    ).toEqual(RECT);
+    const piece = { ...at, footprint: RECT, template: "t" };
+    const { local } = resolvePiece(piece, () => TEMPLATE);
+    expect(local[2]).toEqual({ x: 2, y: 3 });
   });
 
   it("falls back to the template's footprint", () => {
-    expect(pieceFootprint({ template: "t" }, () => TEMPLATE)).toEqual(TEMPLATE);
+    const piece = { ...at, template: "t" };
+    const { local } = resolvePiece(piece, () => TEMPLATE);
+    expect(local[2]).toEqual({ x: 5, y: 7 });
   });
 
   // Rather than a bare TypeError from footprintPolygon(undefined).
   it("throws by name for a piece with neither", () => {
     expect(() =>
-      pieceFootprint({ id: "p7", template: "gone" }, () => undefined),
+      resolvePiece({ ...at, id: "p7", template: "gone" }, () => undefined),
     ).toThrow(/piece p7 has no footprint or known template/);
   });
-});
 
-describe("pieceFootprintIfAny", () => {
-  it("returns undefined instead of throwing when a piece has neither", () => {
+  it("is undefined from resolvePieceIfAny for a piece with neither", () => {
     expect(
-      pieceFootprintIfAny({ id: "p7", template: "gone" }, () => undefined),
+      resolvePieceIfAny({ ...at, id: "p7", template: "gone" }, () => undefined),
     ).toBeUndefined();
   });
 
-  it("applies the same inline-over-template precedence", () => {
-    const inline = { type: "rectangle", width: 1, height: 1 };
-    expect(
-      pieceFootprintIfAny({ footprint: inline, template: "t" }, () => ({
-        type: "rectangle",
-        width: 9,
-        height: 9,
-      })),
-    ).toEqual(inline);
+  it("applies the same precedence in resolvePieceIfAny", () => {
+    const piece = { ...at, footprint: RECT, template: "t" };
+    expect(resolvePieceIfAny(piece, () => TEMPLATE).local[2]).toEqual({
+      x: 2,
+      y: 3,
+    });
   });
 });
 
@@ -229,26 +225,53 @@ describe("poseFromMatrix", () => {
   });
 });
 
-describe("pieceFrame", () => {
+describe("the resolved piece", () => {
   const piece = {
+    footprint: TRAPEZOID,
     position: { x: 10, y: 20 },
     rotation_degrees: 55,
     mirror: "horizontal",
   };
+  const parent = {
+    id: "a1",
+    footprint: { type: "rectangle", width: 11.5, height: 7 },
+    position: { x: 30, y: 22 },
+    rotation_degrees: 90,
+    mirror: "horizontal",
+  };
+  const child = { ...piece, parent_area_id: "a1" };
+  const getParent = (id) => (id === "a1" ? parent : undefined);
 
-  it("carries the piece's pose", () => {
-    expect(pieceFrame(piece, TRAPEZOID).matrix).toEqual(poseMatrix(piece));
+  it("carries the footprint ring in its own coordinates", () => {
+    expect(resolvePiece(piece, () => null).local).toEqual(TRAPEZOID.points);
+  });
+
+  it("carries the piece's pose as its linear map", () => {
+    expect(resolvePiece(piece, () => null).matrix).toEqual(poseMatrix(piece));
   });
 
   it("lands the footprint's area centroid on the piece's position", () => {
-    const { place } = pieceFrame(piece, TRAPEZOID);
+    const { place } = resolvePiece(piece, () => null);
     expect(place(centroid(TRAPEZOID.points))).toEqual({ x: 10, y: 20 });
   });
 
-  it("places the footprint exactly where resolvePiece resolves it", () => {
-    const { place } = pieceFrame(piece, TRAPEZOID);
-    expect(TRAPEZOID.points.map(place)).toEqual(
-      resolvePiece({ ...piece, footprint: TRAPEZOID }, () => null),
-    );
+  it("places the local ring onto the board ring, vertex for vertex", () => {
+    for (const p of [piece, child]) {
+      const { local, ring, place } = resolvePiece(p, () => null, getParent);
+      expect(local.map(place)).toEqual(ring);
+    }
+  });
+
+  it("composes a child's map with its parent's", () => {
+    const { matrix } = resolvePiece(child, () => null, getParent);
+    nearMatrix(matrix, matmul(poseMatrix(parent), poseMatrix(child)));
+  });
+
+  it("puts a child's position where its parent's pose carries it", () => {
+    const { place } = resolvePiece(child, () => null, getParent);
+    const want = matvec(poseMatrix(parent), child.position);
+    const got = place(centroid(TRAPEZOID.points));
+    expect(got.x).toBeCloseTo(want.x + parent.position.x, 9);
+    expect(got.y).toBeCloseTo(want.y + parent.position.y, 9);
   });
 });

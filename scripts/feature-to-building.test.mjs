@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { featureBuildingPlacement } from "./feature-to-building.mjs";
-import { resolvePiece } from "./terrain-resolver.mjs";
 import { withLookups } from "./terrain-corpus.mjs";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 
@@ -66,20 +65,15 @@ const layoutOf = (piece, parent) =>
   );
 
 const roundTrip = (piece, parent) => {
-  const placement = featureBuildingPlacement(
-    piece,
-    layoutOf(piece, parent),
-    TEMPLATES,
-  );
+  const layout = layoutOf(piece, parent);
+  const placement = featureBuildingPlacement(piece, layout, TEMPLATES);
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1);
-  const expected = resolvePiece(
-    piece,
-    lookupFootprint,
-    (id) => (parent && parent.id === id ? parent : undefined),
+  sameSet(
+    placedTemplateRing(placement.type, placed[0]),
+    layout.resolve(piece).ring,
   );
-  sameSet(placedTemplateRing(placement.type, placed[0]), expected);
   return placement;
 };
 

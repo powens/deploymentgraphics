@@ -357,7 +357,7 @@ describe("normalized layouts conform to upstream geometry", () => {
         ];
         const [placed] = resolvePlacement(placement, gwTemplates, CANVAS);
         const drawn = placedRing(local, placed);
-        const truth = src.resolve(src.parentOf(piece.id));
+        const truth = src.resolve(src.parentOf(piece.id)).ring;
         worst = Math.max(worst, shapeDistance(drawn, truth));
       }
     }
@@ -421,8 +421,8 @@ describe("parts sit inside the composite that contains them", () => {
       for (const child of normalized[i].pieces) {
         if (child.piece_type !== "feature") continue;
         const area = src.parentOf(child.parent_area_id);
-        const outline = src.resolve(area);
-        const ring = emitted.resolve(child);
+        const outline = src.resolve(area).ring;
+        const { ring } = emitted.resolve(child);
         const out = Math.max(
           0,
           ...ring
@@ -455,7 +455,7 @@ describe("board invariants", () => {
   it("keeps every resolved vertex on the 60x44 board", () => {
     for (const layout of normalized) {
       for (const piece of layout.pieces) {
-        for (const v of layout.resolve(piece)) {
+        for (const v of layout.resolve(piece).ring) {
           expect(v.x, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
           expect(v.x, `${layout.id} ${piece.id}`).toBeLessThanOrEqual(60.5);
           expect(v.y, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
@@ -482,7 +482,7 @@ describe("board invariants", () => {
       const pts = layout.pieces.map((p) => ({
         exempt: exempt.includes(p.parent_area_id ?? p.id),
         kind: p.piece_type,
-        c: centroid(layout.resolve(p)),
+        c: centroid(layout.resolve(p).ring),
       }));
       for (const a of pts) {
         if (a.exempt) continue;

@@ -31,7 +31,7 @@ export const isRectFeaturePart = (part) => Object.hasOwn(RECT_FEATURES, part);
  * @param {object} layout - a resolved layout from scripts/terrain-corpus.mjs.
  */
 export function rectFeaturePlacement(piece, layout) {
-  const r = layout.resolve(piece);
+  const r = layout.resolve(piece).ring;
   const u = { x: r[1].x - r[0].x, y: r[1].y - r[0].y }; // first edge
   const size = { width: distance(r[0], r[1]), height: distance(r[1], r[2]) };
   const rotDeg = toDegrees(Math.atan2(u.y, u.x));
