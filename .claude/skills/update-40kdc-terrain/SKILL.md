@@ -23,18 +23,28 @@ Data-pipeline overview lives in CLAUDE.md ("Gotchas"); this is the operational r
 ## Workflow
 
 ```
-1. make pull-terrain          # re-download upstream JSON into terrain/source/40kdc/
-2. git status --short          # DRIFT CHECK — clean tree => no new data, STOP here
-3. pnpm convert:40kdc          # regenerate static/data/terrain/combined.yml
-4. pnpm gen:presets            # regenerate src/presets/* (NOT run by make update-terrain!)
-5. verify (see below)
+1. make pull-terrain          # re-download upstream JSON into static/data/terrain/source/40kdc/
+2. git status --short -- static/data/terrain/source/40kdc
+                               # DRIFT CHECK — no output => no new data, STOP here
+3. gh api repos/wn-mitch/40kdc-data/commits/main -q .sha
+                               # record the upstream commit you pulled; cite it when committing
+4. pnpm convert:40kdc          # regenerate static/data/terrain/combined.yml
+5. pnpm gen:presets            # regenerate src/presets/* (NOT run by make update-terrain!)
+6. verify (see below)
+7. commit (see below)
 ```
 
-Steps 1–2 answer "is there new data?". If `git status` is clean after the pull, upstream
-hasn't changed — report that and stop. Only continue when the source JSON actually moved.
+Steps 1–2 answer "is there new data?". If the vendored source dir is clean after the pull,
+upstream hasn't changed — report that and stop. Only continue when the source JSON actually
+moved. Scope the check to that dir: unrelated dirty files elsewhere say nothing about upstream.
+
+The pull tracks upstream `main` unpinned, so step 3 is the only record of which upstream
+commit the vendored JSON came from. Take it right after the pull, so it matches what was
+downloaded. The SHAs this skill cites (e.g. `39661875`) exist only because a past commit
+message recorded them.
 
 `make update-terrain` = pull + convert **only**. It does not run `gen:presets`, so the
-preset test / `gen:presets:check` will fail until you run step 4 by hand.
+preset test / `gen:presets:check` will fail until you run step 5 by hand.
 
 ## Verify
 
@@ -43,12 +53,24 @@ pnpm convert:40kdc:check      # fails if combined.yml is stale
 pnpm gen:presets:check        # fails if src/presets/* are stale
 pnpm test                     # full suite
 pnpm lint && pnpm type-check
+pnpm build                    # the demo bundle compiles the regenerated presets; CI builds it
 ```
 
 `assets/sample.svg` is tracked and rendered from a real layout, so it also moves on a pull
 with geometry in it. Regenerate it (`pnpm build:lib && node --experimental-strip-types
 scripts/render-sample.mjs`) and *look at it* — it is the cheapest check that the board still
 reads correctly, and a mirrored or quarter-turned building is obvious there and nowhere else.
+
+## Commit
+
+One commit carrying the vendored JSON, `combined.yml`, `src/presets/*` and `assets/sample.svg`
+together. Each one is generated from the one before it, so a split commit leaves a `:check`
+step failing. Past pulls used `chore(terrain): pull 40kdc data …` with the trailing `(#N)` issue
+number. In the body, name the upstream commit from step 3 (`40kdc-data <sha>`) and summarise
+the drift you read below: what upstream changed, and what moved in `combined.yml` as a result.
+
+If any layout id was renamed, added or dropped, the same change needs a `CHANGELOG.md`
+entry: layout ids are published API (see the id note below).
 
 ## Reading the drift — what to expect on a real pull
 
@@ -66,9 +88,10 @@ Past pulls carried non-obvious payloads:
   A rename is also a **breaking change to the published API** — `gwTerrain.layout` is keyed
   by these ids and `buildConfig({ layout })` selects by that key — so it needs a `CHANGELOG.md`
   entry with the full old → new table, derived from that same matchup+variant pairing.
-  A rename breaks every test that hard-codes a layout as a fixture
-  (`scripts/{objective-icons,layout-to-placements,ruin-to-feature}.test.mjs`,
-  `src/render-to-string.test.ts`, `scripts/render-sample.mjs`). Re-point them at the same
+  A rename breaks every test that hard-codes a layout as a fixture, and there are many,
+  across `scripts/`, `src/` and `scripts/render-sample.mjs` (including the per-layout
+  allowlist `SOURCE_ASYMMETRIC_AREAS`). Find them all with `grep -rl '"bm-' scripts src static`
+  rather than trusting a list. Re-point them at the same
   matchup+variant, and **re-check the property the fixture was chosen for** — those tests
   assert things like "this layout's central objective pair touches, so it collapses to one
   marker", which upstream can change out from under the id.
@@ -310,7 +333,9 @@ Derivation notes from the last one:
 Verify a port on three things, in this order — each catches what the others cannot:
 
 1. **Emitted template counts, against the pre-pull corpus.** These should come out
-   *identical* (they did: 46 layouts / 998 templates / 904 features), because a re-source
+   *identical* (they did: 46 layouts / 998 templates / 904 features, counted over every
+   source layout through the normalizer, i.e. the 45 mission layouts plus
+   `kotc-colosseum`, which the converter later skips), because a re-source
    redraws the same physical terrain. Any difference is either a real upstream content
    change you can point at, or a bug.
 2. **Child containment.** For every emitted child, how far does it fall outside its own
