@@ -108,14 +108,6 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
     expect(placementOf(sample["small-l-flip"]).type).toBe("l-ruin");
   });
 
-  it("throws on a piece that resolves with the other hand from its part's", () => {
-    const { piece, layout } = sample["small-l"];
-    const swapped = { ...piece, part: "small-l-flip" };
-    expect(() => ruinFeaturePlacement(swapped, layout)).toThrow(
-      /part small-l-flip is drawn as l-ruin but resolves as l-ruin-mirror/,
-    );
-  });
-
   it("throws on a part that is not an L-ruin", () => {
     const { piece, layout } = sample.ab;
     expect(() =>

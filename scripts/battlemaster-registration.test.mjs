@@ -377,10 +377,9 @@ describe("normalized layouts conform to upstream geometry", () => {
       }
     }
     // Upstream's data does not encode chirality, so these hands are measured
-    // against the pre-pull corpus (see PART_TO_TEMPLATE) and pinned exactly.
-    // ruinFeaturePlacement throws where a part's `flip` bit and its hand in
-    // RUIN_HAND disagree, but inverting both together would pass the rest of
-    // the suite, so this is the only check that pins a hand.
+    // against the pre-pull corpus (PART_TO_TEMPLATE's `flip` bits) and pinned
+    // exactly. ruinFeaturePlacement draws whatever hand a piece resolves with,
+    // so one variant per part also pins that every instance agrees.
     expect(
       Object.fromEntries(Object.entries(seen).map(([p, s]) => [p, [...s]])),
     ).toEqual({
