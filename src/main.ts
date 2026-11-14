@@ -17,7 +17,7 @@ function buildTree(
   config: FullConfig,
   theme: Theme,
 ): SvgNode {
-  checkConfig(config);
+  checkConfig(config, theme);
   const svg = doc.createElement("svg");
   svg.setAttribute(
     "viewBox",

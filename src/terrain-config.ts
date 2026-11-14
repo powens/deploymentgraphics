@@ -48,24 +48,3 @@ export type TerrainConfig = {
   templates: Record<string, Template>;
   layout: Record<string, TerrainLayout>;
 };
-
-/**
- * The layout `name` selects from `layouts`, or `undefined` for `""` (no
- * layout). Throws on any other id `layouts` does not own: a mistyped or stale
- * id would otherwise render a bare board that looks deliberate. With no
- * layouts at all the likely cause is a layout named without its terrain, so
- * the message says to pass one.
- */
-export function selectLayout(
-  layouts: Record<string, TerrainLayout>,
-  name: string,
-): TerrainLayout | undefined {
-  if (name === "") return undefined;
-  if (Object.hasOwn(layouts, name)) return layouts[name];
-  const why =
-    Object.keys(layouts).length === 0
-      ? "terrain.layout is empty; pass the terrain that defines it " +
-        "(e.g. terrain: gwTerrain)"
-      : "not a key of terrain.layout";
-  throw new Error(`unknown layout ${JSON.stringify(name)}: ${why}`);
-}

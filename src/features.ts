@@ -115,7 +115,7 @@ function featureDefId(
 /**
  * Appends one colour-free `<g id="feature-…">` per distinct (type, width,
  * height). Shapes are styled with `var(--body)`/`var(--accent)`, which each
- * `<use>` sets (see `makeFeatures`). Throws on an unknown feature type.
+ * `<use>` sets (see `makeFeatures`).
  */
 export function injectFeatureDefs(
   doc: SvgDocument,
@@ -128,12 +128,7 @@ export function injectFeatureDefs(
     if (seen.has(id)) continue;
     seen.add(id);
 
-    if (!Object.hasOwn(features, placement.type)) {
-      throw new Error(`unknown feature type: ${placement.type}`);
-    }
-    const draw = features[placement.type];
-
-    const { body, accent } = draw(placement.width, placement.height);
+    const { body, accent } = features[placement.type](placement.width, placement.height);
     const group = doc.createElement("g");
     group.setAttribute("id", id);
     for (const shape of body) {
@@ -153,8 +148,7 @@ export function injectFeatureDefs(
 /**
  * Builds `<g id="features">` with a `<use>` per resolved placement (mirror
  * copies included). Each `<use>` sets `--body`/`--accent` from the palette;
- * `stroke-width` is set once on the group. Throws on an unknown feature type or
- * palette colour.
+ * `stroke-width` is set once on the group.
  */
 export function makeFeatures(
   doc: SvgDocument,
@@ -167,13 +161,6 @@ export function makeFeatures(
   group.setAttribute("stroke-width", `${theme.feature.stroke_width}`);
   let counter = 0;
   for (const placement of placements) {
-    // Also checked in injectFeatureDefs; repeated for standalone callers.
-    if (!Object.hasOwn(features, placement.type)) {
-      throw new Error(`unknown feature type: ${placement.type}`);
-    }
-    if (!Object.hasOwn(theme.feature.palette, placement.color)) {
-      throw new Error(`unknown feature colour: ${placement.color}`);
-    }
     const palette = theme.feature.palette[placement.color];
 
     const href = `#${featureDefId(

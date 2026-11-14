@@ -1,7 +1,6 @@
 import { applyAttributes } from "./dom-helpers.js";
 import type { SvgDocument, SvgNode } from "./svg-backend.js";
 import {
-  toPoint,
   type BuildingPlacement,
   type CanvasSize,
   type Template,
@@ -30,9 +29,7 @@ export function injectTemplateDefs(
       shape = doc.createElement("polygon");
       shape.setAttribute(
         "points",
-        template.points
-          .map((p) => toPoint(p, `template ${name}: points`))
-          .map((p) => `${p.x},${p.y}`)
+        template.points.map((p) => `${p.x},${p.y}`)
           .join(" "),
       );
     } else {

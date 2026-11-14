@@ -4,7 +4,6 @@ import {
   localCorner,
   resolveCorner,
   templateBounds,
-  toAnchor,
   type Anchor,
   type BuildingPlacement,
   type CanvasSize,
@@ -115,36 +114,16 @@ function withMirror(
 /**
  * Resolves a corner-pin placement to its primary `Placed` (no mirror). One
  * corner fixes position at rotation 0; a second derives the rotation and must
- * match the template edge length.
+ * match the template edge length. The placement's shape is `checkConfig`'s.
  */
 function resolvePrimary(
   placement: BuildingPlacement,
   templates: Record<string, Template>,
   canvas: CanvasSize,
 ): Placed {
-  const template = Object.hasOwn(templates, placement.type)
-    ? templates[placement.type]
-    : undefined;
-  if (!template) {
-    throw new Error(`building references unknown template: ${placement.type}`);
-  }
   const entries = Object.entries(placement.corners) as [Anchor, CornerSpec][];
-  if (entries.length < 1 || entries.length > 2) {
-    throw new Error(
-      `building ${placement.type}: expected 1 or 2 corners, got ${entries.length}`,
-    );
-  }
-  // Checked here for the building's name in the message; `resolveCorner` and
-  // `localCorner` guard again for their other callers.
-  const context = `building ${placement.type}`;
-  const defaultFrom = toAnchor(placement.from ?? "TL", `${context}: from`);
-  for (const [corner, spec] of entries) {
-    toAnchor(corner, `${context}: corners key`);
-    if (spec?.from !== undefined) {
-      toAnchor(spec.from, `${context}: corners.${corner}.from`);
-    }
-  }
-  const size = templateBounds(template, placement.type);
+  const defaultFrom = placement.from ?? "TL";
+  const size = templateBounds(templates[placement.type], placement.type);
 
   const [[cornerA, specA]] = entries;
   const pA = resolveCorner(specA, defaultFrom, canvas);
@@ -192,8 +171,8 @@ function resolvePrimary(
 
 /**
  * Resolves a corner-pin building placement to its primary plus mirrored copy
- * (unless `mirror: false`). Throws on an unknown template, a corner count
- * other than 1–2, or a corner distance that disagrees with the template edge.
+ * (unless `mirror: false`). Throws on a corner distance that disagrees with
+ * the template edge.
  */
 export function resolvePlacement(
   placement: BuildingPlacement,
@@ -217,21 +196,6 @@ export function placeBuildings(
 }
 
 /**
- * A feature's authored rotation, `0` when absent. Throws on anything but a
- * finite number: a quoted YAML `"30"` would string-concatenate in `mirror`.
- */
-function featureRotation(feature: FeaturePlacement): number {
-  const { rotation } = feature;
-  if (rotation === undefined) return 0;
-  if (typeof rotation !== "number" || !Number.isFinite(rotation)) {
-    throw new Error(
-      `feature ${feature.type}: rotation: expected a number, got ${JSON.stringify(rotation)}`,
-    );
-  }
-  return rotation;
-}
-
-/**
  * Resolves a feature placement to its primary plus mirrored copy (unless
  * `mirror: false`). Features are already box + centre rotation, so the
  * primary is the placement verbatim, its rotation normalised to [0, 360).
@@ -243,7 +207,7 @@ export function resolveFeature(
   const primary: Placed = {
     name: feature.type,
     box: { x: feature.x, y: feature.y, width: feature.width, height: feature.height },
-    rotation: normalizeDegrees(featureRotation(feature)),
+    rotation: normalizeDegrees(feature.rotation ?? 0),
   };
   return withMirror(primary, feature.mirror, canvas);
 }
