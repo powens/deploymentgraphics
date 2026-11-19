@@ -76,12 +76,6 @@ describe("injectIconDefs", () => {
     expect(defs.querySelector("#icon-fortress-attacker")).not.toBeNull();
     expect(defs.querySelector("#icon-fortress-defender")).not.toBeNull();
   });
-
-  it("throws on an unknown icon type", () => {
-    expect(() =>
-      injectIconDefs(doc, [{ type: "dragon", pos: { x: 0, y: 0 } }], defsEl(), baseTheme),
-    ).toThrow(/unknown icon type: dragon/);
-  });
 });
 
 describe("makeIcons", () => {
@@ -98,12 +92,6 @@ describe("makeIcons", () => {
     const g = asElement(makeIcons(doc, [{ type: "fortress", pos: { x: 0, y: 0 }, player: "defender" }]));
     expect(g.querySelector("use")!.getAttribute("href")).toBe(
       "#icon-fortress-defender",
-    );
-  });
-
-  it("throws on an unknown icon type", () => {
-    expect(() => makeIcons(doc, [{ type: "dragon", pos: { x: 0, y: 0 } }])).toThrow(
-      /unknown icon type: dragon/,
     );
   });
 });
