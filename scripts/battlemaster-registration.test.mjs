@@ -10,33 +10,14 @@ import {
   centroid,
   pointInRing,
   pointSegmentDistance,
+  shapeDistance,
 } from "../src/geometry.ts";
-import { placedRing, resolvePlacement } from "../src/placement.ts";
+import { buildingRings } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
 import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 
 const CANVAS = { width: 60, height: 44 };
-
-/**
- * Symmetric Hausdorff distance from each ring's vertices to the other ring's
- * *outline*. Use this for any comparison against upstream's 167-348 vertex
- * traced outlines: vertex-to-vertex, a mid-edge point on the trapezoid is
- * 5.75in from the nearest archetype corner even when the shapes coincide.
- */
-const shapeDistance = (a, b) => {
-  const toOutline = (ring, other) =>
-    Math.max(
-      ...ring.map((p) =>
-        Math.min(
-          ...other.map((_, i) =>
-            pointSegmentDistance(p, other[i], other[(i + 1) % other.length]),
-          ),
-        ),
-      ),
-    );
-  return Math.max(toOutline(a, b), toOutline(b, a));
-};
 
 // Read upstream's vocabulary independently of the module under test, since
 // these tests check the module's tables still cover it.
@@ -348,16 +329,10 @@ describe("normalized layouts conform to upstream geometry", () => {
           normalized[i],
           gwTemplates,
         );
-        // Resolve through placement.ts rather than re-deriving the pin math,
+        // Drawn through placement.ts rather than re-deriving the pin math,
         // so a pivot mistake cannot hide in both converter and check.
-        const gw = gwTemplates[placement.type];
-        const local = gw.points ?? [
-          { x: 0, y: 0 }, { x: gw.width, y: 0 },
-          { x: gw.width, y: gw.height }, { x: 0, y: gw.height },
-        ];
-        const [placed] = resolvePlacement(placement, gwTemplates, CANVAS);
-        const drawn = placedRing(local, placed);
-        const truth = src.resolve(src.parentOf(piece.id));
+        const [drawn] = buildingRings(placement, gwTemplates, CANVAS);
+        const truth = src.resolve(src.parentOf(piece.id)).ring;
         worst = Math.max(worst, shapeDistance(drawn, truth));
       }
     }
@@ -377,10 +352,9 @@ describe("normalized layouts conform to upstream geometry", () => {
       }
     }
     // Upstream's data does not encode chirality, so these hands are measured
-    // against the pre-pull corpus (see PART_TO_TEMPLATE) and pinned exactly.
-    // ruinFeaturePlacement throws where a part's `flip` bit and its hand in
-    // RUIN_HAND disagree, but inverting both together would pass the rest of
-    // the suite, so this is the only check that pins a hand.
+    // against the pre-pull corpus (PART_TO_TEMPLATE's `flip` bits) and pinned
+    // exactly. ruinFeaturePlacement draws whatever hand a piece resolves with,
+    // so one variant per part also pins that every instance agrees.
     expect(
       Object.fromEntries(Object.entries(seen).map(([p, s]) => [p, [...s]])),
     ).toEqual({
@@ -422,8 +396,8 @@ describe("parts sit inside the composite that contains them", () => {
       for (const child of normalized[i].pieces) {
         if (child.piece_type !== "feature") continue;
         const area = src.parentOf(child.parent_area_id);
-        const outline = src.resolve(area);
-        const ring = emitted.resolve(child);
+        const outline = src.resolve(area).ring;
+        const { ring } = emitted.resolve(child);
         const out = Math.max(
           0,
           ...ring
@@ -456,7 +430,7 @@ describe("board invariants", () => {
   it("keeps every resolved vertex on the 60x44 board", () => {
     for (const layout of normalized) {
       for (const piece of layout.pieces) {
-        for (const v of layout.resolve(piece)) {
+        for (const v of layout.resolve(piece).ring) {
           expect(v.x, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
           expect(v.x, `${layout.id} ${piece.id}`).toBeLessThanOrEqual(60.5);
           expect(v.y, `${layout.id} ${piece.id}`).toBeGreaterThanOrEqual(-0.5);
@@ -483,7 +457,7 @@ describe("board invariants", () => {
       const pts = layout.pieces.map((p) => ({
         exempt: exempt.includes(p.parent_area_id ?? p.id),
         kind: p.piece_type,
-        c: centroid(layout.resolve(p)),
+        c: centroid(layout.resolve(p).ring),
       }));
       for (const a of pts) {
         if (a.exempt) continue;

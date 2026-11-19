@@ -15,8 +15,8 @@ import {
   matmul,
   matvec,
   normalizeDegrees,
-  pointSegmentDistance,
   rotationMatrix,
+  shapeDistance,
 } from "../src/geometry.ts";
 
 // Translates upstream 40kdc "battlemaster-11e" composite layouts into the
@@ -36,7 +36,7 @@ import {
 //
 //   K - a Battlemaster part is a physical model, so its handedness is fixed
 //       however its parent is oriented. The legacy `corner-*` polygons are
-//       chiral, and ruin-to-feature.mjs checks each part's hand against the
+//       chiral, and ruin-to-feature.mjs reads each piece's hand off the
 //       *resolved* arms, which a mirrored parent flips. K cancels the parent's parity and applies
 //       a per-part flip bit. It is the composition of those two reflections,
 //       not one reflection of the same parity: they differ by a half-turn (see
@@ -98,7 +98,8 @@ export const SIZE_CLASS = {
 // Legacy template for each Battlemaster part, plus:
 //
 //   `flip` - the part's true handedness is the opposite of the legacy
-//            polygon's (K).
+//            polygon's (K). The only record of a part's hand: the ruin
+//            converter draws whichever hand a piece resolves with.
 //   `turn` - degrees, a multiple of 90, taking the legacy polygon's drawing
 //            orientation onto the upstream part's (Q). Always 0 for an
 //            `upstreamFootprint` part, which is already in the part's frame.
@@ -151,8 +152,9 @@ export const SIZE_CLASS = {
 //
 // The deltas change sign, so no margin convention relates the two sizes; where
 // upstream has a usable rectangle, it wins. `short-barrier` keeps its legacy
-// polygon because feature-to-building.mjs matches its 8-vertex profile to pick
-// the `barricade` template. Two rectangle parts keep theirs too:
+// polygon because the `barricade` template draws that profile, and
+// feature-to-building.mjs checks the footprint's vertex count against it. Two
+// rectangle parts keep theirs too:
 //
 //   long-barrier - maps onto the `pipe` building template, drawn at its
 //     templates-simple.yml size: placement.ts throws if a pinned corner
@@ -288,26 +290,6 @@ const CLASS_REFERENCE = {
   ShortLine: ["bm-composite-shortline-barrier-348db27c93", "R180"],
   SmallRect: ["bm-composite-smallrect-generator-44c45681fa", "R0"],
   Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", "R90.FX"],
-};
-
-/**
- * Symmetric Hausdorff distance from each ring's vertices to the other ring's
- * *outline*. Vertex-to-vertex comparison fails against upstream's densely
- * traced outlines, where a mid-edge vertex can be inches from the nearest
- * vertex of a coarser ring of the same shape.
- */
-const shapeDistance = (a, b) => {
-  const toOutline = (ring, other) =>
-    Math.max(
-      ...ring.map((p) =>
-        Math.min(
-          ...other.map((_, i) =>
-            pointSegmentDistance(p, other[i], other[(i + 1) % other.length]),
-          ),
-        ),
-      ),
-    );
-  return Math.max(toOutline(a, b), toOutline(b, a));
 };
 
 /** A ring translated so its area centroid sits on the origin. */
@@ -630,8 +612,9 @@ export function normalizeLayout(layout, templatesById) {
     delete area.mirror;
     // Composite pieces carry no inline footprint today, but upstream uses them
     // elsewhere (kotc-colosseum). Retemplating would silently split it:
-    // areaBuildingPlacement reads the archetype template while resolvePiece
-    // prefers `piece.footprint`, so the area and its children would disagree.
+    // resolvePiece prefers `piece.footprint`, while areaBuildingPlacement picks
+    // its gw building by the archetype template id, so the building would be
+    // fitted to a shape the archetype does not draw.
     if (piece.footprint) {
       throw new Error(
         `piece ${piece.id} carries an inline footprint; composite retemplating to ${area.template} would discard it`,

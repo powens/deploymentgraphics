@@ -10,7 +10,6 @@
 // nearest separate pair by 1.98in.
 
 import { round } from "./emit-placement.mjs";
-import { pieceFootprintIfAny } from "./terrain-resolver.mjs";
 import { ringGap } from "../src/geometry.ts";
 
 // Inches; sits in the empty band (0.38, 1.98) measured above.
@@ -24,10 +23,9 @@ export function objectiveIcons(layout) {
   const objectives = layout.pieces.filter((p) => p.is_objective);
   // A piece without a footprint degenerates to a one-point ring, which ringGap
   // still measures. Other resolve failures are data faults and propagate.
-  const polys = objectives.map((p) => {
-    const footprint = pieceFootprintIfAny(p, layout.footprintOf);
-    return footprint ? layout.resolve(p) : [p.position];
-  });
+  const polys = objectives.map(
+    (p) => layout.resolveIfAny(p)?.ring ?? [p.position],
+  );
 
   // Union-find over touching pairs.
   const parent = objectives.map((_, i) => i);
