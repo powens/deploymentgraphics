@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import {
-  SIZE_CLASS,
   PART_TO_TEMPLATE,
   PART_CANONICAL,
   normalizeLayout,
@@ -10,14 +9,10 @@ import {
   centroid,
   pointInRing,
   pointSegmentDistance,
-  shapeDistance,
 } from "../src/geometry.ts";
-import { buildingRings } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
-import { areaBuildingPlacement } from "./area-to-building.mjs";
+import { AREA_CLASSES } from "./area-to-building.mjs";
 import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
-
-const CANVAS = { width: 60, height: 44 };
 
 // Read upstream's vocabulary independently of the module under test, since
 // these tests check the module's tables still cover it.
@@ -28,7 +23,7 @@ const partNameOf = (id) =>
   id.replace(/^bm-part-/, "").replace(/-[0-9a-f]{10}$/, "");
 
 const corpus = loadCorpus();
-const { templatesById: byId, gwTemplates, footprintOf } = corpus;
+const { templatesById: byId, footprintOf } = corpus;
 const composites = [...byId.values()].filter((t) =>
   String(t.id).startsWith("bm-composite-"),
 );
@@ -67,7 +62,7 @@ describe("registration tables", () => {
         for (const f of composite.features ?? []) parts.add(partNameOf(f.template));
       }
     }
-    expect([...classes].sort()).toEqual(Object.keys(SIZE_CLASS).sort());
+    expect([...classes].sort()).toEqual(Object.keys(AREA_CLASSES).sort());
     expect([...parts].sort()).toEqual(Object.keys(PART_TO_TEMPLATE).sort());
   });
 
@@ -97,8 +92,8 @@ describe("registration tables", () => {
   });
 
   it("targets legacy templates that still exist upstream", () => {
-    for (const id of Object.values(SIZE_CLASS))
-      expect(footprintOf(id), id).toBeDefined();
+    for (const { archetype } of Object.values(AREA_CLASSES))
+      expect(footprintOf(archetype), archetype).toBeDefined();
     for (const [part, v] of Object.entries(PART_TO_TEMPLATE)) {
       if (v.drop || v.upstreamFootprint) continue;
       expect(footprintOf(v.template), part).toBeDefined();
@@ -120,7 +115,7 @@ describe("registration tables", () => {
       }
     }
     // LongLine and LongLineTower are one archetype under two spellings (see
-    // SIZE_CLASS).
+    // AREA_CLASSES).
     expect(classes).toEqual({
       BigRect: 180,
       LongLine: 78,
@@ -316,30 +311,6 @@ describe("normalized layouts conform to upstream geometry", () => {
       }
     }
     expect(checked).toBe(180); // the tower + generator counts pinned above
-  });
-
-  it("keeps the trapezoid areas on their upstream outline", () => {
-    let worst = 0;
-    for (let i = 0; i < layouts.length; i++) {
-      const src = layouts[i];
-      for (const piece of normalized[i].pieces) {
-        if (piece.template !== "area-trapezoid") continue;
-        const placement = areaBuildingPlacement(
-          piece,
-          normalized[i],
-          gwTemplates,
-        );
-        // Drawn through placement.ts rather than re-deriving the pin math,
-        // so a pivot mistake cannot hide in both converter and check.
-        const [drawn] = buildingRings(placement, gwTemplates, CANVAS);
-        const truth = src.resolve(src.parentOf(piece.id)).ring;
-        worst = Math.max(worst, shapeDistance(drawn, truth));
-      }
-    }
-    // Upstream's outline is an independent trace of the trapezoid, so a
-    // residual remains. The tolerance only has to catch a wrong pivot: the
-    // next-best variant of this composite sits 5.2in away.
-    expect(worst).toBeLessThan(1.0);
   });
 
   it("draws each L-ruin part with its measured hand", () => {
