@@ -260,6 +260,26 @@ export function ringGap(a: Ring, b: Ring): number {
   return min;
 }
 
+/**
+ * Symmetric Hausdorff distance from each ring's vertices to the other ring's
+ * *outline*. Unlike `ringMismatch` it holds up against a densely traced
+ * outline, where a mid-edge vertex can sit inches from the nearest vertex of
+ * a coarser ring of the same shape.
+ */
+export function shapeDistance(a: Ring, b: Ring): number {
+  const toOutline = (ring: Ring, other: Ring) =>
+    Math.max(
+      ...ring.map((p) =>
+        Math.min(
+          ...other.map((_, i) =>
+            pointSegmentDistance(p, other[i], other[(i + 1) % other.length]),
+          ),
+        ),
+      ),
+    );
+  return Math.max(toOutline(a, b), toOutline(b, a));
+}
+
 /** Is `p` inside `ring`? Even–odd ray cast; points on the edge are undefined. */
 export function pointInRing(p: Point, ring: Ring): boolean {
   let inside = false;
