@@ -1,11 +1,11 @@
 // Converts the Battlemaster barrier parts into `pipe` and `barricade`
 // building-template placements. Each piece resolves (parent-area transform and
-// own rotation composed) to an absolute polygon; we pin the template's TL/TR
-// corners to the resolved edge whose length matches the template box width.
+// own rotation composed) through the layout to a board ring; we pin the
+// template's TL/TR corners to the resolved edge whose length matches the
+// template box width.
 // Some pieces are reflected, but both shapes are reflection-symmetric, so one
 // unmirrored template per shape reproduces the outline.
 
-import { pieceFootprint, footprintPolygon } from "./terrain-resolver.mjs";
 import { round } from "./emit-placement.mjs";
 import { templateBounds } from "../src/building-coordinates.ts";
 import { distance } from "../src/geometry.ts";
@@ -27,13 +27,13 @@ export const isFeatureBuildingPart = (part) =>
  * Throws if the footprint no longer matches the template box we pin against.
  *
  * @param {string} part - the piece's Battlemaster part.
- * @param {object} footprint - the piece's footprint.
+ * @param {Array<{x: number, y: number}>} ring - the piece's local footprint
+ *   ring.
  * @param {Record<string, object>} gwTemplates - templates-simple.yml `templates`.
  * @returns {{ name: string, width: number }} template name + its TL->TR edge.
  */
-function buildingFor(part, footprint, gwTemplates) {
+function buildingFor(part, ring, gwTemplates) {
   const name = FEATURE_BUILDINGS[part];
-  const ring = footprintPolygon(footprint);
   const long = Math.max(
     ...ring.map((p, i) => distance(p, ring[(i + 1) % ring.length])),
   );
@@ -60,9 +60,8 @@ function buildingFor(part, footprint, gwTemplates) {
  * @returns {{ type: string, corners: object, mirror: false }}
  */
 export function featureBuildingPlacement(piece, layout, gwTemplates) {
-  const footprint = pieceFootprint(piece, layout.footprintOf);
-  const { name, width } = buildingFor(piece.part, footprint, gwTemplates);
-  const ring = layout.resolve(piece);
+  const { local, ring } = layout.resolve(piece);
+  const { name, width } = buildingFor(piece.part, local, gwTemplates);
   for (let i = 0; i < ring.length; i++) {
     const a = ring[i];
     const b = ring[(i + 1) % ring.length];
