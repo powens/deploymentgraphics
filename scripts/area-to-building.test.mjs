@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { areaBuildingPlacement } from "./area-to-building.mjs";
-import { resolvePiece } from "./terrain-resolver.mjs";
 import { withLookups } from "./terrain-corpus.mjs";
 import { placedRing, resolvePlacement } from "../src/placement.ts";
 
@@ -79,12 +78,15 @@ const layoutOf = (piece) =>
   withLookups({ id: "t", pieces: [piece] }, (id) => FOOTPRINTS[id]);
 
 const roundTrip = (piece) => {
-  const placement = areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES);
+  const layout = layoutOf(piece);
+  const placement = areaBuildingPlacement(piece, layout, GW_TEMPLATES);
   expect(placement.mirror).toBe(false);
   const placed = resolvePlacement(placement, GW_TEMPLATES, CANVAS);
   expect(placed).toHaveLength(1);
-  const expected = resolvePiece(piece, (id) => FOOTPRINTS[id]);
-  sameSet(placedTemplateRing(placement.type, placed[0]), expected);
+  sameSet(
+    placedTemplateRing(placement.type, placed[0]),
+    layout.resolve(piece).ring,
+  );
   return placement;
 };
 
@@ -152,6 +154,7 @@ describe("areaBuildingPlacement", () => {
 
   it("throws for a mapped area template with no 40kdc footprint", () => {
     const piece = {
+      id: "a1",
       template: "area-long-line",
       piece_type: "area",
       position: { x: 30, y: 20 },
@@ -159,7 +162,7 @@ describe("areaBuildingPlacement", () => {
     };
     const layout = withLookups({ id: "t", pieces: [piece] }, () => undefined);
     expect(() => areaBuildingPlacement(piece, layout, GW_TEMPLATES)).toThrow(
-      /no 40kdc footprint for area template area-long-line/,
+      /piece a1 has no footprint or known template/,
     );
   });
 });
