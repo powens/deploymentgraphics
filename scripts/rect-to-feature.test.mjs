@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { ringMismatch } from "../src/geometry.ts";
-import { placedRing, resolveFeature } from "../src/placement.ts";
+import { featureRings } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
 import { isRectFeaturePart, rectFeaturePlacement } from "./rect-to-feature.mjs";
 
@@ -8,19 +8,12 @@ const { missionLayouts } = loadCorpus();
 
 const CANVAS = { width: 60, height: 44 };
 
-// Absolute outline of a placed rectangle feature, drawn the way makeFeatures
-// does. Reflection-symmetric, so it matches regardless of mirror parity.
+// Absolute outline of a placed rectangle feature: its box, which is
+// reflection-symmetric, so it matches regardless of mirror parity.
 function featureFootprint(pl) {
-  const { width: w, height: h } = pl;
-  const local = [
-    { x: 0, y: 0 },
-    { x: w, y: 0 },
-    { x: w, y: h },
-    { x: 0, y: h },
-  ];
-  // mirror:false, so the primary is the only `Placed`.
-  const [placed] = resolveFeature(pl, CANVAS);
-  return placedRing(local, placed);
+  const rings = featureRings(pl, CANVAS);
+  expect(rings).toHaveLength(1); // mirror:false
+  return rings[0];
 }
 
 // One representative piece (with its layout) per rectangle-feature part.

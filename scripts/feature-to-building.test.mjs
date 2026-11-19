@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { featureBuildingPlacement } from "./feature-to-building.mjs";
 import { withLookups } from "./terrain-corpus.mjs";
-import { placedRing, resolvePlacement } from "../src/placement.ts";
+import { ringMismatch } from "../src/geometry.ts";
+import { buildingRings } from "../src/placement.ts";
 
 const CANVAS = { width: 60, height: 44 };
 
@@ -30,34 +31,6 @@ const FOOTPRINTS = {
 };
 const lookupFootprint = (id) => FOOTPRINTS[id];
 
-const ringOf = (t) =>
-  t.points
-    ? t.points.map((p) => ({ x: p.x, y: p.y }))
-    : [
-        { x: 0, y: 0 },
-        { x: t.width, y: 0 },
-        { x: t.width, y: t.height },
-        { x: 0, y: t.height },
-      ];
-
-// Via placedRing, the renderer's own transform.
-const placedTemplateRing = (templateName, placed) =>
-  placedRing(ringOf(TEMPLATES[templateName]), placed);
-
-// Order-independent polygon comparison, within tolerance.
-const sameSet = (a, b) => {
-  expect(a.length).toBe(b.length);
-  const key = (p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`;
-  const sa = [...a].map(key).sort();
-  const sb = [...b].map(key).sort();
-  for (let i = 0; i < sa.length; i++) {
-    const [ax, ay] = sa[i].split(",").map(Number);
-    const [bx, by] = sb[i].split(",").map(Number);
-    expect(ax).toBeCloseTo(bx, 1);
-    expect(ay).toBeCloseTo(by, 1);
-  }
-};
-
 const layoutOf = (piece, parent) =>
   withLookups(
     { id: "t", pieces: parent ? [parent, piece] : [piece] },
@@ -68,12 +41,12 @@ const roundTrip = (piece, parent) => {
   const layout = layoutOf(piece, parent);
   const placement = featureBuildingPlacement(piece, layout, TEMPLATES);
   expect(placement.mirror).toBe(false);
-  const placed = resolvePlacement(placement, TEMPLATES, CANVAS);
-  expect(placed).toHaveLength(1);
-  sameSet(
-    placedTemplateRing(placement.type, placed[0]),
-    layout.resolve(piece).ring,
-  );
+  const rings = buildingRings(placement, TEMPLATES, CANVAS);
+  expect(rings).toHaveLength(1);
+  // Same vertices in any order, within tolerance.
+  const target = layout.resolve(piece).ring;
+  expect(rings[0]).toHaveLength(target.length);
+  expect(ringMismatch(rings[0], target)).toBeLessThan(0.05);
   return placement;
 };
 
