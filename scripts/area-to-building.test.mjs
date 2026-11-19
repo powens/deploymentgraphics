@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { areaBuildingPlacement } from "./area-to-building.mjs";
-import { withLookups } from "./terrain-corpus.mjs";
-import { ringMismatch } from "../src/geometry.ts";
+import { areaBuildingPlacement, areaPiece } from "./area-to-building.mjs";
+import { loadCorpus, withLookups } from "./terrain-corpus.mjs";
+import { ringMismatch, shapeDistance } from "../src/geometry.ts";
 import { buildingRings } from "../src/placement.ts";
 
 // Subset of templates-simple.yml.
@@ -65,6 +65,7 @@ const roundTrip = (piece) => {
 describe("areaBuildingPlacement", () => {
   it("places an exact-match line piece", () => {
     roundTrip({
+      size_class: "LongLine",
       template: "area-long-line",
       piece_type: "area",
       position: { x: 30, y: 20 },
@@ -74,6 +75,7 @@ describe("areaBuildingPlacement", () => {
 
   it("places a rotated transpose piece", () => {
     roundTrip({
+      size_class: "BigRect",
       template: "area-large",
       piece_type: "area",
       position: { x: 30, y: 20 },
@@ -83,6 +85,7 @@ describe("areaBuildingPlacement", () => {
 
   it("places an un-mirrored trapezoid via shoe-mirror", () => {
     const p = roundTrip({
+      size_class: "Triangle",
       template: "area-trapezoid",
       piece_type: "area",
       position: { x: 30, y: 20 },
@@ -93,6 +96,7 @@ describe("areaBuildingPlacement", () => {
 
   it("places a mirrored trapezoid via shoe", () => {
     const p = roundTrip({
+      size_class: "Triangle",
       template: "area-trapezoid",
       piece_type: "area",
       position: { x: 30, y: 20 },
@@ -104,6 +108,7 @@ describe("areaBuildingPlacement", () => {
 
   it("places a horizontally mirrored rectangle", () => {
     roundTrip({
+      size_class: "SmallRect",
       template: "area-medium",
       piece_type: "area",
       position: { x: 25, y: 15 },
@@ -112,21 +117,37 @@ describe("areaBuildingPlacement", () => {
     });
   });
 
-  it("throws for an area template with no gw mapping", () => {
+  it("throws for a size class with no gw mapping", () => {
     const piece = {
-      template: "area-unheard-of",
+      size_class: "Hexagon",
+      template: "area-large",
       piece_type: "area",
       position: { x: 30, y: 20 },
       rotation_degrees: 0,
     };
     expect(() =>
       areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES),
-    ).toThrow(/no gw template mapping for area template area-unheard-of/);
+    ).toThrow(/no gw template mapping for size class Hexagon/);
   });
 
-  it("throws for a mapped area template with no 40kdc footprint", () => {
+  it("throws for an area not drawn by its class's archetype", () => {
     const piece = {
       id: "a1",
+      size_class: "BigRect",
+      template: "area-medium",
+      piece_type: "area",
+      position: { x: 30, y: 20 },
+      rotation_degrees: 0,
+    };
+    expect(() =>
+      areaBuildingPlacement(piece, layoutOf(piece), GW_TEMPLATES),
+    ).toThrow(/a1 of size class BigRect is not drawn by its archetype area-large/);
+  });
+
+  it("throws for a mapped archetype with no 40kdc footprint", () => {
+    const piece = {
+      id: "a1",
+      size_class: "LongLine",
       template: "area-long-line",
       piece_type: "area",
       position: { x: 30, y: 20 },
@@ -136,5 +157,36 @@ describe("areaBuildingPlacement", () => {
     expect(() => areaBuildingPlacement(piece, layout, GW_TEMPLATES)).toThrow(
       /piece a1 has no footprint or known template/,
     );
+  });
+
+  // Both halves together, against upstream's own outline for the one class
+  // whose archetype is not symmetric.
+  it("keeps the trapezoid areas on their upstream outline", () => {
+    const corpus = loadCorpus();
+    let worst = 0;
+    let checked = 0;
+    for (const src of corpus.rawLayouts.filter((l) => l.mission_matchup_id)) {
+      for (const piece of src.pieces) {
+        const composite = corpus.templatesById.get(piece.template);
+        if (composite.name.split(" ")[1] !== "Triangle") continue;
+        const { area } = areaPiece(piece, composite, corpus.templatesById);
+        const placement = areaBuildingPlacement(
+          area,
+          withLookups({ id: src.id, pieces: [area] }, corpus.footprintOf),
+          corpus.gwTemplates,
+        );
+        // Drawn through placement.ts rather than re-deriving the pin math,
+        // so a pivot mistake cannot hide in both converter and check.
+        const [drawn] = buildingRings(placement, corpus.gwTemplates, CANVAS);
+        const truth = src.resolve(piece).ring;
+        worst = Math.max(worst, shapeDistance(drawn, truth));
+        checked++;
+      }
+    }
+    expect(checked).toBe(90);
+    // Upstream's outline is an independent trace of the trapezoid, so a
+    // residual remains. The tolerance only has to catch a wrong pivot: the
+    // next-best variant of this composite sits 5.2in away.
+    expect(worst).toBeLessThan(1.0);
   });
 });

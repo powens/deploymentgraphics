@@ -1,3 +1,4 @@
+import { areaPiece } from "./area-to-building.mjs";
 import {
   footprintPolygon,
   poseFromMatrix,
@@ -16,7 +17,6 @@ import {
   matvec,
   normalizeDegrees,
   rotationMatrix,
-  shapeDistance,
 } from "../src/geometry.ts";
 
 // Translates upstream 40kdc "battlemaster-11e" composite layouts into the
@@ -29,10 +29,9 @@ import {
 // The corrections, by the letters used throughout this file:
 //
 //   V - a composite's footprint is a rigid transform of its class's archetype,
-//       not a copy. `gMap`'s trapezoid branch in area-to-building.mjs is
-//       hard-coded to `area-trapezoid`'s orientation, so V is folded into the
-//       area's own transform rather than carried as an inline footprint (which
-//       mis-places it by ~6in), and folded back out of every child.
+//       not a copy. area-to-building.mjs owns the area (class, archetype, V and
+//       gw building); its V is folded into the area's own transform, so every
+//       child starts by folding it back out.
 //
 //   K - a Battlemaster part is a physical model, so its handedness is fixed
 //       however its parent is oriented. The legacy `corner-*` polygons are
@@ -76,24 +75,6 @@ import {
 // piece onto its pre-pull counterpart reads off the correction. That corpus
 // can no longer be regenerated, so battlemaster-registration.test.mjs pins the
 // results. W alone is derived from the shipped data.
-
-/**
- * Legacy area archetype for each Battlemaster size class. Every composite's
- * footprint matches its archetype's bounding box to within 0.06in.
- *
- * `LongLineTower` is not a sixth class: one composite
- * (`bm-composite-longlinetower-flip-...`) drops the separator its siblings keep
- * (`bm-composite-longline-tower-...`) in both id and name. Its footprint is a
- * rigid variant of the other LongLine ones.
- */
-export const SIZE_CLASS = {
-  BigRect: "area-large",
-  SmallRect: "area-medium",
-  ShortLine: "area-short-line",
-  LongLine: "area-long-line",
-  LongLineTower: "area-long-line",
-  Triangle: "area-trapezoid",
-};
 
 // Legacy template for each Battlemaster part, plus:
 //
@@ -242,143 +223,6 @@ const FEATURE_KEYS = new Set([
   "mirror",
 ]);
 
-/**
- * Snap a rigid matrix to integers. `rotationMatrix` leaves 1e-17 noise on a
- * quarter-turn, which would leak into `poseFromMatrix`'s angle and into deep-equals
- * on a variant; `+ 0` also canonicalizes -0, which deep-equal distinguishes.
- */
-const roundMatrix = (M) => M.map((row) => row.map((x) => Math.round(x) + 0));
-
-/** The eight rigid maps a composite footprint can sit under, by name. */
-const CANDIDATES = Object.fromEntries(
-  [0, 90, 180, 270].flatMap((d) => [
-    [`R${d}`, roundMatrix(rotationMatrix(d))],
-    [`R${d}.FX`, roundMatrix(matmul(rotationMatrix(d), FLIP_X))],
-  ]),
-);
-
-/**
- * Each size class's reference composite and the variant it is registered at.
- * `fitVariant` registers every other composite relative to its class's
- * reference; these six are pinned. V decides which way round the legacy
- * archetype polygon is drawn when it stands in for the composite.
- *
- * They cannot be fitted against the archetype polygon itself: upstream's
- * 167-348 vertex traced outlines only resemble the archetypes, and that fit
- * prefers the *other* reflection for four of the six classes, by a 4-7x
- * margin (shape distance over the eight rigid maps):
- *
- *   class          best fit        registered      runner-up
- *   BigRect        R180.FX  0.114  R180     0.552  R0       0.411
- *   LongLine       R0.FX    0.084  R0       0.590  R0       0.590
- *   LongLineTower  R0       0.084  R0.FX    0.590  R0.FX    0.590
- *   ShortLine      R180     0.069  R180     0.069  R0       0.288
- *   SmallRect      R180.FX  0.071  R0       0.265  R0       0.265
- *   Triangle       R90.FX   0.706  R90.FX   0.706  R270.FX  2.537
- *
- * That shows the coarse legacy polygons and upstream's traces disagree about
- * chirality, not that the port is mirrored; the pre-pull rendering is what
- * has to be kept, and containment cannot referee (all four reflections hold
- * the same children). So these were measured against the pre-pull corpus:
- * pair each new area with the nearest pre-pull area of the same archetype
- * (assigned globally within a layout) and read V = M_new^-1 . M_old.
- */
-const CLASS_REFERENCE = {
-  BigRect: ["bm-composite-bigrect-cd-ef-01-19f1adc57b", "R180"],
-  LongLine: ["bm-composite-longline-tower-3be6fa3536", "R0"],
-  LongLineTower: ["bm-composite-longlinetower-flip-06c4f02941", "R0.FX"],
-  ShortLine: ["bm-composite-shortline-barrier-348db27c93", "R180"],
-  SmallRect: ["bm-composite-smallrect-generator-44c45681fa", "R0"],
-  Triangle: ["bm-composite-triangle-ab-corner-02-4b8322162e", "R90.FX"],
-};
-
-/** A ring translated so its area centroid sits on the origin. */
-const centred = (ring) => {
-  const c = centroid(ring);
-  return ring.map((p) => ({ x: p.x - c.x, y: p.y - c.y }));
-};
-
-/**
- * Fit one composite's footprint against its class's reference. Within a class
- * the composites coincide to 0.0000in under one of the eight CANDIDATES (0.21in
- * or worse under every other), so the variant is that map composed onto the
- * reference's pinned one. A shape upstream has not shipped before throws here,
- * naming the composite, rather than taking the identity and moving the area
- * ~6in.
- */
-function fitVariant(composite, templatesById) {
-  const cls = classOf(composite);
-  const [refId, refName] = CLASS_REFERENCE[cls] ?? [];
-  if (!refName) {
-    throw new Error(`size class ${cls} has no reference composite registered`);
-  }
-  if (composite.id === refId) return CANDIDATES[refName];
-
-  const ref = templatesById.get(refId);
-  if (!ref) {
-    throw new Error(
-      `the ${cls} reference composite ${refId} is not in the template table`,
-    );
-  }
-  if (!ref.footprint) {
-    throw new Error(
-      `the ${cls} reference composite ${refId} has no footprint to fit against`,
-    );
-  }
-  if (!composite.footprint) {
-    throw new Error(
-      `composite ${composite.id} has no footprint to fit against the ${cls} reference ${refId}`,
-    );
-  }
-  const refRing = centred(footprintPolygon(ref.footprint));
-  const ring = centred(footprintPolygon(composite.footprint));
-  const fits = Object.entries(CANDIDATES)
-    .map(([name, M]) => [
-      shapeDistance(
-        refRing.map((p) => matvec(M, p)),
-        ring,
-      ),
-      M,
-      name,
-    ])
-    .sort((a, b) => a[0] - b[0]);
-  const [best, W, bestName] = fits[0];
-  if (best >= 1e-3) {
-    throw new Error(
-      `composite ${composite.id} is not a rigid transform of the ${cls} reference ${refId} (best fit ${best.toFixed(4)}in)`,
-    );
-  }
-  // A self-symmetric footprint fits under several candidates, leaving the
-  // variant to CANDIDATES insertion order rather than the data.
-  const [runnerUp, , runnerUpName] = fits[1];
-  if (runnerUp < 1e-3) {
-    throw new Error(
-      `composite ${composite.id} fits the ${cls} reference ${refId} under both ` +
-        `${bestName} (${best.toFixed(4)}in) and ${runnerUpName} (${runnerUp.toFixed(4)}in): ` +
-        `its footprint has a rigid self-symmetry, so the shape does not determine the variant`,
-    );
-  }
-  return roundMatrix(matmul(W, CANDIDATES[refName]));
-}
-
-/** Fitted once per composite per template table. */
-const variantCache = new WeakMap();
-
-/**
- * The rigid variant a composite's footprint is registered at.
- *
- * @param {object} composite - a `bm-composite-` template.
- * @param {Map<string, object>} templatesById - the vendored template table.
- * @returns {number[][]} V, the rigid map the emitted area carries.
- */
-function variantOf(composite, templatesById) {
-  let fitted = variantCache.get(templatesById);
-  if (!fitted) variantCache.set(templatesById, (fitted = new Map()));
-  let V = fitted.get(composite.id);
-  if (!V) fitted.set(composite.id, (V = fitVariant(composite, templatesById)));
-  return V;
-}
-
 const COMPOSITE_PREFIX = "bm-composite-";
 const PART_PREFIX = "bm-part-";
 
@@ -396,7 +240,7 @@ const HASH_SUFFIX = /-[0-9a-f]{10}$/;
  * sizes (4x4.5 against 3.75x4.5 when they last diverged; today both ship the
  * same `footprint`). Geometry alone cannot tell a roof overhanging its walls
  * from a barrier's off-centre centreline, so the choice is registered, like
- * CLASS_REFERENCE. battlemaster-registration.test.mjs fails if another part
+ * area-to-building.mjs's CLASS_REFERENCE. battlemaster-registration.test.mjs fails if another part
  * gains a second drawing without an entry.
  */
 export const PART_CANONICAL = {
@@ -409,17 +253,6 @@ const canonicalPartId = (templateId) =>
 
 const isCompositeTemplate = (id) =>
   typeof id === "string" && id.startsWith(COMPOSITE_PREFIX);
-
-/** Size class of a composite, read from its name ("Battlemaster BigRect CD GH 01" -> BigRect). */
-function classOf(composite) {
-  const cls = composite?.name?.split(" ")[1];
-  if (!cls || !SIZE_CLASS[cls]) {
-    throw new Error(
-      `unknown Battlemaster size class for composite ${composite?.id ?? "?"}`,
-    );
-  }
-  return cls;
-}
 
 /** Bare part name of a composite feature template id, hash suffix removed. */
 function partOf(templateId) {
@@ -580,10 +413,11 @@ function anchorOffset(footprint) {
 
 /**
  * Rewrite a Battlemaster composite layout into the pipeline's piece
- * vocabulary: each `area` piece renamed onto its legacy archetype (with the
- * composite's rigid variant folded into its own transform), plus one parented
- * `feature` child per composite part that PART_TO_TEMPLATE does not drop.
- * Each child names its `part`, which is what the converters dispatch on.
+ * vocabulary: each `area` piece as `areaPiece` emits it (its size class's
+ * archetype, with the composite's rigid variant folded into its own
+ * transform), plus one parented `feature` child per composite part that
+ * PART_TO_TEMPLATE does not drop. Each area names its `size_class` and each
+ * child its `part`, which is what the converters dispatch on.
  *
  * @param {object} layout - a 40kdc layout ({ id, pieces, ... }).
  * @param {Map<string, object>} templatesById - the vendored template table.
@@ -601,26 +435,12 @@ export function normalizeLayout(layout, templatesById) {
     if (!composite) {
       throw new Error(`layout ${layout.id} references missing template ${piece.template}`);
     }
-    const V = variantOf(composite, templatesById);
+    const { area, V } = areaPiece(piece, composite, templatesById);
     // The parent area carries M . V, so every child starts by undoing V, in
     // orientation and anchor. Not every variant is self-inverse (the `-flip`
     // Triangle registers R270), so this is the real inverse.
     const Vinv = orthoInverse(V);
     const M = poseMatrix(piece);
-
-    const area = { ...piece, template: SIZE_CLASS[classOf(composite)] };
-    delete area.mirror;
-    // Composite pieces carry no inline footprint today, but upstream uses them
-    // elsewhere (kotc-colosseum). Retemplating would silently split it:
-    // resolvePiece prefers `piece.footprint`, while areaBuildingPlacement picks
-    // its gw building by the archetype template id, so the building would be
-    // fitted to a shape the archetype does not draw.
-    if (piece.footprint) {
-      throw new Error(
-        `piece ${piece.id} carries an inline footprint; composite retemplating to ${area.template} would discard it`,
-      );
-    }
-    Object.assign(area, poseFromMatrix(matmul(M, V)));
     pieces.push(area);
 
     for (const feature of composite.features ?? []) {
