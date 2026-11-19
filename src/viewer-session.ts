@@ -2,14 +2,16 @@
  * The viewer's **Viewer session**: the visitor's Controls, which editor drives
  * the render, and the YAML text when the YAML editor does. Every transition
  * returns a full {@link Snapshot} for `static/app.js` to write back, so the page
- * never depends on the order it applies them in. Demo-only (reached via
- * `bundle.ts`).
+ * never depends on the order it applies them in; {@link drawSnapshot} decides
+ * where its render lands. Demo-only (reached via `bundle.ts`).
  */
 import * as yaml from "js-yaml";
+import { checkConfig, UnknownLayoutError } from "./check-config.js";
 import { makeMissionCard } from "./main.js";
 import { buildConfig } from "./presets/build-config.js";
 import { baseConfig } from "./presets/base.js";
 import { missions } from "./presets/missions.js";
+import { baseTheme } from "./presets/theme.js";
 import type { FullConfig } from "./types.js";
 import {
   controlsFromSearch,
@@ -49,6 +51,20 @@ export interface Snapshot {
   readonly yamlError: string | null;
   /** The export filename, without extension. */
   readonly filenameStem: string;
+  /** True for a page load's snapshot: the stage holds no card yet. */
+  readonly opening: boolean;
+}
+
+/** What the stage shows: a card (exportable) or a message (not). */
+export type Stage =
+  | { readonly card: SVGElement }
+  | { readonly message: string; readonly error: boolean };
+
+/** What drawing a snapshot puts on the page. */
+export interface Drawn {
+  /** The stage's new content, or null to leave it as it is. */
+  readonly stage: Stage | null;
+  readonly yamlError: string | null;
 }
 
 export type SessionEvent =
@@ -106,38 +122,27 @@ function renderOf(session: Session): Pick<Snapshot, "render" | "yamlError"> {
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
     return { render: null, yamlError: "YAML must describe a config object." };
   }
-  const missing = missingLayout(parsed);
-  if (missing !== null) {
-    return {
-      render: null,
-      yamlError:
-        `unknown layout "${missing}": the editor holds only the layout the ` +
-        "controls selected; pick another layout there, or add it under terrain.layout.",
-    };
+  // Checked against the theme `renderCard` draws with, so a malformed config
+  // is reported under the editor and the last good card stays on stage.
+  try {
+    checkConfig(parsed, baseTheme);
+  } catch (error) {
+    // The editor holds only the selected layout, so renaming it is easy to do;
+    // the library's "pass the terrain" advice means nothing here.
+    const yamlError =
+      error instanceof UnknownLayoutError
+        ? `unknown layout ${JSON.stringify(error.layout)}: the editor holds only the ` +
+          "layout the controls selected; pick another layout there, or add it under terrain.layout."
+        : errorMessage(error);
+    return { render: null, yamlError };
   }
-  // Otherwise unvalidated: the renderer reports what it cannot draw.
-  return { render: { config: parsed as FullConfig, rotation }, yamlError: null };
-}
-
-/**
- * The `terrain.layout_name` the YAML names but does not define, or null. The
- * editor carries only the selected layout, so renaming it would otherwise draw
- * a bare board with no word of why.
- */
-function missingLayout(parsed: object): string | null {
-  const terrain = (parsed as { terrain?: unknown }).terrain;
-  if (!terrain || typeof terrain !== "object") return null;
-  const { layout, layout_name: name } = terrain as { layout?: unknown; layout_name?: unknown };
-  if (typeof name !== "string" || name === "") return null;
-  const defined =
-    layout !== null && typeof layout === "object" && Object.prototype.hasOwnProperty.call(layout, name);
-  return defined ? null : name;
+  return { render: { config: parsed, rotation }, yamlError: null };
 }
 
 function snapshotOf(
   session: Session,
   render: Pick<Snapshot, "render" | "yamlError">,
-  { store = true }: { store?: boolean } = {},
+  { store = true, opening = false }: { store?: boolean; opening?: boolean } = {},
 ): Snapshot {
   const { controls, mode } = session;
   return {
@@ -153,6 +158,7 @@ function snapshotOf(
       mode === "yaml"
         ? "deployment-graphics"
         : `${controls.m.replace(/_/g, "-")}-${controls.t}`,
+    opening,
   };
 }
 
@@ -201,14 +207,14 @@ export function openSession({
       mode: "controls",
       yaml: null,
     };
-    return snapshotOf(session, renderOf(session), { store: false });
+    return snapshotOf(session, renderOf(session), { store: false, opening: true });
   }
   const session = restore(saved) ?? {
     controls: defaultControls(),
     mode: "controls",
     yaml: null,
   };
-  return snapshotOf(session, renderOf(session));
+  return snapshotOf(session, renderOf(session), { opening: true });
 }
 
 /** The session after one event, and what the page shows for it. */
@@ -282,6 +288,29 @@ export function renderCard(
   } catch (error) {
     return { error: errorMessage(error) };
   }
+}
+
+const NO_CARD_YET: Stage = { message: "No card yet: see the YAML error above.", error: false };
+
+/**
+ * Draws a snapshot's render and decides where the outcome lands. A failure in
+ * yaml mode is the visitor's to fix: it is reported under the editor and the
+ * last good card stays on stage, still exportable (on a page load there is
+ * none, so the stage says why). A failure in controls mode replaces the stage.
+ * Needs a DOM (see {@link renderCard}).
+ */
+export function drawSnapshot({ session, render, yamlError, opening }: Snapshot): Drawn {
+  const result = render === null ? null : renderCard(render);
+  if (result !== null && "card" in result) {
+    return { stage: result, yamlError };
+  }
+  if (result !== null && session.mode === "controls") {
+    return { stage: { message: result.error, error: true }, yamlError };
+  }
+  return {
+    stage: opening ? NO_CARD_YET : null,
+    yamlError: result === null ? yamlError : `Render failed: ${result.error}`,
+  };
 }
 
 /**

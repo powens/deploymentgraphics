@@ -7,9 +7,8 @@ import {
   ringMismatch,
   ringsOverlap,
 } from "../src/geometry.ts";
-import { placedRing, resolveFeature } from "../src/placement.ts";
+import { featureRings } from "../src/placement.ts";
 import { loadCorpus } from "./terrain-corpus.mjs";
-import { footprintPolygon } from "./terrain-resolver.mjs";
 import { isRuinPart, ruinFeaturePlacement } from "./ruin-to-feature.mjs";
 import { layoutPlacements } from "./layout-to-placements.mjs";
 
@@ -30,24 +29,22 @@ const CANVAS = { width: 60, height: 44 };
  * the wrong corner.
  */
 const outerCornerOf = (entry) => {
-  const footprint =
-    entry.piece.footprint ?? entry.layout.footprintOf(entry.piece.template);
-  const local = footprintPolygon(footprint);
+  const { local, ring } = entry.layout.resolve(entry.piece);
   const corners = boundsCorners(local); // TL, TR, BR, BL
   const at = corners.map((c) => local.findIndex((p) => distance(p, c) < 1e-6));
   const openIdx = at.indexOf(-1);
   if (openIdx === -1 || at.filter((i) => i >= 0).length !== 3) {
     throw new Error("ruin footprint is not an L (expected 3 of 4 bbox corners)");
   }
-  return entry.layout.resolve(entry.piece)[at[(openIdx + 2) % 4]];
+  return ring[at[(openIdx + 2) % 4]];
 };
 
-// Absolute outline of a placed l-ruin feature, drawn the way makeFeatures does.
-function featureFootprint(pl) {
+// Local outline of an l-ruin feature, the shape featureLayer draws.
+function ruinOutline(pl) {
   const { width: w, height: h } = pl;
   const wall = Math.min(0.5, w, h);
   const mirror = pl.type.includes("mirror");
-  const local = mirror
+  return mirror
     ? [
         { x: w, y: 0 },
         { x: w - wall, y: 0 },
@@ -64,9 +61,13 @@ function featureFootprint(pl) {
         { x: w, y: h },
         { x: 0, y: h },
       ];
-  // mirror:false, so the primary is the only `Placed`.
-  const [placed] = resolveFeature(pl, CANVAS);
-  return placedRing(local, placed);
+}
+
+// Absolute outline of a placed l-ruin feature.
+function featureFootprint(pl) {
+  const rings = featureRings(pl, CANVAS, ruinOutline(pl));
+  expect(rings).toHaveLength(1); // mirror:false
+  return rings[0];
 }
 
 // One representative L-ruin piece (with its layout) per part.
@@ -96,7 +97,7 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
 
   for (const [part, entry] of Object.entries(sample)) {
     it(`reproduces the ${part} footprint`, () => {
-      const target = entry.layout.resolve(entry.piece);
+      const target = entry.layout.resolve(entry.piece).ring;
       expect(
         ringMismatch(featureFootprint(placementOf(entry)), target),
       ).toBeLessThan(0.02);
@@ -106,14 +107,6 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
   it("draws the two hands of one model with the two variants", () => {
     expect(placementOf(sample["small-l"]).type).toBe("l-ruin-mirror");
     expect(placementOf(sample["small-l-flip"]).type).toBe("l-ruin");
-  });
-
-  it("throws on a piece that resolves with the other hand from its part's", () => {
-    const { piece, layout } = sample["small-l"];
-    const swapped = { ...piece, part: "small-l-flip" };
-    expect(() => ruinFeaturePlacement(swapped, layout)).toThrow(
-      /part small-l-flip is drawn as l-ruin but resolves as l-ruin-mirror/,
-    );
   });
 
   it("throws on a part that is not an L-ruin", () => {
@@ -131,8 +124,7 @@ describe("ruinFeaturePlacement round-trips through resolvePiece", () => {
       const { width: w, height: h } = placement;
       const localOuter =
         placement.type === "l-ruin" ? { x: 0, y: h } : { x: w, y: h };
-      const [placed] = resolveFeature(placement, CANVAS);
-      const [drawn] = placedRing([localOuter], placed);
+      const [[drawn]] = featureRings(placement, CANVAS, [localOuter]);
 
       const outer = outerCornerOf(entry);
       expect(distance(drawn, outer)).toBeLessThan(0.01);
@@ -231,12 +223,12 @@ describe("ruins over the corpus", () => {
       const L = missionLayouts[i];
       const ruins = L.pieces
         .filter((p) => isRuinPart(p.part))
-        .map((p) => ({ p, ring: L.resolve(p) }));
+        .map((p) => ({ p, ring: L.resolve(p).ring }));
       for (const area of src.pieces) {
         const { features: parts } = templatesById.get(area.template);
         if (!parts.some((f) => partOf(f.template) === "pipes")) continue;
         catwalks += 1;
-        const ring = src.resolve(area);
+        const { ring } = src.resolve(area);
         let nearest = Infinity;
         for (const r of ruins) {
           nearest = Math.min(nearest, ringGap(ring, r.ring));

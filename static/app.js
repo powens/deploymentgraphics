@@ -5,9 +5,9 @@ import {
   readControlsFromDom,
   setControlsLocked,
   writeControlsToDom,
+  drawSnapshot,
   editorYaml,
   openSession,
-  renderCard,
   step,
   STORAGE_KEY,
   bindTabKeys,
@@ -15,7 +15,7 @@ import {
 } from "./bundle.js";
 
 // The Viewer session (mode, YAML text, derivation, what to store, what to
-// render) lives in `src/viewer-session.ts`, the controls in
+// render and where its outcome lands) lives in `src/viewer-session.ts`, the controls in
 // `src/viewer-controls.ts` and the tabs' keyboard model in
 // `src/viewer-tabs.ts`. This file only binds them to the page; the option
 // labels are the one thing defined here.
@@ -101,18 +101,13 @@ function setYamlError(message) {
 
 // --- Snapshots ------------------------------------------------------------
 
-function draw(render) {
-  const result = renderCard(render);
-  if ("card" in result) {
-    stage.replaceChildren(result.card);
-    setExportEnabled(true);
-  } else if (session.mode === "yaml") {
-    // Leave the last good render on stage, still exportable.
-    setYamlError(`Render failed: ${result.error}`);
+function showStage(content) {
+  if ("card" in content) {
+    stage.replaceChildren(content.card);
   } else {
-    setExportEnabled(false);
-    setStageMessage(result.error, true);
+    setStageMessage(content.message, content.error);
   }
+  setExportEnabled("card" in content);
 }
 
 function storeSession(text) {
@@ -153,12 +148,13 @@ function show(snapshot) {
   try {
     writeControlsToDom(document, session.controls);
   } catch (error) {
-    setExportEnabled(false);
-    setStageMessage(error.message, true);
+    showStage({ message: error.message, error: true });
     return;
   }
-  if (snapshot.render !== null) {
-    draw(snapshot.render);
+  const drawn = drawSnapshot(snapshot);
+  setYamlError(drawn.yamlError);
+  if (drawn.stage !== null) {
+    showStage(drawn.stage);
   }
 }
 
@@ -326,18 +322,13 @@ function start() {
     search: window.location.search,
     saved: storedSession(),
   });
-  session = snapshot.session;
-  if (session.yaml !== null) {
-    yamlEditor.value = session.yaml;
+  const { mode, yaml } = snapshot.session;
+  if (yaml !== null) {
+    yamlEditor.value = yaml;
   }
-  // Before `show`: opening the YAML tab clears the error `show` may report.
-  activateTab(session.mode);
+  // Select only: the editor already holds what a yaml session restored.
+  selectTab(tablist, mode === "yaml" ? tabYaml : tabControls);
   show(snapshot);
-  // A stored YAML override that does not draw leaves the markup's loading
-  // message up; say why instead.
-  if (document.getElementById("stage-loading")) {
-    setStageMessage("No card yet: see the YAML error above.");
-  }
 }
 
 start();

@@ -117,18 +117,20 @@ composite area template's `features[]` rather than the layout's `pieces[]`; the 
 rewrites a composite layout into flat pieces: each area retemplated onto a legacy archetype,
 and one child per part naming its Battlemaster `part`, which is what the converters
 dispatch on. Parts the pipeline does not draw (`pipes`, `ruin-part`) are dropped there, in
-`PART_TO_TEMPLATE`, and nowhere else. Read the module's header first — it
+`PART_TO_TEMPLATE`, and nowhere else. The area half (size class → archetype → gw building,
+and the `V` registration) is `areaPiece` in `scripts/area-to-building.mjs`, which the
+normalizer calls. Read both modules' headers first — the normalizer's
 names each correction (`V` variant, `K` chirality, `Q` turn, `W` extent, `F`/`Z` footprint,
 `S` anchor) and that vocabulary is used throughout below.
 
 It throws loudly rather than guessing on:
 
 - **Unknown Battlemaster size class** (`unknown Battlemaster size class for composite …`) —
-  upstream added a class not in `SIZE_CLASS`. The current six are `BigRect`, `SmallRect`,
+  upstream added a class not in `AREA_CLASSES` (`scripts/area-to-building.mjs`). The current six are `BigRect`, `SmallRect`,
   `ShortLine`, `LongLine`, `LongLineTower`, `Triangle`, read from the second word of the
   composite's `name`. (`LongLineTower` is upstream's own typo for a `LongLine`, not a sixth
-  archetype — it maps onto `area-long-line` like its siblings.) Add the new class and its
-  legacy area template.
+  archetype — it maps onto `area-long-line` like its siblings.) Add the new class with its
+  legacy archetype and gw building.
 - **Unmapped part template** (`no legacy template mapping for part …`) — upstream added a
   composite feature part not in `PART_TO_TEMPLATE`. Part ids carry a content hash
   (`bm-part-ab-68b696d07f`) which `partOf` strips, so two ids can be the same part; check
@@ -136,7 +138,7 @@ It throws loudly rather than guessing on:
   be byte-identical to `co` — same footprint, walls, thickness and roof flag — and simply
   takes `co`'s row). A part with no legacy counterpart at all can be registered
   `{ drop: true }`, as `ruin-part` is. A part that is drawn must also be claimed by a
-  converter's part table (`RUIN_HAND`, `FEATURE_BUILDINGS` or `RECT_FEATURES`), or
+  converter's part table (`RUIN_PARTS`, `FEATURE_BUILDINGS` or `RECT_FEATURES`), or
   `classifyPiece` throws `matches no converter`.
 - **Two drawings of one part** — a *test* failure (`registers a canonical drawing wherever
   upstream ships a part twice`). `partOf` collapses the hashes onto one legacy row but
@@ -178,7 +180,7 @@ It throws loudly rather than guessing on:
 
   Fitting the coarse legacy archetype to upstream's traced outline is **not** a substitute
   oracle — it prefers the other reflection for four of the six classes. The numbers are in
-  `CLASS_REFERENCE`'s header in `scripts/battlemaster-normalize.mjs`; read them before
+  `CLASS_REFERENCE`'s header in `scripts/area-to-building.mjs`; read them before
   concluding the registration is mirrored.
 - **Composite footprint with a rigid self-symmetry** (`composite … fits the <class>
   reference … under both <A> and <B>: its footprint has a rigid self-symmetry, so the shape
@@ -207,9 +209,10 @@ It throws loudly rather than guessing on:
 
 A new part's `flip` bit and `turn` must be **derived**, never guessed — guessing wrong is
 invisible to the suite. Match the new part against the nearest pre-pull piece of the same
-legacy template and read off the rigid map between the two rings, and which l-ruin variant
-it actually rendered as, which goes in `RUIN_HAND` (`ruinFeaturePlacement` throws where the
-two disagree). See the chirality-pin test in `battlemaster-registration.test.mjs`.
+legacy template and read off the rigid map between the two rings. `flip` is the only record
+of an L part's hand: `ruinFeaturePlacement` reads the l-ruin variant off the resolved arms,
+so check the variant it comes out as against the pre-pull rendering. See the chirality-pin
+test in `battlemaster-registration.test.mjs`.
 
 Do **not** use a bounding-box aspect ratio to pick `turn`: it is blind to a half-turn and
 gets `ab` wrong. And note that for `upstreamSize` parts a sweep can only ever resolve

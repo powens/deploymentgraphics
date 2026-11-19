@@ -2,10 +2,11 @@ import { describe, it, expect } from "vitest";
 import { normalizeLayout } from "./battlemaster-normalize.mjs";
 import { FLIP_X, IDENTITY, matvec, rotationMatrix } from "../src/geometry.ts";
 
-// `variantOf` fits each composite against its class's pinned reference, so a
-// fixture table must carry that reference. The fit only needs a shape with no
-// rigid self-symmetry, which an L is: a fixture composite drawn as the
-// reference under the rigid map W registers at `W . refV`.
+// area-to-building.mjs's `variantOf` fits each composite against its class's
+// pinned reference, so a fixture table must carry that reference. The fit only
+// needs a shape with no rigid self-symmetry, which an L is: a fixture
+// composite drawn as the reference under the rigid map W registers at
+// `W . refV`.
 const REF_RING = [
   { x: 0, y: 0 }, { x: 4, y: 0 }, { x: 4, y: 1 },
   { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 0, y: 2 },

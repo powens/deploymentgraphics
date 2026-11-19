@@ -1,18 +1,11 @@
-import { injectTemplateDefs, makeBuildings } from "./buildings.js";
-import { injectFeatureDefs, makeFeatures } from "./features.js";
-import { injectIconDefs, makeIcons } from "./icons.js";
+import { buildingLayer } from "./buildings.js";
+import { featureLayer } from "./features.js";
+import { iconLayer } from "./icons.js";
 import { applyAttributes } from "./dom-helpers.js";
+import type { Layer, LayerRow } from "./layer.js";
 import type { SvgDocument, SvgNode } from "./svg-backend.js";
-import {
-  toPoint,
-  type BuildingPlacement,
-  type CanvasSize,
-} from "./building-coordinates.js";
-import {
-  selectLayout,
-  type FeaturePlacement,
-  type IconPlacement,
-} from "./terrain-config.js";
+import type { BuildingPlacement, CanvasSize } from "./building-coordinates.js";
+import type { FeaturePlacement, IconPlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
 import type { BaseConfig, FullConfig } from "./types.js";
 
@@ -28,13 +21,13 @@ export type ResolvedLayout = {
 };
 
 /**
- * No layout (`layout_name: ""`) yields empty `buildings`/`icons`; an unknown
- * layout id throws (see `selectLayout`). Checked here as well as in
- * `buildConfig` because a hand-built config never passes through that.
+ * No layout (`layout_name: ""`) yields empty `buildings`/`icons`; that any
+ * other id is a key of `terrain.layout` is `checkConfig`'s to ensure.
  * Features are top-level first, then the layout's (draw order).
  */
 export function resolveLayout(config: FullConfig): ResolvedLayout {
-  const layout = selectLayout(config.terrain.layout, config.terrain.layout_name);
+  const { layout: layouts, layout_name: name } = config.terrain;
+  const layout = name === "" ? undefined : layouts[name];
   return {
     buildings: layout?.templates ?? [],
     icons: layout?.icons ?? [],
@@ -43,26 +36,8 @@ export function resolveLayout(config: FullConfig): ResolvedLayout {
 }
 
 /**
- * One drawable layer of the card: the shared shapes it hangs in `<defs>` (if
- * any) and the node that references them. A layer that emits a def also emits
- * every reference to it, so def ids stay private to the layer.
- */
-export interface Layer {
-  /** A label for the reader only; it is not the emitted node's `id`. */
-  readonly id: string;
-  /** Appends this layer's shared shapes to the card's single `<defs>`. */
-  injectDefs?(doc: SvgDocument, defs: SvgNode): void;
-  /** The node to append, in draw order. */
-  draw(doc: SvgDocument): SvgNode;
-}
-
-/** A layer plus whether it draws at all. */
-type LayerRow = Layer & { readonly draws: boolean };
-
-/**
  * Read one of `BaseConfig`'s `{ draw?: boolean }` toggles; the default for an
- * absent `draw` differs per toggle. Throws naming the toggle if it is not an
- * object at all.
+ * absent `draw` differs per toggle.
  *
  * `Boolean` is needed despite the type: the viewer's YAML tab passes unvalidated
  * input, and js-yaml 4 parses `no`/`off`/`yes`/`on` as strings. (`"no"` is still
@@ -73,22 +48,7 @@ function drawn(
   key: "grid" | "half_way_lines" | "territory",
   whenAbsent: boolean,
 ): boolean {
-  const toggle: unknown = base[key];
-  if (typeof toggle !== "object" || toggle === null || Array.isArray(toggle)) {
-    throw new Error(
-      `config.base.${key}: expected an object (e.g. {} or { draw: false }), ` +
-        `got ${JSON.stringify(toggle)}`,
-    );
-  }
   return Boolean(base[key].draw ?? whenAbsent);
-}
-
-/** Validates an untyped value as a number, throwing with `context` on failure. */
-function toNumber(value: unknown, context: string): number {
-  if (typeof value !== "number") {
-    throw new Error(`${context}: expected a number, got ${JSON.stringify(value)}`);
-  }
-  return value;
 }
 
 function deploymentZone(
@@ -105,10 +65,7 @@ function deploymentZone(
   dz.setAttribute("id", attackerDefender);
   dz.setAttribute(
     "points",
-    playerConfig.deployment_zone
-      .map((raw) => toPoint(raw, `${attackerDefender} deployment_zone`))
-      .map((p) => `${p.x},${p.y}`)
-      .join(" "),
+    playerConfig.deployment_zone.map((p) => `${p.x},${p.y}`).join(" "),
   );
   applyAttributes(dz, colorConfig);
 
@@ -201,8 +158,7 @@ function territoryLine(
   territory: NonNullable<FullConfig["deployment"]["territory"]>,
   theme: Theme,
 ): SvgNode {
-  const start = toPoint(territory.start, "territory start");
-  const end = toPoint(territory.end, "territory end");
+  const { start, end } = territory;
   const line = doc.createElement("line");
   line.setAttribute("id", "territory");
   line.setAttribute("x1", `${start.x}`);
@@ -223,9 +179,7 @@ function objectives(
 ): SvgNode {
   const group = doc.createElement("g");
   group.setAttribute("id", "objectives");
-  for (const [i, item] of (config.objectives ?? []).entries()) {
-    const { x, y } = toPoint(item, `objectives[${i}]`);
-    const number = toNumber(item.number, `objectives[${i}].number`);
+  for (const { x, y, number } of config.objectives ?? []) {
     const marker = doc.createElement("circle");
     marker.setAttribute("cx", `${x}`);
     marker.setAttribute("cy", `${y}`);
@@ -272,15 +226,8 @@ function annotations(
   const group = doc.createElement("g");
   group.setAttribute("id", "annotations");
   applyAttributes(group, theme.annotation.text);
-  for (const [i, item] of (config.annotations ?? []).entries()) {
-    const context = `annotations[${i}]`;
-    // Checked first: an unknown kind would otherwise draw as an arrow.
-    if (item?.kind !== "text" && item?.kind !== "arrow") {
-      throw new Error(
-        `${context}.kind: expected "text" or "arrow", got ${JSON.stringify(item?.kind)}`,
-      );
-    }
-    const { x, y } = toPoint(item, context);
+  for (const item of config.annotations ?? []) {
+    const { x, y } = item;
     if (item.kind === "text") {
       const el = doc.createElement("text");
       el.setAttribute("x", `${x}`);
@@ -289,8 +236,8 @@ function annotations(
       el.textContent = item.text ?? "";
       group.appendChild(el);
     } else {
-      const endX = item.endX === undefined ? x : toNumber(item.endX, `${context}.endX`);
-      const endY = item.endY === undefined ? y : toNumber(item.endY, `${context}.endY`);
+      const endX = item.endX ?? x;
+      const endY = item.endY ?? y;
       const line = doc.createElement("line");
       line.setAttribute("x1", `${x}`);
       line.setAttribute("y1", `${y}`);
@@ -344,25 +291,10 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
       draws: Boolean(territory) && drawn(config.base, "territory", true),
       draw: (doc) => territoryLine(doc, territory!, theme),
     },
-    {
-      // Always drawn (no layout gives an empty `<g id="buildings">`).
-      // Template defs belong to the board's template set, so they go in even
-      // when this layout references none.
-      id: "buildings",
-      draws: true,
-      injectDefs: (doc, defs) =>
-        injectTemplateDefs(doc, config.terrain.templates, defs, theme),
-      draw: (doc) =>
-        makeBuildings(doc, layout.buildings, config.terrain.templates, canvas, theme),
-    },
-    {
-      // After buildings: 40kdc area pieces render as opaque buildings, and
-      // the smaller pieces (l-ruins, generators, gantries) sit on top.
-      id: "features",
-      draws: layout.features.length > 0,
-      injectDefs: (doc, defs) => injectFeatureDefs(doc, layout.features, defs),
-      draw: (doc) => makeFeatures(doc, layout.features, theme, canvas),
-    },
+    buildingLayer(layout.buildings, config.terrain.templates, canvas, theme),
+    // After buildings: 40kdc area pieces render as opaque buildings, and the
+    // smaller pieces (l-ruins, generators, gantries) sit on top.
+    featureLayer(layout.features, theme, canvas),
     {
       id: "objectives",
       draws: (config.objectives?.length ?? 0) > 0,
@@ -377,12 +309,7 @@ export function cardLayers(config: FullConfig, theme: Theme): Layer[] {
         : undefined,
       draw: (doc) => annotations(doc, config, theme),
     },
-    {
-      id: "icons",
-      draws: layout.icons.length > 0,
-      injectDefs: (doc, defs) => injectIconDefs(doc, layout.icons, defs, theme),
-      draw: (doc) => makeIcons(doc, layout.icons),
-    },
+    iconLayer(layout.icons, theme),
   ];
 
   return rows.filter((row) => row.draws);

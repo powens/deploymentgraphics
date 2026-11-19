@@ -1,10 +1,7 @@
 // `.ts` specifiers: the 40kdc converters load this module under plain Node,
 // which resolves specifiers literally. See the tsconfig note.
 import {
-  localCorner,
-  resolveCorner,
   templateBounds,
-  toAnchor,
   type Anchor,
   type BuildingPlacement,
   type CanvasSize,
@@ -113,47 +110,59 @@ function withMirror(
 }
 
 /**
+ * The canvas point a corner spec names: x/y measured inward from its anchor
+ * (the spec's `from`, else the placement's).
+ */
+function canvasCorner(spec: CornerSpec, defaultFrom: Anchor, canvas: CanvasSize): Point {
+  const { x, y } = spec;
+  switch (spec.from ?? defaultFrom) {
+    case "TL":
+      return { x, y };
+    case "TR":
+      return { x: canvas.width - x, y };
+    case "BL":
+      return { x, y: canvas.height - y };
+    case "BR":
+      return { x: canvas.width - x, y: canvas.height - y };
+  }
+}
+
+/** Template-local position of a named template-box corner. */
+function localCorner(corner: Anchor, size: { width: number; height: number }): Point {
+  switch (corner) {
+    case "TL":
+      return { x: 0, y: 0 };
+    case "TR":
+      return { x: size.width, y: 0 };
+    case "BR":
+      return { x: size.width, y: size.height };
+    case "BL":
+      return { x: 0, y: size.height };
+  }
+}
+
+/**
  * Resolves a corner-pin placement to its primary `Placed` (no mirror). One
  * corner fixes position at rotation 0; a second derives the rotation and must
- * match the template edge length.
+ * match the template edge length. The placement's shape is `checkConfig`'s.
  */
 function resolvePrimary(
   placement: BuildingPlacement,
   templates: Record<string, Template>,
   canvas: CanvasSize,
 ): Placed {
-  const template = Object.hasOwn(templates, placement.type)
-    ? templates[placement.type]
-    : undefined;
-  if (!template) {
-    throw new Error(`building references unknown template: ${placement.type}`);
-  }
   const entries = Object.entries(placement.corners) as [Anchor, CornerSpec][];
-  if (entries.length < 1 || entries.length > 2) {
-    throw new Error(
-      `building ${placement.type}: expected 1 or 2 corners, got ${entries.length}`,
-    );
-  }
-  // Checked here for the building's name in the message; `resolveCorner` and
-  // `localCorner` guard again for their other callers.
-  const context = `building ${placement.type}`;
-  const defaultFrom = toAnchor(placement.from ?? "TL", `${context}: from`);
-  for (const [corner, spec] of entries) {
-    toAnchor(corner, `${context}: corners key`);
-    if (spec?.from !== undefined) {
-      toAnchor(spec.from, `${context}: corners.${corner}.from`);
-    }
-  }
-  const size = templateBounds(template, placement.type);
+  const defaultFrom = placement.from ?? "TL";
+  const size = templateBounds(templates[placement.type], placement.type);
 
   const [[cornerA, specA]] = entries;
-  const pA = resolveCorner(specA, defaultFrom, canvas);
+  const pA = canvasCorner(specA, defaultFrom, canvas);
   const lA = localCorner(cornerA, size);
 
   let theta = 0;
   if (entries.length === 2) {
     const [, [cornerB, specB]] = entries;
-    const pB = resolveCorner(specB, defaultFrom, canvas);
+    const pB = canvasCorner(specB, defaultFrom, canvas);
     const lB = localCorner(cornerB, size);
 
     const targetLength = distance(pA, pB);
@@ -192,8 +201,8 @@ function resolvePrimary(
 
 /**
  * Resolves a corner-pin building placement to its primary plus mirrored copy
- * (unless `mirror: false`). Throws on an unknown template, a corner count
- * other than 1–2, or a corner distance that disagrees with the template edge.
+ * (unless `mirror: false`). Throws on a corner distance that disagrees with
+ * the template edge.
  */
 export function resolvePlacement(
   placement: BuildingPlacement,
@@ -217,21 +226,6 @@ export function placeBuildings(
 }
 
 /**
- * A feature's authored rotation, `0` when absent. Throws on anything but a
- * finite number: a quoted YAML `"30"` would string-concatenate in `mirror`.
- */
-function featureRotation(feature: FeaturePlacement): number {
-  const { rotation } = feature;
-  if (rotation === undefined) return 0;
-  if (typeof rotation !== "number" || !Number.isFinite(rotation)) {
-    throw new Error(
-      `feature ${feature.type}: rotation: expected a number, got ${JSON.stringify(rotation)}`,
-    );
-  }
-  return rotation;
-}
-
-/**
  * Resolves a feature placement to its primary plus mirrored copy (unless
  * `mirror: false`). Features are already box + centre rotation, so the
  * primary is the placement verbatim, its rotation normalised to [0, 360).
@@ -243,7 +237,53 @@ export function resolveFeature(
   const primary: Placed = {
     name: feature.type,
     box: { x: feature.x, y: feature.y, width: feature.width, height: feature.height },
-    rotation: normalizeDegrees(featureRotation(feature)),
+    rotation: normalizeDegrees(feature.rotation ?? 0),
   };
   return withMirror(primary, feature.mirror, canvas);
+}
+
+/** A `width` x `height` rectangle with its top-left at the origin. */
+function boxRing({ width, height }: { width: number; height: number }): Ring {
+  return [
+    { x: 0, y: 0 },
+    { x: width, y: 0 },
+    { x: width, y: height },
+    { x: 0, y: height },
+  ];
+}
+
+/**
+ * The board rings a `templates` row draws, one per `Placed` it resolves to
+ * (primary first, then any mirror copy): its template's points, else its
+ * rectangle, carried through `placedRing` as the renderer's `<use>` carries
+ * the template def. Converter tests check an emitted row against this rather
+ * than re-deriving the renderer's maths.
+ */
+export function buildingRings(
+  placement: BuildingPlacement,
+  templates: Record<string, Template>,
+  canvas: CanvasSize,
+): Ring[] {
+  return resolvePlacement(placement, templates, canvas).map((placed) => {
+    const template = templates[placed.name];
+    return placedRing(
+      "points" in template ? template.points : boxRing(template),
+      placed,
+    );
+  });
+}
+
+/**
+ * The board rings a `features` row draws, as `buildingRings` does for a
+ * building: `outline` (the feature type's local shape at the row's size)
+ * when given, else the row's box.
+ */
+export function featureRings(
+  feature: FeaturePlacement,
+  canvas: CanvasSize,
+  outline: Ring = boxRing(feature),
+): Ring[] {
+  return resolveFeature(feature, canvas).map((placed) =>
+    placedRing(outline, placed),
+  );
 }

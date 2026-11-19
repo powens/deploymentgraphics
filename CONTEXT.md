@@ -59,9 +59,13 @@ is *mirror on*. One formula, owned by the placement module.
 its `position` anchors. A child of `parent_area_id` is posed in its parent's
 centred frame, then carried through the parent's pose. `terrain-resolver.mjs`
 owns three views of that one convention, as the placement module does for
-**Centre-pivot**: the forward map (`poseMatrix`, `pieceFrame`), the resolved ring
+**Centre-pivot**: the forward map (`poseMatrix`), the resolved piece
 (`resolvePiece`), and the inverse (`poseFromMatrix`), which factors a map back
-into the `{ rotation_degrees, mirror }` pair a piece carries.
+into the `{ rotation_degrees, mirror }` pair a piece carries. The resolved
+piece is the one place footprint precedence (inline before template) and
+parent composition happen: it carries the local ring, the board ring vertex
+for vertex, and the composed map between them. Converters reach it through a
+corpus layout's `resolve`.
 _Avoid_: calling a piece's `mirror` a **Mirror**, which is the canvas
 point-reflection of a `Placed`; say it *reflects*, or speak of its handedness.
 
@@ -73,13 +77,16 @@ card's single `<defs>`, the node that references them, and the rule for whether
 it draws at all. `src/layers.ts` lists the layers once, in draw order — one row
 each for the two deployment zones, grid, half-way lines, territory, buildings,
 features, objectives, annotations and icons. Adding a piece kind is one row;
-the def id never leaves the layer that emits both halves of it. `main.ts` walks
+the def id never leaves the layer that emits both halves of it. The piece
+modules (`buildings.ts`, `features.ts`, `icons.ts`) each export their finished
+layer, built with `useLayer` (`src/layer.ts`), which spells the def id once for
+both the def and every `<use>` that references it. `main.ts` walks
 the list twice (defs, then draw) and knows nothing about what is in it.
 
 **Layout-resolution** — `resolveLayout(config)` assembling the pieces a render
 pass draws into a `ResolvedLayout` (buildings, icons, features). Buildings and
-icons come from the selected layout alone (empty arrays when none is selected,
-a throw when the selected id is not in `terrain.layout`);
+icons come from the selected layout alone (empty arrays when none is selected;
+an id not in `terrain.layout` has already been thrown on by `checkConfig`);
 features are unioned with the board's top-level array. Distinct from
 **Resolve** above: that maps one placement to a `Placed`; this assembles
 placement *arrays* and applies the "is a layout selected / union with

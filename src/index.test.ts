@@ -57,8 +57,8 @@ describe("the package root", () => {
       "VirtualSvgElement",
       "browserSvgDocument",
       "virtualSvgDocument",
-      "injectTemplateDefs",
-      "makeBuildings",
+      "buildingLayer",
+      "useLayer",
     ]) {
       expect(pkg).not.toHaveProperty(name);
     }

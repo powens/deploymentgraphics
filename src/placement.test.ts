@@ -1,5 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
+  buildingRings,
+  featureRings,
   mirror,
   placeBuildings,
   placedFromPin,
@@ -14,6 +16,7 @@ import type {
   PolygonTemplate,
   Template,
 } from "./building-coordinates";
+import { ringMismatch, type Ring } from "./geometry";
 
 const canvas = { width: 60, height: 44 };
 const templates: Record<string, Template> = {
@@ -111,17 +114,17 @@ describe("resolvePlacement (single corner)", () => {
   });
 
   it("pins a single TR corner (box offset by the template width)", () => {
-    // building TR corner -> canvas point (10,5); localCorner(TR)=(4,0)
+    // building TR corner -> canvas point (10,5); its template-local TR is (4,0)
     expect(pin({ TR: { x: 10, y: 5 } }).box).toEqual({ x: 6, y: 5, width: 4, height: 6 });
   });
 
   it("pins a single BL corner (box offset by the template height)", () => {
-    // building BL corner -> canvas point (10,5); localCorner(BL)=(0,6)
+    // building BL corner -> canvas point (10,5); its template-local BL is (0,6)
     expect(pin({ BL: { x: 10, y: 5 } }).box).toEqual({ x: 10, y: -1, width: 4, height: 6 });
   });
 
   it("pins a single BR corner (offset by width and height)", () => {
-    // building BR corner -> canvas point (10,5); localCorner(BR)=(4,6)
+    // building BR corner -> canvas point (10,5); its template-local BR is (4,6)
     expect(pin({ BR: { x: 10, y: 5 } }).box).toEqual({ x: 6, y: -1, width: 4, height: 6 });
   });
 
@@ -134,31 +137,32 @@ describe("resolvePlacement (single corner)", () => {
       height: 6,
     });
   });
+
+  it.each([
+    ["TL", { x: 10, y: 5 }],
+    ["TR", { x: 50, y: 5 }],
+    ["BL", { x: 10, y: 39 }],
+    ["BR", { x: 50, y: 39 }],
+  ] as const)("measures inward from the placement's %s anchor", (from, at) => {
+    const [primary] = resolvePlacement(
+      { type: "4x6", mirror: false, from, corners: { TL: { x: 10, y: 5 } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box).toEqual({ ...at, width: 4, height: 6 });
+  });
+
+  it("lets a corner's own anchor override the placement's", () => {
+    const [primary] = resolvePlacement(
+      { type: "4x6", mirror: false, from: "BR", corners: { TL: { x: 10, y: 5, from: "TL" } } },
+      templates,
+      canvas,
+    );
+    expect(primary.box).toEqual({ x: 10, y: 5, width: 4, height: 6 });
+  });
 });
 
 describe("resolvePlacement validation", () => {
-  it("throws on an unknown template", () => {
-    expect(() =>
-      resolvePlacement({ type: "ghost", corners: { TL: { x: 0, y: 0 } } }, templates, canvas),
-    ).toThrow(/unknown template/);
-  });
-
-  it("throws when there are no corners", () => {
-    expect(() =>
-      resolvePlacement({ type: "4x6", corners: {} }, templates, canvas),
-    ).toThrow(/1 or 2 corners/i);
-  });
-
-  it("throws when there are more than 2 corners", () => {
-    expect(() =>
-      resolvePlacement(
-        { type: "4x6", corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 5 }, BR: { x: 14, y: 11 } } },
-        templates,
-        canvas,
-      ),
-    ).toThrow(/1 or 2 corners/i);
-  });
-
   it("throws when a corner pair disagrees with the template edge", () => {
     expect(() =>
       resolvePlacement(
@@ -167,29 +171,6 @@ describe("resolvePlacement validation", () => {
         canvas,
       ),
     ).toThrow(/measure .* apart but template edge/);
-  });
-
-  // Each would otherwise fall off a switch and reach `rotate()` as undefined.
-  it.each([
-    [
-      "an unknown corner `from`",
-      { type: "4x6", corners: { TL: { x: 10, y: 5, from: "XX" } } },
-      'building 4x6: corners.TL.from: expected one of TL, TR, BL, BR, got "XX"',
-    ],
-    [
-      "an unknown placement `from`",
-      { type: "4x6", from: "top", corners: { TL: { x: 10, y: 5 } } },
-      'building 4x6: from: expected one of TL, TR, BL, BR, got "top"',
-    ],
-    [
-      "an unknown corner name",
-      { type: "4x6", corners: { TL: { x: 10, y: 5 }, MID: { x: 12, y: 5 } } },
-      'building 4x6: corners key: expected one of TL, TR, BL, BR, got "MID"',
-    ],
-  ])("names %s", (_name, placement, message) => {
-    expect(() =>
-      resolvePlacement(placement as unknown as BuildingPlacement, templates, canvas),
-    ).toThrow(message);
   });
 
   it("accepts a corner distance within the 0.1\" tolerance", () => {
@@ -325,25 +306,6 @@ describe("resolveFeature", () => {
     );
     expect(result.map((p) => p.rotation)).toEqual(want);
   });
-
-  // A quoted YAML `rotation: "30"` would otherwise string-concatenate in
-  // `mirror` ("30" + 180 = "30180").
-  it.each([["30"], [null], [Number.NaN]])("rejects a non-numeric rotation (%j)", (rotation) => {
-    expect(() =>
-      resolveFeature(
-        {
-          type: "gantry",
-          x: 12,
-          y: 6,
-          width: 10,
-          height: 2.5,
-          rotation: rotation as unknown as number,
-          color: "indigo",
-        },
-        canvas,
-      ),
-    ).toThrow(`feature gantry: rotation: expected a number, got ${JSON.stringify(rotation)}`);
-  });
 });
 
 describe("placeBuildings", () => {
@@ -440,5 +402,127 @@ describe("placedFromPin (the last step of every converter fit)", () => {
     expect(placed.box.width).toBe(6);
     expect(placed.box.height).toBe(4);
     expect(placed.name).toBe("x");
+  });
+});
+
+describe("buildingRings / featureRings (the rings an emitted row draws)", () => {
+  // Board rings are compared as vertex sets: the order is the outline's own.
+  const expectRing = (got: Ring, want: Ring) => {
+    expect(got).toHaveLength(want.length);
+    expect(ringMismatch(got, want)).toBeLessThan(1e-9);
+  };
+
+  it("draws a rectangle template's box where the corner pin puts it", () => {
+    const rings = buildingRings(
+      { type: "4x6", mirror: false, corners: { TL: { x: 10, y: 5 } } },
+      templates,
+      canvas,
+    );
+    expect(rings).toHaveLength(1);
+    expectRing(rings[0], [
+      { x: 10, y: 5 },
+      { x: 14, y: 5 },
+      { x: 14, y: 11 },
+      { x: 10, y: 11 },
+    ]);
+  });
+
+  it("draws a polygon template's points, not its declared box", () => {
+    // A declared box narrower than the points: the pin uses the box, the
+    // ring the points.
+    const poly: Record<string, Template> = {
+      wedge: {
+        points: [
+          { x: 0, y: 0 },
+          { x: 3, y: 0 },
+          { x: 0, y: 2 },
+        ],
+        width: 2,
+        height: 2,
+      },
+    };
+    const [ring] = buildingRings(
+      { type: "wedge", mirror: false, corners: { TL: { x: 10, y: 5 } } },
+      poly,
+      canvas,
+    );
+    expectRing(ring, [
+      { x: 10, y: 5 },
+      { x: 13, y: 5 },
+      { x: 10, y: 7 },
+    ]);
+  });
+
+  it("is placedRing over each resolved Placed, mirror copy included", () => {
+    const row: BuildingPlacement = {
+      type: "6x12",
+      corners: { TL: { x: 10, y: 5 }, TR: { x: 14, y: 9.4721 } },
+    };
+    const resolved = resolvePlacement(row, templates, canvas);
+    const rings = buildingRings(row, templates, canvas);
+    expect(rings).toHaveLength(2);
+    resolved.forEach((placed, i) => {
+      expectRing(
+        rings[i],
+        placedRing(
+          [
+            { x: 0, y: 0 },
+            { x: 6, y: 0 },
+            { x: 6, y: 12 },
+            { x: 0, y: 12 },
+          ],
+          placed,
+        ),
+      );
+    });
+  });
+
+  it("draws a feature's box about its centre by default", () => {
+    const [ring] = featureRings(
+      {
+        type: "generator",
+        x: 10,
+        y: 8,
+        width: 4,
+        height: 2,
+        rotation: 90,
+        color: "teal",
+        mirror: false,
+      },
+      canvas,
+    );
+    // A quarter turn about (12, 9): the 4x2 box stands up as 2x4.
+    expectRing(ring, [
+      { x: 11, y: 7 },
+      { x: 13, y: 7 },
+      { x: 13, y: 11 },
+      { x: 11, y: 11 },
+    ]);
+  });
+
+  it("draws a feature's own outline when given, mirror copy included", () => {
+    const row = {
+      type: "l-ruin",
+      x: 10,
+      y: 8,
+      width: 4,
+      height: 2,
+      rotation: 30,
+      color: "teal",
+    };
+    const outline: Ring = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+      { x: 4, y: 1 },
+      { x: 4, y: 2 },
+      { x: 0, y: 2 },
+    ];
+    const rings = featureRings(row, canvas, outline);
+    const resolved = resolveFeature(row, canvas);
+    expect(rings).toHaveLength(2);
+    resolved.forEach((placed, i) => {
+      expectRing(rings[i], placedRing(outline, placed));
+    });
   });
 });

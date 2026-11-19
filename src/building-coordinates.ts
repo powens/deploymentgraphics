@@ -1,5 +1,8 @@
 // `.ts` specifier: the 40kdc converters load this module under plain Node.
 // See the tsconfig note on rewriteRelativeImportExtensions.
+//
+// Building templates and their corner-pin placement shape, and the owner of
+// the Template box (`templateBounds`). Resolving a placement is placement.ts's.
 import { bounds, type Point } from "./geometry.ts";
 
 export type Anchor = "TL" | "TR" | "BL" | "BR";
@@ -9,57 +12,6 @@ export type { Point };
 
 /** A corner: { x, y } with an optional `from` anchor override. x/y are inward distances. */
 export type CornerSpec = { x: number; y: number; from?: Anchor };
-
-/** Validates an untyped value as a Point, throwing with `context` on failure. */
-export function toPoint(value: unknown, context: string): Point {
-  if (
-    !value ||
-    typeof value !== "object" ||
-    Array.isArray(value) ||
-    typeof (value as Point).x !== "number" ||
-    typeof (value as Point).y !== "number"
-  ) {
-    throw new Error(
-      `${context}: expected { x, y }, got ${JSON.stringify(value)}`,
-    );
-  }
-  return value as Point;
-}
-
-const ANCHORS: readonly Anchor[] = ["TL", "TR", "BL", "BR"];
-
-/** Validates an untyped value as an Anchor, throwing with `context` on failure. */
-export function toAnchor(value: unknown, context: string): Anchor {
-  if (!ANCHORS.includes(value as Anchor)) {
-    throw new Error(
-      `${context}: expected one of ${ANCHORS.join(", ")}, got ${JSON.stringify(value)}`,
-    );
-  }
-  return value as Anchor;
-}
-
-/**
- * Resolves a corner spec to an absolute canvas point. x/y are measured
- * inward from the spec's anchor (its `from` field, or `defaultFrom`).
- */
-export function resolveCorner(
-  spec: CornerSpec,
-  defaultFrom: Anchor,
-  canvas: CanvasSize,
-): Point {
-  const { x, y } = toPoint(spec, "building corner");
-  const from = toAnchor(spec.from ?? defaultFrom, "building corner from");
-  switch (from) {
-    case "TL":
-      return { x, y };
-    case "TR":
-      return { x: canvas.width - x, y };
-    case "BL":
-      return { x, y: canvas.height - y };
-    case "BR":
-      return { x: canvas.width - x, y: canvas.height - y };
-  }
-}
 
 export type RectTemplate = { width: number; height: number };
 
@@ -124,22 +76,3 @@ export type BuildingPlacement = {
   from?: Anchor; // default anchor for corner specs; default "TL"
   mirror?: boolean; // default true
 };
-
-/** Template-local position of a named bounding-box corner. */
-export function localCorner(
-  corner: Anchor,
-  size: { width: number; height: number },
-): Point {
-  switch (toAnchor(corner, "building corner")) {
-    case "TL":
-      return { x: 0, y: 0 };
-    case "TR":
-      return { x: size.width, y: 0 };
-    case "BR":
-      return { x: size.width, y: size.height };
-    case "BL":
-      return { x: 0, y: size.height };
-  }
-}
-
-// Corner-pin resolution to `Placed` lives in `placement.ts`.

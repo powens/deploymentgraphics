@@ -1,4 +1,5 @@
-import { selectLayout, type TerrainConfig } from "../terrain-config.js";
+import { checkConfig } from "../check-config.js";
+import type { TerrainConfig } from "../terrain-config.js";
 import type { BaseConfig, DeploymentConfig, FullConfig } from "../types.js";
 import { baseConfig } from "./base.js";
 import type { LayoutId } from "./terrain-index.js";
@@ -35,8 +36,10 @@ export interface BuildConfigOptions {
 
 /**
  * Assembles the {@link FullConfig} `makeMissionCard` consumes. Never mutates
- * its inputs, so preset objects are safe to reuse. Throws on a `layout` that
- * `terrain` does not define.
+ * its inputs, so preset objects are safe to reuse. Throws, naming the field, on
+ * a config the renderer could not draw: a `layout` that `terrain` does not
+ * define, or a malformed piece of it. Feature colours wait for the render,
+ * which knows the theme.
  */
 export function buildConfig({
   mission,
@@ -46,8 +49,6 @@ export function buildConfig({
   grid,
   territory,
 }: BuildConfigOptions): FullConfig {
-  // Fail at the call that named the layout, not at render time.
-  selectLayout(terrain.layout, layout);
   let resolvedBase = base;
   if (grid !== undefined) {
     resolvedBase = { ...resolvedBase, grid: { ...resolvedBase.grid, draw: grid } };
@@ -58,9 +59,12 @@ export function buildConfig({
       territory: { ...resolvedBase.territory, draw: territory },
     };
   }
-  return {
+  const config: FullConfig = {
     deployment: mission,
     base: resolvedBase,
     terrain: { ...terrain, layout_name: layout },
   };
+  // Fail at the call that named the layout, not at render time.
+  checkConfig(config);
+  return config;
 }

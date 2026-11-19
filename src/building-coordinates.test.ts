@@ -1,44 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { localCorner, resolveCorner, templateBounds, toPoint } from "./building-coordinates";
-import type { Anchor, PolygonTemplate } from "./building-coordinates";
-
-const canvas = { width: 60, height: 44 };
-
-describe("resolveCorner", () => {
-  it("resolves from TL (x,y are inward distances)", () => {
-    expect(resolveCorner({ x: 10, y: 5 }, "TL", canvas)).toEqual({ x: 10, y: 5 });
-  });
-
-  it("resolves from TR", () => {
-    expect(resolveCorner({ x: 10, y: 5 }, "TR", canvas)).toEqual({ x: 50, y: 5 });
-  });
-
-  it("resolves from BL", () => {
-    expect(resolveCorner({ x: 10, y: 5 }, "BL", canvas)).toEqual({ x: 10, y: 39 });
-  });
-
-  it("resolves from BR", () => {
-    expect(resolveCorner({ x: 10, y: 5 }, "BR", canvas)).toEqual({ x: 50, y: 39 });
-  });
-
-  it("lets a 'from' field override the default anchor", () => {
-    expect(resolveCorner({ x: 10, y: 5, from: "TL" }, "BR", canvas)).toEqual({ x: 10, y: 5 });
-  });
-
-  it("throws on an unknown anchor rather than returning undefined", () => {
-    expect(() =>
-      resolveCorner({ x: 10, y: 5, from: "XX" as Anchor }, "TL", canvas),
-    ).toThrow('building corner from: expected one of TL, TR, BL, BR, got "XX"');
-  });
-});
-
-describe("localCorner", () => {
-  it("throws on an unknown corner rather than returning undefined", () => {
-    expect(() => localCorner("XX" as Anchor, { width: 4, height: 6 })).toThrow(
-      'building corner: expected one of TL, TR, BL, BR, got "XX"',
-    );
-  });
-});
+import { templateBounds, type PolygonTemplate } from "./building-coordinates";
 
 describe("templateBounds", () => {
   it("returns the stored size for a rectangle template", () => {
@@ -125,25 +86,5 @@ describe("templateBounds", () => {
     expect(() => templateBounds(poly, "poly")).toThrow(
       /positive width and height/i,
     );
-  });
-});
-
-describe("toPoint", () => {
-  it("returns a valid {x, y} unchanged", () => {
-    expect(toPoint({ x: 1, y: 5 }, "ctx")).toEqual({ x: 1, y: 5 });
-  });
-
-  it("throws on a legacy [x, y] array", () => {
-    expect(() => toPoint([60, 0], "deployment_zone[0]")).toThrow(
-      /expected \{ x, y \}/i,
-    );
-  });
-
-  it("throws when x or y is missing", () => {
-    expect(() => toPoint({ x: 1 }, "ctx")).toThrow(/expected \{ x, y \}/i);
-  });
-
-  it("throws on null", () => {
-    expect(() => toPoint(null, "ctx")).toThrow(/expected \{ x, y \}/i);
   });
 });
