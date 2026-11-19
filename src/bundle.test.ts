@@ -55,7 +55,7 @@ describe("the demo bundle entry", () => {
       "renderMissionCardToString",
       "resolveLayout",
       "placedTransform",
-      "makeBuildings",
+      "buildingLayer",
       "serializeSvg",
       "virtualSvgDocument",
       "baseTheme",

@@ -39,7 +39,7 @@ const outerCornerOf = (entry) => {
   return ring[at[(openIdx + 2) % 4]];
 };
 
-// Local outline of an l-ruin feature, the shape makeFeatures draws.
+// Local outline of an l-ruin feature, the shape featureLayer draws.
 function ruinOutline(pl) {
   const { width: w, height: h } = pl;
   const wall = Math.min(0.5, w, h);
