@@ -81,7 +81,8 @@ so `buildConfig({ layout: "1" })` now throws (see the unknown-layout entry
 below). Pick a 40kdc id instead,
 e.g. `bm-take-vs-take-02`, which the demo viewer now opens on. With it go the
 `l-ruin-roof` and `pipe` **feature** types, which only that layout used: a
-`FeaturePlacement` naming either now throws `unknown feature type`. (The `pipe`
+`FeaturePlacement` naming either now throws, naming its `type` (see the
+malformed-config entry below). (The `pipe`
 *building template*, which the battlemaster pipes use, is unchanged.)
 
 **`PathTemplate` and `PathSegment` are removed.** A building template is now a
@@ -102,15 +103,15 @@ Trace a curved footprint as a polygon instead.
   consumer hand-building a `FullConfig` had to supply a value that did nothing.
   If you were reading it off a bundled mission, carry your own table.
 
-**An omitted `base.grid` now throws.** `BaseConfig` has always declared its
-toggles required. `base.half_way_lines` already threw when absent, and
-`base.territory` throws when absent on a mission that *has* a territory (the
-layer short-circuits before reading the toggle on one that does not); `base.grid`
-alone was read through optional chaining and silently behaved as `draw: false`.
-It is read like its siblings now, so a config built by hand — or loaded from
-YAML, as the demo viewer's editor tab does — that omits `grid:` fails loudly
-instead of quietly dropping the layer. Supply `grid: {}` to keep the previous
-behaviour.
+**An omitted `base.grid` or `base.territory` now throws.** `BaseConfig` has
+always declared its toggles required. `base.half_way_lines` already threw when
+absent, and `base.territory` threw when absent only on a mission that *has* a
+territory; `base.grid` was read through optional chaining and silently behaved
+as `draw: false`. All three are now checked before anything draws, on every
+mission, so a config built by hand — or loaded from YAML, as the demo viewer's
+editor tab does — that omits `grid:` or `territory:` fails loudly instead of
+quietly dropping the layer. Supply `grid: {}` / `territory: {}` to keep the
+previous behaviour.
 
 All three toggles are read the same way, by truthiness of `draw`. That is worth
 knowing if you author YAML: under js-yaml's YAML 1.2 core schema only
@@ -211,20 +212,35 @@ for a board with no terrain. Prototype keys no longer count as layouts either:
 - A malformed config now fails naming the field at fault, instead of with a
   `TypeError` from inside a layer. `renderMissionCardToString({})` used to throw
   `Cannot read properties of undefined (reading 'size')`; it now throws
-  `config.base: expected an object, got undefined`. The renderers check the
-  config's containers (`base`, `base.size`, `deployment`, each side's
-  `deployment_zone`, `terrain` and its `templates`/`layout`/`layout_name`, and
-  that `objectives`/`annotations`/`features` are arrays) before drawing, and
-  the pieces where they are read:
-  - a `base` toggle that is not an object: `config.base.grid: expected an
-    object (e.g. {} or { draw: false }), got undefined`;
-  - an objective or annotation without numeric `x`/`y`, a non-numeric
-    `number`/`endX`/`endY`, or an annotation `kind` other than `"text"` or
-    `"arrow"` (which used to draw as an arrow): `annotations[0].kind: expected
-    "text" or "arrow", got "label"`;
-  - a building corner anchor other than `TL`/`TR`/`BL`/`BR`, in `from` or as a
-    `corners` key, which used to fall through to an `undefined` point: `building
-    4x6: corners.TL.from: expected one of TL, TR, BL, BR, got "XX"`.
+  `config.base: expected an object, got undefined`. The whole config is
+  checked once, before anything draws — by the renderers, and by `buildConfig`
+  on the config it returns — and every message starts with the path of the
+  field at fault. That covers the containers (`base` and its toggles,
+  `deployment`, `terrain`, the top-level arrays) and every piece a render
+  reads: deployment-zone and territory points, objectives, annotations, the
+  building templates, and the selected layout's buildings, icons and features
+  (other layouts are not read, so not checked). For example:
+  - `config.base.grid: expected an object (e.g. {} or { draw: false }), got
+    undefined`;
+  - `config.annotations[0].kind: expected "text" or "arrow", got "label"` (an
+    unknown kind used to draw as an arrow);
+  - `config.terrain.layout["bm-take-vs-take-02"].templates[3].corners.TL.from:
+    expected one of TL, TR, BL, BR, got "XX"` (an unknown anchor used to fall
+    through to an `undefined` point);
+  - `config.terrain.layout["…"].icons[0].player: expected "attacker" or
+    "defender", got "foo"` (used to throw a bare `TypeError`);
+  - `config.features[0].width: expected a positive number, got "3"` (a
+    feature's `x`/`y`/`width`/`height` were not checked at all).
+
+  A building's or feature's `mirror`, when present, must be a boolean (`mirror:
+  no` in YAML is the string `"no"`, which used to mirror). A feature's `color`
+  is checked against the palette of the theme the card renders with, so
+  `buildConfig`, which has no theme, checks only that it is a string. A
+  building whose two corners disagree with its template edge still throws
+  `building 4x6: corners TL->TR measure …`, from placement. The unknown-layout
+  messages are unchanged. An optional field set to `null` (an emptied YAML
+  value, `mirror:`) is read as absent and takes its default; a null
+  `rotation`, `endX`/`endY` or corner `from` used to throw.
 
   `resolveMission` names an unknown disposition and lists the valid ones
   (`unknown disposition "Nope": expected one of "Disruption", …`) and lists the
@@ -234,12 +250,13 @@ for a board with no terrain. Prototype keys no longer count as layouts either:
 - Registry lookups match own keys only. A feature `type` or `color`, an icon
   `type` or a building template named after an `Object.prototype` member
   (`"constructor"`, `"toString"`, …) used to find that member and fail somewhere
-  unhelpful; it now throws the usual `unknown feature type`/`unknown feature
-  colour`/`unknown icon type`/`unknown template` error.
+  unhelpful; it is now rejected like any other unknown name, e.g.
+  `config.features[0].type: expected one of l-ruin, l-ruin-mirror, generator,
+  gantry, got "constructor"`.
 
 - A feature's `rotation` is normalised into [0, 360), as `Placed` documents,
   and its mirrored copy is too (a rotation below -180 used to mirror to a
   negative angle). The drawn result is unchanged; only the `rotate()` angle in
   the markup is spelled differently. A non-numeric rotation now throws
-  (`feature gantry: rotation: expected a number, got "30"`) — a quoted YAML
+  (`config.features[0].rotation: expected a number, got "30"`) — a quoted YAML
   `rotation: "30"` used to string-concatenate into `"30180"` on the mirror.

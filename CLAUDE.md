@@ -24,12 +24,15 @@ to npm (publish.yml).
 ## Layout
 
 - `src/index.ts`: published entry. Geometry/placement/svg-backend are internal, not exported.
+- `src/presets/index.ts`: second published entry (`deploymentgraphics/presets`).
 - `src/bundle.ts`: demo entry (rollup -> `dist/bundle.js`); re-exports presets, the
   viewer controls and js-yaml for `static/app.js`. The viewer fetches nothing at
   runtime.
 - `src/placement.ts`: sole owner of the centre-pivot transform
   (`placedTransform`/`placedRing`/`placedFromPin`).
 - `src/viewer-controls.ts`: one row per viewer control; adding a control = one row.
+- `src/viewer-session.ts`: owns the viewer's state transitions (demo-only);
+  `static/app.js` only writes the returned Snapshot to the DOM. Put viewer logic here.
 - `scripts/*.mjs`: 40kdc converters + normalizer (`battlemaster-normalize.mjs`).
 - `lib/`, `dist/`: build output, gitignored.
 
