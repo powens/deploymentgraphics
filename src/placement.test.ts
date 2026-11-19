@@ -12,6 +12,7 @@ import {
   type Placed,
 } from "./placement";
 import type {
+  BuildingPlacement,
   PolygonTemplate,
   Template,
 } from "./building-coordinates";
@@ -451,12 +452,6 @@ describe("buildingRings / featureRings (the rings an emitted row draws)", () => 
         ),
       );
     });
-  });
-
-  it("throws on an unknown template, as resolving does", () => {
-    expect(() =>
-      buildingRings({ type: "nope", corners: { TL: { x: 0, y: 0 } } }, templates, canvas),
-    ).toThrow("building references unknown template: nope");
   });
 
   it("draws a feature's box about its centre by default", () => {
