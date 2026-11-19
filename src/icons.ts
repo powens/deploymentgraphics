@@ -1,4 +1,5 @@
 import { applyAttributes } from "./dom-helpers.js";
+import { useLayer, type LayerRow } from "./layer.js";
 import type { SvgDocument, SvgNode } from "./svg-backend.js";
 import type { IconPlacement } from "./terrain-config.js";
 import type { Theme } from "./theme.js";
@@ -91,85 +92,59 @@ export function makeShape(doc: SvgDocument, shape: IconShape): SvgNode {
 }
 
 /** Def element id for an icon, suffixed by player when the disk is tinted. */
-function iconDefId(type: string, player?: "attacker" | "defender"): string {
+function iconDefId({ type, player }: IconPlacement): string {
   return player ? `icon-${type}-${player}` : `icon-${type}`;
 }
 
 /**
- * Appends one `<g id="icon-<type>[-<player>]">` per distinct (type, player) pair
- * used in `placements`. The disk fill resolves from `theme.deployment[player]`
- * when tagged, else `theme.icon.circle`; the glyph body takes `theme.icon.glyph`
- * and the cutouts take the resolved disk fill so they read as the disk showing
- * through.
+ * The icons layer, drawn when there are any: one `<use>` per placement,
+ * translated so the 4×4" design box is recentered on `pos`. Defs are one
+ * `<g id="icon-<type>[-<player>]">` per distinct (type, player). The disk fill
+ * resolves from `theme.deployment[player]` when tagged, else
+ * `theme.icon.circle`; the glyph body takes `theme.icon.glyph` and the cutouts
+ * take the resolved disk fill so they read as the disk showing through.
  */
-export function injectIconDefs(
-  doc: SvgDocument,
-  placements: IconPlacement[],
-  defs: SvgNode,
-  theme: Theme,
-): void {
-  const seen = new Set<string>();
-  for (const { type, player } of placements) {
-    const id = iconDefId(type, player);
-    if (seen.has(id)) continue;
-    seen.add(id);
-    const def = icons[type];
+export function iconLayer(placements: IconPlacement[], theme: Theme): LayerRow {
+  return useLayer({
+    id: "icons",
+    useId: "icon",
+    draws: placements.length > 0,
+    uses: placements,
+    defOf: (placement) => placement,
+    defId: iconDefId,
+    def: (doc, { type, player }, id) => {
+      const def = icons[type];
+      const diskFill = player
+        ? `${theme.deployment[player].fill}`
+        : `${theme.icon.circle.fill}`;
 
-    const diskFill = player
-      ? `${theme.deployment[player].fill}`
-      : `${theme.icon.circle.fill}`;
+      const group = doc.createElement("g");
+      group.setAttribute("id", id);
 
-    const group = doc.createElement("g");
-    group.setAttribute("id", id);
+      const circle = doc.createElement("circle");
+      circle.setAttribute("cx", `${def.circle.cx}`);
+      circle.setAttribute("cy", `${def.circle.cy}`);
+      circle.setAttribute("r", `${def.circle.r}`);
+      applyAttributes(circle, theme.icon.circle);
+      circle.setAttribute("fill", diskFill);
+      group.appendChild(circle);
 
-    const circle = doc.createElement("circle");
-    circle.setAttribute("cx", `${def.circle.cx}`);
-    circle.setAttribute("cy", `${def.circle.cy}`);
-    circle.setAttribute("r", `${def.circle.r}`);
-    applyAttributes(circle, theme.icon.circle);
-    circle.setAttribute("fill", diskFill);
-    group.appendChild(circle);
-
-    const glyph = doc.createElement("g");
-    if (def.glyph.transform) glyph.setAttribute("transform", def.glyph.transform);
-    for (const shape of def.glyph.body) {
-      const el = makeShape(doc, shape);
-      applyAttributes(el, theme.icon.glyph);
-      glyph.appendChild(el);
-    }
-    for (const shape of def.glyph.cutouts ?? []) {
-      const el = makeShape(doc, shape);
-      el.setAttribute("fill", diskFill);
-      glyph.appendChild(el);
-    }
-    group.appendChild(glyph);
-    defs.appendChild(group);
-  }
-}
-
-/**
- * Builds a `<g id="icons">` of `<use>` elements, one per placement, each
- * referencing its `#icon-<type>` def and translated so the 4×4" design box is
- * recentered on `pos`.
- */
-export function makeIcons(
-  doc: SvgDocument,
-  placements: IconPlacement[],
-): SvgNode {
-  const group = doc.createElement("g");
-  group.setAttribute("id", "icons");
-  let counter = 0;
-  for (const placement of placements) {
-    const use = doc.createElement("use");
-    use.setAttribute("href", `#${iconDefId(placement.type, placement.player)}`);
-    const { x, y } = placement.pos;
-    use.setAttribute(
-      "transform",
+      const glyph = doc.createElement("g");
+      if (def.glyph.transform) glyph.setAttribute("transform", def.glyph.transform);
+      for (const shape of def.glyph.body) {
+        const el = makeShape(doc, shape);
+        applyAttributes(el, theme.icon.glyph);
+        glyph.appendChild(el);
+      }
+      for (const shape of def.glyph.cutouts ?? []) {
+        const el = makeShape(doc, shape);
+        el.setAttribute("fill", diskFill);
+        glyph.appendChild(el);
+      }
+      group.appendChild(glyph);
+      return group;
+    },
+    transform: ({ pos: { x, y } }) =>
       `translate(${x - ICON_SIZE / 2} ${y - ICON_SIZE / 2})`,
-    );
-    use.setAttribute("id", `icon-${counter}`);
-    group.appendChild(use);
-    counter++;
-  }
-  return group;
+  });
 }

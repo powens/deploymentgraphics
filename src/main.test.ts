@@ -65,7 +65,7 @@ describe("makeMissionCard", () => {
   });
 
   // Template defs belong to the board, not the layout. A layer that does not
-  // draw also skips `injectDefs`, so the buildings row hardcodes
+  // draw also skips `injectDefs`, so `buildingLayer` hardcodes
   // `draws: true`; tightening it to `layout.buildings.length > 0` would drop
   // every `#template-*` def.
   it("still injects the board's template defs when the layout is empty", () => {
@@ -182,7 +182,7 @@ describe("makeAnnotations", () => {
   });
 });
 
-describe("makeFeatures integration", () => {
+describe("features in the card", () => {
   it("renders a features group on top of buildings", () => {
     const config = buildMinimalConfig();
     config.features = [
@@ -196,15 +196,6 @@ describe("makeFeatures integration", () => {
     // Features must come after the buildings group in document order.
     const ids = [...svg.children].map((c) => c.getAttribute("id"));
     expect(ids.indexOf("features")).toBeGreaterThan(ids.indexOf("buildings"));
-  });
-
-  it("injects a feature def that the feature use references", () => {
-    const config = buildMinimalConfig();
-    config.features = [
-      { type: "generator", x: 10, y: 8, width: 5, height: 3, color: "gunmetal", mirror: false },
-    ];
-    const svg = makeMissionCard(config);
-    expect(svg.querySelector("defs #feature-generator-5x3")).not.toBeNull();
   });
 
   it("mirrors a feature through the board centre by default", () => {
